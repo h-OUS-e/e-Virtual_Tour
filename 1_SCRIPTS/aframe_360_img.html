@@ -4,11 +4,23 @@
     <meta charset="UTF-8">
     <title>360 Image in A-Frame</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="button_test.js"></script>
+    
 </head>
 <body>
-    <a-scene>
+    <a-scene id="scene">
+        <a-camera raycaster>
+            <a-cursor raycaster="objects: .clickable" fuse="false"></a-cursor>
+        </a-camera>
         <a-sky src="0_resources/stitched_panorama8.jpg"></a-sky>
+        <a-plane id="myButton" class="clickable" position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
+            <!-- Text Inside the Rectangle -->
+            <a-text value="Your Text Here" align="center" position="0 0 0.01" color="black" scale="2 2 2"></a-text>
+        </a-plane>
+        
     </a-scene>
+    <!-- <script src="coord_find.js"></script> -->
 </body>
+
 </html>
 
