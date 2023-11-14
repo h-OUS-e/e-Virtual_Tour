@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>360 Image in A-Frame</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="button_test.js"></script>
     
 </head>
 <body>
+    <div id="minimap-container">
+        <!-- Minimap nodes -->
+        <div class="minimap-node" style="left: 50px; top: 50px;"></div>
+        <div class="minimap-node" style="left: 100px; top: 100px;"></div>
+        <!-- add js for nodes -->
+    </div>
+    
+    
     <a-scene id="scene">
-
+        <!-- fix buttons and transporting between nodes -->
         <a-camera raycaster>
             <a-cursor raycaster="objects: .clickable" fuse="false"></a-cursor>
         </a-camera>
@@ -49,8 +58,6 @@
         </a-entity>
         
     </a-scene>
-    <!-- <script src="coord_find.js"></script> -->
-
     <script>
      
 
