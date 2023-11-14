@@ -15,7 +15,7 @@ body {
     right: 10px;
     width: 200px;
     height: 200px;
-    background-image: url('1_SCRIPTS\3_Testing\0_resources');
+    background-image: url('0_resources/minimap.png');
     background-size: cover;
     border-radius: 10px;
     z-index: 10; /* Ensures it's above the A-Frame scene */
