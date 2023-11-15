@@ -37,7 +37,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             if (intersectedObject && intersectedObject.classList.contains('clickable')) {
                 intersectedObject.emit('hoverin'); // Emit custom hoverin event
-            }           
+
+                // If hovering in and mouse is pressed, emit hoverin_down event
+                addEventListener('mousedown', function(){
+                    intersectedObject.emit('hoverin_down');
+                });
+
+                // If hovering in and mouse is unpressed, emit hoverin_up event
+                addEventListener('mouseup', function(){
+                    intersectedObject.emit('hoverin_up');
+                });
+            }       
+            
+            
 
             lastHovered = intersectedObject;
         }
@@ -57,7 +69,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Define custom hoverin and hoverout event listeners
     sceneEl.addEventListener('hoverin', function (event) {
         const targetEl = event.target;
-        targetEl.setAttribute('material', 'color', '#FFC0CB'); // Change color on hover
+        const entering_color = '#FFC0CB'
+        targetEl.setAttribute('material', 'color', entering_color); // Change color on hover
+        ;
+
+        // Graying out button on holding down the mouse click
+        targetEl.addEventListener('hoverin_down', function() {                
+            targetEl.setAttribute('material', 'color', "gray"); // resetting color on clicking
+        });
+
+        // Reverting to original color on unclicking
+        targetEl.addEventListener('hoverin_up', function() {                
+            targetEl.setAttribute('material', 'color', entering_color); // resetting color on clicking
+        });
 
     });
 
@@ -71,50 +95,57 @@ document.addEventListener('DOMContentLoaded', (event) => {
     sceneEl.addEventListener('mouseClicked', (event) => {
 
         if (event.target.classList.contains('clickable') && event.target.getAttribute('visible')) {
-            event.target.setAttribute('material', 'color', '#4CC3D9');
+            
+            // Get the id of the clicked entity
+            var clickedId = event.target.id;
+            console.log('Clicked entity ID:', clickedId);
+            var obj = document.getElementById(clickedId);
+            var eventSetAttribute = obj.getAttribute('event-set__click');
+            var background_img_id = obj.getAttribute('background_img_id');
+            var new_background_img_id = obj.getAttribute('new_background_img_id');
+
+            // Extract the URL from the attribute value
+            var urlMatch = eventSetAttribute ? eventSetAttribute.match(/url\((.*?)\)/) : null;
+            var url = urlMatch ? urlMatch[1] : "URL not found";
+            console.log(url);
 
 
-        // Get the id of the clicked entity
-        var clickedId = event.target.id;
-        console.log('Clicked entity ID:', clickedId);
-        var obj = document.getElementById(clickedId);
-        var eventSetAttribute = obj.getAttribute('event-set__click');
-        var background_img_id = obj.getAttribute('background_img_id');
-        var new_background_img_id = obj.getAttribute('new_background_img_id');
+            // Changing background image
+            function changeImage(url, new_background_img_id){
+                var background_img = document.getElementById("background_img");
+                background_img.setAttribute('src', url);
+                background_img.setAttribute('background_img_id', new_background_img_id);
+                console.log('Moved to new scene!');
+            }
+            if (obj.getAttribute('my_type') == "move"){
+                event.target.setAttribute('color', '#4CC3D9'); // resetting color on clicking
+                changeImage(url, new_background_img_id) // changing background image
+            }
+            
+            // Gray out clickable object if it has no url (might need to expand this later to different clickable object types)
+           
+            
 
-        // Extract the URL from the attribute value
-        var urlMatch = eventSetAttribute ? eventSetAttribute.match(/url\((.*?)\)/) : null;
-        var url = urlMatch ? urlMatch[1] : "URL not found";
-        console.log(url);
+            function toggleVisibility(selector, isVisible) {
+                const entities = document.querySelectorAll(selector);
+                entities.forEach(entity => {
+                    entity.setAttribute('visible', isVisible);
+                    if (isVisible) {
+                        entity.setAttribute('class', 'clickable');
+                    } else {
+                        entity.setAttribute('class', 'unclickable');
+                    }
+                });
+            }
 
+            // Hide the transition icons olf background
+            var selector = '[background_img_id="' + background_img_id + '"][my_type="move"]';
+            toggleVisibility(selector, false);       
 
-        // Changing background image
-        var background_img = document.getElementById("background_img");
-        background_img.setAttribute('src', url);
-        background_img.setAttribute('background_img_id', new_background_img_id);
-        console.log('Moved to new scene!');
-
-        function toggleVisibility(selector, isVisible) {
-            const entities = document.querySelectorAll(selector);
-            entities.forEach(entity => {
-                entity.setAttribute('visible', isVisible);
-                if (isVisible) {
-                    entity.setAttribute('class', 'clickable');
-                } else {
-                    entity.setAttribute('class', 'unclickable');
-                }
-            });
-        }
-
-        // Hide the transition icons olf background
-        var selector = '[background_img_id="' + background_img_id + '"][my_type="move"]';
-        toggleVisibility(selector, false);
-       
-
-        // show transition icon of new background
-        var selector2 = '[background_img_id="' + new_background_img_id + '"][my_type="move"]';
-        // Iterate over the selected entities and hide them
-        toggleVisibility(selector2, true);
+            // show transition icon of new background
+            var selector2 = '[background_img_id="' + new_background_img_id + '"][my_type="move"]';
+            // Iterate over the selected entities and hide them
+            toggleVisibility(selector2, true);
     }
 
     });
