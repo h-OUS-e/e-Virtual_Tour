@@ -107,12 +107,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         // Hide the transition icons olf background
-        var selector = '[background_img_id="' + background_img_id + '"][myType="move"]';
+        var selector = '[background_img_id="' + background_img_id + '"][my_type="move"]';
         toggleVisibility(selector, false);
        
 
         // show transition icon of new background
-        var selector2 = '[background_img_id="' + new_background_img_id + '"][myType="move"]';
+        var selector2 = '[background_img_id="' + new_background_img_id + '"][my_type="move"]';
         // Iterate over the selected entities and hide them
         toggleVisibility(selector2, true);
     }
