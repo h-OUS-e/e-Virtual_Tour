@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function onMouseDown() {
         if (lastHovered && lastHovered.classList.contains('clickable')) {
-            console.log("Mouse down");
             lastHovered.setAttribute('material', 'color', color_clicked);
             lastHovered.emit('hoverin_down');
         }
@@ -39,7 +38,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
     function onMouseUp() {
         if (lastHovered && lastHovered.classList.contains('clickable')) {
-            console.log("Mouse up");
+            // Resetting transition node to original color if it was clicked, 
+            // else resetting to hoverin color
             if (lastHovered.getAttribute('my_type') == "move"){
                 lastHovered.setAttribute('material', 'color', color_hoverout); 
             }
@@ -136,9 +136,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 changeImage(url, new_background_img_id) // changing background image
             }
             
-            // Gray out clickable object if it has no url (might need to expand this later to different clickable object types)
-
-            
+           
 
             function toggleVisibility(selector, isVisible) {
                 const entities = document.querySelectorAll(selector);
