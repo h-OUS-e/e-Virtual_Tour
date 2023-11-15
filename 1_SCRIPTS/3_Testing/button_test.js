@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const sceneEl = document.querySelector('a-scene');
     const canvasEl = sceneEl.canvas; // Define canvasEl here
     let lastHovered = null; // To keep track of the last hovered object
+    const color_hoverin = '#FFC0CB';
+    const color_hoverout = '#4CC3D9';
+    const color_clicked = 'gray';
 
     function updateRaycaster(mouseEvent) {
         const rect = canvasEl.getBoundingClientRect();
@@ -26,6 +29,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return null;
     }
 
+    function onMouseDown() {
+        if (lastHovered && lastHovered.classList.contains('clickable')) {
+            console.log("Mouse down");
+            lastHovered.setAttribute('material', 'color', color_clicked);
+            lastHovered.emit('hoverin_down');
+        }
+    }
+    
+    function onMouseUp() {
+        if (lastHovered && lastHovered.classList.contains('clickable')) {
+            console.log("Mouse up");
+            if (lastHovered.getAttribute('my_type') == "move"){
+                lastHovered.setAttribute('material', 'color', color_hoverout); 
+            }
+            else{
+                lastHovered.setAttribute('material', 'color', color_hoverin); 
+            }
+                       
+            lastHovered.emit('hoverin_up');
+        }
+    }
+
     canvasEl.addEventListener('mousemove', (event) => {
         let raycaster = updateRaycaster(event);
         let intersectedObject = checkIntersections(raycaster);
@@ -33,21 +58,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (intersectedObject !== lastHovered) {
             if (lastHovered && lastHovered.classList.contains('clickable')) {
                 lastHovered.emit('hoverout'); // Emit custom hoverout event
+                window.removeEventListener('mousedown', onMouseDown);
+                window.removeEventListener('mouseup', onMouseUp);
             }
 
             if (intersectedObject && intersectedObject.classList.contains('clickable')) {
                 intersectedObject.emit('hoverin'); // Emit custom hoverin event
+                window.addEventListener('mousedown', onMouseDown);
+                window.addEventListener('mouseup', onMouseUp);
 
-                // If hovering in and mouse is pressed, emit hoverin_down event
-                addEventListener('mousedown', function(){
-                    intersectedObject.emit('hoverin_down');
-                });
-
-                // If hovering in and mouse is unpressed, emit hoverin_up event
-                addEventListener('mouseup', function(){
-                    intersectedObject.emit('hoverin_up');
-                });
-            }       
+                
+            }                 
             
             
 
@@ -57,6 +78,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         
     });
 
+ 
+
     canvasEl.addEventListener('click', (event) => {
         let raycaster = updateRaycaster(event);
         let intersectedObject = checkIntersections(raycaster);
@@ -65,30 +88,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
             intersectedObject.emit('mouseClicked');
         }
     });
+
     
     // Define custom hoverin and hoverout event listeners
     sceneEl.addEventListener('hoverin', function (event) {
         const targetEl = event.target;
-        const entering_color = '#FFC0CB'
-        targetEl.setAttribute('material', 'color', entering_color); // Change color on hover
-        ;
-
-        // Graying out button on holding down the mouse click
-        targetEl.addEventListener('hoverin_down', function() {                
-            targetEl.setAttribute('material', 'color', "gray"); // resetting color on clicking
-        });
-
-        // Reverting to original color on unclicking
-        targetEl.addEventListener('hoverin_up', function() {                
-            targetEl.setAttribute('material', 'color', entering_color); // resetting color on clicking
-        });
-
+        targetEl.setAttribute('material', 'color', color_hoverin);
     });
+
+   
 
 
     sceneEl.addEventListener('hoverout', function (event) {
         const targetEl = event.target;
-        targetEl.setAttribute('material', 'color', '#4CC3D9'); // Revert color on hover out
+        targetEl.setAttribute('material', 'color', color_hoverout); // Revert color on hover out
+
     });
     
 
@@ -118,12 +132,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.log('Moved to new scene!');
             }
             if (obj.getAttribute('my_type') == "move"){
-                event.target.setAttribute('color', '#4CC3D9'); // resetting color on clicking
+                event.target.setAttribute('color', color_hoverout); // resetting color on clicking
                 changeImage(url, new_background_img_id) // changing background image
             }
             
             // Gray out clickable object if it has no url (might need to expand this later to different clickable object types)
-           
+
             
 
             function toggleVisibility(selector, isVisible) {
