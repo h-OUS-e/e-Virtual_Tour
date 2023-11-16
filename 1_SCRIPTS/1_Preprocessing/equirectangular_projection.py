@@ -87,8 +87,9 @@ def crop_image_sides(image, crop_pixels, side='horizontal'):
     return cropped_image
 
 # 0. Define input image
-image_paths = ['00000-cam0.jpg','00000-cam1.jpg', '00000-cam2.jpg','00000-cam3.jpg']
-images = [cv2.imread(image_path) for image_path in image_paths]
+image_folder = "new"
+image_paths = ['00001-cam0.jpg','00001-cam1.jpg', '00001-cam2.jpg','00001-cam3.jpg']
+images = [cv2.imread(f"{image_folder}/{image_path}") for image_path in image_paths]
 for idx, image in enumerate(images):
     width, height = image.shape[:2]
     source_image = pad_image_to_square(image)
@@ -149,14 +150,14 @@ for idx, image in enumerate(images):
     
 
 
-    cv2.imwrite(image_paths[idx][:-4] + "_warped.jpg", output_image)
+    cv2.imwrite(image_folder + "/" + image_paths[idx][:-4] + "_warped.jpg", output_image)
 
 
 
 
 
 image_paths = ['00000-cam0_warped.jpg', '00000-cam1_warped.jpg', '00000-cam2_warped.jpg','00000-cam3_warped.jpg']
-images = [cv2.imread(image_path) for image_path in image_paths]
+images = [cv2.imread(f"{image_folder}/{image_path}") for image_path in image_paths]
 # Function to check if any image failed to load
 def all_images_loaded(images):
     return all(image is not None for image in images)
