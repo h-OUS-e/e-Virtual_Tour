@@ -26,7 +26,7 @@ body {
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: red;
+    background-color: #4CC3D9;
     border-radius: 50%;
     /* Additional styling for nodes */
 }
