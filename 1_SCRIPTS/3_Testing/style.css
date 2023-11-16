@@ -31,6 +31,7 @@ body {
     /* Additional styling for nodes */
 }
 
-.a-enter-vr-button {
+.a-enter-vr-button { 
+    /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
     display: none !important;
 }
