@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>360 Image in A-Frame</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="button_test.js"></script>
     <script src="zoomControl.js"></script> 
     
 </head>
 <body>
+    <div id="minimap-container">
+        <!-- Minimap nodes -->
+        <div class="minimap-node" style="left: 165px; top: 35px;"></div>
+        <div class="minimap-node" style="left: 155px; top: 130px;"></div>
+        <!-- add js for nodes -->
+    </div>
+    
+    
     <a-scene id="scene">
 
         <a-camera id="camera" raycaster>
@@ -50,9 +59,10 @@
         </a-entity>
         
     </a-scene>
-    <!-- <script src="coord_find.js"></script> -->
+    <script>
+     
 
-    <script>    
+
 
         // // Function to handle click event
         // function onEntityClick(event) {
