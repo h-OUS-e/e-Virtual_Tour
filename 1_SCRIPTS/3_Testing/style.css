@@ -30,3 +30,7 @@ body {
     border-radius: 50%;
     /* Additional styling for nodes */
 }
+
+.a-enter-vr-button {
+    display: none !important;
+}
