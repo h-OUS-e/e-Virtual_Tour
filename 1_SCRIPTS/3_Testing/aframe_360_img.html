@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="button_test.js"></script>
+    <script src="zoomControl.js"></script> 
     
 </head>
 <body>
@@ -18,8 +19,8 @@
     
     
     <a-scene id="scene">
-        <!-- fix buttons and transporting between nodes -->
-        <a-camera raycaster>
+
+        <a-camera id="camera" raycaster>
             <a-cursor raycaster="objects: .clickable" fuse="false"></a-cursor>
         </a-camera>
 
@@ -37,22 +38,22 @@
         <a-entity id="move1" position="0 1.6 -4" class="clickable"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"
             event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/img3.jpg)"
-            new_background_img_id= '2'
-            background_img_id='1'
-            myType='move'
-            visible='true'
+            new_background_img_id= "2"
+            background_img_id="1"
+            my_type="move"
+            visible="true"
             >   
-             
+
             <a-text value="MOVE" align="center" color="#FFF" position="0 1.2 -4"></a-text>
         </a-entity>
 
         <a-entity id="move2" position="3 1.6 -4" class="clickable"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"
             event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/stitched_panorama8.jpg)"
-            new_background_img_id = '1'
-            background_img_id='2'
-            myType="move"
-            visible='false'
+            new_background_img_id = "1"
+            background_img_id="2"
+            my_type="move"
+            visible="false"
             >    
             <a-text value="MOVE" align="center" color="#FFF" position="0 1.2 -4"></a-text>
         </a-entity>
@@ -112,6 +113,14 @@
         //     entity.addEventListener('click', onEntityClick);
         // });
     </script>
+
+     <!-- Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? -->
+    <style>
+        .a-enter-vr-button {
+            display: none !important;
+        }
+    </style>
+    
 </body>
 
 </html>
