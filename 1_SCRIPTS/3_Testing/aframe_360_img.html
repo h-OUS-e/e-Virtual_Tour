@@ -16,7 +16,7 @@
         </a-camera>
 
         <!-- Loading in the initial image. -->
-        <a-sky id="background_img" src="0_resources/stitched_panorama8.jpg" background_img_id="'1"></a-sky>
+        <a-sky id="background_img" src="0_resources/00001-cam_stitched_panorama.jpg" background_img_id="'1"></a-sky>
         
         <!-- Creating planes to play a video or show an image -->
         <a-plane id="myButton" class="clickable" position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
@@ -40,7 +40,7 @@
 
         <a-entity id="move2" position="3 1.6 -4" class="clickable"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"
-            event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/stitched_panorama8.jpg)"
+            event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/00001-cam_stitched_panorama.jpg)"
             new_background_img_id = "1"
             background_img_id="2"
             my_type="move"
