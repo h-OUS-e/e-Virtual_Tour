@@ -60,56 +60,6 @@
     <script>
      
 
-
-
-        // // Function to handle click event
-        // function onEntityClick(event) {
-        //     // Get the id of the clicked entity
-        //     var clickedId = event.target.id;
-        //     console.log('Clicked entity ID:', clickedId);
-        //     var obj = document.getElementById(clickedId);
-        //     var eventSetAttribute = obj.getAttribute('event-set__click');
-        //     var background_img_id = obj.getAttribute('background_img_id');
-        //     var new_background_img_id = obj.getAttribute('new_background_img_id');
-
-        //     // Extract the URL from the attribute value
-        //     var urlMatch = eventSetAttribute ? eventSetAttribute.match(/url\((.*?)\)/) : null;
-        //     var url = urlMatch ? urlMatch[1] : "URL not found";
-        //     console.log(url);
-
-
-        //     // Changing background image
-        //     var background_img = document.getElementById("background_img");
-        //     background_img.setAttribute('src', url);
-        //     background_img.setAttribute('background_img_id', new_background_img_id);
-        //     console.log('Moved to new scene!');
-
-        //     // Hide the transition icons olf
-        //     var selector = '[background_img_id="' + background_img_id + '"][myType="move"]';
-        //     var entitiesToHide = document.querySelectorAll(selector);
-        //     // Iterate over the selected entities and hide them
-        //     entitiesToHide.forEach(function(entity) {
-        //         entity.setAttribute('visible', false);
-        //         entity.removeEventListener('click', onEntityClick); // Remove previous event listener if any
-
-        //     });
-            
-        //     // show transition icon of new background
-        //     var selector2 = '[background_img_id="' + new_background_img_id + '"][myType="move"]';
-        //     var entitiesToShow = document.querySelectorAll(selector2);
-        //     // Iterate over the selected entities and hide them
-        //     entitiesToShow.forEach(function(entity) {
-        //         entity.setAttribute('visible', true);
-        //         entity.addEventListener('click', onEntityClick); // add listener back
-        //     });
-
-        // }
-
-        // // Attach event listeners to clickable entities
-        // var clickableEntities = document.querySelectorAll('.clickable');
-        // clickableEntities.forEach(function(entity) {
-        //     entity.addEventListener('click', onEntityClick);
-        // });
     </script>
 
      <!-- Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? -->
