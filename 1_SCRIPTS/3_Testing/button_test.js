@@ -1,3 +1,6 @@
+import { initMinimap, updateMinimap } from './minimap.js';
+
+
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', (event) => {
 //definitions
@@ -7,8 +10,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const color_hoverin = '#FFC0CB'; //hovering over color
     const color_hoverout = '#4CC3D9'; //not hovering over color
     const color_clicked = 'gray'; //clicking color
-
-
 
 
 
@@ -74,11 +75,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             lastHovered.emit('hoverin_up'); //why?
         }
     }
-
-
-
-
-
 
 
 // listeners
