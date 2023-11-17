@@ -1,5 +1,3 @@
-import { initMinimap, updateMinimap } from './minimap.js';
-
 
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', (event) => {
