@@ -21,7 +21,7 @@ images = [cv2.imread(image_path) for image_path in image_paths]
 source_img = images[0]
 
 
-def fisheye_mapping(img_width, img_height, fov=100):
+def fisheye_mapping(img_width, img_height, fov=1):
     x_rect, y_rect = np.meshgrid(np.linspace(0, 1, img_width), 
                             np.linspace(0, 1, img_height))
     x_rect=x_rect
@@ -30,7 +30,7 @@ def fisheye_mapping(img_width, img_height, fov=100):
 
 
     theta = (x_rect) * np.pi
-    phi = (y_rect) * np.pi 
+    phi = (y_rect) * np.pi
     fov = (fov/180)*np.pi
 
     r = 1
@@ -56,7 +56,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def fisheye_transform(image, strength=4, radius=100):
+def fisheye_transform(image, strength=5, radius=100):
     """
     Apply fisheye effect to an image.
     :param image: Input image
@@ -99,11 +99,94 @@ def create_checkerboard(width, height, cell_size):
     return board
 
 # Generate a checkerboard image
-checkerboard_image = create_checkerboard(300, 300, 30)
+checkerboard_image = create_checkerboard(150, 150, 15)
+
+def crop_image_sides(image, crop_pixels, side='horizontal'):
+    """
+    Crop an image on the left and right sides by a fixed amount of pixels.
+
+    :param image: Input image as a NumPy array.
+    :param crop_pixels: Number of pixels to crop from each side.
+    :return: Cropped image as a NumPy array.
+    """
+    height, width = image.shape[:2]
+    
+    # Ensure we're not trying to crop more than the width of the image
+    if crop_pixels * 2 > width:
+        raise ValueError("Trying to crop more pixels than the image width")
+
+    # Crop the image
+    if side == 'vertical':
+        cropped_image = image[crop_pixels:-crop_pixels, :]
+    else:
+        cropped_image = image[:, crop_pixels:-crop_pixels]
+        
+    return cropped_image
+
+def pad_image_to_square(image, padding_color=[0, 0, 0]):
+    """
+    Pad an image on the sides to make it square (width equals height).
+
+    :param image: Input image as a NumPy array.
+    :param padding_color: Color of the padding, default is black.
+    :return: Padded image as a NumPy array.
+    """
+    height, width = image.shape[:2]
+
+    # Determine the padding width for each side to make the image square
+    padding_width = np.abs((height - width) // 2)
+
+    # Pad the left and right sides of the image
+    if height > width:
+        padded_image = cv2.copyMakeBorder(image, 
+                                        top=0, 
+                                        bottom=0, 
+                                        left=padding_width, 
+                                        right=padding_width, 
+                                        borderType=cv2.BORDER_CONSTANT, 
+                                        value=padding_color)
+
+        # If the difference in dimensions is odd, add one more pixel of padding to the right
+        if (height - width) % 2 != 0:
+            padded_image = cv2.copyMakeBorder(padded_image, 
+                                            top=0, 
+                                            bottom=0, 
+                                            left=0, 
+                                            right=1, 
+                                            borderType=cv2.BORDER_CONSTANT, 
+                                            value=padding_color)
+    
+    else:
+        padded_image = cv2.copyMakeBorder(image, 
+                                        top=padding_width, 
+                                        bottom=padding_width, 
+                                        left=0, 
+                                        right=0, 
+                                        borderType=cv2.BORDER_CONSTANT, 
+                                        value=padding_color)
+
+        # If the difference in dimensions is odd, add one more pixel of padding to the right
+        if (width - height) % 2 != 0:
+            padded_image = cv2.copyMakeBorder(padded_image, 
+                                            top=1, 
+                                            bottom=0, 
+                                            left=0, 
+                                            right=0, 
+                                            borderType=cv2.BORDER_CONSTANT, 
+                                            value=padding_color)
+
+
+    return padded_image
 
 # Apply fisheye effect
 source_img = fisheye_transform(checkerboard_image)
+source_img=crop_image_sides(source_img, 25)
+source_img = pad_image_to_square(source_img)
+source_img = images[0]
+source_img = cv2.resize(source_img, (source_img.shape[1]//2, source_img.shape[0]//2))
+source_img=crop_image_sides(source_img, 25,'vertical')
 
+source_img = pad_image_to_square(source_img)
 
 # # Display the original and fisheye images
 # plt.figure(figsize=(12, 6))
@@ -133,32 +216,32 @@ c=source_img/255
 
 
 
-# # Specify the marker size
-marker_size = 1  # Adjust this value as needed
+# # # Specify the marker size
+# marker_size = 1  # Adjust this value as needed
 
-fig = go.Figure(data=[go.Scatter3d(
-    x=X_spherical_coord.flatten(), 
-    y=Y_spherical_coord.flatten(), 
-    z=Z_spherical_coord.flatten(), 
-    mode='markers',
-    marker=dict(
-        size=marker_size,  # Set the marker size here
-        color=c.reshape((-1,3)),  # Set the color here
-    )
-)])
+# fig = go.Figure(data=[go.Scatter3d(
+#     x=X_spherical_coord.flatten(), 
+#     y=Y_spherical_coord.flatten(), 
+#     z=Z_spherical_coord.flatten(), 
+#     mode='markers',
+#     marker=dict(
+#         size=marker_size,  # Set the marker size here
+#         color=c.reshape((-1,3)),  # Set the color here
+#     )
+# )])
 
-# Adjusting the scale
-fig.update_layout(
-    scene=dict(
-        aspectmode='manual',  # Options: 'auto', 'cube', 'data', 'manual'
-        aspectratio=dict(x=1, y=1, z=1),
-        xaxis=dict(range=[-1, 1]),
-        yaxis=dict(range=[-1, 1]),
-        zaxis=dict(range=[-1, 1])
-    )
-)
+# # Adjusting the scale
+# fig.update_layout(
+#     scene=dict(
+#         aspectmode='manual',  # Options: 'auto', 'cube', 'data', 'manual'
+#         aspectratio=dict(x=1, y=1, z=1),
+#         xaxis=dict(range=[-1, 1]),
+#         yaxis=dict(range=[-1, 1]),
+#         zaxis=dict(range=[-1, 1])
+#     )
+# )
 
-fig.show()
+# fig.show()
 
 
 fig = plt.figure()
@@ -171,7 +254,7 @@ plt.show()
 fig = plt.figure()
 ax = fig.add_subplot()
 # Example: Scatter plot
-plt.imshow(cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB))
+plt.imshow(cv2.rotate(cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB), cv2.ROTATE_180))
 # For a surface plot, use: ax.plot_surface(X, Y, Z)
 plt.show()
 
