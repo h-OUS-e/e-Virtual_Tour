@@ -1,10 +1,12 @@
 """
 A script to project fisheye images into a spherical (equirectangular) image.
 More information on the algorithm can be found at: https://paulbourke.net/dome/dualfish2sphere/
+Check this link for stitching https://github.com/ndvinh98/Panorama/blob/master/Step_By_Step.ipynb
 """
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import glob
 
 
 def pad_image_to_square(image, padding_color=[0, 0, 0]):
@@ -88,215 +90,480 @@ def crop_image_sides(image, crop_pixels, side='horizontal'):
 
 # 0. Define input image
 image_folder = "new"
-img_name = "00001-cam"
-image_paths = [f'{img_name}2.jpg',f'{img_name}3.jpg', f'{img_name}0.jpg',f'{img_name}1.jpg']
-images = [cv2.imread(f"{image_folder}/{image_path}") for image_path in image_paths]
+img_name = "00008-cam"
+image_paths = glob.glob(f"{image_folder}/{img_name}*.jpg")
+images = [cv2.imread(image_path) for image_path in image_paths]
+shift=1
+images = images[-shift:] + images[:-shift]
 
-images = [cv2.imread("test5.jpg")]
+def fisheye_mapping(img_width, img_height, fov=1):
+    x_rect, y_rect = np.meshgrid(np.linspace(0, 1, img_width), 
+                            np.linspace(0, 1, img_height))
+    x_rect=x_rect
+    y_rect=y_rect
 
 
-def fisheye_map(image, fov=80):
-    width, height = image.shape[:2]
-    
 
-    image_in_width = source_image.shape[0]
-    image_in_height = source_image.shape[1]
-    
-    image_out_width =  image_in_width
-    image_out_height = image_in_width 
-    
-
-    antialiasing = 2
-    blend_factor = 0.5
+    theta = (x_rect) * np.pi
+    phi = (y_rect) * np.pi
     fov = (fov/180)*np.pi
 
-    Cx = image_in_width / 2
-    Cy = image_in_height / 2
-    image_radius = 1 #max([image_in_height, image_in_width])
-    xmax = np.sin(np.pi/2) * np.cos()
+    r = 1
+    X_spherical_coord = r * np.sin(phi) * np.cos(theta)
+    Y_spherical_coord = r * np.cos(phi) 
+    Z_spherical_coord = r * np.sin(phi) * np.sin(theta)
+    color = np.array([x_rect, y_rect, x_rect*0]).T
 
-    # 1. Define Cartesian Coordinates
-    i, j = np.meshgrid(np.arange(image_out_width), np.arange(image_out_height))
+    
 
-    # 2. Normalize Cartesian Coordinates
-    i = (i / image_out_width -.5 )*2
-    j = (j / image_out_height  -.5)*2
+    # Convert Spherical to polar coordinates (fisheye coordinates)
+    theta_polar = np.arctan2(Y_spherical_coord, X_spherical_coord)
+    r = img_width * np.arctan2(np.sqrt(X_spherical_coord**2 + Y_spherical_coord**2), Z_spherical_coord )/ fov
+    x_polar = r * np.cos(theta_polar)+img_width/2
+    y_polar = r * np.sin(theta_polar)+img_width/2
 
-    # 3. Get longitudinal and longitudinal coordinates in spherical coordinates    
-    longitude = i * np.pi  
-    latitude   = j * np.pi/2
+    return x_polar.astype(np.float32), y_polar.astype(np.float32)
 
-    # 4. Convert Cartesian to Spherical Coordinates
-    # Equivalent to arctan(y/x) or arctan(opp/adj)
-    x = image_radius * np.cos(latitude) * np.cos(longitude)
-    y = image_radius * np.cos(latitude) * np.sin(longitude)
-    z = image_radius * np.sin(latitude)
 
-    phi = np.arctan2(np.sqrt(x**2 + z**2), y)
-    theta = np.arctan2(z, x) 
-    radius = 2 * phi / np.pi * 180 / fov / image_radius
+def crop_black_edges(image, tolerance=5):
+    """
+    Crop black borders from an image.
+    :param image: Input image
+    :param tolerance: Pixel intensity below which is considered black. Default is 5.
+    :return: Cropped image
+    """
+    # If image is color, convert it to grayscale
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
 
-    X = (radius * np.cos(theta)).T.astype(np.float32) - Cx
-    Y = (radius * np.sin(theta)).T.astype(np.float32) + Cy
+    # Create a binary mask where non-black pixels are marked
+    _, thresh = cv2.threshold(gray, tolerance, 255, cv2.THRESH_BINARY)
 
-    return X, Y
+    # Find the coordinates of non-black pixels
+    coords = np.column_stack(np.where(thresh > 0))
+
+    # Find the bounding box of those pixels
+    x, y, w, h = cv2.boundingRect(coords)
+
+    # Crop the image using the bounding box
+    cropped_image = image[y:y+h, x:x+w]
+
+    return cropped_image
+
+
+output_images = []
 
 for idx, image in enumerate(images):
-    
-    source_image = pad_image_to_square(image)
-    X, Y = fisheye_map(image)
-    output_image = cv2.remap(source_image, X, Y, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
 
+    # image=crop_image_sides(image, 50,'vertical')
+    # image=crop_image_sides(image, 25,'horizontal')
+
+    source_image = pad_image_to_square(image)
+    
     plt.imshow(cv2.cvtColor(source_image, cv2.COLOR_BGR2RGB))
+    plt.title('Uploaded Fisheye Image')
     plt.axis('off')
     plt.show()
 
-    # output_image = crop_image_sides(output_image,150)
-    # output_image = crop_image_sides(output_image, 50, side='vertical')
+    # # Estimate camera matrix (assuming focal length is equal to the image width)
+    # h, w = source_image.shape[:2]
+    # estimated_K = np.array([[w, 0, w/2],
+    #                         [0, w, h/2],
+    #                         [0, 0, 1]])
+
+    # # Estimate distortion coefficients (assuming strong radial distortion)
+    # # These values are guesses and may need to be adjusted
+    # estimated_D = np.array([.2,-.03,-.000,.00])
+
+    # # Attempt to undistort the image with the estimated parameters
+    # new_K = estimated_K.copy()
+    # new_K[0,0] = estimated_K[0,0] 
+    # new_K[1,1] = estimated_K[1,1]
+    # source_image = cv2.fisheye.undistortImage(source_image, estimated_K, estimated_D, Knew=new_K)
+
+    # # Display the undistorted image
+    # plt.imshow(cv2.cvtColor(source_image, cv2.COLOR_BGR2RGB))
+    # plt.title('undistorted Fisheye Image')
+    # plt.axis('off')
+    # plt.show()
+
+
+
+    
+    X, Y = fisheye_mapping(source_image.shape[0], source_image.shape[1], fov=180)
+    output_image = cv2.remap(source_image, X, Y, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
+    output_image = cv2.rotate(output_image, cv2.ROTATE_180)
+    output_image=crop_image_sides(output_image, 100,'vertical')
+    
+    output_image=crop_image_sides(output_image, 200,'horizontal')
+    # output_image = crop_black_edges(output_image)
+    # output_image = cv2.resize(output_image, (int(output_image.shape[0]/.75), output_image.shape[1]))
+    output_images.append(output_image)
 
     plt.imshow(cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB))
+    plt.title('remapped equirectangular Image')
     plt.axis('off')
     plt.show()
-
     
 
 
-    cv2.imwrite(image_folder + "/" + image_paths[idx][:-4] + "_warped.jpg", output_image)
+    cv2.imwrite(image_folder + "/warped_" + image_paths[idx][len(image_folder)+2:] + ".jpg", output_image)
 
 
 
 
 
-# images = [cv2.imread(f"{image_folder}/{image_path[:-4]}_warped.jpg") for image_path in image_paths]
-# # Function to check if any image failed to load
-# def all_images_loaded(images):
-#     return all(image is not None for image in images)
+# Function to check if any image failed to load
+def all_images_loaded(images):
+    return all(image is not None for image in images)
 
 
-# def crop_black_edges(image):
-#     # Convert image to grayscale
-#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-#     # Threshold the image to create a binary image
-#     _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
 
-#     # Find contours
-#     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+# Check if we have four images
+if not all_images_loaded(output_images):
+    print("Some images are missing or not readable.")
+else:
+    # Create a stitcher object
+    stitcher = cv2.Stitcher_create(mode=cv2.STITCHER_PANORAMA)
 
-#     # Find the bounding rectangle for the largest contour
-#     max_area = 0
-#     best_rect = (0, 0, image.shape[1], image.shape[0])  # Default to full image size
-#     for cnt in contours:
-#         x, y, w, h = cv2.boundingRect(cnt)
-#         area = w * h
-#         if area > max_area:
-#             max_area = area
-#             best_rect = x, y, w, h
-
-#     # Crop the image
-#     x, y, w, h = best_rect
-#     cropped_image = image[y:y+h, x:x+w]
-
-#     return cropped_image
-
-# # Check if we have four images
-# if not all_images_loaded(images):
-#     print("Some images are missing or not readable.")
-# else:
-#     # Create a stitcher object
-#     stitcher = cv2.Stitcher_create(mode=0)
-
-#     # Perform the stitching process"
-#     status, stitched_image = stitcher.stitch(images)
-#     # stitched_image = crop_black_edges(stitched_image)
-#     if status == cv2.Stitcher_OK:
-#         # Save the stitched image
-#         cv2.imwrite(f'{image_folder}/{img_name}_stitched_panorama.jpg', stitched_image)
-#         plt.imshow(cv2.cvtColor(stitched_image, cv2.COLOR_BGR2RGB))
-#         print("Stitching completed successfully and saved to 'stitched_panorama.jpg'.")
-#     else:
-#         print("Stitching failed. Error code:", status)
+    # Perform the stitching process"
+    status, stitched_image = stitcher.stitch(output_images)
+    # stitched_image = crop_black_edges(stitched_image)
+    if status == cv2.Stitcher_OK:
+        # Save the stitched image
+        cv2.imwrite(f'{image_folder}/stitched_panorama_{img_name}.jpg', stitched_image)
+        plt.imshow(cv2.cvtColor(stitched_image, cv2.COLOR_BGR2RGB))
+        print("Stitching completed successfully and saved to 'stitched_panorama.jpg'.")
+    else:
+        print("Stitching failed. Error code:", status)
 
 
 
 
 
+# Load images
+img1 = output_images[0]
+img2 = output_images[1]
+img3 = output_images[2]
+img4 = output_images[3]
+
+# def findAndDescribeFeatures(image):
+#     # Getting gray image
+#     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     #extract keypoints and descriptors using sift
+#     md = cv2.SIFT_create()
+#     keypoints, features = md.detectAndCompute(grayImage, None)
+#     features = np.float32(features)
+#     return keypoints, features
 
 
-# def stitch_two_images(img1, img2):
-#     # Convert images to grayscale
-#     gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-#     gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
-#     # Create SIFT detector and descriptor
-#     sift = cv2.SIFT_create()
+# def matchFeatures(featuresA, featuresB, ratio=0.75, opt="FB"):
+#     """matching features beetween 2 @features.
+#          If opt='FB', FlannBased algorithm is used.
+#          If opt='BF', BruteForce algorithm is used.
+#          @ratio is the Lowe's ratio test.
+#          @return matches"""
+#     if opt == "BF":
+#         featureMatcher = cv2.DescriptorMatcher_create("BruteForce")
+#     if opt == "FB":
+#         # featureMatcher = cv2.DescriptorMatcher_create("FlannBased")
+#         FLANN_INDEX_KDTREE = 0
+#         index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+#         search_params = dict(checks=50)
+#         featureMatcher = cv2.FlannBasedMatcher(index_params, search_params)
 
-#     # Find keypoints and descriptors
-#     keypoints1, descriptors1 = sift.detectAndCompute(gray1, None)
-#     keypoints2, descriptors2 = sift.detectAndCompute(gray2, None)
+#     # performs k-NN matching between the two feature vector sets using k=2
+#     # (indicating the top two matches for each feature vector are returned).
+#     matches = featureMatcher.knnMatch(featuresA, featuresB, k=2)
 
-#     # FLANN parameters
-#     FLANN_INDEX_KDTREE = 1
-#     index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-#     search_params = dict(checks=50)
-
-#     # Create FLANN matcher
-#     flann = cv2.FlannBasedMatcher(index_params, search_params)
-
-#     # Match descriptors
-#     matches = flann.knnMatch(descriptors1, descriptors2, k=2)
-
-#     # Lowe's ratio test to filter good matches
-#     good_matches = []
+#     # store all the good matches as per Lowe's ratio test.
+#     good = []
 #     for m, n in matches:
-#         if m.distance < 0.7 * n.distance:
-#             good_matches.append(m)
+#         if m.distance < ratio * n.distance:
+#             good.append(m)
+#     if len(good) > 4:
+#         return good
+#     raise Exception("Not enought matches")
 
-#     # Extract location of good matches
-#     points1 = np.zeros((len(good_matches), 2), dtype=np.float32)
-#     points2 = np.zeros((len(good_matches), 2), dtype=np.float32)
+# def generateHomography(src_img, dst_img, ransacRep=5.0):
+#     """@Return Homography matrix, @param src_img is the image which is warped by homography,
+#         @param dst_img is the image which is choosing as pivot, @param ratio is the David Lowe’s ratio,
+#         @param ransacRep is the maximum pixel “wiggle room” allowed by the RANSAC algorithm
+#         """
 
-#     # Homography if enough good matches are found
-#     MIN_MATCH_COUNT = 10
-#     if len(good_matches) > MIN_MATCH_COUNT:
-#         src_pts = np.float32([keypoints1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
-#         dst_pts = np.float32([keypoints2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+#     src_kp, src_features = findAndDescribeFeatures(src_img)
+#     dst_kp, dst_features = findAndDescribeFeatures(dst_img)
 
-#         # Find homography matrix
-#         H, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+#     good = matchFeatures(src_features, dst_features)
 
-#         # Use homography
-#         height, width, channels = img2.shape
-#         img1_warped = cv2.warpPerspective(img1, H, (width, height))
+#     src_points = np.float32([src_kp[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+#     dst_points = np.float32([dst_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
-#         # Overlap images
-#         img1_warped[0:height, 0:width] = img2
-#         return img1_warped
+#     H, mask = cv2.findHomography(src_points, dst_points, cv2.RANSAC, ransacRep)
+#     matchesMask = mask.ravel().tolist()
+#     return H, matchesMask
+
+
+# def drawKeypoints(img, kp):
+#     img1 = img
+#     cv2.drawKeypoints(img, kp, img1, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+#     return img1
+
+# def drawMatches(src_img, src_kp, dst_img, dst_kp, matches, matchesMask):
+#     draw_params = dict(
+#         matchColor=(0, 255, 0),  # draw matches in green color
+#         singlePointColor=None,
+#         matchesMask=matchesMask[:100],  # draw only inliers
+#         flags=2,
+#     )
+#     return cv2.drawMatches(
+#         src_img, src_kp, dst_img, dst_kp, matches[:100], None, **draw_params
+#     )
+
+
+
+# def convertResult(img):
+#     '''Because of your images which were loaded by opencv, 
+#     in order to display the correct output with matplotlib, 
+#     you need to reduce the range of your floating point image from [0,255] to [0,1] 
+#     and converting the image from BGR to RGB:'''
+#     img = np.array(img,dtype=float)/float(255)
+#     img = img[:,:,::-1]
+#     return img
+    
+
+
+
+
+# #extract keypoints and descriptors using sift
+# k0,f0=findAndDescribeFeatures(img1)
+# k1,f1=findAndDescribeFeatures(img2)
+
+
+# #draw keypoints
+# img0_kp=drawKeypoints(img1.copy(),k0)
+# img1_kp=drawKeypoints(img2.copy(),k1)
+
+# plt_img = np.concatenate((img0_kp, img1_kp), axis=1)
+# plt.figure(figsize=(15,15))
+# plt.imshow(convertResult(plt_img))
+
+
+
+# #matching features using BruteForce 
+# mat=matchFeatures(f0,f1,ratio=0.6,opt='FB')
+
+
+# #Computing Homography matrix and mask
+# H,matMask=generateHomography(img1,img2)
+
+
+# #draw matches
+# img=drawMatches(img1,k0,img2,k1,mat,matMask)
+# plt.figure(figsize=(15,15))
+# plt.imshow(convertResult(img))
+
+# def blendingMask(height, width, barrier, smoothing_window, left_biased=True):
+#     assert barrier < width
+#     mask = np.zeros((height, width))
+
+#     offset = int(smoothing_window / 2)
+#     try:
+#         if left_biased:
+#             mask[:, barrier - offset : barrier + offset + 1] = np.tile(
+#                 np.linspace(1, 0, 2 * offset + 1).T, (height, 1)
+#             )
+#             mask[:, : barrier - offset] = 1
+#         else:
+#             mask[:, barrier - offset : barrier + offset + 1] = np.tile(
+#                 np.linspace(0, 1, 2 * offset + 1).T, (height, 1)
+#             )
+#             mask[:, barrier + offset :] = 1
+#     except BaseException:
+#         if left_biased:
+#             mask[:, barrier - offset : barrier + offset + 1] = np.tile(
+#                 np.linspace(1, 0, 2 * offset).T, (height, 1)
+#             )
+#             mask[:, : barrier - offset] = 1
+#         else:
+#             mask[:, barrier - offset : barrier + offset + 1] = np.tile(
+#                 np.linspace(0, 1, 2 * offset).T, (height, 1)
+#             )
+#             mask[:, barrier + offset :] = 1
+
+#     return cv2.merge([mask, mask, mask])
+# def crop(panorama, h_dst, conners):
+#     """crop panorama based on destination.
+#     @param panorama is the panorama
+#     @param h_dst is the hight of destination image
+#     @param conner is the tuple which containing 4 conners of warped image and
+#     4 conners of destination image"""
+#     # find max min of x,y coordinate
+#     [xmin, ymin] = np.int32(conners.min(axis=0).ravel() - 0.5)
+#     t = [-xmin, -ymin]
+#     conners = conners.astype(int)
+
+#     # conners[0][0][0] is the X coordinate of top-left point of warped image
+#     # If it has value<0, warp image is merged to the left side of destination image
+#     # otherwise is merged to the right side of destination image
+#     if conners[0][0][0] < 0:
+#         n = abs(-conners[1][0][0] + conners[0][0][0])
+#         panorama = panorama[t[1] : h_dst + t[1], n:, :]
 #     else:
-#         print("Not enough matches found - %d/%d" % (len(good_matches), MIN_MATCH_COUNT))
-#         return None
+#         if conners[2][0][0] < conners[3][0][0]:
+#             panorama = panorama[t[1] : h_dst + t[1], 0 : conners[2][0][0], :]
+#         else:
+#             panorama = panorama[t[1] : h_dst + t[1], 0 : conners[3][0][0], :]
+#     return panorama
 
-# # Load images
-# img1 = images[0]
-# img2 = images[1]
-# img3 = images[2]
-# img4 = images[3]
+# def panoramaBlending(dst_img_rz, src_img_warped, width_dst, side, showstep=False):
+#     """Given two aligned images @dst_img and @src_img_warped, and the @width_dst is width of dst_img
+#     before resize, that indicates where there is the discontinuity between the images,
+#     this function produce a smoothed transient in the overlapping.
+#     @smoothing_window is a parameter that determines the width of the transient
+#     left_biased is a flag that determines whether it is masked the left image,
+#     or the right one"""
 
-# # Stitch images in pairs
-# result_12 = stitch_two_images(img1, img2)
-# result_34 = stitch_two_images(img3, img4)
+#     h, w, _ = dst_img_rz.shape
+#     smoothing_window = int(width_dst / 8)
+#     barrier = width_dst - int(smoothing_window / 2)
+#     mask1 = blendingMask(
+#         h, w, barrier, smoothing_window=smoothing_window, left_biased=True
+#     )
+#     mask2 = blendingMask(
+#         h, w, barrier, smoothing_window=smoothing_window, left_biased=False
+#     )
 
-# # Check if stitching was successful
-# if result_12 is not None and result_34 is not None:
-#     # Stitch the results
-#     final_result = stitch_two_images(result_12, result_34)
-
-#     # Display the final stitched image
-#     if final_result is not None:
-#         cv2.imshow('Final Stitched Image', result_34)
-#         cv2.waitKey(0)
-#         cv2.destroyAllWindows()
+#     if showstep:
+#         nonblend = src_img_warped + dst_img_rz
 #     else:
-#         print("Final stitching failed.")
-# else:
-#     print("Pairwise stitching failed.")
+#         nonblend = None
+#         leftside = None
+#         rightside = None
+
+#     if side == "left":
+#         dst_img_rz = cv2.flip(dst_img_rz, 1)
+#         src_img_warped = cv2.flip(src_img_warped, 1)
+#         dst_img_rz = dst_img_rz * mask1
+#         src_img_warped = src_img_warped * mask2
+#         pano = src_img_warped + dst_img_rz
+#         pano = cv2.flip(pano, 1)
+#         if showstep:
+#             leftside = cv2.flip(src_img_warped, 1)
+#             rightside = cv2.flip(dst_img_rz, 1)
+#     else:
+#         dst_img_rz = dst_img_rz * mask1
+#         src_img_warped = src_img_warped * mask2
+#         pano = src_img_warped + dst_img_rz
+#         if showstep:
+#             leftside = dst_img_rz
+#             rightside = src_img_warped
+
+#     return pano, nonblend, leftside, rightside
+# def warpTwoImages(src_img, dst_img, showstep=False):
+
+#     # generate Homography matrix
+#     H, _ = generateHomography(src_img, dst_img)
+
+#     # get height and width of two images
+#     height_src, width_src = src_img.shape[:2]
+#     height_dst, width_dst = dst_img.shape[:2]
+
+#     # extract conners of two images: top-left, bottom-left, bottom-right, top-right
+#     pts1 = np.float32(
+#         [[0, 0], [0, height_src], [width_src, height_src], [width_src, 0]]
+#     ).reshape(-1, 1, 2)
+#     pts2 = np.float32(
+#         [[0, 0], [0, height_dst], [width_dst, height_dst], [width_dst, 0]]
+#     ).reshape(-1, 1, 2)
+
+#     try:
+#         # aply homography to conners of src_img
+#         pts1_ = cv2.perspectiveTransform(pts1, H)
+#         pts = np.concatenate((pts1_, pts2), axis=0)
+
+#         # find max min of x,y coordinate
+#         [xmin, ymin] = np.int64(pts.min(axis=0).ravel() - 0.5)
+#         [_, ymax] = np.int64(pts.max(axis=0).ravel() + 0.5)
+#         t = [-xmin, -ymin]
+
+#         # top left point of image which apply homography matrix, which has x coordinate < 0, has side=left
+#         # otherwise side=right
+#         # source image is merged to the left side or right side of destination image
+#         if pts[0][0][0] < 0:
+#             side = "left"
+#             width_pano = width_dst + t[0]
+#         else:
+#             width_pano = int(pts1_[3][0][0])
+#             side = "right"
+#         height_pano = ymax - ymin
+
+#         # Translation
+#         # https://stackoverflow.com/a/20355545
+#         Ht = np.array([[1, 0, t[0]], [0, 1, t[1]], [0, 0, 1]])
+#         src_img_warped = cv2.warpPerspective(
+#             src_img, Ht.dot(H), (width_pano, height_pano)
+#         )
+#         # generating size of dst_img_rz which has the same size as src_img_warped
+#         dst_img_rz = np.zeros((height_pano, width_pano, 3))
+#         if side == "left":
+#             dst_img_rz[t[1] : height_src + t[1], t[0] : width_dst + t[0]] = dst_img
+#         else:
+#             dst_img_rz[t[1] : height_src + t[1], :width_dst] = dst_img
+
+#         # blending panorama
+#         pano, nonblend, leftside, rightside = panoramaBlending(
+#             dst_img_rz, src_img_warped, width_dst, side, showstep=showstep
+#         )
+
+#         # croping black region
+#         pano = crop(pano, height_dst, pts)
+#         return pano, nonblend, leftside, rightside
+#     except BaseException:
+#         raise Exception("Please try again with another image set!")
+    
+# def multiStitching(images):
+#     """assume that the list_images was supplied in left-to-right order, choose middle image then
+#     divide the array into 2 sub-arrays, left-array and right-array. Stiching middle image with each
+#     image in 2 sub-arrays. @param list_images is The list which containing images, @param smoothing_window is
+#     the value of smoothy side after stitched, @param output is the folder which containing stitched image
+#     """
+#     pano1,non_blend,left_side,right_side=warpTwoImages(images[0],images[3],True)
+#     pano2,non_blend,left_side,right_side=warpTwoImages(images[2],images[1],True)
+#     if pano2 is None or pano2.size == 0:
+#         print("Panorama 2 is empty or not loaded correctly")
+#     if pano1 is None or pano1.size == 0:
+#         print("Panorama 1 is empty or not loaded correctly")
+    
+#     if pano1.dtype != np.uint8:
+#         # Normalize the image to 0-255 and convert to uint8
+#         norm_image = cv2.normalize(pano1, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+#         pano1 = norm_image.astype(np.uint8)
+#     else:
+#         pano1 = pano1
+
+#     if pano2.dtype != np.uint8:
+#         # Normalize the image to 0-255 and convert to uint8
+#         norm_image = cv2.normalize(pano2, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+#         pano2 = norm_image.astype(np.uint8)
+#     else:
+#         pano2 = pano2
+#     plt.figure(figsize=(15,15))
+#     plt.imshow(convertResult(pano1))
+#     plt.figure(figsize=(15,15))
+#     plt.imshow(convertResult(pano2))
+#     fullpano,non_blend,left_side,right_sid = warpTwoImages(pano1,pano2,True)
+
+#     return fullpano
+
+# pano = multiStitching(output_images)
+
+# #pano after cropping and blending
+# plt.figure(figsize=(15,15))
+# plt.imshow(convertResult(pano))
+
+
