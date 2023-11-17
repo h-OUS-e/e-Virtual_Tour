@@ -8,6 +8,7 @@
     <script src="button_test.js"></script>
     <script src="zoomControl.js"></script> 
     <script type="module" src="popupVideo.js"></script> 
+    <script type="module" src="mouseInteractionFunctions.js"></script> 
     
 </head>
 <body>
@@ -29,14 +30,16 @@
         <a-sky id="background_img" src="0_resources/stitched_panorama8.jpg" background_img_id="'1"></a-sky>
         
         <!-- Creating planes to play a video or show an image -->
-        <a-plane id="media" class="clickable2" position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
+        <a-plane id="media1" class="clickable" my_type="media" visible="true"
+        position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
             <!-- Text Inside the Rectangle -->
             <a-text value="Hidden surprise!!" align="center" position="0 0 0.01" color="black" scale="2 2 2"></a-text>
         </a-plane>
 
         <!-- Placeholder for the image or video that will be shown when the plane is clicked -->
-        <a-image id="popup_image" src="0_resources/00000-cam0.jpg" position="-10 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false"></a-image>
-        <a-video id="popup_video" src="0_resources/test_vid.mp4" position="-10 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false"></a-video>
+        <a-image id="popup_image1" class="clickable" my_type="popup_image"
+        src="0_resources/00000-cam0.jpg" position="-9 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false"></a-image>
+        <!-- <a-video id="popup_video" src="0_resources/test_vid.mp4" position="-10 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false"></a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
         <a-entity id="move1" position="0 1.6 -4" class="clickable"

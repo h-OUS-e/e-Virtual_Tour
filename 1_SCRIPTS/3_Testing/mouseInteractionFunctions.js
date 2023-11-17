@@ -1,5 +1,11 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const scene = document.querySelector('a-scene');
+    const canvas = scene.canvas; // Define canvasEl here
+
+
+
 //find waht object the mouse is interacting with
-export function updateRaycaster(mouseEvent, canvas, scene) { 
+function updateRaycaster(mouseEvent, canvas, scene) { 
     //find mouse position
     //input: mouse event
     //output: THREE.Raycaster position of mouse
@@ -17,17 +23,30 @@ export function updateRaycaster(mouseEvent, canvas, scene) {
     return raycaster;
 }
 
-export function checkIntersections(raycaster, scene) {
-    //detect which 3D objects are under the mouse pointer and returns the first intersected
-    //input: (mouse, sceneEl.camera), THREE.raycast mouse position
-    //output: Intersected scene element
+function checkIntersections(raycaster, scene) {
     const intersects = raycaster.intersectObjects(scene.object3D.children, true);
-    if (intersects.length > 0) {
-        return intersects[0].object.el; // Returns the first intersected element
-    }
-    return null;
+    
+    const visibleIntersect = intersects.find(intersect => 
+        intersect.object.el && intersect.object.el.getAttribute('visible')
+    );
+
+    return visibleIntersect ? visibleIntersect.object.el : null;
 }
 
+//on mouse click listener.
+canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
+    // check if item is clickable when click event is triggered
+        //if(interesected object is not null and is clickable)
+            // emit mouseClicked event
+    let raycaster = updateRaycaster(event, canvas, scene);
+    let intersectedObject = checkIntersections(raycaster, scene);
+    console.log(intersectedObject);
 
+    if (intersectedObject && intersectedObject.classList.contains('clickable')) {
+        intersectedObject.emit('mouseClicked');
+        console.log(intersectedObject);
+    }
+});
+});
 
 
