@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function changeBackgroundImage(viewId) {
         const backgroundImg = document.getElementById('background_img');
         let imgSrc = '';
-
+        //place urls in div, switch from switch
         switch (viewId) {
             case 'view1':
                 imgSrc = '0_resources/img3.jpg';

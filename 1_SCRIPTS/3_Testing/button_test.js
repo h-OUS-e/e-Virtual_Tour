@@ -1,6 +1,6 @@
 
 // initialize at event, Scene and 3D objects loaded
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
 //definitions
     const sceneEl = document.querySelector('a-scene');
     const canvasEl = sceneEl.canvas; // Define canvasEl here
