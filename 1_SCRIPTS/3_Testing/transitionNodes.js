@@ -23,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 const entities = document.querySelectorAll('[class=' + main_class + ']');
                 entities.forEach(entity => {
-                    console.log(entity);
                     entity.setAttribute('material', 'color', color_transitionNode);
-                    console.log(entity);
                 });
             });
 
@@ -82,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
                     var background_img_id = obj.getAttribute('background_img_id');
                     var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
-                    console.log(new_background_img_id);
 
 
                     // Changing background image
@@ -106,20 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         const entities = document.querySelectorAll(selector); //select all enteties that match selector specs
                         entities.forEach(entity => {
                             entity.setAttribute('visible', isVisible); //make all selector intities follow isVisible value
-                            if (isVisible) {
-                                entity.setAttribute('clickable', 'true'); // clickable if visible
-                            } else {
-                                entity.setAttribute('clickable', 'false'); // unclckable if invisible
-                            }
+                            // need to edit to make the hidden clickable objects reset to clickable on scene generation as well.
+                            // if (isVisible) {
+                            //     entity.setAttribute('clickable', 'true'); // clickable if visible
+                            // } else {
+                            //     entity.setAttribute('clickable', 'false'); // unclckable if invisible
+                            // }
                         });
                     }
 
                     // Hide the transition icons old background
-                    var selector = '[background_img_id="' + background_img_id + '"][class="transitionNode"]'; //background image is the image clicked from, type moved
+                    var selector = '[background_img_id="' + background_img_id + '"]'; //background image is the image clicked from, type moved
                     toggleVisibility(selector, false);       
 
                     // show transition icon of new background
-                    var selector2 = '[background_img_id="' + new_background_img_id + '"][class="transitionNode"]'; //background image is the new image we are clicking to, type moved
+                    var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
                     // Iterate over the selected entities and hide them
                     toggleVisibility(selector2, true);
                 }

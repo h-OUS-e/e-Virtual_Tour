@@ -35,16 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
         //place urls in div, switch from switch
         switch (viewId) {
             case 'view1':
-                imgSrc = '0_resources/stitched_panorama_00008-cam.jpg';
+                imgSrc = '0_resources/stitched_panorama_00001-cam.jpg';
                 break;
             case 'view2':
-                imgSrc = '0_resources/stitched_panorama_00001-cam.jpg';
+                imgSrc = '0_resources/stitched_panorama_00008-cam.jpg';
                 break;
             // Add more cases as needed
         }
 
         if (imgSrc) {
-            backgroundImg.setAttribute('src', imgSrc);
+            sky.setAttribute('src', imgSrc);
         }
     }
 });

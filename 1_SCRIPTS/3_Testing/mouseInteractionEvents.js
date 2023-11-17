@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     // Check intersection between raycaster from cursor and objects in scene
     function checkIntersections(raycaster, scene) {
         const intersects = raycaster.intersectObjects(scene.object3D.children, true);
+        
         const visibleIntersect = intersects.find(intersect => 
             intersect.object.el && intersect.object.el.getAttribute('visible') && intersect.object.el.getAttribute('clickable')
         );
@@ -55,6 +56,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
             console.log("CLICKED:", intersectedObject);
         }
     });
+
+
 
 
     // Broadcast mouse held down WHILE hovering in target
