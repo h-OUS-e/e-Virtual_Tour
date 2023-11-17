@@ -33,7 +33,7 @@ function checkIntersections(raycaster, scene) {
     const intersects = raycaster.intersectObjects(scene.object3D.children, true);
     
     const visibleIntersect = intersects.find(intersect => 
-        intersect.object.el && intersect.object.el.getAttribute('visible')
+        intersect.object.el && intersect.object.el.getAttribute('visible') && intersect.object.el.classList.contains('clickable')
     );
 
     return visibleIntersect ? visibleIntersect.object.el : null;
