@@ -1,10 +1,16 @@
+/*
+ A script that broadcasts the mouse click and hover interaction.
+ */
+
 document.addEventListener('DOMContentLoaded', (event) => {
+
+    // Get scene and Canvas
     const scene = document.querySelector('a-scene');
-    const canvas = scene.canvas; // Define canvasEl here
+    const canvas = scene.canvas;
 
 
 
-//find waht object the mouse is interacting with
+// find what object the mouse is interacting with
 function updateRaycaster(mouseEvent, canvas, scene) { 
     //find mouse position
     //input: mouse event
