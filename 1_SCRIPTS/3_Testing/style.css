@@ -3,7 +3,7 @@ body {
     overflow: hidden;
 }
 
-#scene { /* Targeting the specific a-scene by its ID */
+#scene { 
     width: 100%;
     height: 100vh;
     display: block;
@@ -28,8 +28,9 @@ body {
     height: 10px;
     background-color: #4CC3D9;
     border-radius: 50%;
-    /* Additional styling for nodes */
+    border: 1px solid grey; /* Add a grey border */
 }
+
 
 .a-enter-vr-button { 
     /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */

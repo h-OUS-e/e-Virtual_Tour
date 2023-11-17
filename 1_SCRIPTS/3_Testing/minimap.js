@@ -1,14 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const minimapNodes = document.querySelectorAll('.minimap-node');
+    const minimapNodes = document.querySelectorAll('.minimap-node'); //choose all nodes
+
+
+    // set initial state of minimap at data-view='view1'
+    const initialNode = Array.from(minimapNodes).find(node => node.getAttribute('data-view') === 'view1');
+    if (initialNode) {
+        setNodeActive(initialNode);
+    }
 
     minimapNodes.forEach(node => {
         node.addEventListener('click', function() {
-            // Reset styles for all nodes
+            // Reset styles for all nodes and apply style to the clicked node
             minimapNodes.forEach(n => resetNodeStyle(n));
-
-            // Apply selected styles to the clicked node
-            this.style.backgroundColor = 'pink'; // color after click
-            this.style.border = '2px solid white'; // Bright border
+            setNodeActive(this);
 
             const viewId = this.getAttribute('data-view');
             changeBackgroundImage(viewId);
@@ -16,15 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function resetNodeStyle(node) {
-        node.style.backgroundColor = '#4CC3D9'; // Original background color
-        node.style.border = '1px dotted black'; // Original border
+        node.style.backgroundColor = '#4CC3D9'; // Original node Color
+        node.style.border = '1px dotted grey'; // Original border
+    }
+
+    function setNodeActive(node) { //active node colors
+        node.style.backgroundColor = 'pink';
+        node.style.border = '2px solid white'; 
     }
 
     function changeBackgroundImage(viewId) {
         const backgroundImg = document.getElementById('background_img');
         let imgSrc = '';
 
-        switch (viewId) { //save URL in HTML tag and query instead of case when type of functionality
+        switch (viewId) {
             case 'view1':
                 imgSrc = '0_resources/img3.jpg';
                 break;
