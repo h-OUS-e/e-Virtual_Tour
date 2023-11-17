@@ -45,7 +45,7 @@
         
         <!-- Creating planes to play a video or show an image -->
         <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="true" 
-        background_img_id = "1"
+        background_img_id = "3"
         targets="media1.1, media1.2"
         position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
         </a-plane>
@@ -67,7 +67,7 @@
         </a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
-        <a-entity id="move1"  class="transitionNode" clickable="true" visible="true" 
+        <a-entity id="move_01_02"  class="transitionNode" clickable="true" visible="true" 
             background_img_id="1" new_background_img_id= "2"
             position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
@@ -76,9 +76,25 @@
         </a-entity>
         
 
-        <a-entity id="move2"  class="transitionNode" clickable="true" visible="false" 
+        <a-entity id="move_02_03"  class="transitionNode" clickable="true" visible="false" 
             background_img_id="2" new_background_img_id = "3"
             position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
+            material="color: gray; side:double"           
+            >    
+        </a-entity>
+
+        <a-entity id="move_03_02"  class="transitionNode" clickable="true" visible="false" 
+            background_img_id="3" new_background_img_id = "2"
+            position="0.516 -1.682 -2.849" rotation="-90 0 0" scale=".35 .35 .35"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
+            material="color: gray; side:double"           
+            >    
+        </a-entity>
+
+        <a-entity id="move_02_01"  class="transitionNode" clickable="true" visible="false" 
+            background_img_id="2" new_background_img_id = "1"
+            position="-1.900 -0.682 1.199" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
             >    
