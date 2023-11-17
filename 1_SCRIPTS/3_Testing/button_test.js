@@ -2,130 +2,42 @@
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', () => {
 //definitions
-    const sceneEl = document.querySelector('a-scene');
-    const canvasEl = sceneEl.canvas; // Define canvasEl here
-    let lastHovered = null; // To keep track of the last hovered object
+    const scene = document.querySelector('a-scene');
     const color_hoverin = '#FFC0CB'; //hovering over color
     const color_hoverout = '#4CC3D9'; //not hovering over color
     const color_clicked = 'gray'; //clicking color
 
 
 
-//find waht object the mouse is interacting with
-    function updateRaycaster(mouseEvent) { 
-        //find mouse position
-        //input: mouse event
-        //output: THREE.Raycaster position of mouse
-        const rect = canvasEl.getBoundingClientRect();
-        const x = mouseEvent.clientX - rect.left;
-        const y = mouseEvent.clientY - rect.top;
+   //hoverin and hoverout event listeners
+scene.addEventListener('hoverin', function (event) {
+    const targetEl = event.target; //gets specific element that triggered hoverin
+    targetEl.setAttribute('material', 'color', color_hoverin);
+});
 
-        let mouse = new THREE.Vector2();
-        mouse.x = (x / canvasEl.clientWidth) * 2 - 1;
-        mouse.y = -(y / canvasEl.clientHeight) * 2 + 1;
+scene.addEventListener('hoverout', function (event) {
+    const targetEl = event.target;
+    targetEl.setAttribute('material', 'color', color_hoverout); // Revert color on hover out
 
-        let raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, sceneEl.camera);
-
-        return raycaster;
-    }
-
-    function checkIntersections(raycaster) {
-        //detect which 3D objects are under the mouse pointer and returns the first intersected
-        //input: (mouse, sceneEl.camera), THREE.raycast mouse position
-        //output: Intersected scene element
-        const intersects = raycaster.intersectObjects(sceneEl.object3D.children, true);
-        if (intersects.length > 0) {
-            return intersects[0].object.el; // Returns the first intersected element
-        }
-        return null;
-    }
+});
 
 
-// color transition when mouse hovers over a button
-    function onMouseDown() { 
-        // set button color when mouse is pressed to color_clicked
-        // if(lastHover not null and is clickable)
-        // output: event hoverin_down
-        //update: lastHovered.attributes
-        if (lastHovered && lastHovered.classList.contains('clickable')) {
-            lastHovered.setAttribute('material', 'color', color_clicked);
-            lastHovered.emit('hoverin_down');
-        }
-    }
+scene.addEventListener('hoverin_mouseup', function (event) {
+if (event.target.getAttribute('my_type') == "move"){
+    event.target.setAttribute('material', 'color', color_hoverout); 
+}
+else{
+    event.target.setAttribute('material', 'color', color_hoverin); 
+}
+});
     
-    function onMouseUp() {
-        // re-set button color when mouse is no longer pressed to original color, or if hovering, to hover color (Khaled?)
-        // if(lastHover not null and is clickable),
-            //if(lastHovered ID "move")
-                // update attributes of lastHover to color_hoverout
-            //else
-                //update to color_hoverin
-            //emit "hoverin_up" event
-        if (lastHovered && lastHovered.classList.contains('clickable')) {
-            if (lastHovered.getAttribute('my_type') == "move"){
-                lastHovered.setAttribute('material', 'color', color_hoverout); 
-            }
-            else{
-                lastHovered.setAttribute('material', 'color', color_hoverin); 
-            }
-                       
-            lastHovered.emit('hoverin_up'); //why?
-        }
-    }
-
-
-// listeners
-    // handle mouse movement and hover interaction
-    canvasEl.addEventListener('mousemove', (event) => {
-        // On mouse move, call UpdateRaycaster and intersectedObject
-        // if( intersectedObject =! lastHover)
-            // if(lastHover clickable & not null)
-                //Emit hoverout
-
-        let raycaster = updateRaycaster(event);
-        let intersectedObject = checkIntersections(raycaster);
-
-        if (intersectedObject !== lastHovered) {
-            if (lastHovered && lastHovered.classList.contains('clickable')) {
-                lastHovered.emit('hoverout'); // Emit hoverout event
-
-                // clean out listeners
-                window.removeEventListener('mousedown', onMouseDown);
-                window.removeEventListener('mouseup', onMouseUp);
-            }
-
-            if (intersectedObject && intersectedObject.classList.contains('clickable')) {
-                intersectedObject.emit('hoverin'); // Emit custom hoverin event
-
-                // clean out listeners
-                window.addEventListener('mousedown', onMouseDown);
-                window.addEventListener('mouseup', onMouseUp);
-
-            }                 
-            
-            lastHovered = intersectedObject; //update lasthovered with current intersection
-        }
-
-        
-    });
-
-    
-    //hoverin and hoverout event listeners
-    sceneEl.addEventListener('hoverin', function (event) {
-        const targetEl = event.target; //gets specific element that triggered hoverin
-        targetEl.setAttribute('material', 'color', color_hoverin);
-    });
-
-    sceneEl.addEventListener('hoverout', function (event) {
-        const targetEl = event.target;
-        targetEl.setAttribute('material', 'color', color_hoverout); // Revert color on hover out
-
-    });
+scene.addEventListener('hoverin_mousedown', function (event) {
+    event.target.setAttribute('material', 'color', color_clicked);
+});
     
 
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
-    sceneEl.addEventListener('mouseClicked', (event) => {
+    scene.addEventListener('mouseClicked', (event) => {
             //on mouseClick trigger, 
                 //if(the element that triggered mouseClicked is clickable and visible(?) )
                     // create a bunch of variables and log URL
