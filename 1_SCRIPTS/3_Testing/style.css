@@ -1,3 +1,15 @@
+:root {
+    --primary: #FF5733;
+    --secondary: #33FF57;
+    --accent: #3357FF;
+    --background: #F0F0F0;
+    --text: #333333;
+    --hoverIn: pink;
+    --hoverInClicked:gray;
+    --transitionNode:rgb(154, 167, 213);
+    --mediaPlayer:rgb(159, 115, 39);
+}
+
 body {
     margin: 0;
     overflow: hidden;

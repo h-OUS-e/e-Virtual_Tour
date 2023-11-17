@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', (event) =>
     function checkIntersections(raycaster, scene) {
         const intersects = raycaster.intersectObjects(scene.object3D.children, true);
         const visibleIntersect = intersects.find(intersect => 
-            intersect.object.el && intersect.object.el.getAttribute('visible') && intersect.object.el.classList.contains('clickable')
+            intersect.object.el && intersect.object.el.getAttribute('visible') && intersect.object.el.getAttribute('clickable')
         );
-        return visibleIntersect ? visibleIntersect.object.el : null;
+        return (visibleIntersect  && visibleIntersect.object.el.getAttribute('clickable')==='true') ? visibleIntersect.object.el : null;
     }
 
 
@@ -50,18 +50,16 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
-        console.log(intersectedObject);
-
-        if (intersectedObject && intersectedObject.classList.contains('clickable')) {
+        if (intersectedObject) {
             intersectedObject.emit('mouseClicked');
-            console.log(intersectedObject);
+            console.log("CLICKED:", intersectedObject);
         }
     });
 
 
     // Broadcast mouse held down WHILE hovering in target
     function onMouseDown() { 
-        if (lastHovered && lastHovered.classList.contains('clickable')) 
+        if (lastHovered && lastHovered.getAttribute('clickable') === 'true') 
         {
             lastHovered.emit('hoverin_mousedown');
         }
@@ -70,7 +68,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
     // Broadcast mouse held up WHILE hovering in target
     function onMouseUp() {
-        if (lastHovered && lastHovered.classList.contains('clickable')) 
+        if (lastHovered && lastHovered.getAttribute('clickable') === 'true') 
         {
             lastHovered.emit('hoverin_mouseup');
         }
@@ -90,15 +88,16 @@ document.addEventListener('DOMContentLoaded', (event) =>
         let intersectedObject = checkIntersections(raycaster, scene);
 
         if (intersectedObject !== lastHovered) {
-            if (lastHovered && lastHovered.classList.contains('clickable')) {
+            if (lastHovered && lastHovered.getAttribute('clickable') === 'true') {
                 lastHovered.emit('hoverout'); // Emit hoverout event
+
 
                 // clean out listeners
                 window.removeEventListener('mousedown', onMouseDown);
                 window.removeEventListener('mouseup', onMouseUp);
             }
 
-            if (intersectedObject && intersectedObject.classList.contains('clickable')) {
+            if (intersectedObject) {
                 intersectedObject.emit('hoverin'); // Emit custom hoverin event
 
                 // add listeners

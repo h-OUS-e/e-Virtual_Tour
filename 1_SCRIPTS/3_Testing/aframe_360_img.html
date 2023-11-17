@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>360 Image in A-Frame</title>
+    <!-- <link rel="colors" href="colorPalette.css"> -->
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <!-- IMPORTS -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="button_test.js"></script>
+    <script src="mediaPlayer.js"></script>
+    <script src="transitionNodes.js"></script>
     <script src="zoomControl.js"></script> 
-    <script type="module" src="popupVideo.js"></script> 
     <script type="module" src="mouseInteractionEvents.js"></script> 
     <script src="minimap.js"></script>
     
@@ -31,46 +32,51 @@
         </a-camera>
 
         <!-- Loading in 360 image. -->
-        <a-sky id="background_img" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="'1"></a-sky>
+        <a-sky id="background_img" src="0_resources/stitched_panorama_00001-cam.jpg" 
+        background_img_id="'1"></a-sky>
         
         <!-- Creating planes to play a video or show an image -->
-        <a-plane id="media1" class="clickable" my_type="media" visible="true"
+        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="true" 
+        background_img_id = "1"
+        targets="media1.1, media1.2"
         position="-9.322 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" color="#4CC3D9" material="opacity: 0.5;">
         </a-plane>
 
         <!-- Placeholders for the image or video that will be shown when the plane is clicked -->
-        <a-image id="popup_image1" class="unclickable" my_type="popup_image"
-        src="0_resources/00000-cam0.jpg" position="-9 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false">
+        <a-image id="media1.1" class="popup_image" clickable="false" visible="false" 
+        background_img_id = "1"
+        media_src="mediaPlayer1"
+        src="0_resources/00000-cam0.jpg" position="-9 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" >
+        </a-image>
+
+        <a-image id="media1.2" class="popup_image" clickable="false" visible="false" 
+        background_img_id = "1"
+        media_src="mediaPlayer1"
+        src="0_resources/00000-cam1.jpg" position="-9 -2.298 19.005" rotation="0 150.000 0" width="5" height="3" >
         </a-image>
         <!-- <a-video id="popup_video" 
             src="0_resources/test_vid.mp4" position="-10 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false">
         </a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
-        <a-entity id="move1" position="0 1.6 -4" class="clickable"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"
-            event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/stitched_panorama_00008-cam.jpg)"
-            new_background_img_id= "2"
-            background_img_id="1"
-            my_type="move"
-            visible="true"
+        <a-entity id="move1"  class="transitionNode" clickable="true" visible="true" 
+            background_img_id="1" new_background_img_id= "2"
+            position="0 1.6 -4"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: gray"           
+            target_src="0_resources/stitched_panorama_00008-cam.jpg"
             >   
-
-            <a-text value="MOVE" align="center" color="#FFF" position="0 1.2 -4"></a-text>
         </a-entity>
 
-        <a-entity id="move2" position="3 1.6 -4" class="clickable"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"
-            event-set__click="_target: #imageSky; _delay: 300; src: url(0_resources/stitched_panorama_00001-cam.jpg)"
-            new_background_img_id = "1"
-            background_img_id="2"
-            my_type="move"
-            visible="false"
+        <a-entity id="move2"  class="transitionNode" clickable="true" visible="false" 
+            background_img_id="2" new_background_img_id = "1"
+            position="3 1.6 -4"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"           
+            target_src="0_resources/stitched_panorama_00001-cam.jpg"
             >    
-            <a-text value="MOVE" align="center" color="#FFF" position="0 1.2 -4"></a-text>
         </a-entity>
         
     </a-scene>
+    
     
 </body>
 
