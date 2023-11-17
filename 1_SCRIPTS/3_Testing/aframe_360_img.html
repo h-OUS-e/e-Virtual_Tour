@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>360 Image in A-Frame</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="button_test.js"></script>
     <script src="zoomControl.js"></script> 
     
 </head>
 <body>
+    <div id="minimap-container">
+        <!-- Minimap nodes -->
+        <div class="minimap-node" style="left: 165px; top: 35px;"></div>
+        <div class="minimap-node" style="left: 155px; top: 130px;"></div>
+        <!-- add js for nodes -->
+    </div>
+    
+    
     <a-scene id="scene">
 
-        <a-camera id="camera" raycaster>
-            <a-cursor raycaster="objects: .clickable" fuse="false"></a-cursor>
-        </a-camera>
+        <a-camera id="camera" raycaster></a-camera>
 
-        <!-- Loading in the initial image. -->
+        <!-- Loading in 360 image. -->
         <a-sky id="background_img" src="0_resources/stitched_panorama8.jpg" background_img_id="'1"></a-sky>
         
         <!-- Creating planes to play a video or show an image -->
@@ -50,66 +57,12 @@
         </a-entity>
         
     </a-scene>
-    <!-- <script src="coord_find.js"></script> -->
+    <script>
+     
 
-    <script>    
-
-        // // Function to handle click event
-        // function onEntityClick(event) {
-        //     // Get the id of the clicked entity
-        //     var clickedId = event.target.id;
-        //     console.log('Clicked entity ID:', clickedId);
-        //     var obj = document.getElementById(clickedId);
-        //     var eventSetAttribute = obj.getAttribute('event-set__click');
-        //     var background_img_id = obj.getAttribute('background_img_id');
-        //     var new_background_img_id = obj.getAttribute('new_background_img_id');
-
-        //     // Extract the URL from the attribute value
-        //     var urlMatch = eventSetAttribute ? eventSetAttribute.match(/url\((.*?)\)/) : null;
-        //     var url = urlMatch ? urlMatch[1] : "URL not found";
-        //     console.log(url);
-
-
-        //     // Changing background image
-        //     var background_img = document.getElementById("background_img");
-        //     background_img.setAttribute('src', url);
-        //     background_img.setAttribute('background_img_id', new_background_img_id);
-        //     console.log('Moved to new scene!');
-
-        //     // Hide the transition icons olf
-        //     var selector = '[background_img_id="' + background_img_id + '"][myType="move"]';
-        //     var entitiesToHide = document.querySelectorAll(selector);
-        //     // Iterate over the selected entities and hide them
-        //     entitiesToHide.forEach(function(entity) {
-        //         entity.setAttribute('visible', false);
-        //         entity.removeEventListener('click', onEntityClick); // Remove previous event listener if any
-
-        //     });
-            
-        //     // show transition icon of new background
-        //     var selector2 = '[background_img_id="' + new_background_img_id + '"][myType="move"]';
-        //     var entitiesToShow = document.querySelectorAll(selector2);
-        //     // Iterate over the selected entities and hide them
-        //     entitiesToShow.forEach(function(entity) {
-        //         entity.setAttribute('visible', true);
-        //         entity.addEventListener('click', onEntityClick); // add listener back
-        //     });
-
-        // }
-
-        // // Attach event listeners to clickable entities
-        // var clickableEntities = document.querySelectorAll('.clickable');
-        // clickableEntities.forEach(function(entity) {
-        //     entity.addEventListener('click', onEntityClick);
-        // });
     </script>
 
      <!-- Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? -->
-    <style>
-        .a-enter-vr-button {
-            display: none !important;
-        }
-    </style>
     
 </body>
 
