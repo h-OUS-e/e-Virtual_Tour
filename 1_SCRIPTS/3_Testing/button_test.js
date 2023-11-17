@@ -110,20 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
 
-
-    //on mouse click listener.
-    canvasEl.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
-        // check if item is clickable when click event is triggered
-            //if(interesected object is not null and is clickable)
-                // emit mouseClicked event
-        let raycaster = updateRaycaster(event);
-        let intersectedObject = checkIntersections(raycaster);
-
-        if (intersectedObject && intersectedObject.classList.contains('clickable')) {
-            intersectedObject.emit('mouseClicked');
-        }
-    });
-
     
     //hoverin and hoverout event listeners
     sceneEl.addEventListener('hoverin', function (event) {
