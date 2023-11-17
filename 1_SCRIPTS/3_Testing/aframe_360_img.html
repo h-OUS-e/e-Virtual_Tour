@@ -27,13 +27,21 @@
     
     <a-scene id="scene">
 
+        <a-assets>
+            <img id="background_img1" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="1"> 
+            <img id="background_img2" src="0_resources/stitched_panorama_00008-cam.jpg" background_img_id="2">
+            <img id="background_img3" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="3">
+            <img id="background_img4" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="4">
+
+        </a-assets>
+
         <a-camera id="camera" raycaster wasd-controls="enabled: false">
             <a-cursor fuse="false"></a-cursor>
         </a-camera>
 
         <!-- Loading in 360 image. -->
-        <a-sky id="background_img" src="0_resources/img5.jpg" 
-        background_img_id="'1"></a-sky>
+        <a-sky id="sky" src="#background_img1" background_img_id="1">            
+        </a-sky>
         
         <!-- Creating planes to play a video or show an image -->
         <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="true" 
@@ -61,22 +69,22 @@
         <!-- Creating some buttons to move between 360 images. -->
         <a-entity id="move1"  class="transitionNode" clickable="true" visible="true" 
             background_img_id="1" new_background_img_id= "2"
-            position="0 1.6 -4"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: gray"           
-            target_src="0_resources/dental_clinic_highRes.jpeg"
+            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
+            material="color:gray; side:double"
             >   
         </a-entity>
+        
 
         <a-entity id="move2"  class="transitionNode" clickable="true" visible="false" 
             background_img_id="2" new_background_img_id = "1"
-            position="3 1.6 -4"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" material="color: #4CC3D9"           
-            target_src="0_resources/dental_clinic_lowRes.jpeg"
+            position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
+            material="color: gray; side:double"           
             >    
         </a-entity>
         
     </a-scene>
-    
     
 </body>
 

@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //     // This is just a placeholder; you need to implement it based on your application
             //     const newMediaSource = `path_to_media_${targetId}`;
             //     const mediaPlayer = document.getElementById('mediaPlayer1');
-            //     mediaPlayer.setAttribute('src', newMediaSource);
+            //     mediaPlayer.setAttribute('img_src', newMediaSource);
             // }
 
             // const popupMenu = document.getElementById('popup-menu');

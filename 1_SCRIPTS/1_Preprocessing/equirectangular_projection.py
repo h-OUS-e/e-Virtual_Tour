@@ -89,8 +89,8 @@ def crop_image_sides(image, crop_pixels, side='horizontal'):
     return cropped_image
 
 # 0. Define input image
-image_folder = "new"
-img_name = "00008-cam"
+image_folder = "new3"
+img_name = "00112-cam"
 image_paths = glob.glob(f"{image_folder}/{img_name}*.jpg")
 images = [cv2.imread(image_path) for image_path in image_paths]
 shift=1
