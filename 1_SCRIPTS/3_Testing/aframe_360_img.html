@@ -29,10 +29,10 @@
 
         <a-assets>
             <!-- Can we load on the go instead of waiting for website to load? -->
-            <img id="background_img1" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="1"> 
-            <img id="background_img2" src="0_resources/stitched_panorama_00008-cam.jpg" background_img_id="2">
-            <img id="background_img3" src="0_resources/dental_clinic_highRes.jpeg" background_img_id="3">
-            <img id="background_img4" src="0_resources/stitched_panorama_00001-cam.jpg" background_img_id="4">
+            <img id="background_img01.1" src="0_resources/img1.1_lobby.jpeg" background_img_id="01.1"> 
+            <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2">
+            <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="03.1">
+            <img id="background_img03.1" src="0_resources/img2_dentalRoom2.jpeg" background_img_id="04.1">
 
         </a-assets>
 
@@ -41,12 +41,12 @@
         </a-camera>
 
         <!-- Loading in 360 image. -->
-        <a-sky id="sky" src="#background_img1" background_img_id="1">            
+        <a-sky id="sky" src="#background_img01.1" background_img_id="01.1">            
         </a-sky>
         
         <!-- Creating planes to play a video or show an image -->
         <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="false" visible_on_load="true"
-        background_img_id = "3"
+        background_img_id = "03.1"
         targets="media1.1"
         position="2.836 -6.687 53.458" rotation="0 150.000 0" width="5" height="3" 
         color="#4CC3D9" material="opacity: 0.7; ">
@@ -55,14 +55,14 @@
         <!-- Placeholders for the image or video that will be shown when the plane is clicked -->
         <a-image id="media1.1" class="popup_image" clickable="true" visible="false" visible_on_load="false"
         position="2.836 -6.687 53.458" rotation="0 150.000 0" width="30" height="18"
-        background_img_id = "3"
+        background_img_id = "03.1"
         media_src="mediaPlayer1"
         src="0_resources/00000-cam0.jpg" 
         ></a-image>
 
         <a-image id="media1.2" class="popup_image" clickable="true" visible="false" visible_on_load="false"
         position="-9 -2.298 19.005" rotation="0 150.000 0" width="30" height="18"
-        background_img_id = "3"
+        background_img_id = "03.1"
         media_src="mediaPlayer1"
         src="0_resources/00000-cam1.jpg" 
         ></a-image>
@@ -71,38 +71,50 @@
         </a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
-        <a-entity id="move_01_02"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
-            background_img_id="1" new_background_img_id= "2"
+        <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+            background_img_id="01.1" new_background_img_id= "01.2"
             position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
-            >   
-        </a-entity>
+        ></a-entity>       
+        <!-- Return. -->
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+            background_img_id="01.2" new_background_img_id= "01.1"
+            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
+            material="color:gray; side:double"
+        ></a-entity>
         
 
-        <a-entity id="move_02_03"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="2" new_background_img_id = "3"
+        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+            background_img_id="01.2" new_background_img_id = "02.1"
             position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
-            >    
-        </a-entity>
+        ></a-entity>
+        <!-- Return. -->
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+            background_img_id="02.1" new_background_img_id= "01.2"
+            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
+            material="color:gray; side:double"
+        ></a-entity>
 
-        <a-entity id="move_03_02"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="3" new_background_img_id = "2"
+        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+            background_img_id="01.2" new_background_img_id = "03.1"
             position="0.516 -1.682 -2.849" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
-            >    
-        </a-entity>
+        ></a-entity>
+        <!-- Return. -->
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+            background_img_id="03.1" new_background_img_id= "01.2"
+            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
+            material="color:gray; side:double"
+        ></a-entity>
 
-        <a-entity id="move_02_01"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="2" new_background_img_id = "1"
-            position="-1.900 -0.682 1.199" rotation="-90 0 0" scale=".35 .35 .35"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
-            material="color: gray; side:double"           
-            >    
-        </a-entity>
+
         
     </a-scene>
     
