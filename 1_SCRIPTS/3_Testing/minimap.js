@@ -1,22 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    const scene = document.querySelector('a-scene');
     var main_class = "minimapNode";
 
+     // Get colors from CSS palette
+     const colors = getComputedStyle(document.documentElement);
+     const color_hoverIn = colors.getPropertyValue('--hoverIn').trim();
+     const color_hoverInClicked = colors.getPropertyValue('--hoverInClicked').trim();
+     const color_transitionNode = colors.getPropertyValue('--transitionNode').trim();
+
+
     // set initial state of minimap at data-view='view1'
-    const initialNode = Array.from(document.querySelectorAll('.minimap-node')).find(node => node.getAttribute('src') === '0_resources/img1.1_lobby.jpeg'); //initial node image '0_resources/img1.1_lobby.jpeg'
+    const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('initial') === 'True'); //initial node image '0_resources/img1.1_lobby.jpeg'
     
     if (initialNode) {
         setNodeActive(initialNode);
     }
 
-    main_class.forEach(node => {
+    var nodes = document.querySelectorAll('.' + main_class);
+    nodes.forEach(node => {
         node.addEventListener('click', function() {
             // Reset styles for all nodes and apply style to the clicked node
             main_class.forEach(n => resetNodeStyle(n));
             setNodeActive(this);
 
-            const viewId = this.getAttribute('data-view');
-            changeBackgroundImage(viewId);
+            const background_img = this.getAttribute('src');
+            changeBackgroundImage(background_img);
         });
     });
 
@@ -30,27 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
         node.style.border = '2px solid white'; 
     }
 
-    function changeBackgroundImage(Id) {
-        const backgroundImg = document.getElementById('background_img');
-        let imgSrc = '';
-        //place urls in div 
-        switch (Id) {
-            case 'view1':
-                imgSrc = '0_resources/img3.jpg';
-                break;
-            case 'view2':
-                imgSrc = '0_resources/stitched_panorama8.jpg';
-                break;
-            // Add more cases as needed
-        }
-
+    function changeBackgroundImage(imgSrc) {
         if (imgSrc) {
             backgroundImg.setAttribute('src', imgSrc);
         }
     }
+
+    scene.addEventListener('changeMinimapNode', (event) => {
+        const { new_background_img_id } = event.detail;
+        // ... handle the new_background_img_id ...
+    });
 });
 
-scene.addEventListener('changeMinimapNode', (event) => {
-    const { new_background_img_id } = event.detail;
-    // ... handle the new_background_img_id ...
-});
+
