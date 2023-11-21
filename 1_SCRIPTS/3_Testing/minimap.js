@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nodes.forEach(node => {
         node.addEventListener('click', function() {
             // Reset styles for all nodes and apply style to the clicked node
-            main_class.forEach(n => resetNodeStyle(n));
+            nodes.forEach(n => resetNodeStyle(n));
             setNodeActive(this);
 
             const background_img = this.getAttribute('src');
