@@ -32,19 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function changeBackgroundImage(viewId) {
         const backgroundImg = document.getElementById('background_img');
         let imgSrc = '';
-        //place urls in div, switch from switch
+        //place urls in div 
         switch (viewId) {
             case 'view1':
-                imgSrc = '0_resources/stitched_panorama_00001-cam.jpg';
+                imgSrc = '0_resources/img3.jpg';
                 break;
             case 'view2':
-                imgSrc = '0_resources/stitched_panorama_00008-cam.jpg';
+                imgSrc = '0_resources/stitched_panorama8.jpg';
                 break;
             // Add more cases as needed
         }
 
         if (imgSrc) {
-            sky.setAttribute('src', imgSrc);
+            backgroundImg.setAttribute('src', imgSrc);
         }
     }
 });
