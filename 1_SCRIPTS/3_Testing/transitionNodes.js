@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // input: url: string, new_background_img_id: string
                         // update 360 image in the scene
                         var sky = document.querySelector('#sky')
-                        sky.setAttribute('src', '#background_img'+new_background_img_id); 
+                        sky.setAttribute('src', '#background_img'+ new_background_img_id); 
                         sky.setAttribute('background_img_id', new_background_img_id);
                         console.log('Moved to new scene!', sky.getAttribute('src'));
                     }

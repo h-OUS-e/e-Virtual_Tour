@@ -27,7 +27,7 @@ body {
     right: 10px;
     width: 200px;
     height: 200px;
-    background-image: url('0_resources/minimap.png');
+    /* background-image: url('0_resources/minimap.png'); */
     background-size: cover;
     border-radius: 10px;
     z-index: 10; /* Ensures it's above the A-Frame scene */
@@ -38,7 +38,7 @@ body {
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #4CC3D9;
+    background-color: var(--transitionNode);
     border-radius: 50%;
     border: 1px solid grey; /* Add a grey border */
 }
