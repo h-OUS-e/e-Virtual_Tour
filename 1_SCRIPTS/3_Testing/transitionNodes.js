@@ -76,10 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     {
                     
                     // Get the id of the clicked entity
+                    
                     var clickedId = event.target.id;
                     var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
                     var background_img_id = obj.getAttribute('background_img_id');
                     var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
+
+                    //emit changeMinimapNode event to change background image
+                    scene.emit('changeMinimapNode', { detail: { new_background_img_id } }); 
+
 
 
                     // Changing background image
@@ -102,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     function toggleVisibility(selector, isVisible) {
                         const entities = document.querySelectorAll(selector); //select all enteties that match selector specs
                         entities.forEach(entity => {
-                            entity.setAttribute('visible', isVisible); //make all selector intities follow isVisible value
+                            entity.setAttribute('visible', isVisible); 
+                            //make all selector intities follow isVisible value
                             // need to edit to make the hidden clickable objects reset to clickable on scene generation as well.
                             // if (isVisible) {
                             //     entity.setAttribute('clickable', 'true'); // clickable if visible

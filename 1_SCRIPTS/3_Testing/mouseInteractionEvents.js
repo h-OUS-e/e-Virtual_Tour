@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
     }
 
 
-
     // Broadcast mouse clicked WHEN mouse clicks an object
     // EVENTS: mouseClicked
     canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
@@ -52,7 +51,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
         if (intersectedObject) {
-            intersectedObject.emit('mouseClicked');
+            intersectedObject.emit('mouseClicked'); 
+            //.emit custom mouseClicked event here
             console.log("CLICKED:", intersectedObject);
         }
     });

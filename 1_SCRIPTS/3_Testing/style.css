@@ -21,7 +21,7 @@ body {
     display: block;
 }
 
-#minimap-container {
+#minimap_container {
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -34,7 +34,7 @@ body {
     border: 2px solid #000;
 }
 
-.minimap-node {
+.minimapNode {
     position: absolute;
     width: 10px;
     height: 10px;
