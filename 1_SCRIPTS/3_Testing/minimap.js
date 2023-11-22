@@ -9,11 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
      // set initial state of minimap  
-    function setNodeActive(node) { //active node colors
+    function setNodeActive(node) { 
         node.style.backgroundColor = color_active ;
         node.style.border = '2px solid white'; 
     }
-    const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('current') === 'True'); //initial node image '0_resources/img1.1_lobby.jpeg'
+    
+    const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('current') === 'True'); 
     if (initialNode) {
         setNodeActive(initialNode);
     }
