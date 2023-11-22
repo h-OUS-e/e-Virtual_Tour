@@ -79,32 +79,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     var clickedId = event.target.id;
                     var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
-                    var background_img_id = obj.getAttribute('background_img_id');
+                    var background_img_id = obj.getAttribute('background_img_id'); //current background image id
                     var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
 
-                    //emit changeMinimapNode event to change background image
-                    scene.emit('changeMinimapNode', { detail: { new_background_img_id } }); 
 
+                    
+; 
 
 
                     // Changing background image
                     function changeImage( new_background_img_id){
                         // change background image
-                        // input: url: string, new_background_img_id: string
+                        // input: new_background_img_id: string & background_img_id: string
                         // update 360 image in the scene
-                        var sky = document.querySelector('#sky')
+                        var sky = document.querySelector('#sky');
                         sky.setAttribute('src', '#background_img'+ new_background_img_id); 
                         sky.setAttribute('background_img_id', new_background_img_id);
                         console.log('Moved to new scene!', sky.getAttribute('src'));
+
+                        //emit changeMinimapNode event to change background image
+                        console.log("About to emit new background_img_id:", new_background_img_id);
+                        scene.emit('changeMinimapNode', { detail: { new_background_img_id } });
                     }
                     if (obj.classList.contains("transitionNode")){
                         event.target.setAttribute('color', color_mediaPlayer); // resetting color on clicking
                         changeImage(new_background_img_id) // changing background image
+                        
                     }
                     
                 
 
                     function toggleVisibility(selector, isVisible) {
+                        // find all intities that have the selector in them (background image ID)
+                        // input: selector: string , isVisible: boolean
+                        // update visibility of all entities that match selector specs
+
                         const entities = document.querySelectorAll(selector); //select all enteties that match selector specs
                         entities.forEach(entity => {
                             entity.setAttribute('visible', isVisible); 
@@ -126,10 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
                     // Iterate over the selected entities and hide them
                     toggleVisibility(selector2, true);
-                }
+
+                    // can we wrap the selector creation, visibility toggle and background toggle in one big function?
+                    // that way we can call on it from other events. K.T
+                    
+                    scene.addEventListener('nodeClick', (event) => {
+                        console.log('recieved node click', event);
+
+                    });
+                    
+                    };
 
             });
-
+            
     });
 
 });

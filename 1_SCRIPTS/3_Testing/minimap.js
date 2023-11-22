@@ -13,24 +13,41 @@ document.addEventListener('DOMContentLoaded', () => {
         node.style.backgroundColor = color_active ;
         node.style.border = '2px solid white'; 
     }
-    const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('initial') === 'True'); //initial node image '0_resources/img1.1_lobby.jpeg'
+    const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('current') === 'True'); //initial node image '0_resources/img1.1_lobby.jpeg'
     if (initialNode) {
         setNodeActive(initialNode);
     }
     
     // handle click events on minimap_nodes
-    var minimap_nodes = document.querySelectorAll('.' + main_class);
-    minimap_nodes.forEach(node => {
-        node.addEventListener('click', function() {
-            // Reset styles for all minimap_nodes and apply style to the clicked node
-            minimap_nodes.forEach(n => resetNodeStyle(n));
-            setNodeActive(this);
+    function minimapChangeBackgroundImage(background_img_url) {
+        //input: the background image url
+        //output: emit an event on which transitionNode.js/changeImage() will be called
+        if (background_img_url) {
+            var sky = document.querySelector('#sky');
+            sky.setAttribute('src', background_img_url);
 
-            const background_img = this.getAttribute('src'); //get the url of background
-            console.log("the URL is", background_img);
-            minimapChangeBackgroundImage(background_img); 
+            //hide transition nodes of old background
+
+        }
+    }
+    var minimap_nodes = document.querySelectorAll('.' + main_class);
+
+        // Iterate over each node
+        minimap_nodes.forEach(node => {
+            // Add a click event listener to each node
+            node.addEventListener('click', function() {
+                console.log('about to emit "nodeClick" event');
+                
+                // Emit the "nodeClick" event from the 'scene' object
+                // Ensure 'scene' is a valid object with an emit method
+                scene.emit('nodeClick', { 
+                    detail: { 
+                        background_img_url: node.getAttribute('background_img_url') 
+                    } 
+                });
+            });
         });
-    });
+
 
     // reset node style
     function resetNodeStyle(node) {
@@ -38,22 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
         node.style.border = '1px dotted grey'; // Original border
     }
 
- 
-    // change the background image of the scene when minimap_nodes are clicked
-    function minimapChangeBackgroundImage(imgSrc) {
-        //input: the background image url
-        //output: change the background image of the scene
-        if (imgSrc) {
-            var sky = document.querySelector('#sky');
-            sky.setAttribute('src', imgSrc);
-        }
-    }
 
+
+    
     // change the active node to the one that matches new_background_img_id
+    // Define a function to handle the 'changeMinimapNode' event
     scene.addEventListener('changeMinimapNode', (event) => {
-        const { new_background_img_id } = event.detail;
-        console.log("new_background_img_id is", new_background_img_id);
+        console.log('changeMinimapNode');
+        var skyElement = document.querySelector('#sky');
+        console.log("sky", sky);
+        var background_img_id = skyElement.getAttribute('background_img_id');
+        console.log("background", background_img_id);
     });
+    
+      
 });
 
 
