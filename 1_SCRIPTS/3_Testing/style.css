@@ -34,6 +34,7 @@ body {
     border: 2px solid #000;
 }
 
+
 .minimapNode {
     position: absolute;
     width: 10px;
@@ -41,6 +42,41 @@ body {
     background-color: #4CC3D9;
     border-radius: 50%;
     border: 1px solid grey; /* Add a grey border */
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    padding: 2em;
+    box-sizing: border-box;
+    overflow: auto;
+    z-index: 1000; /* Adjust as needed */
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+
+/* Responsive font size */
+#popup h1 {
+    font-size: 1.5em; /* Adjust as needed */
+}
+
+/* Media Query Example */
+@media (max-width: 600px) {
+    #popup {
+        padding: 1em;
+    }
+    #popup h1 {
+        font-size: 1.2em;
+    }
 }
 
 

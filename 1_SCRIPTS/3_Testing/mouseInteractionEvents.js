@@ -44,18 +44,55 @@ document.addEventListener('DOMContentLoaded', (event) =>
     }
 
 
-    // Broadcast mouse clicked WHEN mouse clicks an object
-    // EVENTS: mouseClicked
-    canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
 
+    // Single mouse click
+    canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
         if (intersectedObject) {
             intersectedObject.emit('mouseClicked'); 
-            //.emit custom mouseClicked event here
-            console.log("CLICKED:", intersectedObject);
+            console.log("CLICKED:", intersectedObject);             
+
         }
     });
+
+
+
+    // Broadcasting double click, and single click that didnt happen after a certain delay
+    let clickCount = 0;
+    const CLICK_DELAY = 300; // 300 milliseconds
+
+    canvas.addEventListener('click', (event) => {
+        clickCount++;
+        setTimeout(() => {
+            if (clickCount === 1) {
+                // Single click logic
+                singleClickAction(event);
+            } else if (clickCount > 1) {
+                // Double click logic
+                doubleClickAction(event);
+            }
+            clickCount = 0; // Reset count
+        }, CLICK_DELAY);
+    });
+
+    function singleClickAction(event) {
+        let raycaster = updateRaycaster(event, canvas, scene);
+        let intersectedObject = checkIntersections(raycaster, scene);
+        if (intersectedObject) {
+            intersectedObject.emit('mouseClickedDelayed');
+            console.log("SINGLE CLICK:", intersectedObject);
+        }
+    }
+
+    function doubleClickAction(event) {
+        let raycaster = updateRaycaster(event, canvas, scene);
+        let intersectedObject = checkIntersections(raycaster, scene);
+        if (intersectedObject) {
+            intersectedObject.emit('mouseDoubleClicked');
+            console.log("DOUBLE CLICK:", intersectedObject);
+        }
+    }
 
 
 

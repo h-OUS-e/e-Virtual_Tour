@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const entities = document.querySelectorAll('[class=' + main_class + ']');
             entities.forEach(entity => {
                 entity.setAttribute('material', 'color', color_mediaPlayer);
-
             });
         });
 
@@ -72,6 +71,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.target.setAttribute('material', 'color', color_hoverInClicked);
             }
         });
+
+
+        var popup = document.getElementById('popup');
+        var popupImage = document.getElementById('popupImage');
+
+        scene.addEventListener('mouseDoubleClicked', function(event) {
+            if (event.target.classList.contains(main_class)){
+                // Extract the image src from the plane
+                var imgSrc = event.target.getAttribute('attachement');
+                imgSrc = document.getElementById(imgSrc).src;
+                // Set the image in the popup
+                popupImage.src = imgSrc;
+                // Show the popup
+                popup.style.display = 'block';
+                console.log("test3", popupImage.src);
+                console.log("test2", popup);
+             }
+        });
+
+
+
             
 
 

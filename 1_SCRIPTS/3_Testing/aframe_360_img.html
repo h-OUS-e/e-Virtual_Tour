@@ -16,14 +16,28 @@
     
 </head>
 <body>
-    <div id="minimap_container">
+    <div id="minimap_container" >
         <!-- Minimap nodes -->
         <!-- change dataview to ID -->
-        <div id= "minimap_node_background_img01.1" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" initial = True style="left: 165px; top: 130px;"></div>
-        <div id= "minimap_node_background_img02.1" class="minimapNode" src="0_resources/img1.2_lobby.jpeg" initial = False style="left: 165px; top: 40px;"></div>
-        <div id= "minimap_node_background_img03.1" class="minimapNode" src="0_resources/img3_dentalRoom2.jpeg" initial = False style="left: 65px; top: 60px;"></div>
-        <div id= "minimap_node_background_img01.2" class="minimapNode" src="0_resources/img2_dentalRoom1.jpeg" initial = False style="left: 25px; top: 35px;"></div>
+        <div id= "minimap_node_background_img01.1" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" initial="True" style="left: 165px; top: 130px;"></div>
+        <div id= "minimap_node_background_img02.1" class="minimapNode" src="0_resources/img1.2_lobby.jpeg" initial="False" style="left: 165px; top: 40px;"></div>
+        <div id= "minimap_node_background_img03.1" class="minimapNode" src="0_resources/img3_dentalRoom2.jpeg" initial="False" style="left: 65px; top: 60px;"></div>
+        <div id= "minimap_node_background_img01.2" class="minimapNode" src="0_resources/img2_dentalRoom1.jpeg" initial="False" style="left: 25px; top: 35px;"></div>
         <!-- add js for nodes -->
+    </div>
+
+    <div id="display_container">
+        <!-- Minimap nodes -->
+        <!-- change dataview to ID -->
+        <div id= "media_container" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" visible="false" style="left: 165px; top: 130px;"></div>
+        <div id= "text_container" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" visible="false" style="left: 165px; top: 130px;"></div>
+        <!-- <img id="popupImage" src="none" alt="Popup Image"> -->
+    <!-- <button onclick="document.getElementById('popup').style.display='none'">Close</button> -->
+        <!-- add js for nodes -->
+    </div>
+    <div id="popup" style="display:none;">
+       <img id="popupImage" src="" alt="Popup Image">
+        <button onclick="document.getElementById('popup').style.display='none'">close</button>
     </div>
     
     
@@ -35,6 +49,7 @@
             <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2">
             <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="03.1">
             <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="04.1">
+            <img id="img03.1" src="0_resources/archive/00000-cam1.jpg" background_img_id="04.1">
 
         </a-assets>
 
@@ -47,12 +62,14 @@
         </a-sky>
         
         <!-- Creating planes to play a video or show an image -->
-        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="false" visible_on_load="true"
-        background_img_id = "03.1"
+        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="true" visible_on_load="true"
+        background_img_id = "01.1"
         targets="media1.1"
         position="2.836 -6.687 53.458" rotation="0 150.000 0" width="5" height="3" 
-        color="#4CC3D9" material="opacity: 0.7; ">
-        </a-plane>
+        color="#4CC3D9" material="opacity: 0.7; "
+        attachement="img03.1"
+        src=""
+        ></a-plane>
 
         <!-- Placeholders for the image or video that will be shown when the plane is clicked -->
         <a-image id="media1.1" class="popup_image" clickable="true" visible="false" visible_on_load="false"
@@ -82,7 +99,7 @@
         <!-- Return. -->
         <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
             background_img_id="01.2" new_background_img_id= "01.1"
-            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            position="2.433 -.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
@@ -97,7 +114,7 @@
         <!-- Return. -->
         <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
             background_img_id="02.1" new_background_img_id= "01.2"
-            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
@@ -111,7 +128,7 @@
         <!-- Return. -->
         <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
-            position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
+            position="2.433 -3.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
