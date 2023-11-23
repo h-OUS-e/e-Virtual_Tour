@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 var new_event = new CustomEvent('mediaPlayerDoubleClicked', 
                 {
-                    detail: {attachement: event.target.getAttribute('attachement')}
+                    detail: {id: event.target.id, attachement: event.target.getAttribute('attachement')}
                 });
                 scene.dispatchEvent(new_event);
              }
