@@ -16,6 +16,7 @@
     --coolBlue: #D0F9F2;
 }
 
+
 /* Adding fonts */
 @font-face {
     font-family: 'CircularStd';
@@ -23,14 +24,12 @@
     font-weight: normal;
     font-style: normal;
   }
-
   @font-face {
     font-family: 'CircularStd';
     src: url('0_resources/fonts/CircularStd-Black.otf') format('opentype');
     font-weight: 900; /* 900 is typically used for the black weight */
     font-style: normal;
   }
-
   @font-face {
     font-family: 'CircularStd';
     src: url('0_resources/fonts/CircularStd-Bold.otf') format('opentype');
@@ -38,6 +37,8 @@
     font-style: normal;
   }
 
+
+/* Defining styles of general classes */
 body {
     margin: 0;
     overflow: hidden;
@@ -59,12 +60,35 @@ h2 {
     font-size: 2.8rem;
 }
 
+
+/* Defining general of default browser items*/
+/* For Webkit Browsers */
+/* Adjusting scroll bar style */
+::-webkit-scrollbar {
+    width: 4px; /* width of the entire scrollbar */
+  }
+  
+::-webkit-scrollbar-track {
+background: var(--coolBlue); /* color of the tracking area */
+}
+
+/* For Firefox Browsers */
+/* Adjusting scroll bar style */
+html {
+    scrollbar-color: var(--oceanBlue) var(--coolBlue); /* thumb and track color */
+    scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
+  }
+
+
+/* Defining scene style*/
 #scene { 
     width: 100%;
     height: 100vh;
     display: block;
 }
 
+
+/* Defining minimap style*/
 #minimap_container {
     position: absolute;
     bottom: 10px;
@@ -89,24 +113,7 @@ h2 {
 }
 
 
-/* For Webkit Browsers */
-/* Adjusting scroll bar style */
-::-webkit-scrollbar {
-    width: 4px; /* width of the entire scrollbar */
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: var(--coolBlue); /* color of the tracking area */
-  }
-
-/* For Firefox Browsers */
-/* Adjusting scroll bar style */
-html {
-    scrollbar-color: var(--oceanBlue) var(--coolBlue); /* thumb and track color */
-    scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
-  }
-
-  
+/* Defining popup style*/
 .popup {
     position: absolute;
     top: 50%;
@@ -114,7 +121,6 @@ html {
     transform: translate(-50%, -50%);
     max-width: 90%;
     max-height: 90%;
-    
     height: auto;
     padding-top: 1rem;
     padding-bottom: 4rem;
@@ -128,9 +134,9 @@ html {
     overflow: auto;
     z-index: 1000; /* High z-index to be above other content */
     color: var(--oceanBlue);
-  }
+}
   
-  .popup-header {
+.popup-header {
     font-family: 'CircularStd', Helvetica;
     border-radius: 10px;
     padding-top: 1rem;
@@ -141,65 +147,55 @@ html {
     flex-direction: row; 
     justify-content: space-between;
     align-items: center;
-  }
-  .title-container{
+}
+
+.title-container {
     display: flex;
     flex-direction: column;
     border: none;
-  }
-  .title-description{
+} 
+
+.title-description{
     font-style: italic;
     padding-bottom: 2rem;
-  }
+}
   
-  .popup-close-button {
+.popup-close-button {
     border: none;
     background: none;
     cursor: pointer;
     font-size: 2rem;
     color: var(--oceanBlue);
     align-self: flex-start; /* Puts close-button on top of its own column container */
-  }
+}
 
-
-  
-  .popup-body {
+.popup-body {
     padding-top: rem;    
     border: 1.5px solid var(--oceanBlue); 
     border-radius: 10px;
     margin: auto; /* Centers the block itself horizontally */
     align-items: center;
-    
-  }
+}
 
-  .popup-media-text
-  {
+.popup-media-text {
     padding-left: 10%;
     padding-right: 10%;
-  }
+}
 
-  #popupImage {    
+.popup-media {    
     padding-top: 1rem;
     padding:4rem;
     align-items: center;
     margin: auto;
-  }
+}
   
-  .popup-footer {
+.popup-footer {
     padding: 1rem;
     background: #f9f9f9;
     border-top: 1px solid #eee;
     text-align: right;
-  }
+}
   
-  .popup-action-button {
-    padding: 0.5rem 1rem;
-    background-color: var(--oceanBlue);;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
   
   /* Responsiveness */
   @media (max-width: 768px) {
@@ -208,7 +204,9 @@ html {
     }
   }
 
-  .overlay {
+
+  /* Defines overlay block that blurs background */
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -218,10 +216,10 @@ html {
     backdrop-filter: blur(5px); /* This creates the blur effect */
     display: none; /* Hidden by default */
     z-index: 999; /* Ensure it's below the popup but above other content */
-  }
+}
 
 
+/* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
 .a-enter-vr-button { 
-    /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
     display: none !important;
 }
