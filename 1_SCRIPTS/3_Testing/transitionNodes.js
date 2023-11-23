@@ -139,9 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Emit the transitioning event to change the background image and minimap highlights
                     emitTransitioning(new_background_img_id) 
                 };
-
-                
-
                 // Hide the transition icons old background
                 var selector = '[background_img_id="' + background_img_id + '"]'; //background image is the image clicked from, type moved
                 toggleVisibility(selector, false);       
@@ -153,9 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // can we wrap the selector creation, visibility toggle and background toggle in one big function?
                 // that way we can call on it from other events. K.T
-                
-
-                
             };
 
         });

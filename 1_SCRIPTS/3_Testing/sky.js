@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         //transitioning should be emited here
         
     } 
+
+    // listen to transitioning event. emmited from transitionNode.js
     scene.addEventListener('transitioning', function (event) 
     {
         var new_background_img_id = event.detail.new_background_img_id;
