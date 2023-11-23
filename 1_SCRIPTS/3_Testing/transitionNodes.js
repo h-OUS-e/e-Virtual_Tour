@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         event.target.setAttribute('color', color_transitionNode); // resetting color on clicking
                         console.log('id', new_background_img_id);
   
+                        // Emit the transitioning event to change the background image and minimap highlights
                         var event = new CustomEvent('transitioning', {
                             detail: { new_background_img_id: new_background_img_id}
                         });
