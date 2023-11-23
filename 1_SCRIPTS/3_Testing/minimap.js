@@ -53,8 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // emit minimapClick event
             console.log('about to emit "minimapClick" event');
+            var new_background_img_id = node.getAttribute('imgId');
+            console.log('id minimap', new_background_img_id, typeof new_background_img_id);
             var minimapClick = new CustomEvent('minimapClick', {
-                detail: { new_background_img_id: node.getAttribute('imgId')}
+                detail: { new_background_img_id: new_background_img_id}
             });
             scene.dispatchEvent(minimapClick);
         });
