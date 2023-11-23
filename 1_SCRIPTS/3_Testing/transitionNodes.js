@@ -26,7 +26,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        
+//listen to minimapClick event
+        scene.addEventListener('minimapClick', function(event) {
+            var new_background_img_id = event.detail.new_background_img_id;
+            console.log('New background image ID:', new_background_img_id);
+
+            // get current background image
+            var skyElement = document.getElementById('sky');
+            var background_img_id = skyElement.getAttribute('background_img_id');
+
+            // Hide the transition icons old background
+            var selector = '[background_img_id="' + background_img_id + '"]'; //background image is the image clicked from, type moved
+            toggleVisibility(selector, false);       
+
+            // show transition icon of new background
+            var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
+            // Iterate over the selected entities and hide them
+            toggleVisibility(selector2, true);
+            
+        });
+
+
+
+
         // Ensures that no objects are loaded before the sky is loaded
         document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
         
@@ -81,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // listen to mouseClicked event (it checks if click clicked on a clickable event)
             scene.addEventListener('mouseClicked', (event) => 
             {
-
                 // "visible" is a special attribute that is boolean, unlicke my made up "clickable" attribute.
                 // Thus, no need for === signs to check "visible" attribute truth.
                 if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
@@ -99,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log('id', new_background_img_id);
   
                         // Emit the transitioning event to change the background image and minimap highlights
-                        var event = new CustomEvent('transitioning', {
+                        var transitioning = new CustomEvent('transitioning', {
                             detail: { new_background_img_id: new_background_img_id}
                         });
-                        scene.dispatchEvent(event);
+                        scene.dispatchEvent(transitioning);
                     };
 
                     
@@ -125,16 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             });
             
-
-            // handle scene transitions orginating from minimap interactions
-            scene.addEventListener('nodeClick', (event) => {
-                console.log('recieved node click', event);
-                // background_image
-                // new_background_image
-                // create selectors for background_image and new_background_image
-                // call changeImage() and toggleVisibility() functions
-        
-            });
 
     });
 
