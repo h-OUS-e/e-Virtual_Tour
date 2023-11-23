@@ -27,11 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function toggleVisibility(selector, isVisible) {
+        // 
         // find all intities that have the selector in them (background image ID)
-        // input: selector: string , isVisible: boolean
+        // input:
+            // selector = '[background_img_id="' + background_img_id + '"],
+            // isVisible: boolean
         // update visibility of all entities that match selector specs
 
-        const entities = document.querySelectorAll(selector); //select all enteties that match selector specs
+        const entities = document.querySelectorAll(selector + '[toggle_visibility="true"]'); //select all enteties that match selector specs
         entities.forEach(entity => {
             entity.setAttribute('visible', isVisible); 
         });

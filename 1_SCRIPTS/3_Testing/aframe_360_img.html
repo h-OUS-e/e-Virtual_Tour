@@ -48,7 +48,7 @@
         </a-sky>
         
         <!-- Creating planes to play a video or show an image -->
-        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="false" visible_on_load="true"
+        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
         background_img_id = "03.1"
         targets="media1.1"
         position="2.836 -6.687 53.458" rotation="0 150.000 0" width="5" height="3" 
@@ -56,14 +56,14 @@
         </a-plane>
 
         <!-- Placeholders for the image or video that will be shown when the plane is clicked -->
-        <a-image id="media1.1" class="popup_image" clickable="true" visible="false" visible_on_load="false"
+        <a-image id="media1.1" class="popup_image" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
         position="2.836 -6.687 53.458" rotation="0 150.000 0" width="30" height="18"
         background_img_id = "03.1"
         media_src="mediaPlayer1"
         src="0_resources/00000-cam0.jpg" 
         ></a-image>
 
-        <a-image id="media1.2" class="popup_image" clickable="true" visible="false" visible_on_load="false"
+        <a-image id="media1.2" class="popup_image" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
         position="-9 -2.298 19.005" rotation="0 150.000 0" width="30" height="18"
         background_img_id = "03.1"
         media_src="mediaPlayer1"
@@ -74,43 +74,43 @@
         </a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
-        <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+        <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" toggle_visibility="true" 
             background_img_id="01.1" new_background_img_id= "01.2"
             position="2.433 -2.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>       
         <!-- Return. -->
-        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="01.2" new_background_img_id= "01.1"
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
+            background_img_id="01.2" new_background_img_id= "01.1" 
             position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
         
 
-        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "03.1"
             position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
             background_img_id="03.1" new_background_img_id= "01.2"
             position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
 
-        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "03.1"
             position="0.516 -1.682 -2.849" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
             position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
