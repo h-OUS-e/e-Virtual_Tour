@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
         var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
         // Iterate over the selected entities and hide them
         toggleVisibility(selector2, true);
+
+        // emit transitioning event
+        emitTransitioning(new_background_img_id);
         
     });
 
