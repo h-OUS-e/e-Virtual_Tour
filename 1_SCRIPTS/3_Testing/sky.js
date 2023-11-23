@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sky.setAttribute('background_img_id', new_background_img_id);
         console.log('Moved to new scene!', sky.getAttribute('src'));
 
-        //emit changeMinimapNode event to change background image
-        console.log("About to emit new background_img_id:", new_background_img_id);
+        //transitioning should be emited here
+        
     } 
 
 

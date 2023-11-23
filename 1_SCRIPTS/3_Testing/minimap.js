@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const scene = document.querySelector('a-scene');
     var main_class = "minimapNode";
+    var active_node_element = null;
+
 
      // Get colors from CSS palette
      const colors = getComputedStyle(document.documentElement);
@@ -10,27 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
      // set initial state of minimap  
     function setNodeActive(node) { 
+        resetNodeStyle(active_node_element);
+        active_node_element = node;
         node.style.backgroundColor = color_active ;
         node.style.border = '2px solid white'; 
+        
     }
-    
+
     const initialNode = Array.from(document.querySelectorAll('.minimapNode')).find(node => node.getAttribute('current') === 'True'); 
     if (initialNode) {
+        active_node_element = initialNode
+        console.log('found initial node', initialNode);
         setNodeActive(initialNode);
     }
     
-    // handle click events on minimap_nodes
-    function minimapChangeBackgroundImage(background_img_url) {
-        //input: the background image url
-        //output: emit an event on which transitionNode.js/changeImage() will be called
-        if (background_img_url) {
-            var sky = document.querySelector('#sky');
-            sky.setAttribute('src', background_img_url);
 
-            //hide transition nodes of old background
-
-        }
-    }
     var minimap_nodes = document.querySelectorAll('.' + main_class);
 
         // Iterate over each node
@@ -61,13 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // change the active node to the one that matches new_background_img_id
     // Define a function to handle the 'changeMinimapNode' event
-    scene.addEventListener('changeMinimapNode', (event) => {
-        console.log('changeMinimapNode');
-        var skyElement = document.querySelector('#sky');
-        console.log("sky", sky);
-        var background_img_id = skyElement.getAttribute('background_img_id');
-        console.log("background", background_img_id);
-    });
+    scene.addEventListener('transitioning', function (event) {
+        console.log('recieved transitioning event', event.detail.new_background_img_id);
+        new_background_img_id = event.detail.new_background_img_id;
+
+        // update what node is currently active
+        var active_node_img_id = 'background_img'+ new_background_img_id;
+        var active_node_selector = '[imgId="' + active_node_img_id + '"]';
+        var active_node_element = document.querySelector(active_node_selector);
+        console.log('activeNode_img_id', active_node_element);
+        setNodeActive(active_node_element);
+    })
     
       
 });

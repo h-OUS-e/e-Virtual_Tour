@@ -29,17 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Ensures that no objects are loaded before the sky is loaded
         document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
-            
-            // handle scene transitions orginating from minimap interactions
-            scene.addEventListener('nodeClick', (event) => {
-                console.log('recieved node click', event);
-                // background_image
-                // new_background_image
-                // create selectors for background_image and new_background_image
-                // call changeImage() and toggleVisibility() functions
-        
-            });
-
         
             // Setting initial colors of objects
             scene.addEventListener('loaded', function () 
@@ -136,6 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             });
             
+
+            // handle scene transitions orginating from minimap interactions
+            scene.addEventListener('nodeClick', (event) => {
+                console.log('recieved node click', event);
+                // background_image
+                // new_background_image
+                // create selectors for background_image and new_background_image
+                // call changeImage() and toggleVisibility() functions
+        
+            });
+
     });
 
 });
