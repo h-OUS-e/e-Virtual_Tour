@@ -50,21 +50,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // showing popup when mediaPlayer is double clicked
     scene.addEventListener('mediaPlayerDoubleClicked', function(event) {
-        // Extract the image src from the plane
+        // Extract the id of the clicked media
         const mediaId  = event.detail.id;
-        // console.log("TEST", event.detail.id, event);
+        // find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId );
+        // update popup content
         if (content) {
             updatePopupContent(content);
-          }
+        }
+        // show poup window
         showPopup();
     });
 
 
-        // Event listener for the close button
+    // Close popup when closebutton is clicked
     closeButton.addEventListener('click', hidePopup);
 
-    // Optional: Hide popup when clicking on the overlay
+    // Close popup when clicking on the overlay
     overlay.addEventListener('click', hidePopup);
 
 });
