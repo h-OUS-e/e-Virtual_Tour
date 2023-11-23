@@ -27,30 +27,40 @@
         <!-- add js for nodes -->
     </div>
 
-    <div id="display_container">
-        <!-- Minimap nodes -->
-        <!-- change dataview to ID -->
-        <div id= "media_container" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" visible="false" style="left: 165px; top: 130px;"></div>
-        <div id= "text_container" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" visible="false" style="left: 165px; top: 130px;"></div>
-        <!-- <img id="popupImage" src="none" alt="Popup Image"> -->
-    <!-- <button onclick="document.getElementById('popup').style.display='none'">Close</button> -->
-        <!-- add js for nodes -->
-    </div>
 
+
+    <!-- An overlay to blur the background when something pops up -->
     <div class="overlay" id="overlay"></div>
+
+    <!-- Defining popup window when a mediaPlayer is clicked -->
     <div id="popup" class="popup" style="display:none;">
+
         <div class="popup-header">
-          <span class="popup-title">Your Title Here</span>
-          <button class="popup-close-button">&times;</button>
+            <div class="title-container">
+                <h1 class="popup-subtitle">Your Subtitle Here</h1>
+                <h2 class="popup-title">Your Title Here</h2>
+                <p class="title-description">
+                    A small description of the title.
+                </p>
+            </div>            
+            <button class="popup-close-button">&times;</button>
+            
         </div>
+
         <div class="popup-body">
-          <p>Your content goes here...</p>
+            <div class="popup-media-text">
+            <p>Your content goes here. Sage dental combines 
+                leading-edge clinical innovations and a proprietary 
+                software platform to deliver the best patient care<br>
+                <br> 
+                and experience in the dental industry....</p>
+            </div>
           <!-- Add images, text, or whatever content you want in the popup -->
           <img id="popupImage" src="" alt="Popup Image">
         </div>
-        <div class="popup-footer">
+        <!-- <div class="popup-footer">
           <button class="popup-action-button">Action Button</button>
-        </div>
+        </div> -->
       </div>
       
     

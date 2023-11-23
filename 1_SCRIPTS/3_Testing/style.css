@@ -1,5 +1,5 @@
 :root {
-    --primary: #FF5733;
+    --primary: #2dc84d;
     --secondary: #33FF57;
     --accent: #3357FF;
     --background: #F0F0F0;
@@ -8,11 +8,55 @@
     --hoverInClicked:gray;
     --transitionNode:rgb(154, 167, 213);
     --mediaPlayer:rgb(159, 115, 39);
+    --sageGreen: #2dc84d;
+    --mintGreen: #DBFFE5;
+    --oceanBlue: #009A9F;
+    --popPink: #FB7698;
+    --coolPink: rgba(251, 118, 152, .2);
+    --coolBlue: #D0F9F2;
 }
+
+/* Adding fonts */
+@font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Black.otf') format('opentype');
+    font-weight: 900; /* 900 is typically used for the black weight */
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+  }
 
 body {
     margin: 0;
     overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: 1.45rem;
+    
+}
+h1 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: 1rem;
+}
+h2 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: 2.8rem;
 }
 
 #scene { 
@@ -44,77 +88,101 @@ body {
     border: 1px solid grey; /* Add a grey border */
 }
 
-#popup {
-    display: none;
-    position: fixed;
+
+/* For Webkit Browsers */
+/* Adjusting scroll bar style */
+::-webkit-scrollbar {
+    width: 4px; /* width of the entire scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--coolBlue); /* color of the tracking area */
+  }
+
+/* For Firefox Browsers */
+/* Adjusting scroll bar style */
+html {
+    scrollbar-color: var(--oceanBlue) var(--coolBlue); /* thumb and track color */
+    scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
+  }
+
+  
+.popup {
+    position: absolute;
     top: 50%;
-    left: 50%;
+    left: 50%;    
     transform: translate(-50%, -50%);
     max-width: 90%;
     max-height: 90%;
-    width: auto;
+    
     height: auto;
-    padding: 2em;
+    padding-top: 1rem;
+    padding-bottom: 4rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    background-color: var(--coolBlue);
+    box-shadow: 0px 5px 15px var(--oceanBlue);
     box-sizing: border-box;
+    border: 3px solid var(--oceanBlue);
+    border-radius: 15px;
     overflow: auto;
-    z-index: 1000; /* Adjust as needed */
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-
-/* Responsive font size */
-#popup h1 {
-    font-size: 1.5em; /* Adjust as needed */
-}
-
-/* Media Query Example */
-@media (max-width: 600px) {
-    #popup {
-        padding: 1em;
-    }
-    #popup h1 {
-        font-size: 1.2em;
-    }
-}
-
-
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 90%;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
     z-index: 1000; /* High z-index to be above other content */
+    color: var(--oceanBlue);
   }
   
   .popup-header {
+    font-family: 'CircularStd', Helvetica;
+    border-radius: 10px;
+    padding-top: 1rem;
     padding: 1rem;
-    background: #f9f9f9;
-    border-bottom: 1px solid #eee;
+    /* background: #f9f9f9; */
+        border: none;    
     display: flex;
+    flex-direction: row; 
     justify-content: space-between;
     align-items: center;
   }
-  
-  .popup-title {
-    font-weight: bold;
+  .title-container{
+    display: flex;
+    flex-direction: column;
+    border: none;
+  }
+  .title-description{
+    font-style: italic;
+    padding-bottom: 2rem;
   }
   
   .popup-close-button {
     border: none;
     background: none;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 2rem;
+    color: var(--oceanBlue);
+    align-self: flex-start; /* Puts close-button on top of its own column container */
   }
+
+
   
   .popup-body {
-    padding: 1rem;
+    padding-top: rem;    
+    border: 1.5px solid var(--oceanBlue); 
+    border-radius: 10px;
+    margin: auto; /* Centers the block itself horizontally */
+    align-items: center;
+    
+  }
+
+  .popup-media-text
+  {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+
+  #popupImage {    
+    padding-top: 1rem;
+    padding:4rem;
+    align-items: center;
+    margin: auto;
   }
   
   .popup-footer {
@@ -126,7 +194,7 @@ body {
   
   .popup-action-button {
     padding: 0.5rem 1rem;
-    background-color: #0066cc;
+    background-color: var(--oceanBlue);;
     color: white;
     border: none;
     border-radius: 5px;
