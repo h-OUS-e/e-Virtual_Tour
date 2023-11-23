@@ -3,14 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
 //definitions
     const scene = document.querySelector('a-scene');
     var main_class = "mediaPlayer";
-    var secondary_class = "popup_image"
     
     // Get colors from CSS palette
     const colors = getComputedStyle(document.documentElement);
     const color_hoverIn = colors.getPropertyValue('--hoverIn').trim();
     const color_mediaPlayer = colors.getPropertyValue('--mediaPlayer').trim();
     const color_hoverInClicked = colors.getPropertyValue('--hoverInClicked').trim();
-    const color_transitionNode = colors.getPropertyValue('--transitionNode').trim();
 
 
     // Ensures that no objects are loaded before the sky is loaded
@@ -25,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        // Changing color of objects when hovering over them
+        // Changing color and scale of objects when hovering over them
         scene.addEventListener('hoverin', function (event) 
         {   
             if (event.target.classList.contains(main_class)){
@@ -36,10 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 popupImage.setAttribute('width', '30');
                 popupImage.setAttribute('height', '18');
             }
-
         });
 
-
+        // Resets color an scale of objects when hovering outside them
         scene.addEventListener('hoverout', function (event) 
         {
             if (event.target.classList.contains(main_class)){
@@ -54,6 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
+        // Changing color of objects when hovering over them and clicking
+        scene.addEventListener('hoverin_mousedown', function (event) 
+        {
+            if (event.target.classList.contains(main_class)){
+                event.target.setAttribute('material', 'color', color_hoverInClicked);
+            }
+        });
+
         // Changing color of objects when hovering over them and unclicking
         scene.addEventListener('hoverin_mouseup', function (event) 
         {
@@ -63,30 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         });
 
-            
-        // Changing color of objects when hovering over them and clicking
-        scene.addEventListener('hoverin_mousedown', function (event) 
-        {
-            if (event.target.classList.contains(main_class)){
-                event.target.setAttribute('material', 'color', color_hoverInClicked);
-            }
-        });
 
+        
 
-        var popup = document.getElementById('popup');
-        var popupImage = document.getElementById('popupImage');
-
+        // Double clicking the object
         scene.addEventListener('mouseDoubleClicked', function(event) {
             if (event.target.classList.contains(main_class)){
-                // Extract the image src from the plane
-                var imgSrc = event.target.getAttribute('attachement');
-                imgSrc = document.getElementById(imgSrc).src;
-                // Set the image in the popup
-                popupImage.src = imgSrc;
-                // Show the popup
-                popup.style.display = 'block';
-                console.log("test3", popupImage.src);
-                console.log("test2", popup);
+
+                var new_event = new CustomEvent('mediaPlayerDoubleClicked', 
+                {
+                    detail: {attachement: event.target.getAttribute('attachement')}
+                });
+                scene.dispatchEvent(new_event);
              }
         });
 

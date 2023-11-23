@@ -13,6 +13,7 @@
     <script src="zoomControl.js"></script> 
     <script type="module" src="mouseInteractionEvents.js"></script> 
     <script src="minimap.js"></script>
+    <script src="mediaPopup.js"></script>
     
 </head>
 <body>
@@ -35,10 +36,23 @@
     <!-- <button onclick="document.getElementById('popup').style.display='none'">Close</button> -->
         <!-- add js for nodes -->
     </div>
-    <div id="popup" style="display:none;">
-       <img id="popupImage" src="" alt="Popup Image">
-        <button onclick="document.getElementById('popup').style.display='none'">close</button>
-    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="popup" class="popup" style="display:none;">
+        <div class="popup-header">
+          <span class="popup-title">Your Title Here</span>
+          <button class="popup-close-button">&times;</button>
+        </div>
+        <div class="popup-body">
+          <p>Your content goes here...</p>
+          <!-- Add images, text, or whatever content you want in the popup -->
+          <img id="popupImage" src="" alt="Popup Image">
+        </div>
+        <div class="popup-footer">
+          <button class="popup-action-button">Action Button</button>
+        </div>
+      </div>
+      
     
     
     <a-scene id="scene">
@@ -49,7 +63,7 @@
             <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2">
             <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="03.1">
             <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="04.1">
-            <img id="img03.1" src="0_resources/archive/00000-cam1.jpg" background_img_id="04.1">
+            <img id="img03.1" src="0_resources/test.png" background_img_id="03.1">
 
         </a-assets>
 
@@ -97,7 +111,7 @@
             material="color:gray; side:double"
         ></a-entity>       
         <!-- Return. -->
-        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
             background_img_id="01.2" new_background_img_id= "01.1"
             position="2.433 -.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
@@ -112,7 +126,7 @@
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
             background_img_id="02.1" new_background_img_id= "01.2"
             position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
@@ -126,7 +140,7 @@
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" 
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
             position="2.433 -3.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  

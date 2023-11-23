@@ -80,6 +80,79 @@ body {
 }
 
 
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 1000; /* High z-index to be above other content */
+  }
+  
+  .popup-header {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .popup-title {
+    font-weight: bold;
+  }
+  
+  .popup-close-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+  
+  .popup-body {
+    padding: 1rem;
+  }
+  
+  .popup-footer {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    text-align: right;
+  }
+  
+  .popup-action-button {
+    padding: 0.5rem 1rem;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .popup {
+      width: 90%;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    backdrop-filter: blur(5px); /* This creates the blur effect */
+    display: none; /* Hidden by default */
+    z-index: 999; /* Ensure it's below the popup but above other content */
+  }
+
+
 .a-enter-vr-button { 
     /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
     display: none !important;
