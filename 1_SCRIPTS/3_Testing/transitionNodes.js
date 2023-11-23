@@ -13,20 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //change background image and transition node functions
 
-        // Changing background image
-        function changeImage( new_background_img_id){
-            // change background image
-            // input: new_background_img_id: string & background_img_id: string
-            // update 360 image in the scene
-            var sky = document.querySelector('#sky');
-            sky.setAttribute('src', '#background_img'+ new_background_img_id); 
-            sky.setAttribute('background_img_id', new_background_img_id);
-            console.log('Moved to new scene!', sky.getAttribute('src'));
 
-            //emit changeMinimapNode event to change background image
-            console.log("About to emit new background_img_id:", new_background_img_id);
-            scene.emit('changeMinimapNode', { detail: { new_background_img_id } });
-        } 
 
         function toggleVisibility(selector, isVisible) {
             // find all intities that have the selector in them (background image ID)
@@ -36,13 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const entities = document.querySelectorAll(selector); //select all enteties that match selector specs
             entities.forEach(entity => {
                 entity.setAttribute('visible', isVisible); 
-                //make all selector intities follow isVisible value
-                // need to edit to make the hidden clickable objects reset to clickable on scene generation as well.
-                // if (isVisible) {
-                //     entity.setAttribute('clickable', 'true'); // clickable if visible
-                // } else {
-                //     entity.setAttribute('clickable', 'false'); // unclckable if invisible
-                // }
             });
         }
 
@@ -124,15 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
                     var background_img_id = obj.getAttribute('background_img_id'); //current background image id
                     var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
- 
 
-
-                    
-                    
                     if (obj.classList.contains("transitionNode")){
-                        event.target.setAttribute('color', color_mediaPlayer); // resetting color on clicking
-                        changeImage(new_background_img_id) // changing background image
-                        
+                        event.target.setAttribute('color', color_transitionNode); // resetting color on clicking
+                        console.log('id', new_background_img_id);
+  
+                        var event = new CustomEvent('transitioning', {
+                            detail: { new_background_img_id: new_background_img_id}
+                        });
+                        scene.dispatchEvent(event);
                     };
 
                     
