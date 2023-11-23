@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mediaPlayerDoubleClicked', function(event) {
         // Extract the image src from the plane
         var imgSrc = event.detail.attachement;
-        console.log(imgSrc);
         imgSrc = document.getElementById(imgSrc).src;
+        console.log(imgSrc);
         // Set the image in the popup
         popupImage.src = imgSrc;
         // Show the popup
