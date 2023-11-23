@@ -67,10 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // change the active node to the one that matches new_background_img_id
     // Define a function to handle the 'changeMinimapNode' event
     scene.addEventListener('transitioning', function (event) {
-        new_background_img_id = event.detail.new_background_img_id;
 
         // update what node is currently active
-        var active_node_img_id = 'background_img'+ new_background_img_id;
+        var active_node_img_id = event.detail.new_background_img_id;
         var active_node_selector = '[imgId="' + active_node_img_id + '"]';
         var active_node_element = document.querySelector(active_node_selector);
         setNodeActive(active_node_element);

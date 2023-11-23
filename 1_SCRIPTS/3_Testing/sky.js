@@ -22,12 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
     } 
 
+    scene.addEventListener('minimapClick', function(event) {
+        var new_background_img_id = event.detail.new_background_img_id;
+        changeImage(new_background_img_id);
+        console.log('New background image ID minimap:', new_background_img_id, typeof new_background_img_id);
+    });
 
     scene.addEventListener('transitioning', function (event) 
     {
- 
         var new_background_img_id = event.detail.new_background_img_id;
         changeImage(new_background_img_id);
+        console.log('New background image ID transitioning:', new_background_img_id, typeof new_background_img_id);
     });
 
 });
