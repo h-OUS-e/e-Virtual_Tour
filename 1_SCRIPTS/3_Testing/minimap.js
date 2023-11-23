@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 // constants:
+    // create minimapClick event
+    var minimapClick = new CustomEvent('minimapClick', {
+        detail: { new_background_img_id: new_background_img_id}
+    });
+    
     const scene = document.querySelector('a-scene');
     var main_class = "minimapNode";
     var active_node_element = null;
@@ -55,9 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('about to emit "minimapClick" event');
             var new_background_img_id = node.getAttribute('imgId');
             console.log('id minimap', new_background_img_id, typeof new_background_img_id);
-            var minimapClick = new CustomEvent('minimapClick', {
-                detail: { new_background_img_id: new_background_img_id}
-            });
+            
             scene.dispatchEvent(minimapClick);
         });
     });
