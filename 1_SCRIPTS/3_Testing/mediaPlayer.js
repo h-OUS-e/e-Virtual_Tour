@@ -1,18 +1,23 @@
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', () => {
-//definitions
+
+    // Definitions   
     const scene = document.querySelector('a-scene');
     var main_class = "mediaPlayer";
     
     // Get colors from CSS palette
     const colors = getComputedStyle(document.documentElement);
-    const color_hoverIn = colors.getPropertyValue('--hoverIn').trim();
-    const color_mediaPlayer = colors.getPropertyValue('--mediaPlayer').trim();
+    const color_oceanBlue = colors.getPropertyValue('--oceanBlue').trim();
+    const color_coolBlue = colors.getPropertyValue('--coolBlue').trim();
+    const color_hoverIn = color_oceanBlue
+    const color_mediaPlayer = color_coolBlue
     const color_hoverInClicked = colors.getPropertyValue('--hoverInClicked').trim();
+    
 
 
     // Ensures that no objects are loaded before the sky is loaded
     document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
+
         // Setting initial colors of objects
         scene.addEventListener('loaded', function () 
         {
@@ -26,13 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Changing color and scale of objects when hovering over them
         scene.addEventListener('hoverin', function (event) 
         {   
+
             if (event.target.classList.contains(main_class)){
                 event.target.setAttribute('material', 'color', color_hoverIn);
-                const media_attachments_string = event.target.getAttribute('targets');
-                const media_attachments = media_attachments_string.split(',').map(s => s.trim());
-                var popupImage = document.getElementById(media_attachments[0]);
-                popupImage.setAttribute('width', '30');
-                popupImage.setAttribute('height', '18');
+                // const media_attachments_string = event.target.getAttribute('targets');
+                // const media_attachments = media_attachments_string.split(',').map(s => s.trim());
+                // var popupImage = document.getElementById(media_attachments[0]);
+                // popupImage.setAttribute('width', '30');
+                // popupImage.setAttribute('height', '18');
+                
             }
         });
 
@@ -41,11 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             if (event.target.classList.contains(main_class)){
                 event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
-                const media_attachments_string = event.target.getAttribute('targets');
-                const media_attachments = media_attachments_string.split(',').map(s => s.trim());
-                var popupImage = document.getElementById(media_attachments[0]);
-                popupImage.setAttribute('width', '5');
-                popupImage.setAttribute('height', '3');
+                // const media_attachments_string = event.target.getAttribute('targets');
+                // const media_attachments = media_attachments_string.split(',').map(s => s.trim());
+                // var popupImage = document.getElementById(media_attachments[0]);
+                // popupImage.setAttribute('width', '5');
+                // popupImage.setAttribute('height', '3');
             }
 
         });
@@ -82,7 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 // Dispatch event
                 scene.dispatchEvent(new_event);
+                console.log("TEST2");
              }
+             console.log("TEST");
         });
 
 
