@@ -26,22 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    function toggleVisibility(selector, isVisible) {
-        // 
-        // find all intities that have the selector in them (background image ID)
-        // input:
-            // selector = '[background_img_id="' + background_img_id + '"],
-            // isVisible: boolean
-        // update visibility of all entities that match selector specs
 
-        const entities = document.querySelectorAll(selector + '[toggle_visibility="true"]'); //select all enteties that match selector specs
-        console.log('test2', entities);
-        console.log(selector)
-        entities.forEach(entity => {
-            entity.setAttribute('visible', isVisible); 
-            console.log('test2', entity);
-        });
-    }
 
     // Setting initial colors of objects
     const entities = document.querySelectorAll('[class=' + main_class + ']');
@@ -52,24 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
         var new_background_img_id = event.detail.new_background_img_id;
-        console.log('New background image ID:', new_background_img_id);
-
-        // get current background image
-        var skyElement = document.getElementById('sky');
-        var background_img_id = skyElement.getAttribute('background_img_id');
-
-        // Hide the transition icons old background
-        var selector = '[background_img_id="' + background_img_id + '"]'; //background image is the image clicked from, type moved
-        toggleVisibility(selector, false);       
-
-        // show transition icon of new background
-        var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
-        // Iterate over the selected entities and hide them
-        toggleVisibility(selector2, true);
 
         // emit transitioning event
         emitTransitioning(new_background_img_id);
-        
     });
     
 
@@ -129,28 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Get the id of the clicked entity            
             var clickedId = event.target.id;
             var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
-            var background_img_id = obj.getAttribute('background_img_id'); //current background image id
             var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
             console.log('TEST', new_background_img_id);
 
-            if (obj.classList.contains("transitionNode")){
-                event.target.setAttribute('color', color_transitionNode); // resetting color on clicking
-                console.log('id', new_background_img_id);
+            // Emit the transitioning event to change the background image and minimap highlights
+            emitTransitioning(new_background_img_id) 
 
-                // Emit the transitioning event to change the background image and minimap highlights
-                emitTransitioning(new_background_img_id) 
-            };
-            // Hide the transition icons old background
-            var selector = '[background_img_id="' + background_img_id + '"]'; //background image is the image clicked from, type moved
-            toggleVisibility(selector, false);       
-
-            // show transition icon of new background
-            var selector2 = '[background_img_id="' + new_background_img_id + '"]'; //background image is the new image we are clicking to, type moved
-            // Iterate over the selected entities and hide them
-            toggleVisibility(selector2, true);
-
-            // can we wrap the selector creation, visibility toggle and background toggle in one big function?
-            // that way we can call on it from other events. K.T
         };
 
     });
