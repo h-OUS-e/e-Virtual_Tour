@@ -74,7 +74,7 @@
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
             <a-mixin
                 id="mediaPlayerFrame"                 
-                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3.1"
                 material="side:double; shader: flat"
                 animation__scale="property: scale; to: 1.5 1.5 1.5; dur: 200; startEvents: hoverin"
                 animation__scale_reverse="property: scale; to: 1 1 1; dur: 200; startEvents: hoverout"
@@ -83,14 +83,14 @@
                 id="mediaPlayerIcon"
                 geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
                 material="opacity: .99; side:double; shader: flat"
-                position="0 0 .0"
+                position="0 0 -.05"
                 src="0_resources/icons/CMYK_Blue_Emergency.png">
             </a-mixin>
             <a-mixin
                 id="mediaPlayerBorder"
-                geometry="primitive: ring; radiusInner: 3; radiusOuter: 3.2"
+                geometry="primitive: ring; radiusInner: 3; radiusOuter: 3.1"
                 material="color:white; side:double; shader: flat; emissive: blue; emissiveIntensity: 0.5"
-                position="0 0 .0"
+                position="0 0 -.05"
                 >
             </a-mixin>
 
