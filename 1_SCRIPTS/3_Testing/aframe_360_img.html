@@ -13,30 +13,20 @@
     <script src="zoomControl.js"></script> 
     <script src="sky.js"></script> 
     <script type="module" src="mouseInteractionEvents.js"></script> 
-<<<<<<< HEAD
-    
-=======
     <script src="minimap.js"></script>
     <script src="mediaPopup.js"></script>
     <script src="popupContent.js"></script>
->>>>>>> popups
+    
     
 </head>
 <body>
     <div id="minimap_container" >
         <!-- Minimap nodes -->
         <!-- change dataview to ID -->
-<<<<<<< HEAD
         <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 165px; top: 130px;"></div>
         <div id= "minimap_node_01.2" class="minimapNode" imgId="01.2" current = "False" style="left: 165px; top: 40px;"></div>
-        <div id= "minimap_node_02.1" class="minimapNode" imgId="03.1" current = "False" style="left: 65px; top: 60px;"></div>
-        <div id= "minimap_node_04.1" class="minimapNode" imgId="04.1" current = "False" style="left: 25px; top: 35px;"></div>
-=======
-        <div id= "minimap_node_background_img01.1" class="minimapNode" src="0_resources/img1.1_lobby.jpeg" initial="True" style="left: 165px; top: 130px;"></div>
-        <div id= "minimap_node_background_img02.1" class="minimapNode" src="0_resources/img1.2_lobby.jpeg" initial="False" style="left: 165px; top: 40px;"></div>
-        <div id= "minimap_node_background_img03.1" class="minimapNode" src="0_resources/img3_dentalRoom2.jpeg" initial="False" style="left: 65px; top: 60px;"></div>
-        <div id= "minimap_node_background_img01.2" class="minimapNode" src="0_resources/img2_dentalRoom1.jpeg" initial="False" style="left: 25px; top: 35px;"></div>
->>>>>>> popups
+        <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 65px; top: 60px;"></div>
+        <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 25px; top: 35px;"></div>
         <!-- add js for nodes -->
     </div>
 
@@ -79,12 +69,8 @@
             <!-- Can we load on the go instead of waiting for website to load? -->
             <img id="background_img01.1" src="0_resources/img1.1_lobby.jpeg" background_img_id="01.1"> 
             <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2">
-<<<<<<< HEAD
-            <img id="background_img03.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="03.1">
-            <img id="background_img04.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="04.1">
-=======
-            <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="03.1">
-            <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="04.1">
+            <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1">
+            <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1">
             <img id="img03.1" src="0_resources/test.png" background_img_id="03.1">
 
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
@@ -109,7 +95,7 @@
                 position="0 0 -.05"
                 >
             </a-mixin>
->>>>>>> popups
+            
 
         </a-assets>
 
@@ -123,46 +109,12 @@
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
-        <a-entity id="mediaPlayer1" visible="true" visible_on_load="true" clickable="true" class="mediaPlayer" 
+        <a-entity id="mediaPlayer1" visible="true" visible_on_load="true" clickable="true" toggle_visibility="true" class="mediaPlayer" background_img_id="01.1"
         mixin="mediaPlayerFrame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
             <a-entity material="src: 0_resources/icons/CMYK_Blue_Emergency.png;" mixin="mediaPlayerIcon"></a-entity>
             <a-entity mixin="mediaPlayerBorder"></a-entity>
         </a-entity>
 
-
-        <!-- Creating planes to play a video or show an image -->
-<<<<<<< HEAD
-        <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
-        background_img_id = "03.1"
-=======
-        <!-- <a-plane id="mediaPlayer1" class="mediaPlayer" clickable="true" visible="true" visible_on_load="true"
-        background_img_id = "01.1"
->>>>>>> popups
-        targets="media1.1"
-        position="2.836 -6.687 53.458" rotation="0 150.000 0" width="5" height="3" 
-        color="white" material="opacity: .99; "
-        attachement="img03.1"
-        animation__scale="property: scale; to: 3.2 3.2 3.2; dur: 200; startEvents: hoverin"
-        src="0_resources/icons/CMYK_Blue_Emergency.png"
-        ></a-plane> -->
-
-        <!-- Placeholders for the image or video that will be shown when the plane is clicked -->
-        <a-image id="media1.1" class="popup_image" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
-        position="2.836 -6.687 53.458" rotation="0 150.000 0" width="30" height="18"
-        background_img_id = "03.1"
-        media_src="mediaPlayer1"
-        src="0_resources/00000-cam0.jpg" 
-        ></a-image>
-
-        <a-image id="media1.2" class="popup_image" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
-        position="-9 -2.298 19.005" rotation="0 150.000 0" width="30" height="18"
-        background_img_id = "03.1"
-        media_src="mediaPlayer1"
-        src="0_resources/00000-cam1.jpg" 
-        ></a-image>
-        <!-- <a-video id="popup_video" 
-            src="0_resources/test_vid.mp4" position="-10 -6.298 19.005" rotation="0 150.000 0" width="5" height="3" visible="false">
-        </a-video> -->
 
         <!-- Creating some buttons to move between 360 images. -->
         <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="true" toggle_visibility="true" 
@@ -172,56 +124,40 @@
             material="color:gray; side:double"
         ></a-entity>       
         <!-- Return. -->
-<<<<<<< HEAD
-        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
+
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
             background_img_id="01.2" new_background_img_id= "01.1" 
             position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
-=======
-        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="01.2" new_background_img_id= "01.1"
-            position="2.433 -.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
->>>>>>> popups
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
         
 
-        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
-            background_img_id="01.2" new_background_img_id = "03.1"
+        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
+            background_img_id="01.2" new_background_img_id = "02.1"
             position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-<<<<<<< HEAD
-        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true"
-            background_img_id="03.1" new_background_img_id= "01.2"
-            position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
-=======
-        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
+
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
             background_img_id="02.1" new_background_img_id= "01.2"
-            position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
->>>>>>> popups
+            position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
 
-        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
+        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "03.1"
             position="0.516 -1.682 -2.849" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-<<<<<<< HEAD
-        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" toggle_visibility="true" 
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
             position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
-=======
-        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="true" 
-            background_img_id="03.1" new_background_img_id= "01.2"
-            position="2.433 -3.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
->>>>>>> popups
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
