@@ -111,8 +111,8 @@
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
         <a-entity id="mediaPlayer1" visible="true" visible_on_load="true" clickable="true" toggle_visibility="true" class="mediaPlayer" background_img_id="01.1"
         mixin="mediaPlayerFrame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
-            <a-entity material="src: 0_resources/icons/CMYK_Blue_Emergency.png;" mixin="mediaPlayerIcon"></a-entity>
-            <a-entity mixin="mediaPlayerBorder"></a-entity>
+            <!-- <a-entity material="src: 0_resources/icons/CMYK_Blue_Emergency.png;" mixin="mediaPlayerIcon"></a-entity>
+            <a-entity mixin="mediaPlayerBorder"></a-entity> -->
         </a-entity>
 
 
@@ -125,7 +125,7 @@
         ></a-entity>       
         <!-- Return. -->
 
-        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="false" toggle_visibility="true"
             background_img_id="01.2" new_background_img_id= "01.1" 
             position="2.433 -1.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
@@ -133,7 +133,7 @@
         ></a-entity>
         
 
-        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
+        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="false" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "02.1"
             position="2.837 -0.682 .8" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
@@ -141,21 +141,21 @@
         ></a-entity>
         <!-- Return. -->
 
-        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true"
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="false" toggle_visibility="true"
             background_img_id="02.1" new_background_img_id= "01.2"
             position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
 
-        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
+        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="true" visible_on_load="false" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "03.1"
             position="0.516 -1.682 -2.849" rotation="-90 0 0" scale=".35 .35 .35"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
         <!-- Return. -->
-        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" visible_on_load="false" toggle_visibility="true" 
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="true" visible_on_load="false" toggle_visibility="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
             position="2.433 0.43037 -4.540" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
