@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // input: node: DOM element
         // reset the style of the node
         node.style.backgroundColor = color_inactive; // Original node Color
-        node.style.border = '1px dotted grey'; // Original border
+        node.style.border = '1px dotted grey'; // Original border //use css
         node.style.backgroundColor = color_inactive; // Original node Color
-        node.style.border = '1px dotted grey'; // Original border
+        node.style.border = '1px dotted grey'; // Original border //use css
     }
 
 //logic:
