@@ -35,8 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // update visibility of all entities that match selector specs
 
         const entities = document.querySelectorAll(selector + '[toggle_visibility="true"]'); //select all enteties that match selector specs
+        console.log('test2', entities);
+        console.log(selector)
         entities.forEach(entity => {
             entity.setAttribute('visible', isVisible); 
+            console.log('test2', entity);
         });
     }
 
@@ -118,17 +121,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
-        // "visible" is a special attribute that is boolean, unlicke my made up "clickable" attribute.
+        // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
             {
             
-            // Get the id of the clicked entity
-            
+            // Get the id of the clicked entity            
             var clickedId = event.target.id;
             var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
             var background_img_id = obj.getAttribute('background_img_id'); //current background image id
             var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
+            console.log('TEST', new_background_img_id);
 
             if (obj.classList.contains("transitionNode")){
                 event.target.setAttribute('color', color_transitionNode); // resetting color on clicking
@@ -142,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleVisibility(selector, false);       
 
             // show transition icon of new background
-            var selector2 = '[background_img_id="' + new_background_img_id + '"][visible_on_load="true"]'; //background image is the new image we are clicking to, type moved
+            var selector2 = '[background_img_id="' + new_background_img_id + '"]'; //background image is the new image we are clicking to, type moved
             // Iterate over the selected entities and hide them
             toggleVisibility(selector2, true);
 
