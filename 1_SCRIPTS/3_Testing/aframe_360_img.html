@@ -81,23 +81,23 @@
 
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
             <a-mixin
-                id="mediaPlayerFrame"                 
+                id="mediaplayer_frame"                 
                 geometry="primitive: ring; radiusInner: 0; radiusOuter: 3.1"
                 material="side:double; shader: flat"
                 animation__scale="property: scale; to: 1.5 1.5 1.5; dur: 200; startEvents: hoverin"
                 animation__scale_reverse="property: scale; to: 1 1 1; dur: 200; startEvents: hoverout"
             ></a-mixin>
             <a-mixin
-                id="mediaPlayerIcon"
+                id="mediaplayer_icon"
                 geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
                 material="opacity: .99; side:double; shader: flat"
                 position="0 0 -.05"
                 src="0_resources/icons/CMYK_Blue_Emergency.png">
             </a-mixin>
             <a-mixin
-                id="mediaPlayerBorder"
+                id="mediaplayer_border"
                 geometry="primitive: ring; radiusInner: 3; radiusOuter: 3.1"
-                material="color:white; side:double; shader: flat; emissive: blue; emissiveIntensity: 0.5"
+                material="color:white; side:double; shader: flat"
                 position="0 0 -.05"
                 >
             </a-mixin>
@@ -115,10 +115,16 @@
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
-        <a-entity id="mediaPlayer1" visible="true" clickable="true" toggle_visibility="true" class="mediaPlayer" background_img_id="01.1"
-        mixin="mediaPlayerFrame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
-            <a-entity material="src: 0_resources/icons/CMYK_Blue_Emergency.png;" mixin="mediaPlayerIcon"></a-entity>
-            <a-entity mixin="mediaPlayerBorder"></a-entity>
+        <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" background_img_id="01.1"
+        mixin="mediaplayer_frame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
+            <a-entity class="mediaplayer-icon" icon_index="1" material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
+        </a-entity>
+
+        <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="green" background_img_id="01.1"
+        mixin="mediaplayer_frame" position="-2.836 -6.687 -20.458" rotation="0 150.000 0">
+            <a-entity class="mediaplayer-icon" icon_index="1"  material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 
 

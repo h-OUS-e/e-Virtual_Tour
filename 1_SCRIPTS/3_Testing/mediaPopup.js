@@ -28,13 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Hide the video element if the source is empty
                 videoElements[i].style.display = 'none';
             }
+            else {
+                videoElements[i].style.display = 'block';
+            }
         }
     }
+
 
     // A function to show the popup window and overlay
     function showPopup() {
         popup.style.display = 'block';
         overlay.style.display = 'block'; // Show the overlay
+
+        
     }
 
     // A function to hide the popup window and the overlay
@@ -42,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.style.display = 'none';
         overlay.style.display = 'none'; // Hide the overlay
     }
+
+
+
 
 
     // Disabling zoom when popup is on screen
@@ -60,20 +69,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Changing colors of popup window based on mediaPlayer class
+
+
+
     // showing popup when mediaPlayer is double clicked
     scene.addEventListener('mediaPlayerClicked', function(event) {
         // Extract the id of the clicked media
         const mediaId  = event.detail.id;
         // find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId );
+        console.log(content);
         // update popup content
         if (content) {
             updatePopupContent(content);
         }
         // show poup window
         showPopup();
-
-
     });
 
 
@@ -82,7 +94,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close popup when clicking on the overlay
     overlay.addEventListener('click', hidePopup);
-
-
 
 });
