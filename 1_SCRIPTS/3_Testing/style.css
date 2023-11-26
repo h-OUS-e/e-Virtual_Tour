@@ -47,7 +47,7 @@ body {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-size: 1.45rem;
+    font-size: 1.5rem;
     
 }
 h1 {
@@ -69,7 +69,7 @@ h2 {
 /* For Webkit Browsers */
 /* Adjusting scroll bar style */
 ::-webkit-scrollbar {
-    width: 4px; /* width of the entire scrollbar */
+    width: 1px; /* width of the entire scrollbar */
   }
   
 ::-webkit-scrollbar-track {
@@ -130,10 +130,10 @@ html {
     padding-bottom: 4rem;
     padding-left: 4rem;
     padding-right: 4rem;
-    background-color: var(--popupLightColor);
-    box-shadow: 0px 5px 15px var(--popupDarkColor);
+    background-color: white;
+    box-shadow: 0px 5px 15px var(--popupLightColor);
     box-sizing: border-box;
-    border: 3px solid var(--popupDarkColor);
+    border: 3px solid var(--popupLightColor);
     border-radius: 15px;
     overflow: auto;
     z-index: 1000; /* High z-index to be above other content */
@@ -177,7 +177,7 @@ html {
     display: flex;
     flex-direction: column; 
     padding-top: rem;    
-    border: 1.5px solid var(--popupDarkColor); 
+    border: 1.5px solid var(--popupLightColor); 
     border-radius: 10px;
     margin: auto; /* Centers the block itself horizontally */
     align-items: center;
