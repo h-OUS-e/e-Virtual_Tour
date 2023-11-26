@@ -39,6 +39,17 @@
 };
 
 
+// Functions
+function getColorClass(entity_id) {
+    // Get corresponding popup color class for the mediaplayer id
+    const content = popupContent.find(item => item.media_id === entity_id );
+    // Define media player color/icon style
+    const mediaplayer_class = icon_color_list[content.color_class];
+    const icon_index = content.icon_index;
+
+    return {mediaplayer_class, icon_index}
+}
+
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -46,18 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const scene = document.querySelector('a-scene');
     var main_class = "mediaplayer";
    
-    
 
-    
-
-    
     // Setting initial colors of objects
     const entities = document.querySelectorAll('[class=' + main_class + ']');
     entities.forEach(entity => {
-        const mediaplayer_class = icon_color_list[entity.getAttribute('color_class')];
-        const icon = entity.querySelector('.mediaplayer-icon');
-        const icon_index = entity.getAttribute('icon_index');
+
+        // Get corresponding popup color class and icon index for the mediaplayer id
+        const {mediaplayer_class, icon_index} = getColorClass(entity.id);
+        // Get the icon and border entities inside the media player entity
+        const icon = entity.querySelector('.mediaplayer-icon');        
         const border = entity.querySelector('.mediaplayer-border');
+        // Update icon, border and media player colors and icon image
         icon.setAttribute('material', 'src', mediaplayer_class["icon"][icon_index]);
         border.setAttribute('material', 'color', mediaplayer_class["dark"]);
         entity.setAttribute('material', 'color', mediaplayer_class["light"]);
@@ -74,7 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {   
 
         if (event.target.classList.contains(main_class)){
-            const color_mediaPlayer = icon_color_list[event.target.getAttribute('color_class')]["dark"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
+            const color_mediaPlayer = mediaplayer_class["dark"];
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -83,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const color_mediaPlayer = icon_color_list[event.target.getAttribute('color_class')]["light"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
+            const color_mediaPlayer = mediaplayer_class["light"];
             event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
         }
 
@@ -94,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const color_mediaPlayer = icon_color_list[event.target.getAttribute('color_class')]["light"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
+            const color_mediaPlayer = mediaplayer_class["light"];
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -104,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {
     if (event.target.classList.contains(main_class))
     {
-        const color_mediaPlayer = icon_color_list[event.target.getAttribute('color_class')]["light"];
+        const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
+            const color_mediaPlayer = mediaplayer_class["light"];
         event.target.setAttribute('material', 'color', color_mediaPlayer); 
     }
     });

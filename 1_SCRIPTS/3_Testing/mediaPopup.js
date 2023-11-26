@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('overlay');
 
     // A function to update popup window content
-    function updatePopupContent(content, mediaColorClass, mediaIconIndex) {
+    function updatePopupContent(content ) {
         // update popup window content
         document.querySelector('.popup-title').textContent = content.title;
         document.querySelector('.popup-subtitle').textContent = content.subtitle;
@@ -25,9 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
 
         // update popup window colors
-
-        document.documentElement.style.setProperty('--popupLightColor', icon_color_list[mediaColorClass]['light']);
-        document.documentElement.style.setProperty('--popupDarkColor', icon_color_list[mediaColorClass]['dark']);
+        document.documentElement.style.setProperty('--popupLightColor', icon_color_list[content.color_class]['light']);
+        document.documentElement.style.setProperty('--popupDarkColor', icon_color_list[content.color_class]['dark']);
 
 
         // Hiding media element if source is empty
@@ -86,13 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mediaPlayerClicked', function(event) {
         // Extract the id of the clicked media
         const mediaId  = event.detail.id;
-        const mediaIconIndex = event.detail.icon_index;
-        const mediaColorClass = event.detail.color_class;
         // find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId );
         // update popup content
         if (content) {
-            updatePopupContent(content, mediaColorClass, mediaIconIndex);
+            updatePopupContent(content);
         }
         // show poup window
         showPopup();
