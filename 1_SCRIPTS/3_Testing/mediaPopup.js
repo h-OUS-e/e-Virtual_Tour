@@ -1,17 +1,21 @@
 /*
 A script to control popup windows
 */
+import { icon_color_list } from './mediaPlayer.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     //definitions
     var main_class = "#popup";    
+
 
     const popup = document.querySelector(main_class);
     const closeButton = document.querySelector('.popup-close-button');
     const overlay = document.getElementById('overlay');
 
     // A function to update popup window content
-    function updatePopupContent(content) {
+    function updatePopupContent(content, mediaColorClass, mediaIconIndex) {
+        // update popup window content
         document.querySelector('.popup-title').textContent = content.title;
         document.querySelector('.popup-subtitle').textContent = content.subtitle;
         document.querySelector('.title-description').textContent = content.description;
@@ -19,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#popup_image').src = content.imageUrl;
         document.querySelector('#popup_video').src = content.videoUrl;
         document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
+
+        // update popup window colors
+
+        document.documentElement.style.setProperty('--popupLightColor', icon_color_list[mediaColorClass]['light']);
+        document.documentElement.style.setProperty('--popupDarkColor', icon_color_list[mediaColorClass]['dark']);
+
 
         // Hiding media element if source is empty
         var videoElements = document.getElementsByClassName("popup-media");
@@ -39,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPopup() {
         popup.style.display = 'block';
         overlay.style.display = 'block'; // Show the overlay
-
         
     }
 
@@ -77,12 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mediaPlayerClicked', function(event) {
         // Extract the id of the clicked media
         const mediaId  = event.detail.id;
+        const mediaIconIndex = event.detail.icon_index;
+        const mediaColorClass = event.detail.color_class;
         // find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId );
-        console.log(content);
         // update popup content
         if (content) {
-            updatePopupContent(content);
+            updatePopupContent(content, mediaColorClass, mediaIconIndex);
         }
         // show poup window
         showPopup();

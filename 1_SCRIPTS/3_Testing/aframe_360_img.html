@@ -8,13 +8,13 @@
 
     <!-- IMPORTS -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="mediaPlayer.js"></script>
+    <script type="module" src="mediaPlayer.js"></script>
     <script src="transitionNodes.js"></script>
     <script src="zoomControl.js"></script> 
     <script src="sky.js"></script> 
     <script type="module" src="mouseInteractionEvents.js"></script> 
     <script src="minimap.js"></script>
-    <script src="mediaPopup.js"></script>
+    <script type="module" src="mediaPopup.js"></script>
     <script src="popupContent.js"></script>
     
     
@@ -115,15 +115,17 @@
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
-        <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" background_img_id="01.1"
+        <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1"
+        background_img_id="01.1"
         mixin="mediaplayer_frame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
-            <a-entity class="mediaplayer-icon" icon_index="1" material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 
-        <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="green" background_img_id="01.1"
+        <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="green" icon_index="1" 
+        background_img_id="01.1"
         mixin="mediaplayer_frame" position="-2.836 -6.687 -20.458" rotation="0 150.000 0">
-            <a-entity class="mediaplayer-icon" icon_index="1"  material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 

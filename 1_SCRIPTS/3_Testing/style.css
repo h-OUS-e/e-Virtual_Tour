@@ -14,6 +14,10 @@
     --popPink: #FB7698;
     --coolPink: rgb(255, 216, 226);
     --coolBlue: #D0F9F2;
+
+    
+    --popupDarkColor: #2dc84d;
+    --popupLightColor: #DBFFE5;
 }
 
 
@@ -69,13 +73,13 @@ h2 {
   }
   
 ::-webkit-scrollbar-track {
-background: var(--coolBlue); /* color of the tracking area */
+background: var(--popupLightColor); /* color of the tracking area */
 }
 
 /* For Firefox Browsers */
 /* Adjusting scroll bar style */
 html {
-    scrollbar-color: var(--oceanBlue) var(--coolBlue); /* thumb and track color */
+    scrollbar-color: var(--popupDarkColor) var(--popupLightColor); /* thumb and track color */
     scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
   }
 
@@ -126,14 +130,14 @@ html {
     padding-bottom: 4rem;
     padding-left: 4rem;
     padding-right: 4rem;
-    background-color: var(--coolBlue);
-    box-shadow: 0px 5px 15px var(--oceanBlue);
+    background-color: var(--popupLightColor);
+    box-shadow: 0px 5px 15px var(--popupDarkColor);
     box-sizing: border-box;
-    border: 3px solid var(--oceanBlue);
+    border: 3px solid var(--popupDarkColor);
     border-radius: 15px;
     overflow: auto;
     z-index: 1000; /* High z-index to be above other content */
-    color: var(--oceanBlue);
+    color: var(--popupDarkColor);
 }
   
 .popup-header {
@@ -165,7 +169,7 @@ html {
     background: none;
     cursor: pointer;
     font-size: 2rem;
-    color: var(--oceanBlue);
+    color: var(--popupDarkColor);
     align-self: flex-start; /* Puts close-button on top of its own column container */
 }
 
@@ -173,7 +177,7 @@ html {
     display: flex;
     flex-direction: column; 
     padding-top: rem;    
-    border: 1.5px solid var(--oceanBlue); 
+    border: 1.5px solid var(--popupDarkColor); 
     border-radius: 10px;
     margin: auto; /* Centers the block itself horizontally */
     align-items: center;
