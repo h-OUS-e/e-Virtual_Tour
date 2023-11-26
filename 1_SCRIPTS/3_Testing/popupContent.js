@@ -13,7 +13,10 @@ const popupContent = [
     subtitle: "Subtitle 2",
     description: "Description for Title 2",
     bodyText: "Content for Title 2...",
-    imageUrl: "path/to/image2.jpg"
+    imageUrl: "",
+    videoUrl: "0_resources/12273497-4k.mp4",
+    videoUrlEmbedded: ""
   }
-  // Add more objects for more popup content sets
+  //0_resources/12273497-4k.mp4
+  //https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0
 ];

@@ -50,14 +50,20 @@
         </div>
 
         <div class="popup-body">
+            <!-- Add text -->
             <div class="popup-media-text">
             <p>Your content goes here. Sage dental combines 
                 leading-edge clinical innovations and a proprietary 
                 software platform to deliver the best patient care
                 and experience in the dental industry....</p>
             </div>
-            <!-- Add images, text, or whatever content you want in the popup -->
-            <img id="popupImage" class="popup-media" src="" alt="">
+            <!-- Add images -->
+            <img id="popup_image" class="popup-media" src="" alt="">
+            <!-- Add videos if available -->
+            <video id="popup_video" class="popup-media" src=""  controls ></video>            
+            <!-- Add embdedded video if available -->            
+            <iframe id="popup_video_embedded" class="popup-media" src="" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            
         </div>
     </div>
       
@@ -116,6 +122,8 @@
         </a-entity>
 
 
+
+
         <!-- Creating some buttons to move between 360 images. -->
         <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true" 
             background_img_id="01.1" new_background_img_id= "01.2"
@@ -129,7 +137,6 @@
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5" 
             material="color: gray; side:double"           
         ></a-entity>
-
 
         <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
             background_img_id="01.2" new_background_img_id= "01.1" 
@@ -150,14 +157,12 @@
             material="color: gray; side:double"           
         ></a-entity>
 
-
         <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
             background_img_id="02.1" new_background_img_id= "01.2"
             position="6.2 -2.5 3" rotation="90 0 0" scale=".6 .6 .6"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: .5"  
             material="color:gray; side:double"
         ></a-entity>
-
 
         <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
             background_img_id="03.1" new_background_img_id= "01.2"
@@ -166,10 +171,9 @@
             material="color:gray; side:double"
         ></a-entity>
 
-
         
     </a-scene>
-    <script src="minimap.js"></script>
+    
 </body>
 
 </html>

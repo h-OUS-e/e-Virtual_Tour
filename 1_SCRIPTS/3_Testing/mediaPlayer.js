@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains(main_class)){
 
             // Create an event that sends media id when double clicked
-            var new_event = new CustomEvent('mediaPlayerDoubleClicked', 
+            var new_event = new CustomEvent('mediaPlayerClicked', 
             {
                 detail: {id: event.target.id}
             });
@@ -89,10 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mouseClicked', (event) => 
     {
 
-        if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class) || (event.target.classList.contains("popup_image")))) 
+        if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class))) 
         {
             // Create an event that sends media id when clicked
-            var new_event = new CustomEvent('mediaPlayerDoubleClicked', 
+            var new_event = new CustomEvent('mediaPlayerClicked', 
             {
                 detail: {id: event.target.id}
             });

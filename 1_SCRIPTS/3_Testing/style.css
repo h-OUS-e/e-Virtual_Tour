@@ -170,6 +170,8 @@ html {
 }
 
 .popup-body {
+    display: flex;
+    flex-direction: column; 
     padding-top: rem;    
     border: 1.5px solid var(--oceanBlue); 
     border-radius: 10px;
@@ -182,11 +184,12 @@ html {
     padding-right: 10%;
 }
 
-.popup-media {    
-    padding-top: 1rem;
-    padding:4rem;
+.popup-media {   
+    
+    padding:1rem;
     align-items: center;
     margin: auto;
+    width:80%;
 }
   
 .popup-footer {

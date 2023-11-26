@@ -16,7 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.popup-subtitle').textContent = content.subtitle;
         document.querySelector('.title-description').textContent = content.description;
         document.querySelector('.popup-media-text p').innerHTML  = content.bodyText;
-        document.querySelector('#popupImage').src = content.imageUrl;
+        document.querySelector('#popup_image').src = content.imageUrl;
+        document.querySelector('#popup_video').src = content.videoUrl;
+        document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
+
+        // Hiding media element if source is empty
+        var videoElements = document.getElementsByClassName("popup-media");
+        for (var i = 0; i < videoElements.length; i++) {
+            var videoSrc = videoElements[i].getAttribute("src");
+            if (!videoSrc) {
+                // Hide the video element if the source is empty
+                videoElements[i].style.display = 'none';
+            }
+        }
     }
 
     // A function to show the popup window and overlay
@@ -49,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // showing popup when mediaPlayer is double clicked
-    scene.addEventListener('mediaPlayerDoubleClicked', function(event) {
+    scene.addEventListener('mediaPlayerClicked', function(event) {
         // Extract the id of the clicked media
         const mediaId  = event.detail.id;
         // find the media in the database with the same matching id
@@ -60,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // show poup window
         showPopup();
+
+
     });
 
 
@@ -68,5 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close popup when clicking on the overlay
     overlay.addEventListener('click', hidePopup);
+
+
 
 });
