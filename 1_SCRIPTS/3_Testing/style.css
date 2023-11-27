@@ -69,14 +69,14 @@ h3 {
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
 }
 h4 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 
@@ -255,19 +255,30 @@ html {
     border-radius: 10px;
     z-index: 10; /* Ensures it's above the A-Frame scene */
     border: 2px solid #000;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
 }
 .mediabar-header {
-    padding: 20px; /* Spacing inside the sidebar */
+    padding-right: 30px; /* Spacing inside the sidebar */
+    padding-left: 30px;
+    padding-top: 10px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #ccc;
+    position: fixed;
+    background-color: white;
+    z-index: 1001;
+
 
 }
 .mediabar-item-container {
     padding: 20px; /* Spacing inside the sidebar */
+    margin-top: 60px;
 }
 
 .mediabar-item {
     cursor: pointer; 
-    margin-bottom: 20px; /* Space between news items */
+    margin-bottom: 10px; /* Space between news items */
     border-bottom: 1px solid #ccc;
     font-size: 12px;
     /* Styles for the news item */
