@@ -47,11 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Change sky image when mouse is clicked and show popup
         media_element.addEventListener('click', function(event) {
-            var transitioning = new CustomEvent('mediabarItemClick', {
+            var transitioning = new CustomEvent('mediabarItemClicked', {
                 detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
             });
             scene.dispatchEvent(transitioning)
+            console.log("TEST CLICKED");
         });
+
         media_element.addEventListener('dblclick', function(event) {
             var transitioning = new CustomEvent('mediabarItemDoubleClicked', {
                 detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
