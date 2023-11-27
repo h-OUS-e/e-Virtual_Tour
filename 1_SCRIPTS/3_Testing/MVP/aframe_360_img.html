@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>360 Image in A-Frame</title>
+    <!-- <link rel="colors" href="colorPalette.css"> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- IMPORTS -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script type="module" src="mediaPlayer.js"></script>
+    <script src="transitionNodes.js"></script>
+    <script src="zoomControl.js"></script> 
+    <script src="sky.js"></script> 
+    <script type="module" src="mouseInteractionEvents.js"></script> 
+    <script src="minimap.js"></script>
+    <script type="module" src="mediaPopup.js"></script>
+    <script src="popupContent.js"></script>
+    <script type="module" src="mediaBar.js"></script>
+    
+    
+</head>
+<body>
+    <div id="minimap_container" >
+        <!-- Minimap nodes -->
+        <!-- change dataview to ID -->
+        <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 165px; top: 130px;"></div>
+        <div id= "minimap_node_01.2" class="minimapNode" imgId="01.2" current = "False" style="left: 165px; top: 40px;"></div>
+        <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 65px; top: 60px;"></div>
+        <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 25px; top: 35px;"></div>
+        <!-- add js for nodes -->
+    </div>
+
+    <div id="mediabar">
+        <!-- <div class="scrollbar-tabs"></div> -->
+        <div class="mediabar-header">
+            <h3>MEDIA BAR</h3>
+        </div>
+        <div class="mediabar-item-container"></div>
+    </div>
+
+    <!-- An overlay to blur the background when something pops up -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Defining popup window when a mediaPlayer is clicked -->
+    <div id="popup" class="popup" style="display:none;">
+
+        <div class="popup-header">
+            <div class="title-container">
+                <h1 class="popup-subtitle">Subtitle</h1>
+                <h2 class="popup-title">Your Title Here</h2>
+                <p class="title-description">
+                    A small description of the title.
+                </p>
+            </div>            
+            <button class="popup-close-button">&times;</button>
+        </div>
+
+        <div class="popup-body">
+            <!-- Add text -->
+            <div class="popup-media-text">
+            <p>Your content goes here. Sage dental combines 
+                leading-edge clinical innovations and a proprietary 
+                software platform to deliver the best patient care
+                and experience in the dental industry....</p>
+            </div>
+            <!-- Add images -->
+            <img id="popup_image" class="popup-media" src="" alt="">
+            <!-- Add videos if available -->
+            <video id="popup_video" class="popup-media" src=""  controls ></video>            
+            <!-- Add embdedded video if available -->            
+            <iframe id="popup_video_embedded" class="popup-media" src="" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            
+        </div>
+    </div>
+      
+    
+    
+    <a-scene id="scene">
+        
+        <a-assets>
+            <!-- Can we load on the go instead of waiting for website to load? -->
+            <img id="background_img01.1" src="0_resources/img1.1_lobby.jpeg" background_img_id="01.1"> 
+            <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2">
+            <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1">
+            <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1">
+            <img id="img03.1" src="0_resources/test.png" background_img_id="03.1">
+
+            <!-- Defining the general mediaPlayer entity, basically like a prefab -->
+            <a-mixin
+                id="mediaplayer_frame"                 
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3.1"
+                material="side:double; shader: flat"
+                animation__scale="property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: hoverin"
+                animation__scale_reverse="property: scale; to: 1 1 1; dur: 200; startEvents: hoverout"
+            ></a-mixin>
+            <a-mixin
+                id="mediaplayer_icon"
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
+                material="opacity: .99; side:double; shader: flat"
+                position="0 0 -.05"
+                src="0_resources/icons/CMYK_Blue_Emergency.png">
+            </a-mixin>
+            <a-mixin
+                id="mediaplayer_border"
+                geometry="primitive: ring; radiusInner: 3; radiusOuter: 3.1"
+                material="color:white; side:double; shader: flat"
+                position="0 0 -.05"
+                >
+            </a-mixin>
+
+            <!-- Defining the general transitionNode entity, basically like a prefab -->
+            <a-mixin
+                id="transition_node_frame"                 
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: .75"
+                scale=".6 .6 .6"
+                material="side: double; opacity: 0"
+            ></a-mixin>
+            <a-mixin
+                id="transition_node_icon"
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: .5"
+                position="0 0 -.005"
+                material="side: double;"
+                src="0_resources/icons/CMYK_Blue_Emergency.png">
+            </a-mixin>
+            <a-mixin
+                id="transition_node_glow"   
+                class="transition-glow"              
+                geometry="primitive: ring; radiusInner: .4; radiusOuter: .5"
+                material="side: double; emissive: #AAA; emissiveIntensity: 1; opacity: .4"
+                animation__scale="property: scale; to: 1.5 1.5 1.5; dur: 2000; easing: easeInOutQuad; loop: true"
+                animation__emissive="property: material.emissiveIntensity; from: 0; to: 1; dur: 2000; easing: easeInOutQuad; loop: true"
+                animation__opacity="property: material.opacity; from: 1; to: 0; dur: 2000; easing: easeInOutQuad; loop: true"
+            ></a-mixin>
+
+            
+
+        </a-assets>
+
+        <a-camera id="camera" raycaster wasd-controls="enabled: false">
+            <a-cursor fuse="false" ></a-cursor>
+        </a-camera>
+
+        <!-- Loading in 360 image. -->
+        <a-sky id="sky" src="#background_img01.1" background_img_id="01.1">            
+        </a-sky>
+
+
+
+
+        <!-- Defining mediaplayers, need to find a way to automate their positions -->
+        <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1"
+        background_img_id="01.1"
+        mixin="mediaplayer_frame" position="2.836 -6.687 -25.458" rotation="0 150.000 0">
+            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
+        </a-entity>
+
+        <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1" 
+        background_img_id="01.1"
+        mixin="mediaplayer_frame" position="-2.836 -6.687 -20.458" rotation="0 150.000 0">
+            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
+            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
+        </a-entity>
+
+
+        <!-- Creating some buttons to move between 360 images. -->
+        
+        <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true" 
+            background_img_id="01.1" new_background_img_id= "01.2"
+            mixin="transition_node_frame"
+            position="-9.1 -2.5 -3" rotation="90 0 0" 
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>  
+        <a-entity id="move_01.1_03.1"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true"
+            background_img_id="01.1" new_background_img_id= "03.1"
+            mixin="transition_node_frame"
+            position="-9 -2.5 2.2" rotation="-90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+
+        <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
+            background_img_id="01.2" new_background_img_id= "01.1"
+            mixin="transition_node_frame"
+            position="-.1 -2.5 -9.1" rotation="90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+        <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
+            background_img_id="01.2" new_background_img_id = "02.1"
+            mixin="transition_node_frame"
+            position="-6.5 -2.5 6.5" rotation="-90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+        <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
+            background_img_id="01.2" new_background_img_id = "03.1"
+            mixin="transition_node_frame"
+            position="3 -2.5 -1.3" rotation="-90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+
+        <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
+            background_img_id="02.1" new_background_img_id= "01.2"
+            mixin="transition_node_frame"
+            position="6.2 -2.5 3" rotation="90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+
+        <a-entity id="move_03.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
+            background_img_id="03.1" new_background_img_id= "01.2"
+            mixin="transition_node_frame"
+            position="1 -2.5 -2.7" rotation="90 0 0"
+            ><a-entity  mixin="transition_node_icon" ></a-entity>
+            <a-entity mixin="transition_node_glow"></a-entity>
+        </a-entity>
+
+
+        
+    </a-scene>
+    
+</body>
+
+</html>
+

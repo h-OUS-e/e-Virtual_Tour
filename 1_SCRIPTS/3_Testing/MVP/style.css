@@ -1,0 +1,280 @@
+:root {
+    --primary: #2dc84d;
+    --secondary: #33FF57;
+    --accent: #3357FF;
+    --background: #F0F0F0;
+    --text: #333333;
+    --hoverIn: #DBFFE5;
+    --hoverInClicked:gray;
+    --transitionNode:#2dc84d;
+    --mediaPlayer:rgb(159, 115, 39);
+    --sageGreen: #2dc84d;
+    --mintGreen: #DBFFE5;
+    --oceanBlue: #009A9F;
+    --popPink: #FB7698;
+    --coolPink: rgb(255, 216, 226);
+    --coolBlue: #D0F9F2;
+
+    
+    --popupDarkColor: #2dc84d;
+    --popupLightColor: #DBFFE5;
+}
+
+
+/* Adding fonts */
+@font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Black.otf') format('opentype');
+    font-weight: 900; /* 900 is typically used for the black weight */
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('0_resources/fonts/CircularStd-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+
+/* Defining styles of general classes */
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: 1.5rem;
+    cursor: auto 
+    
+}
+h1 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: 1rem;
+}
+h2 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: 2.8rem;
+}
+h3 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+h4 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+
+/* Defining general of default browser items*/
+/* For Webkit Browsers */
+/* Adjusting scroll bar style */
+::-webkit-scrollbar {
+    width: 1px; /* width of the entire scrollbar */
+  }
+  
+::-webkit-scrollbar-track {
+background: var(--popupLightColor); /* color of the tracking area */
+}
+
+/* For Firefox Browsers */
+/* Adjusting scroll bar style */
+html {
+    scrollbar-color: var(--popupDarkColor) var(--popupLightColor); /* thumb and track color */
+    scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
+  }
+
+
+/* Defining scene style*/
+#scene { 
+    width: 100%;
+    height: 100vh;
+    display: block;
+}
+
+
+/* Defining minimap style*/
+#minimap_container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 250px;
+    height: 20%;
+    /* background-image: url('0_resources/minimap.png'); */
+    background-size: cover;
+    border-radius: 10px;
+    z-index: 10; /* Ensures it's above the A-Frame scene */
+    border: 2px solid #000;
+}
+
+
+.minimapNode {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--transitionNode);
+    border-radius: 50%;
+    border: 1px solid grey; /* Add a grey border */
+}
+
+
+/* Defining popup style*/
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;    
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+    height: auto;
+    padding-top: 1rem;
+    padding-bottom: 4rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    background-color: white;
+    box-shadow: 0px 5px 15px var(--popupLightColor);
+    box-sizing: border-box;
+    border: 3px solid var(--popupLightColor);
+    border-radius: 15px;
+    overflow: auto;
+    z-index: 1000; /* High z-index to be above other content */
+    color: var(--popupDarkColor);
+}
+  
+.popup-header {
+    font-family: 'CircularStd', Helvetica;
+    border-radius: 10px;
+    padding-top: 1rem;
+    padding: 1rem;
+    /* background: #f9f9f9; */
+        border: none;    
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    border: none;
+} 
+
+.title-description{
+    font-style: italic;
+    padding-bottom: 2rem;
+}
+  
+.popup-close-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 2rem;
+    color: var(--popupDarkColor);
+    align-self: flex-start; /* Puts close-button on top of its own column container */
+}
+
+.popup-body {
+    display: flex;
+    flex-direction: column; 
+    padding-top: rem;    
+    border: 1.5px solid var(--popupLightColor); 
+    border-radius: 10px;
+    margin: auto; /* Centers the block itself horizontally */
+    align-items: center;
+}
+
+.popup-media-text {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.popup-media {   
+    
+    padding:1rem;
+    align-items: center;
+    margin: auto;
+    width:80%;
+}
+  
+.popup-footer {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+  
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .popup {
+      width: 90%;
+    }
+  }
+
+
+  /* Defines overlay block that blurs background */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    backdrop-filter: blur(5px); /* This creates the blur effect */
+    display: none; /* Hidden by default */
+    z-index: 999; /* Ensure it's below the popup but above other content */
+}
+
+
+  /* Defines mediabar aesthetics */
+#mediabar {
+    width: 250px;
+    height: 70%; /* Full height of the viewport */
+    overflow-y: auto; /* Adds a vertical scrollbar if content overflows */
+    position: fixed; /* Fixed position on the side of the page */
+    top: 10px; /* Align to the top */
+    right: 10px; /* Align to the right side of the page */
+    background-color: #f2f2f2; /* Light grey background, adjust the color as needed */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Shadow to the left side */
+    z-index: 1000; /* Ensure it's above other content */
+    border-radius: 10px;
+    z-index: 10; /* Ensures it's above the A-Frame scene */
+    border: 2px solid #000;
+}
+.mediabar-header {
+    padding: 20px; /* Spacing inside the sidebar */
+    border-bottom: 1px solid #ccc;
+
+}
+.mediabar-item-container {
+    padding: 20px; /* Spacing inside the sidebar */
+}
+
+.mediabar-item {
+    cursor: pointer; 
+    margin-bottom: 20px; /* Space between news items */
+    border-bottom: 1px solid #ccc;
+    font-size: 12px;
+    /* Styles for the news item */
+}
+
+
+/* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
+.a-enter-vr-button { 
+    display: none !important;
+}
