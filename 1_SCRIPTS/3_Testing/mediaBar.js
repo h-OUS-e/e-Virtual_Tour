@@ -45,10 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
             media_element.style.backgroundColor = 'white';
         });
 
-        // // Change sky image when mouse is clicked and show popup
+        // Change sky image when mouse is clicked and show popup
         // media_element.addEventListener('click', function(event) {
+        //     var transitioning = new CustomEvent('mediabarItemClick', {
+        //         detail: { new_background_img_id: new_background_img_id}       
+        //     });
+        //     scene.dispatchEvent(transitioning)
         // }
 
+        // add media element to media container div
         mediabar_container.appendChild(media_element);
     
     });

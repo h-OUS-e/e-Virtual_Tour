@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.setAttribute('material', 'src', mediaplayer_class["icon"][icon_index]);
         border.setAttribute('material', 'color', mediaplayer_class["dark"]);
         entity.setAttribute('material', 'color', mediaplayer_class["light"]);
+        entity.setAttribute('background_img_id', popupContent.find(item => item.media_id === entity.id).background_img_id);
     });
 
 

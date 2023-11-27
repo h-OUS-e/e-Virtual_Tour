@@ -9,7 +9,8 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
     color_class: "pink",
-    icon_index: "1"
+    icon_index: "1",
+    background_img_id: "01.1"
   },
   {
     media_id: "mediaplayer_2",
@@ -21,7 +22,9 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
     color_class: "blue",
-    icon_index: "2"
+    icon_index: "2",
+    background_img_id: "01.1"
+    
   },
   {
     media_id: "mediaplayer_3",
@@ -33,7 +36,8 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257641?h=56288e389c&byline=0&portrait=0",
     color_class: "green",
-    icon_index: "1"
+    icon_index: "1",
+    background_img_id: "01.2"
   },
   {
     media_id: "mediaplayer_4",
@@ -45,7 +49,8 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "",
     color_class: "green",
-    icon_index: "1"
+    icon_index: "1",
+    background_img_id: "02.1"
   },
   {
     media_id: "mediaplayer_5",
@@ -57,7 +62,8 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
     color_class: "blue",
-    icon_index: "1"
+    icon_index: "1",
+    background_img_id: "03.1"
   },
   {
     media_id: "mediaplayer_6",
@@ -69,7 +75,8 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "",
     color_class: "pink",
-    icon_index: "1"
+    icon_index: "1",
+    background_img_id: "03.1"
   },
 
 ];
