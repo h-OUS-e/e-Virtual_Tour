@@ -46,12 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Change sky image when mouse is clicked and show popup
-        // media_element.addEventListener('click', function(event) {
-        //     var transitioning = new CustomEvent('mediabarItemClick', {
-        //         detail: { new_background_img_id: new_background_img_id}       
-        //     });
-        //     scene.dispatchEvent(transitioning)
-        // }
+        media_element.addEventListener('click', function(event) {
+            var transitioning = new CustomEvent('mediabarItemClick', {
+                detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
+            });
+            scene.dispatchEvent(transitioning)
+        });
+        media_element.addEventListener('dblclick', function(event) {
+            var transitioning = new CustomEvent('mediabarItemDoubleClicked', {
+                detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
+            });
+            scene.dispatchEvent(transitioning)
+        });
 
         // add media element to media container div
         mediabar_container.appendChild(media_element);

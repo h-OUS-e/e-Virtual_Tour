@@ -48,6 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // emit transitioning event
         emitTransitioning(new_background_img_id);
     });
+
+    //listen to mediabar item click event to change scenes
+    scene.addEventListener('mediabarItemClicked', function(event) {
+        var new_background_img_id = event.detail.new_background_img_id;
+
+        // emit transitioning event
+        emitTransitioning(new_background_img_id);
+    });
     
 
 
@@ -59,8 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Changing color of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
-    {   
-  
+    {     
         if (event.target.classList.contains(main_class)){
             const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
             icon.setAttribute('material', 'color', color_hoverIn);

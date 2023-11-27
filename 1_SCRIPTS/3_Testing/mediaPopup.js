@@ -78,23 +78,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Changing colors of popup window based on mediaPlayer class
-
-
-
-    // showing popup when mediaPlayer is double clicked
-    scene.addEventListener('mediaPlayerClicked', function(event) {
+    function handleMediaClick(event) {
         // Extract the id of the clicked media
-        const mediaId  = event.detail.id;
-        // find the media in the database with the same matching id
-        const content = popupContent.find(item => item.media_id === mediaId );
-        // update popup content
+        
+        const mediaId = event.detail.id;
+        // Find the media in the database with the same matching id
+        const content = popupContent.find(item => item.media_id === mediaId);
+        // Update popup content
         if (content) {
             updatePopupContent(content);
         }
-        // show poup window
+        // Show popup window
         showPopup();
-    });
+    }
 
+    // showing popup when mediaPlayer is clicked or when mediabarItem is clicked
+    scene.addEventListener('mediaPlayerClicked', handleMediaClick);
+    scene.addEventListener('mediabarItemDoubleClicked', handleMediaClick);
 
     // Close popup when closebutton is clicked
     closeButton.addEventListener('click', hidePopup);
