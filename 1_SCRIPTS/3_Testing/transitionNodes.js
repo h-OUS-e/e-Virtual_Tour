@@ -4,14 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
     //create transition event
     
     const scene = document.querySelector('a-scene');
-    var main_class = "transitionNode";
+    const main_class = "transitionNode";
+    const mixin_glow = "transition_node_glow";
+    const mixin_icon = "transition_node_icon";
     
     // Get colors from CSS palette
     const colors = getComputedStyle(document.documentElement);
-    const color_hoverIn = colors.getPropertyValue('--hoverIn').trim();
-    const color_mediaPlayer = colors.getPropertyValue('--mediaPlayer').trim();
-    const color_hoverInClicked = colors.getPropertyValue('--hoverInClicked').trim();
-    const color_transitionNode = colors.getPropertyValue('--transitionNode').trim();
+    const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
+    const color_mintGreen = colors.getPropertyValue('--mintGreen').trim();
+    const color_hoverIn = color_mintGreen;
+    const color_hoverInClicked = "gray";
+    const color_transitionNode = color_sageGreen;
+    
 
 //functions: 
 
@@ -31,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setting initial colors of objects
     const entities = document.querySelectorAll('[class=' + main_class + ']');
     entities.forEach(entity => {
-        entity.setAttribute('material', 'color', color_transitionNode);
+        const glow = entity.querySelector('[mixin=' + mixin_glow + ']');  
+        const icon = entity.querySelector('[mixin=' + mixin_icon + ']');   
+        icon.setAttribute('material', 'color', color_transitionNode);
+        glow.setAttribute('material', 'color', color_transitionNode);
     });
 
     //listen to minimapClick event
@@ -53,17 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Changing color of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
     {   
+  
         if (event.target.classList.contains(main_class)){
-            event.target.setAttribute('material', 'color', color_hoverIn);
+            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+            icon.setAttribute('material', 'color', color_hoverIn);
         }
     });
 
 
     scene.addEventListener('hoverout', function (event) 
     {
-        const target = event.target;
-        if (target.classList.contains(main_class)){
-            target.setAttribute('material', 'color', color_transitionNode); // Revert color on hover out
+        if (event.target.classList.contains(main_class)){
+            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+            icon.setAttribute('material', 'color', color_transitionNode);
         }
     });
 
@@ -74,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {
     if (event.target.classList.contains(main_class))
     {
-        event.target.setAttribute('material', 'color', color_transitionNode); 
+        const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+        icon.setAttribute('material', 'color', color_transitionNode); 
     }
     });
 
@@ -83,7 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            event.target.setAttribute('material', 'color', color_hoverInClicked);
+            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+            icon.setAttribute('material', 'color', color_hoverInClicked);
         }
     });
 

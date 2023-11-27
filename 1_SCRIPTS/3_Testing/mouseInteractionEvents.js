@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     const scene = document.querySelector('a-scene');
     const canvas = scene.canvas;
     let lastHovered = null; // To keep track of the last hovered object
+    const cursor = document.querySelector('[cursor]');
 
 
 
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
             if (intersectedObject) {
                 intersectedObject.emit('hoverin'); // Emit custom hoverin event
-
+                
                 // add listeners
                 window.addEventListener('mousedown', onMouseDown);
                 window.addEventListener('mouseup', onMouseUp);
