@@ -122,6 +122,13 @@ html {
     z-index: 10; /* Ensures it's above the A-Frame scene */
     border: 2px solid #000;
 }
+/* 
+hide minimap on phone */
+@media only screen and (max-width: 767px) { 
+    #minimap_container  {
+        display: none;
+    }
+}
 
 
 .minimapNode {
@@ -284,6 +291,11 @@ html {
     border-bottom: 1px solid #ccc;
     font-size: 12px;
     /* Styles for the news item */
+}
+@media only screen and (max-width: 767px) {
+    #mediabar {
+        display: none;
+    }
 }
 
 
