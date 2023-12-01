@@ -122,7 +122,7 @@ html {
     box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.3); /* Shadow to the left side */
     /* border-radius: 10px; */
     z-index: 10000; /* Ensures it's above the A-Frame scene */
-    border-top: 1px solid #000; */
+    border-top: 1px solid #000; 
 }
 /* 
 hide minimap on phone */
