@@ -66,8 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add a click event listener to each node
         node.addEventListener('click', function() {
             var minimap_nodes = document.querySelectorAll('.' + main_class);
-            // Iterate over each node
-            
+            // Iterate over each node            
             minimap_nodes.forEach(node_other => {
                 if (node_other.getAttribute('id') == node.getAttribute('id')) {
                     setNodeActive(node_other);
@@ -87,8 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             emitMinimapClickEvent(new_background_img_id);
         });
-
-        
 
             node.addEventListener('mouseenter', function (event) {    
                 if (node.getAttribute('current') === "False") {    
@@ -113,13 +110,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Define a function to handle the 'changeMinimapNode' event
     scene.addEventListener('transitioning', function (event) {
 
-        
-
         // update what node is currently active
         var active_node_img_id = event.detail.new_background_img_id;
         var active_node_selector = '[imgId="' + active_node_img_id + '"]';
         var active_node_element = document.querySelector(active_node_selector);
-        setNodeActive(active_node_element);
+
+
+        var minimap_nodes = document.querySelectorAll('.' + main_class);
+        // Iterate over each node            
+        minimap_nodes.forEach(node_other => {
+            if (node_other.getAttribute('id') == active_node_element.getAttribute('id')) {
+                setNodeActive(node_other);
+            }
+            else {
+                resetNodeStyle(node_other);
+            }
+        });
     })
 
     
