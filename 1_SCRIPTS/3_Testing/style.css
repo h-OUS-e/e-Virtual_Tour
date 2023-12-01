@@ -76,7 +76,7 @@ h4 {
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 
@@ -110,17 +110,19 @@ html {
 /* Defining minimap style*/
 #minimap_container {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    width: 350px;
-    height: 30%;
-    background-image: url('0_resources/Full\ Loaded\ Dimension\ Klinik\ Pergigian\ Ismail\ watermark.jpg');
+    bottom: 0px;
+    right: 0px;
+    width: 300px;
+    height: 20%;
+    background-color: white;
+    background-image: url('0_resources/map.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    border-radius: 10px;
-    z-index: 10; /* Ensures it's above the A-Frame scene */
-    border: 2px solid #000;
+    box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.3); /* Shadow to the left side */
+    /* border-radius: 10px; */
+    z-index: 10000; /* Ensures it's above the A-Frame scene */
+    border-top: 1px solid #000; */
 }
 /* 
 hide minimap on phone */
@@ -133,11 +135,12 @@ hide minimap on phone */
 
 .minimapNode {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background-color: var(--transitionNode);
     border-radius: 50%;
     border: 1px solid grey; /* Add a grey border */
+    z-index: 10001;
 }
 
 
@@ -252,18 +255,18 @@ hide minimap on phone */
 
   /* Defines mediabar aesthetics */
 #mediabar {
-    width: 350px;
-    height: 60%; /* Full height of the viewport */
+    width: 300px;
+    height: 80%; /* Full height of the viewport */
     overflow-y: auto; /* Adds a vertical scrollbar if content overflows */
     position: fixed; /* Fixed position on the side of the page */
-    top: 10px; /* Align to the top */
-    right: 10px; /* Align to the right side of the page */
-    background-color: #f2f2f2; /* Light grey background, adjust the color as needed */
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Shadow to the left side */
+    top: 0px; /* Align to the top */
+    right: 0px; /* Align to the right side of the page */
+    background-color: white; /* Light grey background, adjust the color as needed */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3); /* Shadow to the left side */
     z-index: 1000; /* Ensure it's above other content */
-    border-radius: 10px;
+    border-radius: 0px;
     z-index: 10; /* Ensures it's above the A-Frame scene */
-    border: 2px solid #000;
+    /* border: 1px solid #000; */
     display: flex;
     flex-direction: column; 
     align-items: center;
@@ -271,7 +274,7 @@ hide minimap on phone */
 .mediabar-header {
     padding-right: 30px; /* Spacing inside the sidebar */
     padding-left: 30px;
-    padding-top: 10px;
+    padding-top: 60px;
     padding-bottom: 20px;
     border-bottom: 1px solid #ccc;
     position: fixed;
@@ -281,13 +284,13 @@ hide minimap on phone */
 
 }
 .mediabar-item-container {
-    padding: 20px; /* Spacing inside the sidebar */
-    margin-top: 60px;
+    padding: 50px; /* Spacing inside the sidebar */
+    margin-top: 150px;
 }
 
 .mediabar-item {
     cursor: pointer; 
-    margin-bottom: 10px; /* Space between news items */
+    margin-bottom: 40px; /* Space between news items */
     border-bottom: 1px solid #ccc;
     font-size: 12px;
     /* Styles for the news item */

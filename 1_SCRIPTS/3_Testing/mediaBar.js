@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
             });
             scene.dispatchEvent(transitioning)
-            console.log("TEST CLICKED");
         });
 
         media_element.addEventListener('dblclick', function(event) {

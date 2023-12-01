@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // create minimapClick event
     function emitMinimapClickEvent(new_background_img_id) {
         var minimapClick = new CustomEvent('minimapClick', {
-            detail: { new_background_img_id: new_background_img_id }
+            detail: { new_background_img_id: new_background_img_id}
         });
         // Assuming 'scene' is the element to dispatch the event
         scene.dispatchEvent(minimapClick);
@@ -15,22 +15,27 @@ document.addEventListener('DOMContentLoaded', () => {
     var main_class = "minimapNode";
     var active_node_element = null;
 
-     // Get colors from CSS palette
-     const colors = getComputedStyle(document.documentElement);
-     const color_active = colors.getPropertyValue('--hoverIn').trim();
-     const color_inactive = colors.getPropertyValue("--transitionNode").trim();
+    // Get colors from CSS palette
+    const colors = getComputedStyle(document.documentElement);
+    const color_active = colors.getPropertyValue('--hoverIn').trim();
+    const color_inactive = colors.getPropertyValue("--transitionNode").trim();
+
+    
     
 //functions: 
       
     function setNodeActive(node) { 
         // input: node: DOM element
         // update the style of the node
+        node.setAttribute('current', 'True');
         node.style.backgroundColor = color_active ;
-        node.style.border = '2px solid white';
-        resetNodeStyle(active_node_element);
-        active_node_element = node;
+        node.style.border = '1px solid green'; 
+    }
+
+    function hoverNodeStyle(node) { 
         node.style.backgroundColor = color_active ;
-        node.style.border = '2px solid white'; 
+        node.style.border = '3px solid green'; 
+        node.style.transform = 'translate(-1px,-1px)';
     }
 
     
@@ -38,9 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // input: node: DOM element
         // reset the style of the node
         node.style.backgroundColor = color_inactive; // Original node Color
-        node.style.border = '1px dotted grey'; // Original border //use css
-        node.style.backgroundColor = color_inactive; // Original node Color
-        node.style.border = '1px dotted grey'; // Original border //use css
+        node.setAttribute('current', 'False');
+        node.style.border = '1px solid grey'; // Original border //use css
+        node.style.transform = 'translate(1px,1px)';
+
     }
 
 //logic:
@@ -56,18 +62,47 @@ document.addEventListener('DOMContentLoaded', () => {
     var minimap_nodes = document.querySelectorAll('.' + main_class);
         // Iterate over each node
     minimap_nodes.forEach(node => {
+
         // Add a click event listener to each node
         node.addEventListener('click', function() {
-            // change active node to clicked node
-            setNodeActive(node);
+            var minimap_nodes = document.querySelectorAll('.' + main_class);
+            // Iterate over each node
+            
+            minimap_nodes.forEach(node_other => {
+                if (node_other.getAttribute('id') == node.getAttribute('id')) {
+                    setNodeActive(node_other);
+                }
+                else {
+                    resetNodeStyle(node_other);
+                }
+            });            
 
-// emit minimapClick event
+            // change active node to clicked node
+            
+
+            // emit minimapClick event
             console.log('about to emit "minimapClick" event');
             var new_background_img_id = node.getAttribute('imgId');
             console.log('id minimap', new_background_img_id, typeof new_background_img_id);
             
             emitMinimapClickEvent(new_background_img_id);
         });
+
+        
+
+            node.addEventListener('mouseenter', function (event) {    
+                if (node.getAttribute('current') === "False") {    
+                // update what node is currently active
+                hoverNodeStyle(node);
+                }
+            })
+        
+            node.addEventListener('mouseleave', function (event) {    
+                if (node.getAttribute('current') === "False") {
+                resetNodeStyle(node);
+                }
+            })
+        
     });
   
 
@@ -78,11 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Define a function to handle the 'changeMinimapNode' event
     scene.addEventListener('transitioning', function (event) {
 
+        
+
         // update what node is currently active
         var active_node_img_id = event.detail.new_background_img_id;
         var active_node_selector = '[imgId="' + active_node_img_id + '"]';
         var active_node_element = document.querySelector(active_node_selector);
         setNodeActive(active_node_element);
     })
+
+    
 
 });
