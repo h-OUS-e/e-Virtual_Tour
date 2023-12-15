@@ -2,21 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>360 Image in A-Frame</title>
     <!-- <link rel="colors" href="colorPalette.css"> -->
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-    <!-- IMPORTS -->
+    <!-- SCRIPTS -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script type="module" src="mediaPlayer.js"></script>
-    <script src="transitionNodes.js"></script>
-    <script src="zoomControl.js"></script> 
-    <script src="sky.js"></script> 
-    <script type="module" src="mouseInteractionEvents.js"></script> 
-    <script src="minimap.js"></script>
-    <script type="module" src="mediaPopup.js"></script>
-    <script src="popupContent.js"></script>
-    <script type="module" src="mediaBar.js"></script>
+    <script type="module" src="assets/js/mediaPlayer.js"></script>
+    <script src="assets/js/transitionNodes.js"></script>
+    <script src="assets/js/zoomControl.js"></script> 
+    <script src="assets/js/sky.js"></script> 
+    <script type="module" src="assets/js/mouseInteractionEvents.js"></script> 
+    <script src="assets/js/minimap.js"></script>
+    <script type="module" src="assets/js/mediaPopup.js"></script>
+    <script src="assets/js/popupContent.js"></script>
+    <script type="module" src="assets/js/mediaBar.js"></script>
     
     
 </head>
@@ -31,12 +33,18 @@
         <!-- add js for nodes -->
     </div>
 
-    <div id="mediabar">
+    <div id="mediabar_container">
         <!-- <div class="scrollbar-tabs"></div> -->
-        <div class="mediabar-header">
-            <h3>MEDIA BAR</h3>
+        <div id="mediabar_toggle">
+            <span class="fas fa-arrow-left"></span>
         </div>
-        <div class="mediabar-item-container"></div>
+        <div id="mediabar">
+            <div class="mediabar-header">
+                <h3>MEDIA BAR</h3>
+            </div>
+            <div class="mediabar-item-container"></div>
+        </div>
+        
     </div>
 
     <!-- An overlay to blur the background when something pops up -->

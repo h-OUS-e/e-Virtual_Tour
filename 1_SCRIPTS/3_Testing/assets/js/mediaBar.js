@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Getting mediabar elements
     const mediabar = document.getElementById('mediabar');
-    const mediabar_container = document.querySelector('[class=mediabar-item-container]');
+    const mediabar_item_container = document.querySelector('[class=mediabar-item-container]');
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // add media element to media container div
-        mediabar_container.appendChild(media_element);
+        mediabar_item_container.appendChild(media_element);
     
     });
 
@@ -81,6 +81,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     }
+
+
+    // A side toggle to hide or show the mediabar
+    document.getElementById('mediabar_toggle').addEventListener('click', function() {
+        var mediabar_header = document.querySelector('[class=mediabar-header]');
+        var arrow = this.querySelector('span');
+    
+        if (mediabar.style.width === '0px' || mediabar.style.width === '0%') {
+            // Show the div
+            // arrow.style.transform = 'rotate(0deg)'; // Arrow pointing left
+            mediabar.style.width = '100%';
+            mediabar_header.style.position = 'fixed';
+            this.classList.remove('expanded'); // Arrow pointing left
+            
+        } else {
+            // Hide the div
+            // arrow.style.transform = 'rotate(180deg)'; // Arrow pointing right
+            mediabar.style.width = '0%';
+            mediabar_header.style.position = 'relative';
+            this.classList.add('expanded'); // Arrow pointing right
+        }
+    });
 
     
 

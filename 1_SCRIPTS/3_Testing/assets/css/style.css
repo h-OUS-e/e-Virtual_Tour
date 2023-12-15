@@ -24,19 +24,19 @@
 /* Adding fonts */
 @font-face {
     font-family: 'CircularStd';
-    src: url('0_resources/fonts/CircularStd-Book.otf') format('opentype');
+    src: url('../fonts/CircularStd-Book.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
   }
   @font-face {
     font-family: 'CircularStd';
-    src: url('0_resources/fonts/CircularStd-Black.otf') format('opentype');
+    src: url('../fonts/CircularStd-Black.otf') format('opentype');
     font-weight: 900; /* 900 is typically used for the black weight */
     font-style: normal;
   }
   @font-face {
     font-family: 'CircularStd';
-    src: url('0_resources/fonts/CircularStd-Bold.otf') format('opentype');
+    src: url('../fonts/CircularStd-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
   }
@@ -109,19 +109,19 @@ html {
 
 /* Defining minimap style*/
 #minimap_container {
-    position: absolute;
+    position: fixed;
     bottom: 0px;
     right: 0px;
     width: 300px;
     height: 20%;
     background-color: white;
-    background-image: url('0_resources/map.png');
+    background-image: url('../../0_resources/map.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
     box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.3); /* Shadow to the left side */
     /* border-radius: 10px; */
-    z-index: 10000; /* Ensures it's above the A-Frame scene */
+    z-index: 10002; /* Ensures it's above the A-Frame scene */
     border-top: 1px solid #000; 
 }
 /* 
@@ -231,12 +231,7 @@ hide minimap on phone */
 }
   
   
-  /* Responsiveness */
-  @media (max-width: 768px) {
-    .popup {
-      width: 90%;
-    }
-  }
+
 
 
   /* Defines overlay block that blurs background */
@@ -247,18 +242,30 @@ hide minimap on phone */
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-    backdrop-filter: blur(5px); /* This creates the blur effect */
+    -webkit-backdrop-filter: blur(5px); /* This creates the blur effect for other browsers */
+    backdrop-filter: blur(5px); /* This creates the blur effect for firefox */
     display: none; /* Hidden by default */
     z-index: 999; /* Ensure it's below the popup but above other content */
 }
 
 
   /* Defines mediabar aesthetics */
-#mediabar {
-    width: 300px;
-    height: 80%; /* Full height of the viewport */
-    overflow-y: auto; /* Adds a vertical scrollbar if content overflows */
+#mediabar_container {
+    display: flex; /* Enables flexbox */
+    flex-direction: row; 
     position: fixed; /* Fixed position on the side of the page */
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 300px;
+    z-index: 1001;
+    justify-content: right;
+
+}
+#mediabar {
+    width: 100%;
+    height: 80%; /* Full height of the viewport */
+    overflow-y: auto; /* Adds a vertical scrollbar if content overflows */    
     top: 0px; /* Align to the top */
     right: 0px; /* Align to the right side of the page */
     background-color: white; /* Light grey background, adjust the color as needed */
@@ -281,7 +288,6 @@ hide minimap on phone */
     background-color: white;
     z-index: 1001;
 
-
 }
 .mediabar-item-container {
     padding: 50px; /* Spacing inside the sidebar */
@@ -295,11 +301,57 @@ hide minimap on phone */
     font-size: 12px;
     /* Styles for the news item */
 }
+
+#mediabar_toggle {
+    bottom: 10px;
+    width: 15px;
+    text-align: center;
+    line-height: 100vh;
+    background: var(--mintGreen); /* Semi-transparent white */
+    z-index: 1002; /* Ensure it's below the popup but above other content */
+    cursor: pointer;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* Arrow pointing to the left (for when the media bar is shown) */
+#mediabar_toggle span {
+    display: block;
+    width: 0;
+    height: 0;
+    /* Adjust the size of the arrow by changing the border sizes */
+    transition: transform 0.15s ;
+    border-left: 8px solid ; /* Arrow color */
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 0px;
+
+    
+}
+
+/* Modify the arrow direction when the media bar is hidden */
+#mediabar_toggle.expanded span {    
+    transform: rotate(180deg);
+}
+
+
+/* for phone responsiveness */
 @media only screen and (max-width: 767px) {
     #mediabar {
         display: none;
     }
+
+    popup {
+        width: 90%;
+    }
+
 }
+
+
 
 
 /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
