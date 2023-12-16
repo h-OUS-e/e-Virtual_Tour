@@ -2,11 +2,14 @@
 A script to control what shows on the scroll bar based on popup contents.
 */
 import { icon_color_list } from './mediaPlayer.js';
+const root_vars = getComputedStyle(document.documentElement);    
+const mediabar_width = root_vars.getPropertyValue('--mediabar_width').trim();
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // Getting mediabar elements
     const mediabar = document.getElementById('mediabar');
+    const mediabar_container = document.getElementById('mediabar_container');
     const mediabar_item_container = document.querySelector('[class=mediabar-item-container]');
 
     // Defining new mediabar items and posting them based on popup contents
@@ -86,20 +89,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // A side toggle to hide or show the mediabar
     document.getElementById('mediabar_toggle').addEventListener('click', function() {
         var mediabar_header = document.querySelector('[class=mediabar-header]');
-        var arrow = this.querySelector('span');
     
-        if (mediabar.style.width === '0px' || mediabar.style.width === '0%') {
+        if (mediabar_container.style.width === '0px' || mediabar_container.style.width === '0%') {
             // Show the div
             // arrow.style.transform = 'rotate(0deg)'; // Arrow pointing left
-            mediabar.style.width = '100%';
+            mediabar_container.style.width = mediabar_width;
             mediabar_header.style.position = 'fixed';
             this.classList.remove('expanded'); // Arrow pointing left
             
         } else {
             // Hide the div
             // arrow.style.transform = 'rotate(180deg)'; // Arrow pointing right
-            mediabar.style.width = '0%';
-            mediabar_header.style.position = 'relative';
+            mediabar_container.style.width = '0%';
+            mediabar_header.style.position = 'static';
             this.classList.add('expanded'); // Arrow pointing right
         }
     });

@@ -1,4 +1,5 @@
 :root {
+    /* COLORS */
     --primary: #2dc84d;
     --secondary: #33FF57;
     --accent: #3357FF;
@@ -13,11 +14,13 @@
     --oceanBlue: #009A9F;
     --popPink: #FB7698;
     --coolPink: rgb(255, 216, 226);
-    --coolBlue: #D0F9F2;
-
-    
+    --coolBlue: #D0F9F2;    
     --popupDarkColor: #2dc84d;
     --popupLightColor: #DBFFE5;
+
+    /* CONSTANTS */
+    --mediabar_width: 300px;
+
 }
 
 
@@ -106,6 +109,51 @@ html {
     display: block;
 }
 
+/* Defining general class styles */
+.container {
+    background-color: var(--mintGreen); /* Semi-transparent white */
+    
+}
+
+.container.floating {
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Adds depth */
+    border-radius: 10px;
+    margin: 30px;
+    padding: 10px;
+}
+
+.screen {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+}
+
+
+/* Defining bottom dashboard style */
+#dashboard {
+    /* PROPERTIES and INDEX*/
+    z-index: 1000; /* High enough to be on top of other elements */
+    flex-grow: 1;
+    position: relative;
+    /* SIZING */
+
+    /* LAYOUT */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    margin-top: auto; /* Align to bottom */
+    margin-bottom: 30px;
+    
+
+}
+
+
+
 
 /* Defining minimap style*/
 #minimap_container {
@@ -123,6 +171,7 @@ html {
     /* border-radius: 10px; */
     z-index: 10002; /* Ensures it's above the A-Frame scene */
     border-top: 1px solid #000; 
+    display: None;
 }
 /* 
 hide minimap on phone */
@@ -253,18 +302,18 @@ hide minimap on phone */
 #mediabar_container {
     display: flex; /* Enables flexbox */
     flex-direction: row; 
-    position: fixed; /* Fixed position on the side of the page */
     right: 0;
     top: 0;
     height: 100%;
-    width: 300px;
+    width: var(--mediabar_width);
     z-index: 1001;
     justify-content: right;
+    transition: width 0.3s ease-in-out;
 
 }
 #mediabar {
     width: 100%;
-    height: 80%; /* Full height of the viewport */
+    height: 100%; /* Full height of the viewport */
     overflow-y: auto; /* Adds a vertical scrollbar if content overflows */    
     top: 0px; /* Align to the top */
     right: 0px; /* Align to the right side of the page */
@@ -277,7 +326,7 @@ hide minimap on phone */
     display: flex;
     flex-direction: column; 
     align-items: center;
-    transition: width 0.3s ease-in-out;
+    
 }
 .mediabar-header {
     padding-right: 30px; /* Spacing inside the sidebar */
