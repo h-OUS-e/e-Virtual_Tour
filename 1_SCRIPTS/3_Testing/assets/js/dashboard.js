@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var menu = document.getElementById('menu_container');
     var menu_content = document.getElementById('menu_content');
     var scene = document.getElementById('sky');
-    var mediabar_container = document.getElementById('mediabar_container');
-    var dashboard2 = document.getElementById('dahsboard');
+    var dashboard = document.getElementById('dahsboard');
 
 
     // FULLSCREEN
@@ -55,17 +54,30 @@ document.addEventListener('DOMContentLoaded', () => {
         menu_content.style.width = '0';
     }
 
-
-    document.addEventListener('click', function(event) {
-        console.log(event.target);
-    });
-
-
-
+    // Hide dashboard items when clicking on scene
     scene.addEventListener('click', hideDashboardItems);
 
 
+    // Disabling zoom when cursor is on menu or dashboard
+    if (menu || dashboard || minimap) {
+        menu.addEventListener('mouseenter', function (event) 
+        {   
+            window.disableZoom();
+        });
+        minimap.addEventListener('mouseenter', function (event) 
+        {   
+            window.disableZoom();
+        });
 
+        menu.addEventListener('mouseleave', function (event) 
+        {   
+            window.enableZoom();
+        });
+        minimap.addEventListener('mouseleave', function (event) 
+        {   
+            window.enableZoom();
+        });
+    }
     // ICON GALLERY
 
     });
