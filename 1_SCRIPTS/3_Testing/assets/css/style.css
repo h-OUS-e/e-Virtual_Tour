@@ -118,6 +118,8 @@ html {
     align-items: center;
     justify-content: space-around;
     height: 100%;
+
+    margin: 0;
 }
 
 /* Defining general class styles */
@@ -129,8 +131,7 @@ html {
 .container.floating {
     box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Adds depth */
     border-radius: 10px;
-    margin: 30px;
-    padding: 10px;
+    margin: 20px;
 }
 
 
@@ -151,7 +152,7 @@ html {
     justify-content: space-around;    
 
     /* MARGINS AND PADDINGS */
-    margin-left: 0; /* Align to bottom */
+
     padding: 10px;
 }
 
@@ -159,6 +160,7 @@ html {
 .dashboard-item {
     /* MARGINS AND PADDINGS */
     margin-top: auto;
+    margin-bottom: auto;
     padding: 0; /* Removes default padding */
 
     /* STYLING */
@@ -169,8 +171,8 @@ html {
 
 /* Setting the size of the button icon image */
 .dashboard-item img {
-    width: 40px; /* Set the width as desired */
-    height: 40px; /* Set the height as desired */
+    width: 35px; /* Set the width as desired */
+    height: 35px; /* Set the height as desired */
     object-fit: cover;
 }
 
@@ -193,9 +195,14 @@ html {
 }
 
 /* put last dashboard item at the bottom with a margin */
+.dashboard-item:nth-child(3) {
+    /* MARGINS AND PADDINGS */
+    margin-bottom: 20px;
+}
+/* put last dashboard item at the bottom with a margin */
 .dashboard-item:nth-child(4) {
     /* MARGINS AND PADDINGS */
-    margin-top: auto;
+    margin-top: 0px;
     margin-bottom: 20px;
 }
 
@@ -204,6 +211,14 @@ html {
     overflow-x: auto;
     white-space: nowrap;
     /* Additional styling */
+}
+
+#menu_container {
+    display: flex;
+    width: 0px;
+    flex-direction: row;
+    align-items: left;
+    justify-content: left;
 }
 
 .menu {
@@ -219,8 +234,7 @@ html {
     left: 0px;
 
     /* MARGINS AND PADDINGS */
-    margin-right: auto;
-    margin-left: 0;
+
     margin-bottom: auto;    
     padding-top: 60px; /* Some padding at the top */
 
@@ -250,15 +264,14 @@ html {
 
 
 
-
-
 /* Defining minimap style*/
 #minimap_container {
-    position: fixed;
     bottom: 0px;
     right: 0px;
-    width: 300px;
-    height: 20%;
+    width: 0px;    
+    height: 0px;
+    margin-right: auto;
+    margin-top: auto;
     background-color: white;
     background-image: url('../../0_resources/map.png');
     background-repeat: no-repeat;
@@ -268,18 +281,13 @@ html {
     /* border-radius: 10px; */
     z-index: 10002; /* Ensures it's above the A-Frame scene */
     border-top: 1px solid #000; 
-}
-/* 
-hide minimap on phone */
-@media only screen and (max-width: 767px) { 
-    #minimap_container  {
-        display: none;
-    }
+    padding: 0;
+    transition: 0.4s;
 }
 
 
 .minimapNode {
-    position: absolute;
+    position: relative;
     width: 8px;
     height: 8px;
     background-color: var(--transitionNode);
@@ -489,11 +497,16 @@ hide minimap on phone */
         display: none;
     }
 
+    #minimap_container  {
+        display: none;
+    }
+
     popup {
         width: 90%;
     }
 
 }
+
 
 
 

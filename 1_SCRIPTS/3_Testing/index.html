@@ -18,8 +18,7 @@
     <script src="assets/js/minimap.js"></script>
     <script type="module" src="assets/js/mediaPopup.js"></script>
     <script src="assets/js/popupContent.js"></script>
-    <script src="assets/js/burgerMenu.js"></script>
-    <script src="assets/js/fullscreenMode.js"></script>
+    <script src="assets/js/dashboard.js"></script>
 
     <script type="module" src="assets/js/mediaBar.js"></script>
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
@@ -54,7 +53,6 @@
         </div>
 
         <div id="menu_container" class="container menu">
-
             <div id="menu_content" class="menu">
                 <a href="#home">Home</a>
                 <a href="#about">About</a>
@@ -62,20 +60,21 @@
                 <a href="#contact">Contact</a>
                 <!-- Add more menu items here -->
             </div>
+        </div>
 
+        <div id="minimap_container" class="container floating">
+            <!-- Minimap nodes -->
+            <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 235px; top: 130px;"></div>
+            <div id= "minimap_node_01.2" class="minimapNode" imgId="01.2" current = "False" style="left: 160px; top: 90px;"></div>
+            <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 90px;"></div>
+            <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 120px;"></div>
         </div>
 
         
         
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
-        <div id="minimap_container" >
-            <!-- Minimap nodes -->
-            <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 235px; top: 140px;"></div>
-            <div id= "minimap_node_01.2" class="minimapNode" imgId="01.2" current = "False" style="left: 160px; top: 120px;"></div>
-            <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 120px;"></div>
-            <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 150px;"></div>
-        </div>
+        
 
 
         <!-- Stores related media on the right side of the screen with a toggle to hide it -->
