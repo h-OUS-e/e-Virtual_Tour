@@ -20,6 +20,7 @@
 
     /* CONSTANTS */
     --mediabar_width: 300px;
+    --menubar_width: 30px;
 
 }
 
@@ -105,23 +106,11 @@ html {
 /* Defining scene style*/
 #scene { 
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: block;
 }
 
-/* Defining general class styles */
-.container {
-    background-color: var(--mintGreen); /* Semi-transparent white */
-    
-}
-
-.container.floating {
-    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Adds depth */
-    border-radius: 10px;
-    margin: 30px;
-    padding: 10px;
-}
-
+/* the general screen, useful to hide all content quickly */
 .screen {
     display: flex;
     position: relative;
@@ -131,25 +120,124 @@ html {
     height: 100%;
 }
 
+/* Defining general class styles */
+.container {
+    background-color: var(--mintGreen); /* Semi-transparent white */
+}
+
+/* a floating container is one that is floating in middle of the screen */
+.container.floating {
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Adds depth */
+    border-radius: 10px;
+    margin: 30px;
+    padding: 10px;
+}
+
 
 /* Defining bottom dashboard style */
 #dashboard {
     /* PROPERTIES and INDEX*/
     z-index: 1000; /* High enough to be on top of other elements */
-    flex-grow: 1;
     position: relative;
+
     /* SIZING */
+    height: 100%;
+    width: var(--menubar_width);
 
     /* LAYOUT */
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-around;    
 
-    margin-top: auto; /* Align to bottom */
-    margin-bottom: 30px;
+    /* MARGINS AND PADDINGS */
+    margin-left: 0; /* Align to bottom */
+    padding: 10px;
+}
+
+/* Common styles for dashboard items */
+.dashboard-item {
+    /* MARGINS AND PADDINGS */
+    margin-top: auto;
+    padding: 0; /* Removes default padding */
+
+    /* STYLING */
+    border: none; /* Removes default button border */
+    background: none; /* Removes default button background */
+    cursor: pointer; /* Changes cursor on hover */
+}
+
+/* Setting the size of the button icon image */
+.dashboard-item img {
+    width: 40px; /* Set the width as desired */
+    height: 40px; /* Set the height as desired */
+    object-fit: cover;
+}
+
+/* Styles for hover or focus state, e.g., a slight drop shadow or change in opacity */
+.dashboard-item:hover, .dashboard-item:focus {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles for when the button is clicked */
+.dashboard-item:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Put top dashboard item at the top with a margin */
+.dashboard-item:nth-child(1) {
+    /* MARGINS AND PADDINGS */
+    margin-top: 20px;
+}
+
+/* put last dashboard item at the bottom with a margin */
+.dashboard-item:nth-child(4) {
+    /* MARGINS AND PADDINGS */
+    margin-top: auto;
+    margin-bottom: 20px;
     
+}
 
+
+.menu {
+    /* PROPERTIES and INDEX*/
+    z-index: 2; /* Sit on top */
+    overflow-x: hidden; /* Hides overflowing content */
+
+    /* SIZING */
+    height: 100%;
+    width: 0; /* Initially sidebar width is 0 */
+    
+    /* LAYOUT */    
+    left: 0px;
+
+    /* MARGINS AND PADDINGS */
+    margin-right: auto;
+    margin-left: 0;
+    margin-bottom: auto;    
+    padding-top: 60px; /* Some padding at the top */
+
+    /* STYLING */
+    background-color: #111; /* Sidebar background color */
+    transition: 0.4s; /* Smooth transition */
+}
+
+.menu a {   
+    /* LAYOUT */ 
+    display: block;
+
+    /* MARGINS AND PADDINGS */
+    padding: 10px 15px;
+
+    /* STYLING */
+    transition: 0.3s;
+    color: white;
+    text-decoration: none;
+    font-size: 25px;
+}
+
+.menu a:hover {
+    color: #f1f1f1;
 }
 
 

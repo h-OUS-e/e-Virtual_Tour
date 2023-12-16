@@ -18,6 +18,8 @@
     <script src="assets/js/minimap.js"></script>
     <script type="module" src="assets/js/mediaPopup.js"></script>
     <script src="assets/js/popupContent.js"></script>
+    <script src="assets/js/burgerMenu.js"></script>
+
     <script type="module" src="assets/js/mediaBar.js"></script>
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
     
@@ -29,21 +31,33 @@
     <div id="'screen_container" class="container screen">
 
         <!-- A dashboard at the bottom that reveals the minimap and other items-->
-        <div id="dashboard" class="container floating">
-            <button id="minimap-toggle">Minimap</button>
-            <div id="burger-menu">
-                <button id="burger-toggle">&#9776;</button>
-                <div id="menu-content" class="hidden">
-                    <a href="#home">Home</a>
-                    <a href="#contact">Contact Us</a>
-                    <!-- Add more menu items here -->
-                </div>
+        <div id="dashboard" class="container">
+            
+            <div id="burger_menu" class="dashboard-item">
+                <button id="burger_toggle">&#9776;</button>
             </div>
-            <div id="icon-gallery">
+
+            <div id="icon_gallery" class="dashboard-item">
                 <!-- Icons go here -->
             </div>
-            <button id="fullscreen-toggle">Fullscreen</button>
+
+            <button id="fullscreen_button" class="dashboard-item">
+                <img src="0_resources/icons/fullscreen.png" alt="Fullscreen">
+            </button>
+            <button id="minimap_button" class="dashboard-item">
+                <img src="0_resources/icons/minimap.png" alt="Minimap">
+            </button>
         </div>
+
+        <div id="menu_content" class="menu hidden">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+            <!-- Add more menu items here -->
+        </div>
+
+        
         
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
