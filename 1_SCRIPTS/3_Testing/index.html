@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>360 Image in A-Frame</title>
@@ -193,9 +194,11 @@
 
         </a-assets>
 
-        <a-camera id="camera" raycaster wasd-controls="enabled: false">
-            <a-cursor fuse="false" ></a-cursor>
+        <a-camera id="camera" custom-touch-controls wasd-controls="enabled: false" look-controls="enabled: false">
+            <a-cursor fuse="false"></a-cursor>
         </a-camera>
+        
+        
 
         <!-- Loading in 360 image. -->
         <a-sky id="sky" src="#background_img01.1" background_img_id="01.1">            

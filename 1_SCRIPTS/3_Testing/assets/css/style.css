@@ -409,7 +409,7 @@ html {
     right: 0;
     top: 0;
     height: 100%;
-    width: var(--mediabar_width);
+    width: 20%;
     z-index: 1001;
     justify-content: right;
     transition: width 0.3s ease-in-out;
@@ -489,26 +489,6 @@ html {
 #mediabar_toggle.expanded span {    
     transform: rotate(180deg);
 }
-
-
-/* for phone responsiveness */
-@media only screen and (max-width: 767px) {
-    #mediabar {
-        display: none;
-    }
-
-    #minimap_container  {
-        display: none;
-    }
-
-    popup {
-        width: 90%;
-    }
-
-}
-
-
-
 
 
 /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
