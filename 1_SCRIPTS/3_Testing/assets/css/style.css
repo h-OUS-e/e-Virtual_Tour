@@ -404,77 +404,30 @@ html {
 
   /* Defines mediabar aesthetics */
 #mediabar_container {
-    display: flex; /* Enables flexbox */
-    flex-direction: row; 
-    right: 0;
-    top: 0;
+    display: flex;
+    flex-direction: row;
     height: 100%;
     width: 20%;
-    z-index: 1001;
+    z-index: 1000;
     justify-content: right;
     transition: width 0.3s ease-in-out;
 
 }
 #mediabar {
-    width: 100%;
-    height: 100%; /* Full height of the viewport */
-    overflow-y: auto; /* Adds a vertical scrollbar if content overflows */    
-    top: 0px; /* Align to the top */
-    right: 0px; /* Align to the right side of the page */
-    background-color: white; /* Light grey background, adjust the color as needed */
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3); /* Shadow to the left side */
-    z-index: 1000; /* Ensure it's above other content */
-    border-radius: 0px;
-    z-index: 10; /* Ensures it's above the A-Frame scene */
-    /* border: 1px solid #000; */
+    flex: 9; /* takes flex/9 of mediabar_container */ 
     display: flex;
-    flex-direction: column; 
-    align-items: center;
+    flex-direction: column;
+    background-color: white; 
 }
 
-/* 
 .mediabar-header {
-    padding-right: 2vw; 
-    padding-left: 2vw;
-    padding-top: 8vh;
-    padding-bottom: 2vh;
-    border-bottom: 1px solid #ccc;
-    position: relative;
+    flex: 1; /* flex/4 of the .mediabar height */
     background-color: white;
-    z-index: 1001;
-
-}
-.mediabar-item-container {
-    padding: 10vw; 
-    margin-top: 20vw;
-}
-
-.mediabar-item {
-    cursor: pointer; 
-    margin-bottom: 40px; 
-    border-bottom: 1px solid #ccc;
-    font-size: 12px;
-
-} */
-.mediabar-header {
-    display: flex; /* This enables Flexbox */
-    flex-direction: row; /* Align items in a row */
-    justify-content: start; /* Align items at the start of the container */
-    align-items: center; /* Center items vertically in the container */
-    padding-right: 2vw; 
-    padding-left: 2vw;
-    padding-top: 8vh;
-    padding-bottom: 2vh;
-    border-bottom: 1px solid #ccc;
-    position: relative;
-    background-color: white;
-    flex-wrap: wrap;
 }
 
 .mediabar-item-container {
-    flex: 0 1 auto; /* This allows the item to grow and shrink but not overflow */
-    padding: 4vw; /* Adjust as necessary */
-    margin-top: 20vw; /* You might want to reconsider this for a horizontal layout */
+    flex: 4; /* flex/4 of the .mediabar height */
+    background-color: white;
 }
 
 .mediabar-item {
@@ -485,24 +438,39 @@ html {
     /* Additional styles here */
 }
 
+#mediabar_toggle {
+    flex: 1; /* flex/10 of the .mediabar_container width */
+    background-color: var(--mintGreen);
+    bottom: 10px;
+    width: 10px;
+    text-align: center;
+    line-height: 100vh;
+    z-index: 1002; 
+    cursor: pointer;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: center;
+    
 
+}
 
+/*
 #mediabar_toggle {
     bottom: 10px;
     width: 10px;
     text-align: center;
     line-height: 100vh;
-    background: var(--mintGreen); /* Semi-transparent white */
-    z-index: 1002; /* Ensure it's below the popup but above other content */
+    background: var(--mintGreen); 
+    z-index: 1002; 
     cursor: pointer;
     display: flex;
     flex-direction: row; 
     align-items: center;
     justify-content: center;
 }
-
-
-
+ 
+*/
 /* Arrow pointing to the left (for when the media bar is shown) */
 #mediabar_toggle span {
     display: block;
@@ -519,7 +487,7 @@ html {
 /* Modify the arrow direction when the media bar is hidden */
 #mediabar_toggle.expanded span {    
     transform: rotate(180deg);
-}
+} 
 
 
 /* Removes the VR button at the bottom right. Might be useful to change it to a full screen icon? */
