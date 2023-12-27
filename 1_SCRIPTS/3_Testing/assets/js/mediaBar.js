@@ -87,25 +87,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // A side toggle to hide or show the mediabar
-    document.getElementById('mediabar_toggle').addEventListener('click', function() {
-        var mediabar_header = document.querySelector('[class=mediabar-header]');
+    // document.getElementById('mediabar_toggle').addEventListener('click', function() {
+    //     var mediabar_header = document.querySelector('[class=mediabar-header]');
     
-        if (mediabar_container.style.width === '10px' || mediabar_container.style.width === '0%') {
-            // Show the div
-            // arrow.style.transform = 'rotate(0deg)'; // Arrow pointing left
-            mediabar_container.style.width = mediabar_width;
-            mediabar_header.style.position = 'fixed';
-            this.classList.remove('expanded'); // Arrow pointing left
+    //     if (mediabar_container.style.width === '10px' || mediabar_container.style.width === '0%') {
+    //         // Show the div
+    //         // arrow.style.transform = 'rotate(0deg)'; // Arrow pointing left
+    //         mediabar_container.style.width = mediabar_width;
+    //         mediabar_header.style.position = 'fixed';
+    //         this.classList.remove('expanded'); // Arrow pointing left
             
-        } else {
-            // Hide the div
-            // arrow.style.transform = 'rotate(180deg)'; // Arrow pointing right
-            mediabar_container.style.width = '0%';
-            mediabar_header.style.position = 'static';
-            this.classList.add('expanded'); // Arrow pointing right
-        }
-    });
+    //     } else {
+    //         // Hide the div
+    //         // arrow.style.transform = 'rotate(180deg)'; // Arrow pointing right
+    //         mediabar_container.style.width = '0%';
+    //         mediabar_header.style.position = 'static';
+    //         this.classList.add('expanded'); // Arrow pointing right
+    //     }
+    // });
 
-    
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("collapsed");
+    }
 
 });

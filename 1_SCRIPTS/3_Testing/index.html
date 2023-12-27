@@ -79,20 +79,26 @@
 
 
         <!-- Stores related media on the right side of the screen with a toggle to hide it -->
-        <div id="mediabar_container">
-            <div id="mediabar_toggle">
-                <!-- Toggle content here -->
-            </div>
+        <!-- <div id="mediabar_container">
             <div id="mediabar">
-                <div class="mediabar-header">
-                    <h2> header here </h2>
+                <div id="mediabar-header">
+                    <h2> header </h2>
                 </div>
                 <div class="mediabar-item-container">
-                    <!-- Item container content here -->
                 </div>
+                <button id="toggleButton" onclick="toggleSidebar()">☰</button>
             </div>
+
         </div>
-        
+         -->
+
+         <div id="sidebar-container">
+            <div id="sidebar-toggler"> 
+                <button id="sidebar-toggler-button"> toggle</button>
+            </div>
+            <div id="sidebar"></div>
+        </div>
+
 
         <!-- An overlay to blur the background when something pops up -->
         <div class="overlay" id="overlay"></div>
