@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mediabar_toggle').addEventListener('click', function() {
         var mediabar_header = document.querySelector('[class=mediabar-header]');
     
-        if (mediabar_container.style.width === '0px' || mediabar_container.style.width === '0%') {
+        if (mediabar_container.style.width === '10px' || mediabar_container.style.width === '0%') {
             // Show the div
             // arrow.style.transform = 'rotate(0deg)'; // Arrow pointing left
             mediabar_container.style.width = mediabar_width;

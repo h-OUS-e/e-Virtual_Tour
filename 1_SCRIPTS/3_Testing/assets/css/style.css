@@ -430,35 +430,66 @@ html {
     display: flex;
     flex-direction: column; 
     align-items: center;
-    
 }
+
+/* 
 .mediabar-header {
-    padding-right: 30px; /* Spacing inside the sidebar */
-    padding-left: 30px;
-    padding-top: 60px;
-    padding-bottom: 20px;
+    padding-right: 2vw; 
+    padding-left: 2vw;
+    padding-top: 8vh;
+    padding-bottom: 2vh;
     border-bottom: 1px solid #ccc;
-    position: fixed;
+    position: relative;
     background-color: white;
     z-index: 1001;
 
 }
 .mediabar-item-container {
-    padding: 50px; /* Spacing inside the sidebar */
-    margin-top: 150px;
+    padding: 10vw; 
+    margin-top: 20vw;
 }
 
 .mediabar-item {
     cursor: pointer; 
-    margin-bottom: 40px; /* Space between news items */
+    margin-bottom: 40px; 
     border-bottom: 1px solid #ccc;
     font-size: 12px;
-    /* Styles for the news item */
+
+} */
+.mediabar-header {
+    display: flex; /* This enables Flexbox */
+    flex-direction: row; /* Align items in a row */
+    justify-content: start; /* Align items at the start of the container */
+    align-items: center; /* Center items vertically in the container */
+    padding-right: 2vw; 
+    padding-left: 2vw;
+    padding-top: 8vh;
+    padding-bottom: 2vh;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    background-color: white;
+    flex-wrap: wrap;
 }
+
+.mediabar-item-container {
+    flex: 0 1 auto; /* This allows the item to grow and shrink but not overflow */
+    padding: 4vw; /* Adjust as necessary */
+    margin-top: 20vw; /* You might want to reconsider this for a horizontal layout */
+}
+
+.mediabar-item {
+    cursor: pointer;
+    margin-bottom: 40px; /* This will affect the space between items */
+    border-bottom: 1px solid #ccc;
+    font-size: 12px;
+    /* Additional styles here */
+}
+
+
 
 #mediabar_toggle {
     bottom: 10px;
-    width: 15px;
+    width: 10px;
     text-align: center;
     line-height: 100vh;
     background: var(--mintGreen); /* Semi-transparent white */
