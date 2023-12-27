@@ -442,37 +442,48 @@ html {
 #sidebar-container {
     height: 100%;
     width: 30%; /* 30 when open, 3 when closd */
-    background-color: white;
+    /* background-color: white; */
     z-index: 2000;
     transition: width 0.3s ease;
 
     /* flexbox styles https://www.youtube.com/watch?v=phWxA89Dy94 */
     display: flex;
-    flex-direction: row;
+    justify-content: end flex;
 
 }
 
 #sidebar {
     height: 100%;
-    width: 90%;
+    width: 100%;
     background-color: #009A9F;
-    transition: width 0.2s ease;
+    transition: width 0.3s ease;
 }
 
 #sidebar-toggler {
-    flex-grow: 1;
+    /* flex-grow: 1; */
     flex-direction: column;
     height: 100%;
-    width: 10%;
+    width: 2vw;
     background-color: #33FF57;
 
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #sidebar-toggler-button{
-    align-self: center;
-    justify-content: center;
-    background-color: #3357FF;
-    z-index: 2003;
-    /* arrow stuff */
+    background-color: red;
+    display: block;
+    width: 100%;
+    height: 10;
+
+    
+    /* Adjust the size of the arrow by changing the border sizes */
+    transition: transform 0.15s ;
+    border-left: 8px solid ; /* Arrow color */
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 0px;
+    z-index: 2003;  
 }
