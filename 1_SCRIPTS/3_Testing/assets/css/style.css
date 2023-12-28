@@ -415,7 +415,7 @@ html {
     height: 100%;
     width: 30%; /* 30 when open, 3 when closd */
     /* background-color: white; */
-    z-index: 2000;
+    z-index: 1001;
     transition: width 0.3s ease;
 
     /* flexbox styles https://www.youtube.com/watch?v=phWxA89Dy94 */
@@ -434,20 +434,22 @@ html {
 }
 #sidebar-header {
     background-color: purple; 
-    flex: 1;   
+    flex: 1;  
+    padding: 3%; 
 }
 #sidebar-item-grid {
     background-color: black;
     flex: 13;
-    
+    padding: 3%;
+    /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
     display: grid;
     grid-template-columns: 1fr;
-    justify-items: center;
-    align-items: center;
+    z-index: 1002;
+
     
 }
 .sidebar-item {
-    padding: 5%;
+    z-index: 1003;
 }
 
 #sidebar-toggler {
@@ -473,5 +475,5 @@ html {
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
     border-right: 0px;
-    z-index: 2003;  
+    z-index: 1003;  
 }

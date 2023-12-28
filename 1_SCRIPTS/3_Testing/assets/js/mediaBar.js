@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
+        console.log(item.title)
         
         const media_element_title = document.createElement('div');              
          // Create the title element and edit color of title based on popup color
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Append the title and body to the media_element
         const media_element = document.createElement('div');
-        media_element.classList.add('mediabar-item');
+        media_element.classList.add('.sidebar-item');
         media_element.appendChild(media_element_title);
         media_element.appendChild(media_element_body);
 
