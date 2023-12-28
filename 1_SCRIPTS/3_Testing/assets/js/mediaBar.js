@@ -1,16 +1,12 @@
 /*
 A script to control what shows on the scroll bar based on popup contents.
 */
-import { icon_color_list } from './mediaPlayer.js';
-const root_vars = getComputedStyle(document.documentElement);    
-const mediabar_width = root_vars.getPropertyValue('--mediabar_width').trim();
+import { icon_color_list } from './mediaPlayer.js';  
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // Getting mediabar elements
-    const mediabar = document.getElementById('mediabar');
-    const mediabar_container = document.getElementById('mediabar_container');
-    const mediabar_item_container = document.querySelector('[class=mediabar-item-container]');
+    const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
@@ -69,21 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Disabling zoom when cursor is on mediabar
-    if (mediabar) {
-        mediabar.addEventListener('mouseenter', function (event) 
-        {   
-            console.log('Entering mediabar window', event);
-            window.disableZoom();
-        });
+    // // Disabling zoom when cursor is on mediabar
+    // if (mediabar) {
+    //     mediabar.addEventListener('mouseenter', function (event) 
+    //     {   
+    //         console.log('Entering mediabar window', event);
+    //         window.disableZoom();
+    //     });
 
-        mediabar.addEventListener('mouseleave', function (event) 
-        {   
-            console.log('Leaving mediabar window');
-            window.enableZoom();
-        });
+    //     mediabar.addEventListener('mouseleave', function (event) 
+    //     {   
+    //         console.log('Leaving mediabar window');
+    //         window.enableZoom();
+    //     });
 
-    }
+    // }
 
 
 });
