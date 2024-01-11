@@ -9,8 +9,17 @@
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-    <!-- SCRIPTS -->
+    <!-- CDN -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+          }
+        }
+        </script>
+    <!-- SCRIPTS -->    
     <script type="module" src="assets/js/mediaPlayer.js"></script>
     <script src="assets/js/transitionNodes.js"></script>
     <script src="assets/js/zoomControl.js"></script> 
@@ -20,6 +29,8 @@
     <script type="module" src="assets/js/mediaPopup.js"></script>
     <script src="assets/js/popupContent.js"></script>
     <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/customGlow.js"></script>
+    <script src="assets/js/customLookControls.js"></script>
 
     <script type="module" src="assets/js/mediaBar.js"></script>
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
@@ -190,8 +201,8 @@
 
         </a-assets>
 
-        <a-camera id="camera" custom-touch-controls wasd-controls="enabled: false" look-controls="enabled: false">
-            <a-cursor fuse="false"></a-cursor>
+        <a-camera id="camera"  custom-look-controls>
+            <a-cursor fuse="True"></a-cursor>
         </a-camera>
         
         
@@ -265,6 +276,7 @@
             ><a-entity  mixin="transition_node_icon" ></a-entity>
             <a-entity mixin="transition_node_glow"></a-entity>
         </a-entity>
+
         <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "02.1"
             mixin="transition_node_frame"
@@ -272,6 +284,7 @@
             ><a-entity  mixin="transition_node_icon" ></a-entity>
             <a-entity mixin="transition_node_glow"></a-entity>
         </a-entity>
+
         <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
             background_img_id="01.2" new_background_img_id = "03.1"
             mixin="transition_node_frame"
@@ -296,8 +309,6 @@
             <a-entity mixin="transition_node_glow"></a-entity>
         </a-entity>
 
-
-        
     </a-scene>
     
 </body>
