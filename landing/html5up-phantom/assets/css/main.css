@@ -2847,6 +2847,7 @@ input, select, textarea {
 			#header .logo > * {
 				display: inline-block;
 				vertical-align: middle;
+				
 			}
 
 			#header .logo .symbol {
@@ -2857,6 +2858,8 @@ input, select, textarea {
 					display: block;
 					width: 2em;
 					height: 2em;
+					border-radius: 50%; /* This will make the image circular */
+					object-fit: cover; /* This will make sure the image covers the area without being stretched */
 				}
 
 		#header nav {
