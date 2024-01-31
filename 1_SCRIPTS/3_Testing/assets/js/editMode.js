@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         isEditMode = !isEditMode; // Toggle edit mode
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
+        gridPlane.setAttribute('material', 'visible', isEditMode);
 
         document.querySelector('a-scene').addEventListener('mouseClickedEditMode', function (event) {
             if (!isEditMode) return;        
