@@ -44,6 +44,14 @@ document.addEventListener('DOMContentLoaded', (event) =>
         return (visibleIntersect  && visibleIntersect.object.el.getAttribute('clickable')==='true') ? visibleIntersect.object.el : null;
     }
 
+    function checkIntersectionsEditMode(raycaster, scene) {
+        const intersection = raycaster.intersectObjects(scene.object3D.children, true);   
+        const visibleIntersect = intersection.find(intersect => 
+            intersect.object.el
+        );     
+        return (visibleIntersect) ? visibleIntersect.object.el : null;
+    }
+
 
 
     // Single mouse click
@@ -52,8 +60,18 @@ document.addEventListener('DOMContentLoaded', (event) =>
         let intersectedObject = checkIntersections(raycaster, scene);
         if (intersectedObject) {
             intersectedObject.emit('mouseClicked'); 
-            console.log("CLICKED:", intersectedObject);             
+            // console.log("CLICKED:", intersectedObject);             
+        }
+    });
 
+
+    // Single mouse click in editor mode
+    canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
+        let raycaster = updateRaycaster(event, canvas, scene);
+        let intersection = checkIntersectionsEditMode(raycaster, scene);
+        if (intersection) {
+            intersection.emit('mouseClickedEditMode'); 
+            // console.log("CLICKED:", intersection);             
         }
     });
 
@@ -94,7 +112,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
             console.log("DOUBLE CLICK:", intersectedObject);
         }
     }
-
 
 
 

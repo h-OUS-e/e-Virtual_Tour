@@ -1,5 +1,0 @@
-let isEditMode = false;
-
-function toggleEditMode() {
-    isEditMode = !isEditMode;
-}
