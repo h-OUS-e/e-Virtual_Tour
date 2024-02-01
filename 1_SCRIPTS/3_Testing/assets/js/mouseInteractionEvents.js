@@ -46,11 +46,19 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
     // Check intersection between raycaster from cursor and objects in scene that are part of the "edit" class
     function checkIntersectionsEditMode(raycaster, scene) {
-        const intersections = raycaster.intersectObjects(scene.object3D.children, true);        
+        // Find all elements with the 'edit_mode' attribute set to 'true'
+        const editableElements = scene.querySelectorAll('[edit_mode="true"]');
+        // Convert NodeList to an array of THREE.Object3D instances for raycasting
+        const editableObjects  = Array.from(editableElements).map(el => el.object3D);
+        const intersections = raycaster.intersectObjects(editableObjects , true);  
+        // console.log('pleeease' +JSON.stringify( intersections[0].point));
+
         const visibleIntersection = intersections.find(intersection => 
             intersection.object.el && intersection.object.el.getAttribute('edit_mode')
         );
-        return (visibleIntersection && visibleIntersection.object.el.getAttribute('edit_mode')==='true') ? visibleIntersection.object.el : null;
+        var mode =  (visibleIntersection && visibleIntersection.object.el.getAttribute('edit_mode')==='true') ? visibleIntersection.object.el : null;
+
+        return {mode, visibleIntersection};
     }
 
 
@@ -70,17 +78,16 @@ document.addEventListener('DOMContentLoaded', (event) =>
     canvas.addEventListener('click', (event) => { 
         let raycaster = updateRaycaster(event, canvas, scene);
         // console.log("TTTTTT" + JSON.stringify(raycaster));
-        let intersection = checkIntersectionsEditMode(raycaster, scene);
+        let edit = checkIntersectionsEditMode(raycaster, scene);
         // console.log("TTTTTT" + JSON.stringify(intersection.getAttribute('position')));
-
-        console.log("PLEASE" + JSON.stringify(raycaster.ray.direction));
+        // console.log('pleeease' + JSON.stringify(visibleIntersection));
 
         // Dispatching event and mouse position projected in 3D space
-        if (intersection) {                
+        if (edit.mode) {                
             // Create an event that sends media id when double clicked
             var new_event = new CustomEvent('mouseClickedEditMode', 
             {
-                detail: {origin: raycaster.ray.origin, direction: raycaster.ray.direction}
+                detail: {origin: raycaster.ray.origin, direction: raycaster.ray.direction, intersection: edit.visibleIntersection.point},
             });
             // Dispatch event
             scene.dispatchEvent(new_event);            

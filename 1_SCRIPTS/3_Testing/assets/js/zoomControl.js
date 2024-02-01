@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     window.addEventListener('wheel', function(event) {
+        if (event.shiftKey) return;
+        if (event.ctrlKey) return;
+
+
         if (!isZoomEnabled) {return;}
 
         // Zoom in
