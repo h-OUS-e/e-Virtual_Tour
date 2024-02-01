@@ -36,20 +36,21 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
     // Check intersection between raycaster from cursor and objects in scene
     function checkIntersections(raycaster, scene) {
-        const intersects = raycaster.intersectObjects(scene.object3D.children, true);
+        const intersections = raycaster.intersectObjects(scene.object3D.children, true);
         
-        const visibleIntersect = intersects.find(intersect => 
-            intersect.object.el && intersect.object.el.getAttribute('visible') && intersect.object.el.getAttribute('clickable')
+        const visibleIntersection = intersections.find(intersection => 
+            intersection.object.el && intersection.object.el.getAttribute('visible') && intersection.object.el.getAttribute('clickable')
         );
-        return (visibleIntersect  && visibleIntersect.object.el.getAttribute('clickable')==='true') ? visibleIntersect.object.el : null;
+        return (visibleIntersection  && visibleIntersection.object.el.getAttribute('clickable')==='true') ? visibleIntersection.object.el : null;
     }
 
+    // Check intersection between raycaster from cursor and objects in scene that are part of the "edit" class
     function checkIntersectionsEditMode(raycaster, scene) {
-        const intersection = raycaster.intersectObjects(scene.object3D.children, true);   
-        const visibleIntersect = intersection.find(intersect => 
-            intersect.object.el
-        );     
-        return (visibleIntersect) ? visibleIntersect.object.el : null;
+        const intersections = raycaster.intersectObjects(scene.object3D.children, true);        
+        const visibleIntersection = intersections.find(intersection => 
+            intersection.object.el && intersection.object.el.getAttribute('edit_mode')
+        );
+        return (visibleIntersection && visibleIntersection.object.el.getAttribute('edit_mode')==='true') ? visibleIntersection.object.el : null;
     }
 
 
@@ -66,14 +67,28 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 
     // Single mouse click in editor mode
-    canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
+    canvas.addEventListener('click', (event) => { 
         let raycaster = updateRaycaster(event, canvas, scene);
+        // console.log("TTTTTT" + JSON.stringify(raycaster));
         let intersection = checkIntersectionsEditMode(raycaster, scene);
-        if (intersection) {
-            intersection.emit('mouseClickedEditMode'); 
-            // console.log("CLICKED:", intersection);             
+        // console.log("TTTTTT" + JSON.stringify(intersection.getAttribute('position')));
+
+        console.log("PLEASE" + JSON.stringify(raycaster.ray.direction));
+
+        // Dispatching event and mouse position projected in 3D space
+        if (intersection) {                
+            // Create an event that sends media id when double clicked
+            var new_event = new CustomEvent('mouseClickedEditMode', 
+            {
+                detail: {origin: raycaster.ray.origin, direction: raycaster.ray.direction}
+            });
+            // Dispatch event
+            scene.dispatchEvent(new_event);            
         }
+
     });
+
+    
 
 
 

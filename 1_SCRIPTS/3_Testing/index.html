@@ -210,7 +210,7 @@
         </a-assets>
 
         <a-camera id="camera"  custom-look-controls>
-            <a-cursor fuse="True"></a-cursor>
+            <a-cursor id="cursor" fuse="True"></a-cursor>
         </a-camera>
         
         
@@ -220,7 +220,7 @@
         </a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
-        <a-plane id="gridPlane" class="intersectable" position="0 0 0" rotation="-90 0 0" width="50" height="50" material="visible: false; src: 0_resources/misc/grid_texture.png; transparent: true; repeat: 50 50;"></a-plane>
+        <a-plane id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" width="50" height="50" material="visible: false; src: 0_resources/misc/grid_texture.png; transparent: true; repeat: 50 50;"></a-plane>
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->

@@ -7,6 +7,8 @@ media popups on the scene based on where your mouse is pointing.
 document.addEventListener('DOMContentLoaded', () => {
     let isEditMode = false;
     const camera = document.querySelector('a-camera');
+    const scene = document.querySelector('a-scene');
+    var cursor = document.querySelector('a-cursor');
 
 
     document.getElementById('editModeToggle').addEventListener('click', function () {
@@ -15,32 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
 
-        document.querySelector('a-scene').addEventListener('mouseClickedEditMode', function (event) {
-            if (!isEditMode) return;        
-
-            console.log(event)
-            let distance = 5;
-
-            // Optional: Update the scene or UI based on the mode
-            updateSceneForEditMode(distance);
-        });
-    // console.log("TEST");
-
-
-        
     });
 
+    scene.addEventListener('mouseClickedEditMode', function (event) {
+        if (!isEditMode) return;        
+        let distance = 5;
+
+        // var intersectionPosition = intersection.point;
+
+        // Optional: Update the scene or UI based on the mode
+        updateSceneForEditMode(distance, event.detail.origin, event.detail.direction);
+    });
+
+    
 
 
     function toggleEditMode() {
         isEditMode = !isEditMode;
     }
 
-    function calculatePointInFrontOfCamera(camera, distance) {
-        let direction = new THREE.Vector3();
-        camera.object3D.getWorldDirection(direction);
-        direction.multiplyScalar(-distance);
-        direction.add(camera.object3D.position);
+    // Calculates the position of the ray given distance, direction and origin
+    function calculatePointInFrontOfCamera(distance, origin, direction) {
+        // let direction = new THREE.Vector3();
+        // camera.object3D.getWorldDirection(direction);
+        direction.multiplyScalar(distance);
+        direction.add(origin);
         return direction;
     }
 
@@ -57,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('a-scene').appendChild(newEntity);
     }
 
-    function updateSceneForEditMode(distance) {
+    function updateSceneForEditMode(distance, origin, direction) {
         
         // Implement any changes you want to make to the scene when toggling edit mode
         // if (!isEditMode) return;
-        let point = calculatePointInFrontOfCamera(camera, distance);
+        let point = calculatePointInFrontOfCamera(distance, origin, direction);
         createGeometry(point);
         console.log('added new geometry at ' + point)
         
