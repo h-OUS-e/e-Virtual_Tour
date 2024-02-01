@@ -35,6 +35,8 @@
 
     <script type="module" src="assets/js/mediaBar.js"></script>
     <script src="assets/js/editMode.js"></script>
+    <script type="module" src="assets/js/hollowCylinder.js"></script>
+
 
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
     
@@ -220,7 +222,9 @@
         </a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
-        <a-plane id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" width="50" height="50" material="visible: false; src: 0_resources/misc/grid_texture.png; transparent: true; repeat: 50 50;"></a-plane>
+        <a-ring id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: 0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
+        <a-entity id="gridCylinder" edit_mode="true"  hollow-cylinder="height: 10; radius: 10;"  position="0 0 0" material="visible: false; src: 0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
+
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
