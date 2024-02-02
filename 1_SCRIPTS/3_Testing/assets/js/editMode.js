@@ -2,9 +2,10 @@
 A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
-
+import { createTransitionNode } from './transitionNodes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    
     let isEditMode = false;
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
@@ -62,16 +63,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function createGeometry(position) {
     // Create a new entity for the geometry
-    let newEntity = document.createElement('a-entity');
+    // let newEntity = document.createElement('a-entity');
 
-    // Set the geometry properties (example: a box)
-    newEntity.setAttribute('geometry', { primitive: 'box', height: 1, width: 1, depth: 1 });
-    newEntity.setAttribute('position', position);
-    newEntity.setAttribute('material', { color: '#4CC3D9' });
+    // // Set the geometry properties (example: a box)
+    // newEntity.setAttribute('geometry', { primitive: 'box', height: 1, width: 1, depth: 1 });
+    // newEntity.setAttribute('position', position);
+    // newEntity.setAttribute('material', { color: '#4CC3D9' });
 
-    // Append it to the scene
-    document.querySelector('a-scene').appendChild(newEntity);
+    // // Append it to the scene
+    // document.querySelector('a-scene').appendChild(newEntity);
+    const rotation = "90 0 0"
+    const newBackgroundImgId = "01.2";
+
+    createTransitionNode(position, rotation, newBackgroundImgId)
 }
+
 
 
 
@@ -106,13 +112,11 @@ function adjustPlaneHeight(event) {
 
     // Update the plane's position
     plane.setAttribute('position', currentPosition);
-    cylinder.setAttribute('position', currentPosition);
-
-    
+    cylinder.setAttribute('position', currentPosition);   
   }
 
 
-  // A function to scale the cylinder radius
+// A function to scale the cylinder radius
 function adjustRadius(event) {
     // Only proceed if the Shift key is pressed
     if (!event.altKey) return;
@@ -131,8 +135,6 @@ function adjustRadius(event) {
     const currentPosition = plane.getAttribute('position');
     cylinder.setAttribute('position', currentPosition);
 
-
-
     // Adjust the Y-coordinate based on the scroll direction
     // You can adjust the value '0.1' to control the sensitivity of the movement
     currentRadius += event.deltaY > 0 ? -0.1 : 0.1;
@@ -140,7 +142,6 @@ function adjustRadius(event) {
     // Update the cylinders's and plane's radius
     cylinder.setAttribute('hollow-cylinder', 'radius', currentRadius);
     cylinder.setAttribute('hollow-cylinder', 'height', currentRadius);    
-    plane.setAttribute('radius-outer', currentRadius);
 
     const yRepeat = currentRadius*2
     const xRepeat = currentRadius*2
@@ -161,11 +162,8 @@ function adjustRadius(event) {
         mesh_cylinder.material.map.wrapS = mesh_cylinder.material.map.wrapT = THREE.RepeatWrapping;
         mesh_cylinder.material.map.repeat.set(xRepeat*3, yRepeat/2);
         mesh_cylinder.material.map.needsUpdate = true;
-
         mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
         
     }
-
-
 
   }

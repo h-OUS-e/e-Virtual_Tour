@@ -126,8 +126,51 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
     });
-            
-
-    
-
+      
 });
+
+
+
+
+
+
+// Function to create a new transitionNode entity
+function createTransitionNode(position, rotation, newBackgroundImgId) {
+    // Create main entity
+    const entity = document.createElement('a-entity');
+    entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
+    entity.setAttribute('clickable', 'true');
+    entity.setAttribute('visible', true);
+    entity.setAttribute('toggle_visibility', true);
+    var sky = document.querySelector('#sky');
+    const backgroundImgId = sky.getAttribute('background_img_id');
+    entity.setAttribute('background_img_id', backgroundImgId);
+    entity.setAttribute('new_background_img_id', newBackgroundImgId);
+    entity.setAttribute('mixin', 'transition_node_frame');
+    entity.setAttribute('position', position);
+    entity.setAttribute('rotation', rotation);
+
+    // Generate a unique ID for the new entity
+    const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+    entity.setAttribute('id', uniqueId);
+
+    // Create icon entity and append to main entity
+    const iconEntity = document.createElement('a-entity');
+    iconEntity.setAttribute('mixin', 'transition_node_icon');
+    entity.appendChild(iconEntity);
+
+    // Create glow entity and append to main entity
+    const glowEntity = document.createElement('a-entity');
+    glowEntity.setAttribute('mixin', 'transition_node_glow');
+    entity.appendChild(glowEntity);
+
+    // Append the new entity to the A-Frame scene
+    document.querySelector('a-scene').appendChild(entity);
+
+    return entity;
+}
+
+
+// Export the function
+export { createTransitionNode };
+
