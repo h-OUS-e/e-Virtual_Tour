@@ -273,7 +273,7 @@ html {
     margin-right: auto;
     margin-top: auto;
     background-color: white;
-    background-image: url('../../0_resources/map.png');
+    background-image: url('../0_resources/map.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;

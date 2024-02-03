@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>360 Image in A-Frame</title>
     <!-- <link rel="colors" href="colorPalette.css"> -->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <!-- CDN -->
@@ -20,22 +20,22 @@
         }
         </script>
     <!-- SCRIPTS -->    
-    <script type="module" src="assets/js/mediaPlayer.js"></script>
-    <script type="module" src="assets/js/transitionNodes.js"></script>
-    <script src="assets/js/zoomControl.js"></script> 
-    <script src="assets/js/sky.js"></script> 
-    <script type="module" src="assets/js/mouseInteractionEvents.js"></script> 
-    <script src="assets/js/minimap.js"></script>
-    <script type="module" src="assets/js/mediaPopup.js"></script>
-    <script src="assets/js/popupContent.js"></script>
-    <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/customGlow.js"></script>
-    <script src="assets/js/customLookControls.js"></script>
-    <script src="assets/js/touchInteractionEvents.js"></script>
+    <script type="module" src="../static/js/mediaPlayer.js"></script>
+    <script type="module" src="../static/js/transitionNodes.js"></script>
+    <script src="../static/js/zoomControl.js"></script> 
+    <script src="../static/js/sky.js"></script> 
+    <script type="module" src="../static/js/mouseInteractionEvents.js"></script> 
+    <script src="../static/js/minimap.js"></script>
+    <script type="module" src="../static/js/mediaPopup.js"></script>
+    <script src="../static/js/popupContent.js"></script>
+    <script src="../static/js/dashboard.js"></script>
+    <script src="../static/js/customGlow.js"></script>
+    <script src="../static/js/customLookControls.js"></script>
+    <script src="../static/js/touchInteractionEvents.js"></script>
 
-    <script type="module" src="assets/js/mediaBar.js"></script>
-    <script type="module" src="assets/js/editMode.js"></script>
-    <script type="module" src="assets/js/hollowCylinder.js"></script>
+    <script type="module" src="../static/js/mediaBar.js"></script>
+    <script type="module" src="../static/js/editMode.js"></script>
+    <script type="module" src="../static/js/hollowCylinder.js"></script>
 
 
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
@@ -52,7 +52,7 @@
             
             <div id="burger_menu" >
                 <button id="burger_button" class="dashboard-item">
-                    <img src="0_resources/icons/burger.png" alt="Menu">
+                    <img src="../static/0_resources/icons/burger.png" alt="Menu">
                 </button>
             </div>
             
@@ -67,10 +67,10 @@
 
             <!-- other utilities -->
             <button id="fullscreen_button" class="dashboard-item">
-                <img src="0_resources/icons/fullscreen.png" alt="Fullscreen">
+                <img src="../static/0_resources/icons/fullscreen.png" alt="Fullscreen">
             </button>
             <button id="minimap_button" class="dashboard-item">
-                <img src="0_resources/icons/minimap.png" alt="Minimap">
+                <img src="../static/0_resources/icons/minimap.png" alt="Minimap">
             </button>
         </div>
 
@@ -154,11 +154,11 @@
         
         <a-assets>
             <!-- Can we load on the go instead of waiting for website to load? -->
-            <img id="background_img01.1" src="0_resources/img1.1_lobby.jpeg" background_img_id="01.1" alt="image of the scene"> 
-            <img id="background_img01.2" src="0_resources/img1.2_lobby.jpeg" background_img_id="01.2" alt="image of the scene">
-            <img id="background_img02.1" src="0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1" alt="image of the scene">
-            <img id="background_img03.1" src="0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1" alt="image of the scene">
-            <img id="img03.1" src="0_resources/test.png" background_img_id="03.1" alt="iamge of the scene">
+            <img id="background_img01.1" src="../static/0_resources/img1.1_lobby.jpeg" background_img_id="01.1" alt="image of the scene"> 
+            <img id="background_img01.2" src="../static/0_resources/img1.2_lobby.jpeg" background_img_id="01.2" alt="image of the scene">
+            <img id="background_img02.1" src="../static/0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1" alt="image of the scene">
+            <img id="background_img03.1" src="../static/0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1" alt="image of the scene">
+            <img id="img03.1" src="../static/0_resources/test.png" background_img_id="03.1" alt="iamge of the scene">
 
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
             <a-mixin
@@ -173,7 +173,7 @@
                 geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
                 material="opacity: .99; side:double; shader: flat"
                 position="0 0 -.05"
-                src="0_resources/icons/CMYK_Blue_Emergency.png">
+                src="../static/0_resources/icons/CMYK_Blue_Emergency.png">
             </a-mixin>
             <a-mixin
                 id="mediaplayer_border"
@@ -195,7 +195,7 @@
                 geometry="primitive: ring; radiusInner: 0; radiusOuter: .5"
                 position="0 0 -.005"
                 material="side: double;"
-                src="0_resources/icons/CMYK_Blue_Emergency.png">
+                src="../static/0_resources/icons/CMYK_Blue_Emergency.png">
             </a-mixin>
             <a-mixin
                 id="transition_node_glow"   
@@ -222,8 +222,8 @@
         </a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
-        <a-ring id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: 0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
-        <a-entity id="gridCylinder" edit_mode="true"  hollow-cylinder="height: 10; radius: 10;"  position="0 0 0" material="visible: false; src: 0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
+        <a-ring id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
+        <a-entity id="gridCylinder" edit_mode="true"  hollow-cylinder="height: 10; radius: 10;"  position="0 0 0" material="visible: false; src: ../static/0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
 
 
 

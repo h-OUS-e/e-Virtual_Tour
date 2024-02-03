@@ -16,7 +16,7 @@
         "dark":color_sageGreen, 
         "light":color_mintGreen, 
         "icon": {
-            '1': "0_resources/icons/CMYK_Green_Diagnostic_Preventative.png"
+            '1': "../static/0_resources/icons/CMYK_Green_Diagnostic_Preventative.png"
         }
     },
 
@@ -24,8 +24,8 @@
         "dark": color_oceanBlue, 
         "light":color_coolBlue, 
         "icon": {
-            '1': "0_resources/icons/CMYK_Blue_Emergency.png",
-            '2': "0_resources/icons/CMYK_Blue_Whitening.png",
+            '1': "../static/0_resources/icons/CMYK_Blue_Emergency.png",
+            '2': "../static/0_resources/icons/CMYK_Blue_Whitening.png",
         },
     },
 
@@ -33,7 +33,7 @@
         "dark": color_popPink, 
         "light":color_coolPink, 
         "icon": {
-            '1': "0_resources/icons/CMYK_PopPink_PatientFocused.png",
+            '1': "../static/0_resources/icons/CMYK_PopPink_PatientFocused.png",
         },
     },
 };

@@ -1,19 +1,19 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 import csv
 import os
 
 app = Flask(__name__)
 
 # Define the directory and file for storing geometry parameters
-CSV_DIRECTORY = "1_data"
+CSV_DIRECTORY = os.path.join("templates", "1_data")
 CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, "transition_nodes.csv")
 
 # Ensure the directory exists
 os.makedirs(CSV_DIRECTORY, exist_ok=True)
 
 @app.route('/')
-def hello_world():
-    return 'Hello, World!'
+def home():
+    return render_template('index.html') # this should be the landing page eventually
 
 # Endpoint to add geometry parameters to CSV
 @app.route('/add_geometry', methods=['POST'])
