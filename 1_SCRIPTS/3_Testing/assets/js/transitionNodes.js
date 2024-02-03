@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const color_hoverIn = color_mintGreen;
     const color_hoverInClicked = "gray";
     const color_transitionNode = color_sageGreen;
+
+    console.log("T1");
+
+    // Read transition nodes and load them to scene
+    readTransitionNodesFromSheet();
+    console.log("T2");
+
     
 
 //functions: 
@@ -124,36 +131,40 @@ document.addEventListener('DOMContentLoaded', () => {
             emitTransitioning(new_background_img_id) 
 
         };
-
-    });
-      
+    });      
 });
 
 
-
+function readTransitionNodesFromSheet() {
+    fetch('/get_geometries')
+    .then(response => response.json())
+    .then(data => {
+        // Assuming data is an array of geometry parameters
+        data.forEach(geometry => {
+            createTransitionNode(geometry.position, geometry.backgroundImgId, geometry.newBackgroundImgId);
+            // Adjust the above function call as needed based on actual parameter names
+        });
+    });    
+}
 
 
 
 // Function to create a new transitionNode entity
-function createTransitionNode(position, newBackgroundImgId) {
+function createTransitionNode(uniqueId, position, backgroundImgId, newBackgroundImgId) {
     // Create main entity
     const entity = document.createElement('a-entity');
+    entity.setAttribute('id', uniqueId);
     entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
     entity.setAttribute('clickable', 'true');
     entity.setAttribute('visible', true);
     entity.setAttribute('toggle_visibility', true);
-    var sky = document.querySelector('#sky');
-    const backgroundImgId = sky.getAttribute('background_img_id');
-    entity.setAttribute('background_img_id', backgroundImgId);
     entity.setAttribute('new_background_img_id', newBackgroundImgId);
+    entity.setAttribute('background_img_id', backgroundImgId);
+
     entity.setAttribute('mixin', 'transition_node_frame');
     entity.setAttribute('position', position);
     const rotation = "90 0 0";
     entity.setAttribute('rotation', rotation);
-
-    // Generate a unique ID for the new entity
-    const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
-    entity.setAttribute('id', uniqueId);
 
     // Create icon entity and append to main entity
     const iconEntity = document.createElement('a-entity');
@@ -172,6 +183,38 @@ function createTransitionNode(position, newBackgroundImgId) {
 }
 
 
+
+// Function to update transitionNode spreadsheet
+function addTransitionNodeToSheet(uniqueId, position, BackgroundImgId, newBackgroundImgId) {
+    // Example data structure, adjust as necessary
+    const data = {
+        Id: uniqueId,
+        position: position,
+        backgroundImgId: BackgroundImgId,
+        newBackgroundImgId: newBackgroundImgId,
+        other_parameters: "example" // Add more parameters as needed
+    };
+
+    // Send the data to the Flask server
+    fetch('/add_geometry', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);        
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+
+
+
 // Export the function
-export { createTransitionNode };
+export { addTransitionNodeToSheet, createTransitionNode, readTransitionNodesFromSheet };
 

@@ -61,20 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
 //     return direction;
 // }
 
-function createGeometry(position) {
- 
+
+
+function updateSceneForEditMode(point) {
+    // Get current background image id
+    var sky = document.querySelector('#sky');
+    const backgroundImgId = sky.getAttribute('background_img_id');
+    
+    // new background image id needs to be defined on the viewport
     const newBackgroundImgId = "01.2";
-    createTransitionNode(position, newBackgroundImgId)
-}
 
+    // Generate a unique ID for the new entity
+    const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
-
-
-function updateSceneForEditMode(intersection) {
-    // Implement any changes you want to make to the scene when toggling edit mode
-    // let point = calculatePointInFrontOfCamera(distance, origin, direction);
-    createGeometry(intersection);
-    console.log('added new geometry at ' + intersection)
+    // Create geometry
+    createTransitionNode(id, point, backgroundImgId, newBackgroundImgId)
+    addTransitionNodeToSheet(id, point, backgroundImgId, newBackgroundImgId)
 }
 
 
