@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Function to create a new transitionNode entity
-function createTransitionNode(position, rotation, newBackgroundImgId) {
+function createTransitionNode(position, newBackgroundImgId) {
     // Create main entity
     const entity = document.createElement('a-entity');
     entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
@@ -148,6 +148,7 @@ function createTransitionNode(position, rotation, newBackgroundImgId) {
     entity.setAttribute('new_background_img_id', newBackgroundImgId);
     entity.setAttribute('mixin', 'transition_node_frame');
     entity.setAttribute('position', position);
+    const rotation = "90 0 0";
     entity.setAttribute('rotation', rotation);
 
     // Generate a unique ID for the new entity

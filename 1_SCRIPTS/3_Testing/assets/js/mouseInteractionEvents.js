@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     const scene = document.querySelector('a-scene');
     const canvas = scene.canvas;
     let lastHovered = null; // To keep track of the last hovered object
-    const cursor = document.querySelector('[cursor]');
+    let hasMouseMoved = false;
 
 
 
@@ -73,27 +73,44 @@ document.addEventListener('DOMContentLoaded', (event) =>
         }
     });
 
+    // Force Reset the flag after the click event has been processed
+    canvas.addEventListener('mousedown', () => {
+        hasMouseMoved = false;
+    });
+
+    canvas.addEventListener('mousemove', () => {
+        hasMouseMoved = true; // Indicate that there was mouse movement
+    });
+
 
     // Single mouse click in editor mode
     canvas.addEventListener('click', (event) => { 
-        let raycaster = updateRaycaster(event, canvas, scene);
-        // console.log("TTTTTT" + JSON.stringify(raycaster));
-        let edit = checkIntersectionsEditMode(raycaster, scene);
-        // console.log("TTTTTT" + JSON.stringify(intersection.getAttribute('position')));
-        // console.log('pleeease' + JSON.stringify(visibleIntersection));
 
-        // Dispatching event and mouse position projected in 3D space
-        if (edit.mode) {                
-            // Create an event that sends media id when double clicked
-            var new_event = new CustomEvent('mouseClickedEditMode', 
-            {
-                detail: {origin: raycaster.ray.origin, direction: raycaster.ray.direction, intersection: edit.visibleIntersection.point},
-            });
-            // Dispatch event
-            scene.dispatchEvent(new_event);            
+        if (!hasMouseMoved) {
+            let raycaster = updateRaycaster(event, canvas, scene);
+            let edit = checkIntersectionsEditMode(raycaster, scene);
+
+            // Dispatching event and mouse position projected in 3D space
+            if (edit.mode) {                
+                // Create an event that sends media id when double clicked
+                var new_event = new CustomEvent('mouseClickedEditMode', 
+                {
+                    detail: {
+                        origin: raycaster.ray.origin, 
+                        direction: raycaster.ray.direction, 
+                        intersection: edit.visibleIntersection.point
+                    },
+                });
+                // Dispatch event
+                scene.dispatchEvent(new_event);            
+            }
         }
 
+        // Reset the flag after the click event has been processed
+        hasMouseMoved = false;
     });
+
+    
 
     
 

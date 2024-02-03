@@ -62,20 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // }
 
 function createGeometry(position) {
-    // Create a new entity for the geometry
-    // let newEntity = document.createElement('a-entity');
-
-    // // Set the geometry properties (example: a box)
-    // newEntity.setAttribute('geometry', { primitive: 'box', height: 1, width: 1, depth: 1 });
-    // newEntity.setAttribute('position', position);
-    // newEntity.setAttribute('material', { color: '#4CC3D9' });
-
-    // // Append it to the scene
-    // document.querySelector('a-scene').appendChild(newEntity);
-    const rotation = "90 0 0"
+ 
     const newBackgroundImgId = "01.2";
-
-    createTransitionNode(position, rotation, newBackgroundImgId)
+    createTransitionNode(position, newBackgroundImgId)
 }
 
 
