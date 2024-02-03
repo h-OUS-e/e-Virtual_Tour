@@ -1,0 +1,8 @@
+in powershell:
+nodejs from nodejs.org
+do `node -v` to check node version
+do `npm init -y`
+install npm packages:
+`npm i bcrypt connect-mongo cookie-parser dotenv ejs express express-ejs-layouts express-session jsonwebtoken method-override mongoose`
+install nodemon:
+`npm i nodemon --save-dev`
