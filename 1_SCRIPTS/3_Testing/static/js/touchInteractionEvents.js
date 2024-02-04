@@ -1,5 +1,6 @@
 /*
- A script that broadcasts the mouse click and hover interaction.
+ A script that broadcasts the touch click and hover interaction.
+ This script is based on the mouseInteractionEvent.js file. the goal is to unite them into one
  */
 
 document.addEventListener('DOMContentLoaded', (event) => 
@@ -15,14 +16,14 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 
     // find what object the mouse is interacting with
-    function updateRaycaster(mouseEvent, canvas, scene)
+    function updateRaycaster(touchEvent, canvas, scene)
     { 
         //find mouse position
         //input: mouse event
         //output: THREE.Raycaster position of mouse
         const rect = canvas.getBoundingClientRect();
-        const x = event.touches[0].clientX - rect.left;
-        const y = event.touches[0].clientY - rect.top;
+        const x = touchEvent.touches[0].clientX - rect.left;
+        const y = touchEvent.touches[0].clientY - rect.top;
 
         let mouse = new THREE.Vector2();
         mouse.x = (x / canvas.clientWidth) * 2 - 1;
