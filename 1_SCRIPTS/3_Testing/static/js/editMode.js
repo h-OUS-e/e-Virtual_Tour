@@ -75,8 +75,8 @@ function updateSceneForEditMode(point) {
     const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
     // Create geometry
-    createTransitionNode(id, point, backgroundImgId, newBackgroundImgId)
-    addTransitionNodeToSheet(id, point, backgroundImgId, newBackgroundImgId)
+    createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId)
+    addTransitionNodeToSheet(uniqueId, point, backgroundImgId, newBackgroundImgId)
 }
 
 

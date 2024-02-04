@@ -141,7 +141,7 @@ function readTransitionNodesFromSheet() {
     .then(data => {
         // Assuming data is an array of geometry parameters
         data.forEach(geometry => {
-            createTransitionNode(geometry.position, geometry.backgroundImgId, geometry.newBackgroundImgId);
+            createTransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId);
             // Adjust the above function call as needed based on actual parameter names
         });
     });    
@@ -150,7 +150,7 @@ function readTransitionNodesFromSheet() {
 
 
 // Function to create a new transitionNode entity
-function createTransitionNode(uniqueId, position, backgroundImgId, newBackgroundImgId) {
+function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId) {
     // Create main entity
     const entity = document.createElement('a-entity');
     entity.setAttribute('id', uniqueId);
@@ -162,7 +162,7 @@ function createTransitionNode(uniqueId, position, backgroundImgId, newBackground
     entity.setAttribute('background_img_id', backgroundImgId);
 
     entity.setAttribute('mixin', 'transition_node_frame');
-    entity.setAttribute('position', position);
+    entity.setAttribute('position', point);
     const rotation = "90 0 0";
     entity.setAttribute('rotation', rotation);
 
@@ -185,14 +185,13 @@ function createTransitionNode(uniqueId, position, backgroundImgId, newBackground
 
 
 // Function to update transitionNode spreadsheet
-function addTransitionNodeToSheet(uniqueId, position, BackgroundImgId, newBackgroundImgId) {
+function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroundImgId) {
     // Example data structure, adjust as necessary
     const data = {
         Id: uniqueId,
-        position: position,
+        point: point,
         backgroundImgId: BackgroundImgId,
-        newBackgroundImgId: newBackgroundImgId,
-        other_parameters: "example" // Add more parameters as needed
+        newBackgroundImgId: newBackgroundImgId
     };
 
     // Send the data to the Flask server

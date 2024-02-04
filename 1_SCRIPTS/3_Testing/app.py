@@ -5,9 +5,8 @@ import os
 app = Flask(__name__)
 
 # Define the directory and file for storing geometry parameters
-CSV_DIRECTORY = os.path.join("templates", "1_data")
+CSV_DIRECTORY = os.path.join(app.root_path, 'static', '1_data')
 CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, "transition_nodes.csv")
-
 # Ensure the directory exists
 os.makedirs(CSV_DIRECTORY, exist_ok=True)
 
@@ -21,8 +20,9 @@ def add_geometry():
     data = request.json
     # Check if the CSV file exists and if not, write the header
     file_exists = os.path.isfile(CSV_FILE_PATH)
+    
     with open(CSV_FILE_PATH, 'a', newline='') as csvfile:
-        fieldnames = ['Id', 'position', 'backgroundImgId', 'newBackgroundImgId', 'other_parameters']  # Adjust as needed
+        fieldnames = ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']  # Adjust as needed
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()  # Write header only once
@@ -33,6 +33,7 @@ def add_geometry():
 @app.route('/get_geometries', methods=['GET'])
 def get_geometries():
     geometries = []
+    
     try:
         with open(CSV_FILE_PATH, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -40,6 +41,7 @@ def get_geometries():
                 geometries.append(row)
     except FileNotFoundError:
         return jsonify({"success": False, "message": "File not found"})
+    print(geometries)
     return jsonify(geometries)
 
 @app.route('/download_csv', methods=['GET'])
