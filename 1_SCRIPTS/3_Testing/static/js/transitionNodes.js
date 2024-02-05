@@ -13,11 +13,6 @@ const scene = document.querySelector('a-scene');
 
 document.addEventListener('DOMContentLoaded', () => {
 
-//constants:
-    //create transition event
-    
-    
-
     // Read transition nodes and load them to scene
     readTransitionNodesFromSheet();
     
@@ -91,8 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
-            {
-            
+            {            
             // Get the id of the clicked entity            
             var clickedId = event.target.id;
             var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
@@ -100,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Emit the transitioning event to change the background image and minimap highlights
             emitTransitioning(new_background_img_id) 
-
         };
     });      
 });
@@ -108,6 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // FUNCTIONS
 
+//functions: 
+function emitTransitioning(new_background_img_id){
+    // input: new_background_img_id: string
+    // emit transitioning event with new background image ID
+    var transitioning = new CustomEvent('transitioning', {
+        detail: { new_background_img_id: new_background_img_id}       
+    });
+    scene.dispatchEvent(transitioning);
+}
 
 
 function readTransitionNodesFromSheet() {
