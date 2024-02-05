@@ -2,7 +2,7 @@
 A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
-import { createTransitionNode } from './transitionNodes.js';
+import { addTransitionNodeToSheet, createTransitionNode } from './transitionNodes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     

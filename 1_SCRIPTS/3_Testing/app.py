@@ -21,12 +21,18 @@ def add_geometry():
     # Check if the CSV file exists and if not, write the header
     file_exists = os.path.isfile(CSV_FILE_PATH)
     
-    with open(CSV_FILE_PATH, 'a', newline='') as csvfile:
-        fieldnames = ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']  # Adjust as needed
+    with open(CSV_FILE_PATH, 'a', newline='', encoding='utf-8-sig') as csvfile:
+        fieldnames = ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()  # Write header only once
-        writer.writerow(data)
+        # No need to manually add a new line; DictWriter takes care of it
+        writer.writerow({
+            'Id': data['Id'],
+            'point': data['point'],  # This should be the space-separated string
+            'backgroundImgId': data['backgroundImgId'],
+            'newBackgroundImgId': data['newBackgroundImgId']
+        })
     return jsonify({"success": True, "message": "Geometry added"})
 
 # Endpoint to get all geometries from CSV

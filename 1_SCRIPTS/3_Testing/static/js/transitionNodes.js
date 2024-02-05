@@ -170,10 +170,13 @@ function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImg
 
 // Function to update transitionNode spreadsheet
 function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroundImgId) {
+    //Format point as a space-separated string
+    const formattedPoint = `${point.x} ${point.y} ${point.z}`;
+    
     // Example data structure, adjust as necessary
     const data = {
         Id: uniqueId,
-        point: point,
+        point: formattedPoint,
         backgroundImgId: BackgroundImgId,
         newBackgroundImgId: newBackgroundImgId
     };
