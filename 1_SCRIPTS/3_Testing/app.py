@@ -51,6 +51,38 @@ def get_geometries():
     return jsonify(geometries)
 
 
+@app.route('/delete_geometry', methods=['POST'])
+def delete_geometry():
+    data = request.json
+    nodeId = data['Id']
+
+    # Temporary list to store all entries except the one to delete
+    updated_entries = []
+
+    # Step 1: Read the existing CSV and filter out the entry to delete
+    try:
+        with open(CSV_FILE_PATH, mode='r', newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['Id'] != nodeId:  # Keep only entries that don't match the nodeId
+                    updated_entries.append(row)
+    except FileNotFoundError:
+        return jsonify({"success": False, "message": "File not found"}), 404
+
+    # Step 2: Rewrite the CSV without the deleted entry
+    with open(CSV_FILE_PATH, mode='w', newline='', encoding='utf-8-sig') as csvfile:
+        if updated_entries:  # Check if there are entries left to write
+            fieldnames = updated_entries[0].keys()  # Get field names from the first entry
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(updated_entries)
+        else:  # If no entries left, write just the header
+            csvfile.write(','.join(['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']) + '\n')
+
+    return jsonify({"success": True, "message": "Geometry deleted"})
+
+
+
 @app.route('/download_csv', methods=['GET'])
 def download_csv():
     return send_from_directory(directory=CSV_DIRECTORY, filename="geometry_parameters.csv", as_attachment=True)

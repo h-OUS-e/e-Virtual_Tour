@@ -36,7 +36,6 @@
     <script type="module" src="../static/js/editMode.js"></script>
     <script type="module" src="../static/js/hollowCylinder.js"></script>
 
-
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
     
     
@@ -93,12 +92,15 @@
         
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
-        <div id="edit_menu" class="hidden">
+        <div id="edit_menu" class="editMenu hidden">
             <ul>
-                <li onclick="deleteNode(currentNodeId)">Delete</li>
-                <!-- Add more options here -->
+                <li class="editMenuOption deleteOption">Delete</li>
+                <li class="editMenuOption changeBackgroundOption">Change newBackgroundImgId</li>
+                <li class="editMenuOption moveOption">Move</li>
+                <!-- Add other options as needed -->
             </ul>
         </div>
+        
         
 
         

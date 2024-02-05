@@ -486,8 +486,8 @@ html {
     z-index: 10000; /* Ensure it appears above other elements */
     width: 200px; /* Set a fixed width or adjust as needed */
     background-color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 5px;
     overflow: hidden;
     display: none; /* Initially hidden */
 }
@@ -505,6 +505,6 @@ html {
 }
 
 #edit_menu ul li:hover {
-    background-color: #f0f0f0;
+    background-color: #f5f5f5;
 }
 

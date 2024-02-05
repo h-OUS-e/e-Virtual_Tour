@@ -2,7 +2,7 @@
 A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
-import { addTransitionNodeToSheet, createTransitionNode } from './transitionNodes.js';
+import { addTransitionNodeToSheet, createTransitionNode, delTransitionNodeFromSheet } from './transitionNodes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
     let currentEditMenuId = null;
+     // To keep track of the current node being interacted with
 
 
     document.getElementById('editModeToggle').addEventListener('click', function () {
@@ -40,15 +41,27 @@ document.addEventListener('DOMContentLoaded', () => {
             hideEditMenu();
             currentEditMenuId = null;
         }
-        
-        // const transitionNodes = scene.querySelectorAll('transitionNode');
-        // transitionNodes.forEach(node => {
-        //     node.addEventListener('contextmenu', handleRightClickOnNode);
-        // });
+
+    });
+
+    // Deleting node if delete option is chosen
+    document.getElementById('edit_menu').addEventListener('click', function(event) {
+        // Check if the click is on the "Delete" option
+        if (event.target.classList.contains('deleteOption')) {
+            // Assuming currentNodeId is updated to reflect the current node
+            delTransitionNodeFromSheet(currentEditMenuId);
+        }
+        // else if (event.target.classList.contains('changeBackgroundOption')) {
+        //     changeBackgroundImgId(currentNodeId);
+        // } else if (event.target.classList.contains('moveOption')) {
+        //     moveNode(currentNodeId);
+        // }
+        // Hide the menu after an option is selected
+        hideEditMenu();
+        currentEditMenuId = null;
     });
 
     scene.addEventListener('mouseDragged', function () {
-        console.log("YESY");
         editMenuOn = false;
         hideEditMenu();
         currentEditMenuId = null;
@@ -193,11 +206,9 @@ function adjustRadius(event) {
 
   }
 
-
-//   let currentNodeId = null; // To keep track of the current node being interacted with
+ 
 
   function showEditMenu(nodeId, x, y) {
-    //   let currentNodeId = nodeId; // Update the current node ID
     
       const menu = document.getElementById('edit_menu');
       menu.style.top = `${y}px`;

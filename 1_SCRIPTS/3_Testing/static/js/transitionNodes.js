@@ -172,7 +172,7 @@ function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImg
 function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroundImgId) {
     //Format point as a space-separated string
     const formattedPoint = `${point.x} ${point.y} ${point.z}`;
-    
+
     // Example data structure, adjust as necessary
     const data = {
         Id: uniqueId,
@@ -199,8 +199,34 @@ function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroun
 }
 
 
+function delTransitionNodeFromSheet(nodeId) {
+    // Remove from scene
+    const node = document.getElementById(nodeId);
+    if (node) {
+        node.parentNode.removeChild(node);
+    }
+
+    // Tell the server to remove from CSV
+    fetch('/delete_geometry', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Id: nodeId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Delete response:', data);
+        // Optionally, handle any feedback from the server
+    })
+    .catch(error => {
+        console.error('Error deleting node:', error);
+    });
+}
+
+
 
 
 // Export the function
-export { addTransitionNodeToSheet, createTransitionNode, readTransitionNodesFromSheet };
+export { addTransitionNodeToSheet, createTransitionNode, delTransitionNodeFromSheet, readTransitionNodesFromSheet };
 
