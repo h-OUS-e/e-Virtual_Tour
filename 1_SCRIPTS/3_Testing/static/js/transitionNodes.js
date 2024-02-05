@@ -1,9 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-//constants:
-    //create transition event
-    
-    const scene = document.querySelector('a-scene');
+const scene = document.querySelector('a-scene');
     const main_class = "transitionNode";
     const mixin_glow = "transition_node_glow";
     const mixin_icon = "transition_node_icon";
@@ -16,37 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const color_hoverInClicked = "gray";
     const color_transitionNode = color_sageGreen;
 
-    console.log("T1");
+document.addEventListener('DOMContentLoaded', () => {
+
+//constants:
+    //create transition event
+    
+    
 
     // Read transition nodes and load them to scene
     readTransitionNodesFromSheet();
-    console.log("T2");
-
     
-
-//functions: 
-
-    function emitTransitioning(new_background_img_id){
-        // input: new_background_img_id: string
-        // emit transitioning event with new background image ID
-        var transitioning = new CustomEvent('transitioning', {
-            detail: { new_background_img_id: new_background_img_id}       
-        });
-        scene.dispatchEvent(transitioning);
-
-    }
-
-
-
-
-    // Setting initial colors of objects
-    const entities = document.querySelectorAll('[class=' + main_class + ']');
-    entities.forEach(entity => {
-        const glow = entity.querySelector('[mixin=' + mixin_glow + ']');  
-        const icon = entity.querySelector('[mixin=' + mixin_icon + ']');   
-        icon.setAttribute('material', 'color', color_transitionNode);
-        glow.setAttribute('material', 'color', color_transitionNode);
-    });
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
@@ -65,10 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
 
-
     // Ensures that no objects are loaded before the sky is loaded
     document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
-        console.log('LOADDDED');
     });
        
 
@@ -125,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             var clickedId = event.target.id;
             var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
             var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
-            console.log('TEST', new_background_img_id);
 
             // Emit the transitioning event to change the background image and minimap highlights
             emitTransitioning(new_background_img_id) 
@@ -135,6 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// FUNCTIONS
+
+
+
 function readTransitionNodesFromSheet() {
     fetch('/get_geometries')
     .then(response => response.json())
@@ -142,9 +117,10 @@ function readTransitionNodesFromSheet() {
         // Assuming data is an array of geometry parameters
         data.forEach(geometry => {
             createTransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId);
-            // Adjust the above function call as needed based on actual parameter names
         });
     });    
+    // to use .then() for handling asynchronous completion, the function must return a Promise
+    return Promise.resolve();
 }
 
 
@@ -153,10 +129,14 @@ function readTransitionNodesFromSheet() {
 function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId) {
     // Create main entity
     const entity = document.createElement('a-entity');
+
+    // Set attributes
     entity.setAttribute('id', uniqueId);
     entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
     entity.setAttribute('clickable', 'true');
-    entity.setAttribute('visible', true);
+    if (backgroundImgId === '01.1'){ entity.setAttribute('visible', true);}
+    else {entity.setAttribute('visible', false);}
+    
     entity.setAttribute('toggle_visibility', true);
     entity.setAttribute('new_background_img_id', newBackgroundImgId);
     entity.setAttribute('background_img_id', backgroundImgId);
@@ -169,11 +149,13 @@ function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImg
     // Create icon entity and append to main entity
     const iconEntity = document.createElement('a-entity');
     iconEntity.setAttribute('mixin', 'transition_node_icon');
+    iconEntity.setAttribute('material', 'color', color_transitionNode);
     entity.appendChild(iconEntity);
 
     // Create glow entity and append to main entity
     const glowEntity = document.createElement('a-entity');
     glowEntity.setAttribute('mixin', 'transition_node_glow');
+    glowEntity.setAttribute('material', 'color', color_transitionNode);
     entity.appendChild(glowEntity);
 
     // Append the new entity to the A-Frame scene
