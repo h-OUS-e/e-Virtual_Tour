@@ -165,7 +165,7 @@ registerComponent('custom-look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    console.log('touch events added: touchstart, touchmove, touchend')
+  
     canvasEl.addEventListener('touchstart', this.onTouchStart);
     window.addEventListener('touchmove', this.onTouchMove);
     window.addEventListener('touchend', this.onTouchEnd);
@@ -324,7 +324,7 @@ registerComponent('custom-look-controls', {
    * Register touch down to detect touch drag.
    */
   onTouchStart: function (evt) {
-    console.log('onTouchStart');
+   
     if (evt.touches.length !== 1 ||
         !this.data.touchEnabled ||
         this.el.sceneEl.is('vr-mode') ||
@@ -340,7 +340,7 @@ registerComponent('custom-look-controls', {
    * Translate touch move to Y-axis rotation.
    */
   onTouchMove: function (evt) {
-    console.log("onTouchMove");
+    
     var direction;
     var canvas = this.el.sceneEl.canvas;
     var deltaY;
@@ -369,7 +369,7 @@ registerComponent('custom-look-controls', {
    * Register touch end to detect release of touch drag.
    */
   onTouchEnd: function () {
-    console.log("onTouchEnd");
+   
     this.touchStarted = false;
   },
 
