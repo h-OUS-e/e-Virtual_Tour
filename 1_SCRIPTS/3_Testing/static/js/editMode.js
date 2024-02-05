@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // show edit menu
         if (editMenuOn){
             const nodeId = event.detail.id;
-            showEditMenu(nodeId, event.clientX, event.clientY);
+            showEditMenu(nodeId, event.detail.x, event.detail.y);
             currentEditMenuId = event.detail.id;
         }
         else {
@@ -45,6 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // transitionNodes.forEach(node => {
         //     node.addEventListener('contextmenu', handleRightClickOnNode);
         // });
+    });
+
+    scene.addEventListener('mouseDragged', function () {
+        console.log("YESY");
+        editMenuOn = false;
+        hideEditMenu();
+        currentEditMenuId = null;
     });
 
     // Add transition nodes if click detected under edit_mode==1
