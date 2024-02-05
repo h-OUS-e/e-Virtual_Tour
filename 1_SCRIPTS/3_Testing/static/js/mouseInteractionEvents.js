@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 
 
+
     // Single mouse click
     canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
         let raycaster = updateRaycaster(event, canvas, scene);
@@ -81,7 +82,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
     canvas.addEventListener('mousemove', () => {
         hasMouseMoved = true; // Indicate that there was mouse movement
     });
-
 
     // Single mouse click in editor mode
     canvas.addEventListener('click', (event) => { 
@@ -111,6 +111,23 @@ document.addEventListener('DOMContentLoaded', (event) =>
     });
 
     
+    // Detecting right click intersecting an object in the scene
+    canvas.addEventListener('contextmenu', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
+        let raycaster = updateRaycaster(event, canvas, scene);
+        let intersectedObject = checkIntersections(raycaster, scene);
+        if (intersectedObject) {
+            event.preventDefault(); // Prevent the browser's context menu from appearing
+            var new_event = new CustomEvent('mouseRightClicked', 
+                {
+                    detail: {
+                        id: intersectedObject.getAttribute('id'),
+                    },
+                });
+                // Dispatch event
+                scene.dispatchEvent(new_event);   
+            // console.log("RIGHT CLICKED:", intersectedObject);             
+        }
+    });
 
     
 

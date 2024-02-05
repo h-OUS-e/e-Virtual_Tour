@@ -7,22 +7,49 @@ import { addTransitionNodeToSheet, createTransitionNode } from './transitionNode
 document.addEventListener('DOMContentLoaded', () => {
     
     let isEditMode = false;
+    let editMenuOn = false;
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
+    let currentEditMenuId = null;
 
 
     document.getElementById('editModeToggle').addEventListener('click', function () {
-
         isEditMode = !isEditMode; // Toggle edit mode
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
+        hideEditMenu();
 
-
+    });
+    
+    scene.addEventListener('mouseRightClicked', function (event) {
+        if (!isEditMode) return;   
+        if (!editMenuOn) editMenuOn = true;
+        if (currentEditMenuId == event.detail.id) editMenuOn = false;
+        if (currentEditMenuId != event.detail.id) editMenuOn = true;
+        
+        // transition node menu
+        // console.log(event.detail.id);
+        // show edit menu
+        if (editMenuOn){
+            const nodeId = event.detail.id;
+            showEditMenu(nodeId, event.clientX, event.clientY);
+            currentEditMenuId = event.detail.id;
+        }
+        else {
+            hideEditMenu();
+            currentEditMenuId = null;
+        }
+        
+        // const transitionNodes = scene.querySelectorAll('transitionNode');
+        // transitionNodes.forEach(node => {
+        //     node.addEventListener('contextmenu', handleRightClickOnNode);
+        // });
     });
 
     // Add transition nodes if click detected under edit_mode==1
     scene.addEventListener('mouseClickedEditMode', function (event) {
+        hideEditMenu(); currentEditMenuId = null;
         if (!isEditMode) return; 
         console.log(event.detail.intersection);  
         updateSceneForEditMode(event.detail.intersection);
@@ -31,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adjust the plane position if shift+scroll is detected
     // Adjust the cylinder grid scale if shift+scroll is detected
     document.addEventListener('wheel', function(event) {
+        hideEditMenu(); currentEditMenuId = null;
         if (!isEditMode) return; 
         adjustPlaneHeight(event);
         adjustRadius(event);
@@ -154,7 +182,24 @@ function adjustRadius(event) {
         mesh_cylinder.material.map.repeat.set(xRepeat*3, yRepeat/2);
         mesh_cylinder.material.map.needsUpdate = true;
         mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
-        
     }
 
   }
+
+
+//   let currentNodeId = null; // To keep track of the current node being interacted with
+
+  function showEditMenu(nodeId, x, y) {
+    //   let currentNodeId = nodeId; // Update the current node ID
+    
+      const menu = document.getElementById('edit_menu');
+      menu.style.top = `${y}px`;
+      menu.style.left = `${x}px`;
+      menu.style.display = 'block'; // Show the menu
+  }
+
+  // Call this function to hide the context menu, for example, when an option is selected or when clicking elsewhere
+function hideEditMenu() {
+    const menu = document.getElementById('edit_menu');
+    menu.style.display = 'none'; // Hide the menu
+}
