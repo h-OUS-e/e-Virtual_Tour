@@ -35,14 +35,15 @@ def get_geometries():
     geometries = []
     
     try:
-        with open(CSV_FILE_PATH, newline='') as csvfile:
+        with open(CSV_FILE_PATH, mode='r', newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 geometries.append(row)
+                print(row)
     except FileNotFoundError:
         return jsonify({"success": False, "message": "File not found"})
-    print(geometries)
     return jsonify(geometries)
+
 
 @app.route('/download_csv', methods=['GET'])
 def download_csv():
