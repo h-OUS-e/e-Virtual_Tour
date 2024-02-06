@@ -34,17 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         
 
-        // Attach an event listener to this media_element
-        media_element.addEventListener('mouseenter', function(event) {
-            // Change the background color when mouse enters
-            media_element.style.backgroundColor = icon_color_list[item.color_class]['light'];
-        });
-
-        media_element.addEventListener('mouseleave', function(event) {
-            // Change the background color when mouse leaves
-            media_element.style.backgroundColor = 'white';
-        });
-
         // Change sky image when mouse is clicked and show popup
         media_element.addEventListener('click', function(event) {
             var transitioning = new CustomEvent('mediabarItemClicked', {
@@ -65,22 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     });
 
-
-    // // Disabling zoom when cursor is on mediabar
-    // if (mediabar) {
-    //     mediabar.addEventListener('mouseenter', function (event) 
-    //     {   
-    //         console.log('Entering mediabar window', event);
-    //         window.disableZoom();
-    //     });
-
-    //     mediabar.addEventListener('mouseleave', function (event) 
-    //     {   
-    //         console.log('Leaving mediabar window');
-    //         window.enableZoom();
-    //     });
-
-    // }
 
 
 });

@@ -135,7 +135,7 @@ html {
 }
 
 
-/* Defining bottom dashboard style */
+/* Defining left dashboard style */
 #dashboard {
     /* PROPERTIES and INDEX*/
     z-index: 1000; /* High enough to be on top of other elements */
@@ -414,7 +414,7 @@ html {
 #sidebar-container {
     height: 100%;
     width: 30%; /* 30 when open, 3 when closd */
-    /* background-color: white; */
+    background-color: var(--background);
     z-index: 1001;
     transition: width 0.3s ease;
 
@@ -426,30 +426,33 @@ html {
 #sidebar {
     height: 100%;
     width: 100%;
-    background-color: #009A9F;
     transition: width 0.3s ease;
     /* flexbox styles */
     display: flex;
     flex-direction: column;
 }
 #sidebar-header {
-    background-color: purple; 
+    background-color: var(--background); 
     flex: 1;  
     padding: 3%; 
 }
 #sidebar-item-grid {
-    background-color: black;
+    background-color: var(--background);
     flex: 13;
     padding: 3%;
     /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
     display: grid;
     grid-template-columns: 1fr;
-    z-index: 1002;
+    z-index: 1001;
+    
+    
 
     
 }
 .sidebar-item {
     z-index: 1003;
+    background-color: var(--background); 
+    border-bottom: 10px black solid;
 }
 
 #sidebar-toggler {
@@ -457,7 +460,7 @@ html {
     flex-direction: column;
     height: 100%;
     width: 2vw;
-    background-color: #33FF57;
+    background-color: var(--mintGreen);;
 
     display: flex;
     flex-direction: column;
@@ -465,10 +468,9 @@ html {
     align-items: center;
 }
 #sidebar-toggler-button{
-    background-color: red;
+    background-color: var(--mintGreen);;
     display: block;
-    width: 100%;
-    height: 10;
+    width: 10%;
     /* Adjust the size of the arrow by changing the border sizes */
     transition: transform 0.15s ;
     border-left: 8px solid ; /* Arrow color */
