@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template
 import csv
 import os
+import json
 
 app = Flask(__name__)
 
@@ -18,8 +19,22 @@ def home():
 @app.route('/add_geometry', methods=['POST'])
 def add_geometry():
     data = request.json
+    geometries = []
     # Check if the CSV file exists and if not, write the header
     file_exists = os.path.isfile(CSV_FILE_PATH)
+
+    if (file_exists):
+        with open(CSV_FILE_PATH, 'r', newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            geometries = list(reader)
+
+
+    # Check for duplicate ID
+    for geometry in geometries:
+        if geometry['Id'] == data['Id']:
+            # Handle the duplicate ID (skip, update, or return an error)
+            return jsonify({"success": False, "message": "Geometry with this ID already exists"})
+
     
     with open(CSV_FILE_PATH, 'a', newline='', encoding='utf-8-sig') as csvfile:
         fieldnames = ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']
@@ -81,6 +96,35 @@ def delete_geometry():
 
     return jsonify({"success": True, "message": "Geometry deleted"})
 
+
+@app.route('/update_geometry', methods=['POST'])
+def update_geometry():
+    data = request.get_json()
+    updated = False
+
+    # Load existing data
+    try:
+        with open(CSV_FILE_PATH, 'r') as file:
+            geometries = json.load(file)
+    except FileNotFoundError:
+        geometries = []
+
+    # Update the matching node's data
+    for node in geometries:
+        if node['id'] == data['id']:
+            node.update(data)  # Update node data with provided data
+            updated = True
+            break
+
+    # If no matching node was found, optionally append the new data
+    if not updated:
+        geometries.append(data)
+
+    # Save the updated data back to the file
+    with open(CSV_FILE_PATH, 'w') as file:
+        json.dump(geometries, file, indent=4)
+
+    return jsonify({"success": True, "message": "Geometry updated"})
 
 
 @app.route('/download_csv', methods=['GET'])
