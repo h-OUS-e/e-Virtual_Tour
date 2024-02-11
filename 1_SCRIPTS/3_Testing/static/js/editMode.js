@@ -2,35 +2,111 @@
 A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
-import { createTransitionNode } from './transitionNodes.js';
+
+import { addTransitionNodeToSheet, createTransitionNode, TransitionNode } from './transitionNodes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
     let isEditMode = false;
+    let editMenuOn = false;
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
+    let currentEditMenuId = null;
+    let node = null;
+
+    const undoRedoManager = new UndoRedoManager();
 
 
+    // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
-
         isEditMode = !isEditMode; // Toggle edit mode
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
+        hideEditMenu();
+    });
+
+    
+    // Right clicking an object in the scene with editMode to reveal menu
+    scene.addEventListener('mouseRightClicked', function (event) {
+        if (!isEditMode) return;   
+        if (!editMenuOn) editMenuOn = true;
+        if (currentEditMenuId == event.detail.id) editMenuOn = false;
+        if (currentEditMenuId != event.detail.id) editMenuOn = true;
+        
+        // transition node menu
+        if (editMenuOn){
+            const id = event.detail.id;
+            showEditMenu(id, event.detail.x, event.detail.y);
+            currentEditMenuId = event.detail.id;
+            node = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+        }
+        else {
+            hideEditMenu();
+            currentEditMenuId = null;
+        }
+    });
 
 
+    // Deleting node if delete option is chosen
+    document.getElementById('edit_menu').addEventListener('click', function(event) {
+        // Check if the click is on the "Delete" option
+        if (event.target.classList.contains('deleteOption')) {
+            const deleteAction = node.performAction('delete');
+            undoRedoManager.doAction(deleteAction);
+        }
+        // else if (event.target.classList.contains('changeBackgroundOption')) {
+        //     changeBackgroundImgId(currentNodeId);
+        // } else if (event.target.classList.contains('moveOption')) {
+        //     moveNode(currentNodeId);
+        // }
+        // Hide the menu after an option is selected
+        hideEditMenu();
+        currentEditMenuId = null;
+    });
+
+
+    scene.addEventListener('mouseDragged', function () {
+        editMenuOn = false;
+        hideEditMenu();
+        currentEditMenuId = null;
     });
 
     // Add transition nodes if click detected under edit_mode==1
     scene.addEventListener('mouseClickedEditMode', function (event) {
+        hideEditMenu(); currentEditMenuId = null;
         if (!isEditMode) return; 
         console.log(event.detail.intersection);  
-        updateSceneForEditMode(event.detail.intersection);
+        const point = event.detail.intersection;
+        // Get current background image id
+        var sky = document.querySelector('#sky');
+        const backgroundImgId = sky.getAttribute('background_img_id');    
+        // new background image id needs to be defined on the viewport
+        const newBackgroundImgId = "01.5";
+        // Generate a unique ID for the new entity
+        const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+
+        node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+        const createAction = node.performAction('create');
+        undoRedoManager.doAction(createAction);
+        // updateSceneForEditMode(event.detail.intersection);
+    });
+
+    // Undo last command
+    document.addEventListener('keydown', function(event) {
+        // Check for Ctrl+Z or Cmd+Z
+        console.log("TESTING UNDO", undoRedoManager.redoStack, undoRedoManager.undoStack);
+        if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+            event.preventDefault(); // Prevent the browser's default undo action
+            undoRedoManager.undo(); // Call your undo function
+            console.log("TESTING UNDO 2");
+        }
     });
     
     // Adjust the plane position if shift+scroll is detected
     // Adjust the cylinder grid scale if shift+scroll is detected
     document.addEventListener('wheel', function(event) {
+        hideEditMenu(); currentEditMenuId = null;
         if (!isEditMode) return; 
         adjustPlaneHeight(event);
         adjustRadius(event);
@@ -66,17 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateSceneForEditMode(point) {
     // Get current background image id
     var sky = document.querySelector('#sky');
-    const backgroundImgId = sky.getAttribute('background_img_id');
-    
+    const backgroundImgId = sky.getAttribute('background_img_id');    
     // new background image id needs to be defined on the viewport
-    const newBackgroundImgId = "01.2";
-
+    const newBackgroundImgId = "01.5";
     // Generate a unique ID for the new entity
     const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
-    // Create geometry
-    createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId)
-    addTransitionNodeToSheet(uniqueId, point, backgroundImgId, newBackgroundImgId)
+    const node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+    const createAction = node.performAction('create');
+    undoRedoManager.doAction(createAction);
+
+    // // Create geometry
+    // createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId)
+    // addTransitionNodeToSheet(uniqueId, point, backgroundImgId, newBackgroundImgId)
 }
 
 
@@ -154,7 +232,103 @@ function adjustRadius(event) {
         mesh_cylinder.material.map.repeat.set(xRepeat*3, yRepeat/2);
         mesh_cylinder.material.map.needsUpdate = true;
         mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
-        
     }
 
   }
+
+ 
+
+  function showEditMenu(nodeId, x, y) {
+    
+      const menu = document.getElementById('edit_menu');
+      menu.style.top = `${y}px`;
+      menu.style.left = `${x}px`;
+      menu.style.display = 'block'; // Show the menu
+  }
+
+  // Call this function to hide the context menu, for example, when an option is selected or when clicking elsewhere
+function hideEditMenu() {
+    const menu = document.getElementById('edit_menu');
+    menu.style.display = 'none'; // Hide the menu
+}
+
+
+
+// FUNCTIONS FOR UNDO/REDO
+function doAction(action) {
+    action.do();
+    undoStack.push(action);
+    redoStack = []; // Clear redo stack on new action
+}
+
+
+function doActionIfPossible(node) {
+    const existingEntity = document.getElementById(node.id);
+    if (existingEntity) {
+        console.log(`A node with the ID ${node.id} already exists. Action aborted.`);
+        return;        
+    }
+    // Only perform the action if there's no existing node with the same ID
+    const action = node.createAction('create', 'delete');
+    doAction(action);
+}
+
+function undo() {
+    if (undoStack.length > 0) {
+        const action = undoStack.pop();
+        action.undo();
+        redoStack.push(action);
+    }
+}
+
+function redo() {
+    if (redoStack.length > 0) {
+        const action = redoStack.pop();
+        action.do();
+        undoStack.push(action);
+    }
+}
+
+// // Example of using it
+// const node = new TransitionNode('nodeId', {x: 0, y: 1, z: 2}, 'background1', 'background2');
+// const createAction = node.createAction();
+// performAction(createAction);
+
+// // To undo the creation
+// undo();
+
+
+// UndoRedoManager.js
+class UndoRedoManager {
+    constructor() {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
+
+    // Execute an action and add it to the undo stack
+    doAction(action) {
+        action.do(); // Execute the "do" part of the action
+        this.undoStack.push(action); // Push the action to the undo stack
+        this.redoStack = []; // Clear the redo stack whenever a new action is performed
+    }
+
+    // Undo the last action
+    undo() {
+        if (this.undoStack.length > 0) {
+            const action = this.undoStack.pop(); // Remove the last action from the undo stack
+            action.undo(); // Execute the "undo" part of the action
+            this.redoStack.push(action); // Push the action to the redo stack for potential redoing
+        }
+    }
+
+    // Redo the last undone action
+    redo() {
+        if (this.redoStack.length > 0) {
+            const action = this.redoStack.pop(); // Remove the last action from the redo stack
+            action.do(); // Re-execute the "do" part of the action
+            this.undoStack.push(action); // Push the action back to the undo stack
+        }
+    }
+}
+
+

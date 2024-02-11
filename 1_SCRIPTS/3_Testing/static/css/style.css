@@ -481,3 +481,32 @@ html {
 }
 
 
+
+
+#edit_menu {
+    position: absolute;
+    z-index: 10000; /* Ensure it appears above other elements */
+    width: 200px; /* Set a fixed width or adjust as needed */
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    display: none; /* Initially hidden */
+}
+
+#edit_menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#edit_menu ul li {
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+#edit_menu ul li:hover {
+    background-color: #f5f5f5;
+}
+
