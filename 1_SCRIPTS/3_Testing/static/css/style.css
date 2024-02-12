@@ -169,7 +169,6 @@ html {
 
     padding: 10px;
 }
-
 /* Common styles for dashboard items */
 .dashboard-item {
     /* MARGINS AND PADDINGS */
@@ -182,32 +181,27 @@ html {
     background: none; /* Removes default button background */
     cursor: pointer; /* Changes cursor on hover */
 }
-
 /* Setting the size of the button icon image */
 .dashboard-item img {
     width: 35px; /* Set the width as desired */
     height: 35px; /* Set the height as desired */
     object-fit: cover;
 }
-
 /* Styles for hover or focus state, e.g., a slight drop shadow or change in opacity */
 .dashboard-item:hover, .dashboard-item:focus {
     box-shadow: 0 2px 4px var(--sageGreen);
 }
-
 /* Styles for when the button is clicked */
 .dashboard-item:active {
     box-shadow: 0 1px 2px var(--sageGreen);
     color: var(--sageGreen);
     border: 1px solid blue;
 }
-
 /* Put top dashboard item at the top with a margin */
 .dashboard-item:nth-child(1) {
     /* MARGINS AND PADDINGS */
     margin-top: 20px;
 }
-
 /* put last dashboard item at the bottom with a margin */
 .dashboard-item:nth-child(3) {
     /* MARGINS AND PADDINGS */
@@ -219,14 +213,11 @@ html {
     margin-top: 0px;
     margin-bottom: 20px;
 }
-
-
 #icon-gallery {
     overflow-x: auto;
     white-space: nowrap;
     /* Additional styling */
 }
-
 #menu_container {
     display: flex;
     width: 0px;
@@ -234,7 +225,6 @@ html {
     align-items: left;
     justify-content: left;
 }
-
 .menu {
     /* PROPERTIES and INDEX*/
     z-index: 2; /* Sit on top */
@@ -256,7 +246,6 @@ html {
     background-color: #111; /* Sidebar background color */
     transition: 0.4s; /* Smooth transition */
 }
-
 .menu a {   
     /* LAYOUT */ 
     display: block;
@@ -270,7 +259,6 @@ html {
     text-decoration: none;
     font-size: 25px;
 }
-
 .menu a:hover {
     color: var(--sageGreen);
 }
@@ -298,8 +286,6 @@ html {
     padding: 0;
     transition: 0.4s;
 }
-
-
 .minimapNode {
     position: relative;
     width: 8px;
@@ -309,6 +295,8 @@ html {
     border: 1px solid grey; /* Add a grey border */
     z-index: 10001;
 }
+
+
 
 
 /* Defining popup style*/
@@ -333,7 +321,6 @@ html {
     z-index: 1000; /* High z-index to be above other content */
     color: var(--popupDarkColor);
 }
-  
 .popup-header {
     font-family: 'CircularStd', Helvetica;
     border-radius: 10px;
@@ -346,18 +333,15 @@ html {
     justify-content: space-between;
     align-items: center;
 }
-
 .title-container {
     display: flex;
     flex-direction: column;
     border: none;
 } 
-
 .title-description{
     font-style: italic;
     padding-bottom: 2rem;
 }
-  
 .popup-close-button {
     border: none;
     background: none;
@@ -366,7 +350,6 @@ html {
     color: var(--popupDarkColor);
     align-self: flex-start; /* Puts close-button on top of its own column container */
 }
-
 .popup-body {
     display: flex;
     flex-direction: column; 
@@ -376,29 +359,22 @@ html {
     margin: auto; /* Centers the block itself horizontally */
     align-items: center;
 }
-
 .popup-media-text {
     padding-left: 10%;
     padding-right: 10%;
 }
-
 .popup-media {   
-    
     padding:1rem;
     align-items: center;
     margin: auto;
     width:80%;
-}
-  
+} 
 .popup-footer {
     padding: 1rem;
     background: #f9f9f9;
     border-top: 1px solid #eee;
     text-align: right;
 }
-  
-
-
   /* Defines overlay block that blurs background */
 .overlay {
     position: fixed;
@@ -449,10 +425,10 @@ html {
     background-color: var(--background); 
     flex: 1;  
     padding-left: 7%; 
+    padding-top: 7%;
     border-bottom: var(--bottom-border-styles) ;
 }
 #sidebar-item-grid {
-    align-items: center;
     background-color: var(--background);
     flex: 5;
     /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
@@ -460,14 +436,15 @@ html {
     grid-template-columns: 1fr;
     z-index: 1001;
     scrollbar-gutter: 5%;
-    
+    overflow-y: auto;
+    grid-auto-rows: 100px;
 }
 .sidebar-item {
     z-index: 1003;
     background-color: var-background; 
     border-bottom: var(--bottom-border-styles);
     padding-left: 7%;
-
+    padding-top: 7%;
 }
 
 #sidebar-toggler {
