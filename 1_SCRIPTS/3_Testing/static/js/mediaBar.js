@@ -17,14 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         media_element_title.innerHTML = `
             <h4>${item.title}</h4>
         `;
-        // media_element_title.style.color = icon_color_list[item.color_class]['dark'];
-
         // Create the body element
         const media_element_body = document.createElement('div'); 
         media_element_body.innerHTML = `
             <p>${item.description}</p>
         `;
-        // media_element_body.style.color = icon_color_list[item.color_class]['dark'];
         
         // Append the title and body to the media_element
         const media_element = document.createElement('div');
