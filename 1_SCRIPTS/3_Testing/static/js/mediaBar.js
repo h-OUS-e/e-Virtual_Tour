@@ -1,7 +1,9 @@
 /*
 A script to control what shows on the scroll bar based on popup contents.
 */
-import { icon_color_list } from './mediaPlayer.js';  
+const sidebar_styles = getComputedStyle(document.documentElement);
+const sidebar_width = sidebar_styles.getPropertyValue('--sidebar_width').trim();
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -66,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebarContainer.style.width = '30%';
             sidebar.style.width = '100%';
         } else {
-            sidebarContainer.style.width = '2vw';
+            sidebarContainer.style.width = sidebar_width ;
             
             sidebar.style.width = '0%';
             
