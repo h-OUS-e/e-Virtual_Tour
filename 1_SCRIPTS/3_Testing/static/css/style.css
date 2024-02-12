@@ -50,58 +50,58 @@
 
 /* Defining styles of general classes */
 
-
 body {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem); /* Adjust as needed */
     cursor: auto; 
-    
 }
-
 
 h1 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Adjust as needed */
     color: var(--text);
 }
+
 h2 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); /* Adjust as needed */
     color: var(--text);
 }
+
 h3 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 3.5vw, 2rem); /* Adjust as needed */
     color: var(--text);
 }
+
 h4 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3vw, 1.5rem); /* Adjust as needed */
     color: var(--text);
 }
+
 p {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 300;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Adjust as needed */
     color: rgb(187, 184, 184);
     margin-left: 0.2rem;
 }
-
 
 /* Defining general of default browser items*/
 
