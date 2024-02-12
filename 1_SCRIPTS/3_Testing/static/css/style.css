@@ -3,8 +3,8 @@
     --primary: #2dc84d;
     --secondary: #33FF57;
     --accent: #3357FF;
-    --background: #ffffff;
-    --text: #333333;
+    --background: #363434;
+    --text: #ebe7e7;
     --hoverIn: #DBFFE5;
     --hoverInClicked:gray;
     --transitionNode:#2dc84d;
@@ -21,6 +21,8 @@
     /* CONSTANTS */
     --mediabar_width: 300px;
     --menubar_width: 30px;
+
+    --bottom-border-styles: 1px rgb(94, 94, 94) solid;
 
 }
 
@@ -59,35 +61,40 @@ h1 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-size: 4rem;
+    font-size: 3.5rem;
+    color: var(--text);
 }
 h2 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 3rem;
+    font-size: 2.5rem;
+    color: var(--text);
 }
 h3 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    color: var(--text);
 }
 h4 {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1.05rem;
+    color: var(--text);
 }
 p {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-weight: 900;
-    font-size: 1rem;
+    font-weight: 300;
+    font-size: 0.7rem;
+    color: rgb(187, 184, 184);
 }
 
 
@@ -441,25 +448,25 @@ html {
 #sidebar-header {
     background-color: var(--background); 
     flex: 1;  
-    padding: 3%; 
+    padding-left: 7%; 
+    border-bottom: var(--bottom-border-styles) ;
 }
 #sidebar-item-grid {
+    align-items: center;
     background-color: var(--background);
-    flex: 13;
+    flex: 5;
     /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
     display: grid;
     grid-template-columns: 1fr;
     z-index: 1001;
-    
-    
-
+    scrollbar-gutter: 5%;
     
 }
 .sidebar-item {
     z-index: 1003;
     background-color: var-background; 
-    border-bottom: 2px rgb(240, 240, 240) solid ;
-    padding: 3%;
+    border-bottom: var(--bottom-border-styles);
+    padding-left: 7%;
 
 }
 
