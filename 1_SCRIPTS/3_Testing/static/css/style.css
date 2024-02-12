@@ -49,14 +49,18 @@
 
 
 /* Defining styles of general classes */
+
+
 body {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-size: 1.5rem;
-    cursor: auto 
+    cursor: auto; 
     
 }
+
+
 h1 {
     margin: 0;
     overflow: hidden;
@@ -100,18 +104,13 @@ p {
 
 
 /* Defining general of default browser items*/
-/* For Webkit Browsers */
-/* Adjusting scroll bar style */
-::-webkit-scrollbar {
-    width: 1px; /* width of the entire scrollbar */
-  }
-  
-::-webkit-scrollbar-track {
-background: var(--popupLightColor); /* color of the tracking area */
-}
+
+/*scrollbar*/
+/* for chrome or safari browsers */
+
+
 
 /* For Firefox Browsers */
-/* Adjusting scroll bar style */
 html {
     scrollbar-color: var(--popupDarkColor) var(--popupLightColor); /* thumb and track color */
     scrollbar-width: thin; /* 'auto', 'thin', or 'none' */
@@ -436,10 +435,11 @@ html {
     display: grid;
     grid-template-columns: 1fr;
     z-index: 1001;
-    scrollbar-gutter: 5%;
+    scrollbar-gutter: 4px;
     overflow-y: auto;
-    grid-auto-rows: 100px;
+    grid-auto-rows: 1;
 }
+
 .sidebar-item {
     z-index: 1003;
     background-color: var-background; 
@@ -502,4 +502,8 @@ html {
 #edit_menu ul li:hover {
     background-color: #f5f5f5;
 }
+
+/*----------------------------------------------------------------*/
+/* make fonts responsive */
+
 
