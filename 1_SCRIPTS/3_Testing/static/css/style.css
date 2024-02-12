@@ -3,7 +3,7 @@
     --primary: #2dc84d;
     --secondary: #33FF57;
     --accent: #3357FF;
-    --background: #F0F0F0;
+    --background: #ffffff;
     --text: #333333;
     --hoverIn: #DBFFE5;
     --hoverInClicked:gray;
@@ -446,7 +446,6 @@ html {
 #sidebar-item-grid {
     background-color: var(--background);
     flex: 13;
-    padding: 3%;
     /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
     display: grid;
     grid-template-columns: 1fr;
@@ -458,8 +457,9 @@ html {
 }
 .sidebar-item {
     z-index: 1003;
-    background-color: blue; 
-    border-bottom: 10px black solid;
+    background-color: var-background; 
+    border-bottom: 2px rgb(240, 240, 240) solid ;
+    padding: 3%;
 
 }
 
