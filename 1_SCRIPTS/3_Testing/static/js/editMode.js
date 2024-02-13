@@ -3,7 +3,7 @@ A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
 
-import { addTransitionNodeToSheet, createTransitionNode, TransitionNode } from './transitionNodes.js';
+import { TransitionNode } from './transitionNodes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let node = null;
 
     const undoRedoManager = new UndoRedoManager();
+    const edit_menu_manager = new EditMenuManager();
 
+    console.log('Entering edit mode' + edit_menu_manager);
 
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
-        hideEditMenu();
+        // edit_menu_manager.hideEditMenu();
     });
 
     
@@ -37,44 +39,76 @@ document.addEventListener('DOMContentLoaded', () => {
         // transition node menu
         if (editMenuOn){
             const id = event.detail.id;
-            showEditMenu(id, event.detail.x, event.detail.y);
+            const objectClass = event.detail.class;
+            console.log('Right clicked on ' + id);
+            edit_menu_manager.setObjectClass(objectClass);
+            edit_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+
             currentEditMenuId = event.detail.id;
-            node = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+            
+            // Constructing the object that was just clicked in memory to be able to edit it
+            // Should edit this to make it a universal mapping function, all in one place
+            if (objectClass == 'TransitionNode'){
+                node = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+            } 
+            else if (objectClass == 'MediaPlayer'){
+                console.log("Need to implement mediaplayer class homie!");
+            }
+            else { 
+                console.log("The object you selected does not have any edit menu :( !!!"); 
+                node=null;
+            } 
+
         }
         else {
-            hideEditMenu();
+            // edit_menu_manager.hideEditMenu();
             currentEditMenuId = null;
         }
     });
 
 
     // Deleting node if delete option is chosen
-    document.getElementById('edit_menu').addEventListener('click', function(event) {
-        // Check if the click is on the "Delete" option
-        if (event.target.classList.contains('deleteOption')) {
-            const deleteAction = node.performAction('delete');
-            undoRedoManager.doAction(deleteAction);
-        }
-        // else if (event.target.classList.contains('changeBackgroundOption')) {
-        //     changeBackgroundImgId(currentNodeId);
-        // } else if (event.target.classList.contains('moveOption')) {
-        //     moveNode(currentNodeId);
-        // }
-        // Hide the menu after an option is selected
-        hideEditMenu();
-        currentEditMenuId = null;
+    const editMenus = document.getElementsByClassName('editMenu');
+
+    Array.from(editMenus).forEach(menu => {
+        menu.addEventListener('click', function(event) {
+            // Check if the click is on the "Delete" option
+            if (event.target.classList.contains('deleteOption')) {
+                const deleteAction = node.performAction('delete');
+                undoRedoManager.doAction(deleteAction);
+            }
+            // Additional checks for other options can go here
+
+            // Hide the menu after an option is selected
+            edit_menu_manager.hideEditMenu();
+            currentEditMenuId = null;
+        });
     });
+
+    // hide meny if something else is clicked on the screen
+    document.addEventListener('click', function(event) {
+        // Check if there is a currently visible edit menu
+        if (edit_menu_manager.currentVisibleMenu) {
+            const menu = document.getElementById(edit_menu_manager.currentVisibleMenu);
+            // If the click was outside the visible menu, hide it
+            if (menu && !menu.contains(event.target)) {
+                edit_menu_manager.hideEditMenu();
+            }
+        }
+    }, true); // Using capture phase to catch the event early
+    
 
 
     scene.addEventListener('mouseDragged', function () {
         editMenuOn = false;
-        hideEditMenu();
+        // edit_menu_manager.hideEditMenu();
         currentEditMenuId = null;
     });
 
     // Add transition nodes if click detected under edit_mode==1
     scene.addEventListener('mouseClickedEditMode', function (event) {
-        hideEditMenu(); currentEditMenuId = null;
+        // edit_menu_manager.hideEditMenu(); 
+        currentEditMenuId = null;
         if (!isEditMode) return; 
         console.log(event.detail.intersection);  
         const point = event.detail.intersection;
@@ -99,14 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
             event.preventDefault(); // Prevent the browser's default undo action
             undoRedoManager.undo(); // Call your undo function
-            console.log("TESTING UNDO 2");
         }
     });
     
     // Adjust the plane position if shift+scroll is detected
     // Adjust the cylinder grid scale if shift+scroll is detected
     document.addEventListener('wheel', function(event) {
-        hideEditMenu(); currentEditMenuId = null;
+        // edit_menu_manager.hideEditMenu(); 
+        currentEditMenuId = null;
         if (!isEditMode) return; 
         adjustPlaneHeight(event);
         adjustRadius(event);
@@ -234,68 +268,82 @@ function adjustRadius(event) {
         mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
     }
 
-  }
+}
 
  
+// class editMenuManager {
+//     constructor(objectClass) {
+//         this.objectClass = objectClass;
+//     }
 
-  function showEditMenu(nodeId, x, y) {
-    
-      const menu = document.getElementById('edit_menu');
-      menu.style.top = `${y}px`;
-      menu.style.left = `${x}px`;
-      menu.style.display = 'block'; // Show the menu
-  }
+//     showEditMenu(x, y) {
 
-  // Call this function to hide the context menu, for example, when an option is selected or when clicking elsewhere
-function hideEditMenu() {
-    const menu = document.getElementById('edit_menu');
-    menu.style.display = 'none'; // Hide the menu
-}
+//         const menu = document.getElementById(`edit_menu_${this.objectClass}`);
+//         menu.style.top = `${y}px`;
+//         menu.style.left = `${x}px`;
+//         menu.style.display = 'block'; // Show the menu
+//     }
 
-
-
-// FUNCTIONS FOR UNDO/REDO
-function doAction(action) {
-    action.do();
-    undoStack.push(action);
-    redoStack = []; // Clear redo stack on new action
-}
+//     // Call this function to hide the context menu, for example, when an option is selected or when clicking elsewhere
+//     hideEditMenu() {
+//         const menu = document.getElementById(`edit_menu_${this.objectClass}`);
+//         menu.style.display = 'none'; // Hide the menu
+//     }
+// }
 
 
-function doActionIfPossible(node) {
-    const existingEntity = document.getElementById(node.id);
-    if (existingEntity) {
-        console.log(`A node with the ID ${node.id} already exists. Action aborted.`);
-        return;        
+class EditMenuManager  {
+    constructor() {        
+        this.objectClass = null;
+        this.currentVisibleMenu = null;
+    }    
+
+    // This method is static cuz it is global, doesn't need to know which 
+    // specific menu it needs to hide.
+    hideEditMenu() {
+        if (this.currentVisibleMenu) {
+
+            const menu = document.getElementById(this.currentVisibleMenu);
+            if (menu) {
+                menu.style.display = 'none';
+            }
+            // Reset the tracker
+            this.currentVisibleMenu = null;
+            // this.objectClass = null;
+        }
     }
-    // Only perform the action if there's no existing node with the same ID
-    const action = node.createAction('create', 'delete');
-    doAction(action);
-}
 
-function undo() {
-    if (undoStack.length > 0) {
-        const action = undoStack.pop();
-        action.undo();
-        redoStack.push(action);
+    // Static method to update the class globally
+    setObjectClass(newObjectClass) {
+        this.hideEditMenu();
+        this.objectClass = newObjectClass;
+        
+    }
+
+    showEditMenu(x, y) {
+        this.hideEditMenu(); // hides any other menu if displayed
+        if (this.objectClass) {
+            const menuId = `edit_menu_${this.objectClass}`;
+            const menu = document.getElementById(menuId);
+            menu.style.top = `${y}px`;
+            menu.style.left = `${x}px`;
+            menu.style.display = 'block'; // Show the menu
+
+            // Track the currently visible menu
+            this.currentVisibleMenu = menuId;
+            }
     }
 }
 
-function redo() {
-    if (redoStack.length > 0) {
-        const action = redoStack.pop();
-        action.do();
-        undoStack.push(action);
+function setupMenuClickHandlers(menuId) {
+    const menu = document.getElementById(menuId);
+    if (menu) {
+        menu.addEventListener('click', function(event) {
+            event.stopPropagation(); // Prevent clicks within the menu from bubbling up
+        }, true);
     }
 }
 
-// // Example of using it
-// const node = new TransitionNode('nodeId', {x: 0, y: 1, z: 2}, 'background1', 'background2');
-// const createAction = node.createAction();
-// performAction(createAction);
-
-// // To undo the creation
-// undo();
 
 
 // UndoRedoManager.js

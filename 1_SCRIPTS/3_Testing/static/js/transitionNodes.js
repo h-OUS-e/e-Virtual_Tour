@@ -1,5 +1,5 @@
 const scene = document.querySelector('a-scene');
-    const main_class = "transitionNode";
+    const main_class = "TransitionNode";
     const mixin_glow = "transition_node_glow";
     const mixin_icon = "transition_node_icon";
     
@@ -111,49 +111,11 @@ function emitTransitioning(new_background_img_id){
 }
 
 
-// Function to create a new transitionNode entity
-function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId) {
-    // Create main entity
-    const entity = document.createElement('a-entity');
-
-    // Set attributes
-    entity.setAttribute('id', uniqueId);
-    entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
-    entity.setAttribute('clickable', 'true');
-    if (backgroundImgId === '01.1'){ entity.setAttribute('visible', true);}
-    else {entity.setAttribute('visible', false);}
-    
-    entity.setAttribute('toggle_visibility', true);
-    entity.setAttribute('new_background_img_id', newBackgroundImgId);
-    entity.setAttribute('background_img_id', backgroundImgId);
-
-    entity.setAttribute('mixin', 'transition_node_frame');
-    entity.setAttribute('position', point);
-    const rotation = "90 0 0";
-    entity.setAttribute('rotation', rotation);
-
-    // Create icon entity and append to main entity
-    const iconEntity = document.createElement('a-entity');
-    iconEntity.setAttribute('mixin', 'transition_node_icon');
-    iconEntity.setAttribute('material', 'color', color_transitionNode);
-    entity.appendChild(iconEntity);
-
-    // Create glow entity and append to main entity
-    const glowEntity = document.createElement('a-entity');
-    glowEntity.setAttribute('mixin', 'transition_node_glow');
-    glowEntity.setAttribute('material', 'color', color_transitionNode);
-    entity.appendChild(glowEntity);
-
-    // Append the new entity to the A-Frame scene
-    document.querySelector('a-scene').appendChild(entity);
-
-    return entity;
-}
-
 
 // A function to load all geometies in the scene
 function readTransitionNodesFromSheet() {
-    fetch('/get_geometries')
+    const objectType = "TransitionNode";
+    fetch(`/get_geometries?objectType=${objectType}`)
     .then(response => response.json())
     .then(data => {
         // Assuming data is an array of geometry parameters
@@ -161,122 +123,9 @@ function readTransitionNodesFromSheet() {
             const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
             transition_node.addToScene();
         });
-    }).catch(error => console.error('Failed to load transition nodes:', error));  
+    }).catch(error => console.error(`Failed to load ${objectType}:`, error));
     // to use .then() for handling asynchronous completion, the function must return a Promise
     return Promise.resolve();
-}
-
-
-// Function to update transitionNode spreadsheet
-function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroundImgId) {
-    //Format point as a space-separated string
-    const formattedPoint = `${point.x} ${point.y} ${point.z}`;
-
-    // Example data structure, adjust as necessary
-    const nodeDetails = {
-        Id: uniqueId,
-        point: formattedPoint,
-        backgroundImgId: BackgroundImgId,
-        newBackgroundImgId: newBackgroundImgId
-    };
-
-    // Send the data to the Flask server
-    fetch('/add_geometry', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nodeDetails),
-    })
-    .then(response => response.json())
-    .then(nodeDetails => {
-        console.log('Success:', nodeDetails);        
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
-
-
-function delTransitionNodeFromSheet(nodeId) {
-    // Remove from scene
-    const node = document.getElementById(nodeId);
-    if (node) {
-        node.parentNode.removeChild(node);
-    }
-
-    // const nodeDetails = {
-    //     Id: uniqueId,
-    //     point: formattedPoint,
-    //     backgroundImgId: BackgroundImgId,
-    //     newBackgroundImgId: newBackgroundImgId
-    // };
-
-    // // Push this information onto the deletionHistory stack
-    // deletionHistory.push(nodeDetails);
-
-    // Tell the server to remove from CSV
-    fetch('/delete_geometry', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ Id: nodeId }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Delete response:', data);
-        // Optionally, handle any feedback from the server
-    })
-    .catch(error => {
-        console.error('Error deleting node:', error);
-    });
-}
-
-// function undoLastDeletion() {
-//     if (deletionHistory.length === 0) {
-//         console.log("No deletions to undo");
-//         return;
-//     }
-
-//     // Pop the last deleted node's details off the history stack
-//     const lastDeleted = deletionHistory.pop();
-
-//     // Recreate the node in the A-Frame scene
-//     createTransitionNode(lastDeleted.id, lastDeleted.position, lastDeleted.backgroundImgId, lastDeleted.newBackgroundImgId);
-
-//     // Send a request to your server to add the node back to the CSV
-//     addTransitionNodeToSheet(lastDeleted.id, lastDeleted.position, lastDeleted.backgroundImgId, lastDeleted.newBackgroundImgId);
-// }
-
-
-// Function to store actions for redo/undo
-function createTransitionNodeAction(uniqueId, nodeDetails) {
-    return {
-        do: function() {
-            createTransitionNode(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-            addTransitionNodeToSheet(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-        },
-        undo: function() {
-            delTransitionNodeFromSheet(uniqueId);
-            // Assuming you have a function to remove a node from the sheet by ID
-        }
-    };
-}
-
-
-function DeleteTransitioNodeAction(uniqueId, nodeDetails) {
-    return {
-        do: function() {
-            // Logic to delete the node, might be similar to undo of CreateNodeAction
-            delTransitionNodeFromSheet(nodeuniqueIdId);
-        },
-        undo: function() {
-            // Logic to recreate the node, similar to do of CreateNodeAction
-            createTransitionNode(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-            addTransitionNodeToSheet(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-        }
-    };
 }
 
 
@@ -288,6 +137,7 @@ class TransitionNode {
         this.position = position;
         this.backgroundImgId = backgroundImgId;
         this.newBackgroundImgId = newBackgroundImgId;
+        this.name = this.constructor.name;
     }
 
 
@@ -302,7 +152,7 @@ class TransitionNode {
         }
         const entity = document.createElement('a-entity');
         entity.setAttribute('id', this.id);
-        entity.setAttribute('class', 'transitionNode');
+        entity.setAttribute('class', 'TransitionNode');
         entity.setAttribute('clickable', 'true');
         entity.setAttribute('visible', this.backgroundImgId === '01.1');
         entity.setAttribute('toggle_visibility', true);
@@ -341,7 +191,8 @@ class TransitionNode {
                 Id: id,
                 point: formattedPoint,
                 backgroundImgId: backgroundImgId,
-                newBackgroundImgId: newBackgroundImgId
+                newBackgroundImgId: newBackgroundImgId,
+                objectType: this.name,
             }),
         }).then(response => response.json())
         .then(data => console.log('Success:', data))
@@ -355,7 +206,8 @@ class TransitionNode {
             id: this.id,
             position: formattedPoint, // Ensure this is serialized properly if needed
             backgroundImgId: this.backgroundImgId,
-            newBackgroundImgId: this.newBackgroundImgId
+            newBackgroundImgId: this.newBackgroundImgId,
+            objectType: this.name,
         };        
         fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
             method: 'POST',
@@ -381,11 +233,10 @@ class TransitionNode {
     delete() {
         const node = document.getElementById(this.id);
         if (node) node.parentNode.removeChild(node);
-        
         fetch('/delete_geometry', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Id: this.id }),
+            body: JSON.stringify({ Id: this.id, objectType: this.name}),
         }).then(response => response.json())
         .then(data => console.log('Delete response:', data))
         .catch(error => console.error('Error deleting node:', error));
@@ -511,5 +362,5 @@ class TransitionNode {
 
 
 // Export the function
-export { DeleteTransitioNodeAction, TransitionNode, addTransitionNodeToSheet, createTransitionNode, createTransitionNodeAction, delTransitionNodeFromSheet, readTransitionNodesFromSheet };
+export { TransitionNode };
 

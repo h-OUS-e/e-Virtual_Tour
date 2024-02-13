@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
                         position: intersectedObject.getAttribute('position'),
                         backgroundImgId: intersectedObject.getAttribute('background_img_id'),
                         newBackgroundImgId: intersectedObject.getAttribute('new_background_img_id'),
+                        class: intersectedObject.getAttribute('class'),
 
                     },
                 });
