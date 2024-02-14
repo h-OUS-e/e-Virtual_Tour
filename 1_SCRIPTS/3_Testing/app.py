@@ -64,7 +64,6 @@ def add_geometry():
         if not file_exists:
             writer.writeheader()  # Write header only once
 
-
         # Prepare row data based on dynamic fieldnames
         row_data = {fieldname: data[fieldname] for fieldname in fieldnames}
         writer.writerow(row_data)
@@ -132,34 +131,41 @@ def delete_geometry():
 
 @app.route('/update_geometry', methods=['POST'])
 def update_geometry():
-    data = request.get_json()
-    updated = False
+    data = request.json
+    print(data)
+    nodeId = data['Id']
+    # Getting requested object type to add
+    fieldnames = object_attribute_mapping[data['objectType']]
     CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, f"{data['objectType']}.csv")
+    
 
     # Load existing data
     try:
-        with open(CSV_FILE_PATH, 'r') as file:
-            geometries = json.load(file)
+        with open(CSV_FILE_PATH, 'r', newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            geometries = list(reader)
     except FileNotFoundError:
-        geometries = []
+        return jsonify({"success": False, "message": "File not found"}), 404
 
     # Update the matching node's data
-    for node in geometries:
-        if node['id'] == data['id']:
-            node.update(data)  # Update node data with provided data
+    updated = False
+    for geometry in geometries:
+        if geometry['Id'] == nodeId:
+            for fieldname in fieldnames:
+                geometry[fieldname] = data.get(fieldname, geometry[fieldname])
             updated = True
             break
 
-    # If no matching node was found, optionally append the new data
     if not updated:
-        geometries.append(data)
+        return jsonify({"success": False, "message": "Geometry not found"}), 404
 
-    # Save the updated data back to the file
-    with open(CSV_FILE_PATH, 'w') as file:
-        json.dump(geometries, file, indent=4)
+    # Write all data back to the CSV file
+    with open(CSV_FILE_PATH, 'w', newline='', encoding='utf-8-sig') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(geometries)
 
     return jsonify({"success": True, "message": "Geometry updated"})
-
 
 @app.route('/download_csv', methods=['GET'])
 def download_csv():

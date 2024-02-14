@@ -203,12 +203,13 @@ class TransitionNode {
     updateSheet() {
         const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
         const data = {
-            id: this.id,
-            position: formattedPoint, // Ensure this is serialized properly if needed
+            Id: this.id,
+            point: formattedPoint, // Ensure this is serialized properly if needed
             backgroundImgId: this.backgroundImgId,
             newBackgroundImgId: this.newBackgroundImgId,
             objectType: this.name,
-        };        
+        };    
+        console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
         fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -263,6 +264,12 @@ class TransitionNode {
         if (entity) {
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         }
+    }
+
+    // Method to directly update position without backend sync
+    updatePositionDirectly(newPosition) {
+        this.position = newPosition;
+        this.updateScenePosition(); // Reflect changes in the scene
     }
 
 

@@ -17,7 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const undoRedoManager = new UndoRedoManager();
     const edit_menu_manager = new EditMenuManager();
 
-    console.log('Entering edit mode' + edit_menu_manager);
+    // For moving objects
+    let isDragging = false;
+    let startPosition = { x: 0, y: 0, z:0};
+    let validObjectClasses = ['TransitionNode', 'MediaPlayer'];
+    let objectMoved = false;
+
 
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
@@ -44,8 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             edit_menu_manager.setObjectClass(objectClass);
             edit_menu_manager.showEditMenu(event.detail.x, event.detail.y);
 
-            currentEditMenuId = event.detail.id;
-            
+            currentEditMenuId = event.detail.id;            
             // Constructing the object that was just clicked in memory to be able to edit it
             // Should edit this to make it a universal mapping function, all in one place
             if (objectClass == 'TransitionNode'){
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // hide meny if something else is clicked on the screen
+    // hide menu if something else is clicked on the screen
     document.addEventListener('click', function(event) {
         // Check if there is a currently visible edit menu
         if (edit_menu_manager.currentVisibleMenu) {
@@ -96,43 +100,108 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }, true); // Using capture phase to catch the event early
+
+
+  
+
+
     
+    // CODE TO MOVE OBJECTS ON SCENE WHEN HOLDING LEFT CLICK + CTRL AND DRAGGING MOUSE
+    scene.addEventListener('mouseDownIntersection', function (event) {
+        // Check if Ctrl key is pressed and the left mouse button is clicked  
+        
+        if (!isEditMode) return;  
+            
+        let clickedElementId = event.detail.Id;
+        let clickedElementClass = event.detail.class;
+        console.log("TEEEST" + event.detail.backgroundImgId);
+        node = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+        console.log(event.detail.position);
 
+        console.log(clickedElementId);
+        if (validObjectClasses.includes(clickedElementClass)) {
+            isDragging = true;
 
-    scene.addEventListener('mouseDragged', function () {
-        editMenuOn = false;
-        // edit_menu_manager.hideEditMenu();
-        currentEditMenuId = null;
+            // Setting starting position
+            startPosition.x = event.detail.position.x;
+            startPosition.y = event.detail.position.y;
+            startPosition.z = event.detail.position.z;
+
+            // Optionally, distinguish between TransitionNode and MediaPlayer for different handling
+            if (clickedElementClass === 'TransitionNode') {
+                console.log('TransitionNode selected for dragging');
+            } else if (clickedElementClass === 'MediaPlayer') {
+                console.log('MediaPlayer selected for dragging');
+            }
+            // Prevent default action (e.g., text selection)
+            event.preventDefault();
+        }
+        else {console.log("no element clicked");}
+
     });
 
-    // Add transition nodes if click detected under edit_mode==1
+    // CODE TO MOVE OBJECTS ON SCENE WHEN isDragging and selectedNode are True
+    scene.addEventListener('mouseMovingEditMode', function (event) {
+        console.log("TEST");
+        if (!isDragging) return;
+
+        // Update startPosition for the next move event
+        startPosition.x = event.detail.intersection_pt.x;
+        startPosition.y = event.detail.intersection_pt.y;
+        startPosition.z = event.detail.intersection_pt.z;
+
+        node.updatePositionDirectly(startPosition);
+        
+        event.preventDefault();
+
+    });
+
+    // CODE TO DISABLE MOVING OBJECTS AFTER MOUSE IS RELEASED
+    scene.addEventListener('mouseup', function (event) {
+        if (isDragging) {
+            objectMoved = true;
+            const createAction = node.performAction('moveTo', startPosition);
+            undoRedoManager.doAction(createAction);
+        }
+        if (event.button === 0) { // Left mouse button
+            isDragging = false;
+            objectMoved = false;
+        }
+    });
+
+
+
+    // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
     scene.addEventListener('mouseClickedEditMode', function (event) {
-        // edit_menu_manager.hideEditMenu(); 
+        
         currentEditMenuId = null;
-        if (!isEditMode) return; 
-        console.log(event.detail.intersection);  
-        const point = event.detail.intersection;
-        // Get current background image id
-        var sky = document.querySelector('#sky');
-        const backgroundImgId = sky.getAttribute('background_img_id');    
-        // new background image id needs to be defined on the viewport
-        const newBackgroundImgId = "01.5";
-        // Generate a unique ID for the new entity
-        const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+        if (isEditMode) {        
 
-        node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-        const createAction = node.performAction('create');
-        undoRedoManager.doAction(createAction);
-        // updateSceneForEditMode(event.detail.intersection);
+            const point = event.detail.intersection_pt;
+            // Get current background image id
+            var sky = document.querySelector('#sky');
+            const backgroundImgId = sky.getAttribute('background_img_id');    
+            // new background image id needs to be defined on the viewport
+            const newBackgroundImgId = "01.5";
+            // Generate a unique ID for the new entity
+            const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+
+            node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+            const createAction = node.performAction('create');
+            undoRedoManager.doAction(createAction);
+        }
+
+        
     });
+    
 
     // Undo last command
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z
-        console.log("TESTING UNDO", undoRedoManager.redoStack, undoRedoManager.undoStack);
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
             event.preventDefault(); // Prevent the browser's default undo action
             undoRedoManager.undo(); // Call your undo function
+            console.log('Undo' + undoRedoManager.undoStack.length);
         }
     });
     
@@ -173,23 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-function updateSceneForEditMode(point) {
-    // Get current background image id
-    var sky = document.querySelector('#sky');
-    const backgroundImgId = sky.getAttribute('background_img_id');    
-    // new background image id needs to be defined on the viewport
-    const newBackgroundImgId = "01.5";
-    // Generate a unique ID for the new entity
-    const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
-    const node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-    const createAction = node.performAction('create');
-    undoRedoManager.doAction(createAction);
-
-    // // Create geometry
-    // createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId)
-    // addTransitionNodeToSheet(uniqueId, point, backgroundImgId, newBackgroundImgId)
-}
 
 
 
@@ -197,6 +250,7 @@ function updateSceneForEditMode(point) {
 function adjustPlaneHeight(event) {
     // Only proceed if the Shift key is pressed
     if (!event.shiftKey) return;
+    if (event.ctrlKey || event.altKey || event.metaKey ) return;
 
     // Prevent the default scrolling behavior
     event.preventDefault();
@@ -270,26 +324,6 @@ function adjustRadius(event) {
 
 }
 
- 
-// class editMenuManager {
-//     constructor(objectClass) {
-//         this.objectClass = objectClass;
-//     }
-
-//     showEditMenu(x, y) {
-
-//         const menu = document.getElementById(`edit_menu_${this.objectClass}`);
-//         menu.style.top = `${y}px`;
-//         menu.style.left = `${x}px`;
-//         menu.style.display = 'block'; // Show the menu
-//     }
-
-//     // Call this function to hide the context menu, for example, when an option is selected or when clicking elsewhere
-//     hideEditMenu() {
-//         const menu = document.getElementById(`edit_menu_${this.objectClass}`);
-//         menu.style.display = 'none'; // Hide the menu
-//     }
-// }
 
 
 class EditMenuManager  {
@@ -343,6 +377,8 @@ function setupMenuClickHandlers(menuId) {
         }, true);
     }
 }
+
+
 
 
 
