@@ -16,7 +16,7 @@ const scene = document.querySelector('a-scene');
 document.addEventListener('DOMContentLoaded', () => {
 
     // Read transition nodes and load them to scene
-    readTransitionNodesFromSheet();    
+    loadTransitionNodesFromSheet();    
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
@@ -113,7 +113,7 @@ function emitTransitioning(new_background_img_id){
 
 
 // A function to load all geometies in the scene
-function readTransitionNodesFromSheet() {
+function loadTransitionNodesFromSheet() {
     const objectType = "TransitionNode";
     fetch(`/get_geometries?objectType=${objectType}`)
     .then(response => response.json())
