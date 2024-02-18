@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let isEditMode = false;
     let editMenuOn = false;
+    let selectedObjectClass = 'None'; // Default selection
+
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
     let currentEditMenuId = null;
@@ -31,6 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
         // edit_menu_manager.hideEditMenu();
+    });
+   
+    // Activate the class object you want to add in edit mode
+    document.querySelectorAll('.objectClassBtn').forEach(button => {
+    button.addEventListener('click', function() {
+        selectedObjectClass = this.getAttribute('data-class');
+        console.log(`Selected object class: ${selectedObjectClass}`);
+        // Optionally, update UI to indicate current selection
+    });
     });
 
     
@@ -175,20 +186,30 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mouseClickedEditMode', function (event) {
         
         currentEditMenuId = null;
-        if (isEditMode) {        
+        if (isEditMode && selectedObjectClass !== 'None') {        
 
             const point = event.detail.intersection_pt;
             // Get current background image id
             var sky = document.querySelector('#sky');
             const backgroundImgId = sky.getAttribute('background_img_id');    
-            // new background image id needs to be defined on the viewport
-            const newBackgroundImgId = "01.5";
-            // Generate a unique ID for the new entity
-            const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
-            node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-            const createAction = node.performAction('create');
-            undoRedoManager.doAction(createAction);
+            // Logic for creating a TransitionNode
+            if (selectedObjectClass === 'TransitionNode') {
+                // new background image id needs to be defined on the viewport
+                const newBackgroundImgId = "01.5";
+                // Generate a unique ID for the new entity
+                const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+                // Creating node class to get actions for creating node
+                node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+                const createAction = node.performAction('create');
+                undoRedoManager.doAction(createAction);
+            }
+
+            else if (selectedObjectClass === 'MediaPlayer') {
+                // Placeholder for MediaPlayer creation logic
+                console.log("placing MediaPlayer object");
+            }
+
         }
 
         

@@ -89,6 +89,15 @@
             <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 90px;"></div>
             <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 120px;"></div>
         </div>
+
+        
+        <!-- Selection bar to change class option in edit mode -->
+        <div id="objectClassSelectionBar" style="position: fixed; top: 0; left: 20%; z-index: 1000; background: #fff; padding: 10px;">
+            <button class="objectClassBtn" data-class="None">None</button>
+            <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
+            <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
+          </div>
+          
         
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
@@ -99,12 +108,9 @@
                 <li class="editMenuOption moveOption">Move</li>
                 <!-- Add other options as needed -->
             </ul>
-        </div>
+        </div>      
         
-        
-
-        
-        
+               
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
         
