@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const undoRedoManager = new UndoRedoManager();
     const edit_menu_manager = new EditMenuManager();
+    const creation_menu_manager = new CreationFormManager();
+
 
     // For moving objects
     let isDragging = false;
@@ -32,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
-        // edit_menu_manager.hideEditMenu();
     });
    
     // Activate the class object you want to add in edit mode
@@ -76,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
         else {
-            // edit_menu_manager.hideEditMenu();
             currentEditMenuId = null;
         }
     });
@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const deleteAction = node.performAction('delete');
                 undoRedoManager.doAction(deleteAction);
             }
-            // Additional checks for other options can go here
 
             // Hide the menu after an option is selected
             edit_menu_manager.hideEditMenu();
@@ -109,6 +108,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (menu && !menu.contains(event.target)) {
                 edit_menu_manager.hideEditMenu();
             }
+        }
+
+        if (creation_menu_manager.currentVisibleMenu) {
+            const menu = document.getElementById(creation_menu_manager.currentVisibleMenu);
+            // If the click was outside the visible menu, hide it
+            if (menu && !menu.contains(event.target)) {
+                creation_menu_manager.hideEditMenu();
+            }           
         }
     }, true); // Using capture phase to catch the event early
 
@@ -185,24 +192,47 @@ document.addEventListener('DOMContentLoaded', () => {
     // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
     scene.addEventListener('mouseClickedEditMode', function (event) {
         
-        currentEditMenuId = null;
         if (isEditMode && selectedObjectClass !== 'None') {        
 
             const point = event.detail.intersection_pt;
             // Get current background image id
             var sky = document.querySelector('#sky');
-            const backgroundImgId = sky.getAttribute('background_img_id');    
+            const backgroundImgId = sky.getAttribute('background_img_id');  
+            
+            
+            // Deleting node if delete option is chosen
+            const creationMenus = document.getElementsByClassName('creationMenu');
+
+            
 
             // Logic for creating a TransitionNode
             if (selectedObjectClass === 'TransitionNode') {
-                // new background image id needs to be defined on the viewport
-                const newBackgroundImgId = "01.5";
-                // Generate a unique ID for the new entity
-                const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
-                // Creating node class to get actions for creating node
-                node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-                const createAction = node.performAction('create');
-                undoRedoManager.doAction(createAction);
+
+                // setting default attributes
+                let newBackgroundImgId = "01.1";
+
+                // Show creation menu
+                creation_menu_manager.setObjectClass(selectedObjectClass);
+                creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+
+                // Take newBackroundImgId inputed property
+                Array.from(creationMenus).forEach(menu => {
+                    menu.addEventListener('click', function(event) {
+                        // Check if the click is on the "Delete" option
+                        if (event.target.classList.contains('submitOption')) {
+                            // new background image id needs to be defined on the viewport
+                            newBackgroundImgId = document.getElementById('creation_menu_TransitionNode_newBackgroundImgId_input').value;
+                            // Hide the menu after an option is selected
+                            creation_menu_manager.hideEditMenu();
+                            // Generate a unique ID for the new entity
+                            const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+                            // Creating node class to get actions for creating node
+                            node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+                            const createAction = node.performAction('create');
+                            undoRedoManager.doAction(createAction);
+                        }                        
+                    });
+                });
             }
 
             else if (selectedObjectClass === 'MediaPlayer') {
@@ -389,6 +419,51 @@ class EditMenuManager  {
             }
     }
 }
+
+
+class CreationFormManager  {
+    constructor() {        
+        this.objectClass = null;
+        this.currentVisibleMenu = null;
+    }    
+
+    // This method is static cuz it is global, doesn't need to know which 
+    // specific menu it needs to hide.
+    hideEditMenu() {
+        if (this.currentVisibleMenu) {
+
+            const menu = document.getElementById(this.currentVisibleMenu);
+            if (menu) {
+                menu.style.display = 'none';
+            }
+            // Reset the tracker
+            this.currentVisibleMenu = null;
+            // this.objectClass = null;
+        }
+    }
+
+    // Static method to update the class globally
+    setObjectClass(newObjectClass) {
+        this.hideEditMenu();
+        this.objectClass = newObjectClass;        
+    }
+
+    showEditMenu(x, y) {
+        this.hideEditMenu(); // hides any other menu if displayed
+        if (this.objectClass) {
+            const menuId = `creation_menu_${this.objectClass}`;
+            const menu = document.getElementById(menuId);
+            menu.style.top = `${y}px`;
+            menu.style.left = `${x}px`;
+            menu.style.display = 'block'; // Show the menu
+
+            // Track the currently visible menu
+            this.currentVisibleMenu = menuId;
+            }
+    }
+}
+
+
 
 function setupMenuClickHandlers(menuId) {
     const menu = document.getElementById(menuId);

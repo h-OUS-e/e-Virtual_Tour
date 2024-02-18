@@ -96,6 +96,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
                         origin: raycaster.ray.origin, 
                         direction: raycaster.ray.direction, 
                         intersection_pt: edit.visibleIntersection.point,
+                        x: event.clientX,
+                        y: event.clientY,
                     },
                 });
 

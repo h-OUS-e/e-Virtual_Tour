@@ -474,8 +474,6 @@ html {
 }
 
 
-
-
 .editMenu {
     position: absolute;
     z-index: 10000; /* Ensure it appears above other elements */
@@ -501,6 +499,15 @@ html {
 
 .editMenu ul li:hover {
     background-color: #f5f5f5;
+}
+
+.creationMenu input[type="text"] {
+    box-sizing: border-box; /* Make sure padding doesn't affect overall width */
+    padding: 5px;
+    margin-bottom: 10px; /* Space below the input field */
+    width: calc(100% - 10px); /* Adjust width as needed, considering padding */
+    border: 1px solid #ccc; /* Light border similar to editMenu style */
+    border-radius: 3px; /* Optional: rounded corners for the input */
 }
 
 /*----------------------------------------------------------------*/
