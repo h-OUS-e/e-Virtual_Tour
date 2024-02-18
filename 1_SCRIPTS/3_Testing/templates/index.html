@@ -92,11 +92,11 @@
 
         
         <!-- Selection bar to change class option in edit mode -->
-        <div id="object_class_selection_bar" style="position: fixed; top: 0; left: 20%; z-index: 1000; background: #fff; padding: 10px;">
+        <div id="object_class_selection_bar" class="bar" >
             <button class="objectClassBtn" data-class="None">None</button>
             <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
             <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
-          </div>
+        </div>
           
         
 
@@ -112,10 +112,9 @@
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="creation_menu_TransitionNode" class="editMenu creationMenu" >
-            <h3>Enter Transition Node Details</h3>
             <ul>
                 <li>
-                    <label for="creation_menu_TransitionNode_newBackgroundImgId_input">New Background Image ID:</label>
+                    <label for="creation_menu_TransitionNode_newBackgroundImgId_input"> <p>New Background Image ID:</p></label>
                     <input type="text" id="creation_menu_TransitionNode_newBackgroundImgId_input" name="creation_menu_TransitionNode_newBackgroundImgId_input" >
                     <input type="button" class="submitOption" value="Submit">
                 </li>

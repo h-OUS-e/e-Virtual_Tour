@@ -34,6 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
+
+        // Hiding/showing selection bar if edit mode is off/on
+        let selection_bar = document.getElementById('object_class_selection_bar');
+        if (isEditMode) {
+            selection_bar.style.display = 'flex';
+        }
+        else {
+            selection_bar.style.display = 'None';
+        }
     });
    
     // Activate the class object you want to add in edit mode
@@ -41,7 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', function() {
         selectedObjectClass = this.getAttribute('data-class');
         console.log(`Selected object class: ${selectedObjectClass}`);
-        // Optionally, update UI to indicate current selection
+
+        // Remove active class from all buttons
+        document.querySelectorAll('.objectClassBtn').forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
     });
     });
 
