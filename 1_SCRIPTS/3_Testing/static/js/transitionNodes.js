@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
+        console.log("TEEST");
         // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
@@ -131,7 +132,7 @@ function loadTransitionNodesFromSheet() {
 
 
 
-class TransitionNode {
+class TransitionNode {    
     constructor(id, position, backgroundImgId, newBackgroundImgId) {
         this.id = id;
         this.position = position;
@@ -166,7 +167,7 @@ class TransitionNode {
     }
 
 
-    // Helper method to append icon and visual effects to the node
+    // HELPER METHOD TO ADD VISUAL ATTRIBUTES TO OBJECTS
     appendComponentsTo(entity) {
         // Add green icon
         const iconEntity = document.createElement('a-entity');
@@ -181,7 +182,7 @@ class TransitionNode {
     }
 
 
-    // Static method to handle adding node data to the backend
+    // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
     static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
         const formattedPoint = `${position.x} ${position.y} ${position.z}`;
         fetch('/add_geometry', {
@@ -221,30 +222,29 @@ class TransitionNode {
     }
 
 
-    // Adds object to scene AND to the sheet
+    // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         this.addToScene();
-        console.log("TESTING CREATING", this.backgroundImgId, this.newBackgroundImgId);
+        console.log("Adding transition node to the scene.");
         TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
-        console.log("TESTING CREATING 2");
     }
 
 
-    // Method to remove the node from the scene and the backend
+    // METHOD TO REMOVE OBJECT FROM THE SCENE AND THE BACKEND DATABASE
     delete() {
-        const node = document.getElementById(this.id);
-        if (node) node.parentNode.removeChild(node);
+        const entity = document.getElementById(this.id);
+        if (entity) entity.parentNode.removeChild(entity);
         fetch('/delete_geometry', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ Id: this.id, objectType: this.name}),
         }).then(response => response.json())
         .then(data => console.log('Delete response:', data))
-        .catch(error => console.error('Error deleting node:', error));
+        .catch(error => console.error('Error deleting transition node:', error));
     }
 
 
-    // Method to move the node
+    // METHOD TO MOVE THE OBJECT
     moveTo(newPosition) {
         const oldPosition = this.position;
         this.position = newPosition;
@@ -258,7 +258,7 @@ class TransitionNode {
         };
     }
 
-    // Utility to update the scene position (assuming A-Frame or similar)
+    // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
         const entity = document.getElementById(this.id);
         if (entity) {
@@ -266,7 +266,7 @@ class TransitionNode {
         }
     }
 
-    // Method to directly update position without backend sync
+    // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     updatePositionDirectly(newPosition) {
         this.position = newPosition;
         this.updateScenePosition(); // Reflect changes in the scene
@@ -330,7 +330,7 @@ class TransitionNode {
         };
     }
 
-    // Captures the current state of the node
+    // CAPTURE OBJECT ATTRIBUTES AND STORE THEM IN A DICTIONARY
     captureState() {
         return {
             position: { ...this.position }, // Shallow copy if position is an object
@@ -339,11 +339,12 @@ class TransitionNode {
         };
     }
 
-    // Applies a captured state to the node
+    // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
         this.position = state.position;
         this.backgroundImgId = state.backgroundImgId;
         this.newBackgroundImgId = state.newBackgroundImgId;
+
         // Ensure to update the scene representation as needed
         this.updateScene();
     }
@@ -359,8 +360,12 @@ class TransitionNode {
             // Update data attributes related to background images
             entity.setAttribute('background_img_id', this.backgroundImgId);
             entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
-            // If you're using visibility toggling, update that too
+            // Update visibility
             entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+            // // Update id in case we update the new_background_img_id attribute
+            // entity.setAttribute('title', this.id);
+
+            
         }
     }
 

@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
     const canvas = scene.canvas;
     let lastHovered = null; // To keep track of the last hovered object
     let hasMouseMoved = false;
-
+    const movement_threshold = 5; // Pixels; adjust as needed for sensitivity
+    let mouse_down_position = null;
 
 
 
@@ -70,7 +71,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
         let edit = checkIntersectionsEditMode(raycaster, scene);
 
         // FOR EDIT MODE
-        if (edit.mode){            
+        if (edit.mode && !intersectedObject){ 
+            console.log("testing edit mode" + intersectedObject);           
             if (hasMouseMoved) {                            
                 // Create an event that sends media id when double clicked
                 var new_event = new CustomEvent('mouseDraggedEditMode', 
@@ -111,16 +113,22 @@ document.addEventListener('DOMContentLoaded', (event) =>
             
         }
 
-        else if (intersectedObject) {
+        if (intersectedObject && !hasMouseMoved) {
             intersectedObject.emit('mouseClicked'); 
+
             // console.log("CLICKED:", intersectedObject);             
         }
+
+        // Reset the mouse_down_position to null after processing the click
+        mouse_down_position = null;
     });
     
 
     // Force Reset the flag after the click event has been processed
     canvas.addEventListener('mousedown', (event) => {
         hasMouseMoved = false;
+        mouse_down_position = { x: event.clientX, y: event.clientY };
+
 
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
@@ -150,8 +158,15 @@ document.addEventListener('DOMContentLoaded', (event) =>
         }
     });
 
+
     canvas.addEventListener('mousemove', (event) => {
-        hasMouseMoved = true; // Indicate that there was mouse movement
+        if (mouse_down_position) {
+            const dx = event.clientX - mouse_down_position.x;
+            const dy = event.clientY - mouse_down_position.y;
+            if (Math.sqrt(dx * dx + dy * dy) > movement_threshold) {
+                hasMouseMoved = true;
+            }
+        }
         
         if (hasMouseMoved) {
             

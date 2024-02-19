@@ -3,7 +3,9 @@ A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
 
+import { MediaPlayer } from './mediaPlayer.js';
 import { TransitionNode } from './transitionNodes.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -14,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
     let currentEditMenuId = null;
-    let node = null;
+    let transition_node = null;
+    let media_player = null;
 
     const undoRedoManager = new UndoRedoManager();
     const edit_menu_manager = new EditMenuManager();
@@ -34,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
         this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
+        gridPlane.setAttribute('edit_mode', isEditMode);
+        gridCylinder.setAttribute('edit_mode', isEditMode);
+
 
         // Hiding/showing selection bar if edit mode is off/on
         let selection_bar = document.getElementById('object_class_selection_bar');
@@ -44,18 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
             selection_bar.style.display = 'None';
         }
     });
+
    
     // Activate the class object you want to add in edit mode
     document.querySelectorAll('.objectClassBtn').forEach(button => {
-    button.addEventListener('click', function() {
-        selectedObjectClass = this.getAttribute('data-class');
-        console.log(`Selected object class: ${selectedObjectClass}`);
+        button.addEventListener('click', function() {
+            selectedObjectClass = this.getAttribute('data-class');
+            console.log(`Selected object class: ${selectedObjectClass}`);
 
-        // Remove active class from all buttons
-        document.querySelectorAll('.objectClassBtn').forEach(btn => btn.classList.remove('active'));
-        // Add active class to clicked button
-        this.classList.add('active');
-    });
+            // Remove active class from all buttons
+            document.querySelectorAll('.objectClassBtn').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+        });
     });
 
     
@@ -78,14 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Constructing the object that was just clicked in memory to be able to edit it
             // Should edit this to make it a universal mapping function, all in one place
             if (objectClass == 'TransitionNode'){
-                node = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+                transition_node = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
             } 
             else if (objectClass == 'MediaPlayer'){
                 console.log("Need to implement mediaplayer class homie!");
             }
             else { 
                 console.log("The object you selected does not have any edit menu :( !!!"); 
-                node=null;
+                transition_node = null;
             } 
 
         }
@@ -102,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menu.addEventListener('click', function(event) {
             // Check if the click is on the "Delete" option
             if (event.target.classList.contains('deleteOption')) {
-                const deleteAction = node.performAction('delete');
+                const deleteAction = transition_node.performAction('delete');
                 undoRedoManager.doAction(deleteAction);
             }
 
@@ -146,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let clickedElementId = event.detail.Id;
         let clickedElementClass = event.detail.class;
         console.log("TEEEST" + event.detail.backgroundImgId);
-        node = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+        transition_node = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
         console.log(event.detail.position);
 
         console.log(clickedElementId);
@@ -181,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startPosition.y = event.detail.intersection_pt.y;
         startPosition.z = event.detail.intersection_pt.z;
 
-        node.updatePositionDirectly(startPosition);
+        transition_node.updatePositionDirectly(startPosition);
         
         event.preventDefault();
 
@@ -191,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('mouseup', function (event) {
         if (isDragging) {
             objectMoved = true;
-            const createAction = node.performAction('moveTo', startPosition);
+            const createAction = transition_node.performAction('moveTo', startPosition);
             undoRedoManager.doAction(createAction);
         }
         if (event.button === 0) { // Left mouse button
@@ -210,13 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const point = event.detail.intersection_pt;
             // Get current background image id
             var sky = document.querySelector('#sky');
-            const backgroundImgId = sky.getAttribute('background_img_id');  
+            const backgroundImgId = sky.getAttribute('background_img_id');              
             
-            
-            // Deleting node if delete option is chosen
+            // get all creation menus from the document
             const creationMenus = document.getElementsByClassName('creationMenu');
-
-            
 
             // Logic for creating a TransitionNode
             if (selectedObjectClass === 'TransitionNode') {
@@ -240,18 +244,48 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Generate a unique ID for the new entity
                             const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
                             // Creating node class to get actions for creating node
-                            node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-                            const createAction = node.performAction('create');
+                            transition_node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+                            const createAction = transition_node.performAction('create');
                             undoRedoManager.doAction(createAction);
                         }                        
                     });
                 });
             }
 
+            // Logic for creation MediaPlayer
             else if (selectedObjectClass === 'MediaPlayer') {
-                // Placeholder for MediaPlayer creation logic
                 console.log("placing MediaPlayer object");
+
+                // // Show creation menu
+                // creation_menu_manager.setObjectClass(selectedObjectClass);
+                // creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+
+                // Create fake inputs for now
+
+                // Generate a unique ID for the new entity
+                let title = "a new world of tools";
+                title = title.replace(/ /g, "_");
+                let backgroundImgId = "01.1";
+                const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
+                let color_class = 'green';
+                let icon_index = '1';
+                let rotation = "0 90 0"
+            
+                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, rotation)
+                const createAction = media_player.performAction('create');
+                undoRedoManager.doAction(createAction);
+
+
             }
+
+
+            // Logic for creation Label Tag
+            else if (selectedObjectClass === 'LabelTag') {
+                // Placeholder for LabelTag creation logic
+                console.log("placing Label tag object");
+            }
+
+            else {console.log("unknown class name");}
 
         }
 
