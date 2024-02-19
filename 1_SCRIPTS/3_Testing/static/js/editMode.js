@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         event.preventDefault();
 
+
     });
 
     // CODE TO DISABLE MOVING OBJECTS AFTER MOUSE IS RELEASED
@@ -269,9 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
                 let color_class = 'green';
                 let icon_index = '1';
-                let rotation = "0 90 0"
+                let rotation = event.detail.direction;
+                console.log("rotation", JSON.stringify(rotation));
             
-                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, rotation)
+                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, rotation);
                 const createAction = media_player.performAction('create');
                 undoRedoManager.doAction(createAction);
 

@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 class MediaPlayer {    
-    constructor(id, position, backgroundImgId, color_class, icon_index, title, rotation) {
+    constructor(id, position, backgroundImgId, color_class, icon_index, title, direction) {
         this.id = id;
         this.position = position;
         this.backgroundImgId = backgroundImgId;
@@ -178,7 +178,7 @@ class MediaPlayer {
         this.mediaplayer_class = mediaplayer_class;
         this.icon_index = icon_index
         this.title = title
-        this.rotation = rotation
+        this.direction = direction
     }
 
 
@@ -193,6 +193,18 @@ class MediaPlayer {
             return;
         }
 
+        // Get the right angle to rotate the object, which is relative to the camera position
+        let originalDirection = new THREE.Vector3(0, 0, 1);
+        const crossProduct = new THREE.Vector3().crossVectors(originalDirection, this.direction);
+        let dot = originalDirection.dot(this.direction);        
+        // Calculate the rotation in radians
+        var angleRadians = Math.acos(dot);
+        if (crossProduct.y < 0) {
+            angleRadians = -angleRadians;
+        }
+         // Convert radians to degrees and adjust for A-Frame's rotation system
+        var angleDegrees = angleRadians * (180 / Math.PI); // +90 to align with A-Frame's coordinate system
+
         const entity = document.createElement('a-entity');
         entity.setAttribute('id', this.id);
         entity.setAttribute('class', 'MediaPlayer');
@@ -202,7 +214,7 @@ class MediaPlayer {
         entity.setAttribute('background_img_id', this.backgroundImgId);
         entity.setAttribute('mixin', 'mediaplayer_frame');
         entity.setAttribute('position', this.position);
-        entity.setAttribute('rotation', this.rotation); // should be dynamic instead?
+        entity.setAttribute('rotation', {x: 0, y: angleDegrees, z: 0}); // should be dynamic instead?
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
     }
@@ -210,17 +222,22 @@ class MediaPlayer {
 
     // HELPER METHOD TO ADD VISUAL ATTRIBUTES TO OBJECTS
     appendComponentsTo(entity) {
+
+        console.log("TEST" + JSON.stringify(this.mediaplayer_class));
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = document.createElement('a-entity'); 
-        iconEntity.setAttribute('mixin', 'mediaplayer-icon');
+        iconEntity.setAttribute('mixin', 'mediaplayer_icon');
         iconEntity.setAttribute('material', 'src', this.mediaplayer_class["icon"][this.icon_index]);
+        iconEntity.setAttribute('class', 'mediaplayer-icon');
+
         entity.appendChild(iconEntity);
 
         const borderEntity = document.createElement('a-entity');
-        iconEntity.setAttribute('mixin', 'mediaplayer-border');
+        borderEntity.setAttribute('mixin', 'mediaplayer_border');
         borderEntity.setAttribute('material', 'color', this.mediaplayer_class["dark"]);   
-        entity.appendChild(borderEntity);
+        borderEntity.setAttribute('class', 'mediaplayer-border');
 
+        entity.appendChild(borderEntity);
         
         entity.setAttribute('material', 'color', this.mediaplayer_class["light"]);
         entity.setAttribute('background_img_id', this.backgroundImgId);

@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
         // FOR EDIT MODE
         if (edit.mode && !intersectedObject){ 
-            console.log("testing edit mode" + intersectedObject);           
             if (hasMouseMoved) {                            
                 // Create an event that sends media id when double clicked
                 var new_event = new CustomEvent('mouseDraggedEditMode', 
@@ -89,7 +88,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
                 scene.dispatchEvent(new_event);           
             }
 
-            if (!hasMouseMoved) {    
+            if (!hasMouseMoved) {  
+                console.log("direction"+ JSON.stringify(raycaster.ray.direction));  
                 // Create an event that sends media id when  clicked
                 var new_event = new CustomEvent('mouseClickedEditMode', 
                 {
@@ -105,9 +105,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
                 // Dispatch event
                 scene.dispatchEvent(new_event);  
-
                 // Reset the flag after the click event has been processed
-                         
             }
             hasMouseMoved = false;
             
@@ -115,7 +113,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
         if (intersectedObject && !hasMouseMoved) {
             intersectedObject.emit('mouseClicked'); 
-
             // console.log("CLICKED:", intersectedObject);             
         }
 
