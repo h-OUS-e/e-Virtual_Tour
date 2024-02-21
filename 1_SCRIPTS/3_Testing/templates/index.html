@@ -19,7 +19,8 @@
           }
         }
         </script>
-    <!-- SCRIPTS -->    
+    <!-- SCRIPTS -->   
+    <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
     <script src="../static/js/zoomControl.js"></script> 
@@ -96,9 +97,10 @@
             <button class="objectClassBtn" data-class="None">None</button>
             <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
             <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
+            <button class="objectClassBtn" data-class="LabelTag">LabelTag</button>
+
         </div>
           
-        
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="edit_menu_TransitionNode" class="editMenu">
@@ -110,22 +112,42 @@
             </ul>
         </div>      
 
-        <!-- Edit menu to delete or change values of objects in a-scene -->
+        <!-- Creation menu to when adding transition nodes -->
         <div id="creation_menu_TransitionNode" class="editMenu creationMenu" >
+            <h4>Transition Node</h4>
             <ul>
                 <li>
-                    <label for="creation_menu_TransitionNode_newBackgroundImgId_input"> <p>New Background Image ID:</p></label>
+                    <label for="creation_menu_TransitionNode_newBackgroundImgId_input"> <p>New Background ID:</p></label>
                     <input type="text" id="creation_menu_TransitionNode_newBackgroundImgId_input" name="creation_menu_TransitionNode_newBackgroundImgId_input" >
                     <input type="button" class="submitOption" value="Submit">
                 </li>
             </ul>
         </div>
-          
+
+        <!-- Creation menu when adding media players -->
+        <div id="creation_menu_MediaPlayer" class="editMenu creationMenu" >
+            <h4>Media Player</h4>
+            <ul>
+                <li>
+                    <label for="creation_menu_MediaPlayer_title_input"> <p>Media player title:</p></label>
+                    <input type="text" id="creation_menu_MediaPlayer_title_input" name="creation_menu_MediaPlayer_title_input" >
+                    <label for="creation_menu_MediaPlayer_type_input"> <p>Select Color Class:</p></label>
+                    <select  type="text" id="creation_menu_MediaPlayer_type_input" name="creation_menu_MediaPlayer_type_input" >
+                        <option value="">Select Type</option>
+                        <!-- Options will be added dynamically -->
+                    </select>
+                    <label for="creation_menu_MediaPlayer_iconIdx_input"> <p>Icon Index:</p></label>
+                    <select type="text" id="creation_menu_MediaPlayer_iconIdx_input" name="creation_menu_MediaPlayer_iconIdx_input" >
+                        <option value="">Select Icon</option>
+                        <!-- Options will be added dynamically -->
+                    </select>
+                    <input type="button" class="submitOption" value="Submit">
+                </li>
+            </ul>
+        </div>
         
-               
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
-        
 
          <div id="sidebar-container">
             <div id="sidebar-toggler"> 
@@ -135,7 +157,6 @@
             <div id="sidebar">
                 <div id="sidebar-header"> <h1>header</h1>  </div>
                 <div id="sidebar-item-grid"></div>
-
             </div>
         </div>
 

@@ -257,9 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (selectedObjectClass === 'MediaPlayer') {
                 console.log("placing MediaPlayer object");
 
-                // // Show creation menu
-                // creation_menu_manager.setObjectClass(selectedObjectClass);
-                // creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+                // Show creation menu
+                creation_menu_manager.setObjectClass(selectedObjectClass);
+                creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
 
                 // Create fake inputs for now
 
@@ -270,10 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
                 let color_class = 'green';
                 let icon_index = '1';
-                let rotation = event.detail.direction;
-                console.log("rotation", JSON.stringify(rotation));
+                let direction = event.detail.direction;
             
-                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, rotation);
+                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, direction);
                 const createAction = media_player.performAction('create');
                 undoRedoManager.doAction(createAction);
 

@@ -1,58 +1,33 @@
+import { loadMediaPlayerTypes } from './JSONSetup.js';
 
  // Get colors from CSS palette
- const colors = getComputedStyle(document.documentElement);
-    
+ const colors = getComputedStyle(document.documentElement);  
  const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
- const color_mintGreen = colors.getPropertyValue('--mintGreen').trim();
- const color_oceanBlue = colors.getPropertyValue('--oceanBlue').trim();
- const color_coolBlue = colors.getPropertyValue('--coolBlue').trim();
- const color_popPink = colors.getPropertyValue('--popPink').trim();
- const color_coolPink = colors.getPropertyValue('--coolPink').trim();
- const color_hoverIn = color_oceanBlue
  
- // Setting color mappings based on icon class
- export const icon_color_list = {
-    "green": {
-        "dark":color_sageGreen, 
-        "light":color_mintGreen, 
-        "icon": {
-            '1': "../static/0_resources/icons/CMYK_Green_Diagnostic_Preventative.png"
-        }
-    },
+ function getJSColor(color) {
+    const JS_color = colors.getPropertyValue(color).trim();
+    return JS_color;
+ }
 
-    "blue": {
-        "dark": color_oceanBlue, 
-        "light":color_coolBlue, 
-        "icon": {
-            '1': "../static/0_resources/icons/CMYK_Blue_Emergency.png",
-            '2': "../static/0_resources/icons/CMYK_Blue_Whitening.png",
-        },
-    },
-
-    "pink": {
-        "dark": color_popPink, 
-        "light":color_coolPink, 
-        "icon": {
-            '1': "../static/0_resources/icons/CMYK_PopPink_PatientFocused.png",
-        },
-    },
-};
 
 
 // Functions
-function getColorClass(entity_id) {
+function getColorClass(entity_id, media_player_types) {
     // Get corresponding popup color class for the mediaplayer id
     const content = popupContent.find(item => item.media_id === entity_id );
     // Define media player color/icon style
-    const mediaplayer_class = icon_color_list[content.color_class];
+    const mediaplayer_class = media_player_types[content.color_class];
     const icon_index = content.icon_index;
 
     return {mediaplayer_class, icon_index}
 }
 
 // initialize at event, Scene and 3D objects loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
+    // Getting media player types from the JSON file
+    const media_player_types = await loadMediaPlayerTypes();
+       
     // Definitions   
     const scene = document.querySelector('a-scene');
     var main_class = "mediaplayer";
@@ -63,14 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
     entities.forEach(entity => {
 
         // Get corresponding popup color class and icon index for the mediaplayer id
-        const {mediaplayer_class, icon_index} = getColorClass(entity.id);
+        const {mediaplayer_class, icon_index} = getColorClass(entity.id, media_player_types);
         // Get the icon and border entities inside the media player entity
         const icon = entity.querySelector('.mediaplayer-icon');        
         const border = entity.querySelector('.mediaplayer-border');
         // Update icon, border and media player colors and icon image
         icon.setAttribute('material', 'src', mediaplayer_class["icon"][icon_index]);
-        border.setAttribute('material', 'color', mediaplayer_class["dark"]);
-        entity.setAttribute('material', 'color', mediaplayer_class["light"]);
+        border.setAttribute('material', 'color', getJSColor(mediaplayer_class["dark"]));
+        entity.setAttribute('material', 'color', getJSColor(mediaplayer_class["light"]));
         entity.setAttribute('background_img_id', popupContent.find(item => item.media_id === entity.id).background_img_id);
     });
 
@@ -85,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {   
 
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
-            const color_mediaPlayer = mediaplayer_class["dark"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_class["dark"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -95,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
-            const color_mediaPlayer = mediaplayer_class["light"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_class["light"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
         }
 
@@ -107,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
-            const color_mediaPlayer = mediaplayer_class["light"];
+            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_class["light"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -118,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {
     if (event.target.classList.contains(main_class))
     {
-        const {mediaplayer_class, icon_index} = getColorClass(event.target.id);
-            const color_mediaPlayer = mediaplayer_class["light"];
+        const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_class["light"])
         event.target.setAttribute('material', 'color', color_mediaPlayer); 
     }
     });
@@ -174,7 +149,7 @@ class MediaPlayer {
         this.backgroundImgId = backgroundImgId;
         this.name = this.constructor.name;
         this.color_class = color_class
-        const mediaplayer_class = icon_color_list[color_class];
+        const mediaplayer_class = media_player_types[color_class];
         this.mediaplayer_class = mediaplayer_class;
         this.icon_index = icon_index
         this.title = title
@@ -234,12 +209,12 @@ class MediaPlayer {
 
         const borderEntity = document.createElement('a-entity');
         borderEntity.setAttribute('mixin', 'mediaplayer_border');
-        borderEntity.setAttribute('material', 'color', this.mediaplayer_class["dark"]);   
+        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_class["dark"]));   
         borderEntity.setAttribute('class', 'mediaplayer-border');
 
         entity.appendChild(borderEntity);
         
-        entity.setAttribute('material', 'color', this.mediaplayer_class["light"]);
+        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_class["light"]));
         entity.setAttribute('background_img_id', this.backgroundImgId);
     }
 

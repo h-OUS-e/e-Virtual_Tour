@@ -1,9 +1,9 @@
 /*
 A script to control what shows on the scroll bar based on popup contents.
 */
-import { icon_color_list } from './mediaPlayer.js';  
 
 document.addEventListener('DOMContentLoaded', () => {
+    
 
     // Getting mediabar elements
     const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');
