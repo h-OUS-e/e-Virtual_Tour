@@ -3,11 +3,13 @@ A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
 
+import { loadMediaPlayerTypes } from './JSONSetup.js';
 import { MediaPlayer } from './mediaPlayer.js';
 import { TransitionNode } from './transitionNodes.js';
 
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', async () => {
     
     let isEditMode = false;
     let editMenuOn = false;
@@ -29,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let startPosition = { x: 0, y: 0, z:0};
     let validObjectClasses = ['TransitionNode', 'MediaPlayer'];
     let objectMoved = false;
+
+    // Getting media player types from the JSON file
+    const mediaplayer_types = await loadMediaPlayerTypes();
 
 
     // Activate or deactivate edit mode if button is clicked
@@ -261,18 +266,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 creation_menu_manager.setObjectClass(selectedObjectClass);
                 creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
 
-                // Create fake inputs for now
+                // Take inputs from the submitted creation menu to create media player
 
                 // Generate a unique ID for the new entity
                 let title = "a new world of tools";
                 title = title.replace(/ /g, "_");
-                let backgroundImgId = "01.1";
                 const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
-                let color_class = 'green';
+                let mediaplayer_type = 'green';
                 let icon_index = '1';
                 let direction = event.detail.direction;
             
-                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, color_class, icon_index, title, direction);
+                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, direction);
                 const createAction = media_player.performAction('create');
                 undoRedoManager.doAction(createAction);
 

@@ -12,21 +12,21 @@ import { loadMediaPlayerTypes } from './JSONSetup.js';
 
 
 // Functions
-function getColorClass(entity_id, media_player_types) {
+function getColorClass(entity_id, mediaplayer_types) {
     // Get corresponding popup color class for the mediaplayer id
     const content = popupContent.find(item => item.media_id === entity_id );
     // Define media player color/icon style
-    const mediaplayer_class = media_player_types[content.color_class];
+    const mediaplayer_type = mediaplayer_types[content.mediaplayer_type];
     const icon_index = content.icon_index;
 
-    return {mediaplayer_class, icon_index}
+    return {mediaplayer_type, icon_index}
 }
 
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', async () => {
 
     // Getting media player types from the JSON file
-    const media_player_types = await loadMediaPlayerTypes();
+    const mediaplayer_types = await loadMediaPlayerTypes();
        
     // Definitions   
     const scene = document.querySelector('a-scene');
@@ -38,14 +38,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     entities.forEach(entity => {
 
         // Get corresponding popup color class and icon index for the mediaplayer id
-        const {mediaplayer_class, icon_index} = getColorClass(entity.id, media_player_types);
+        const {mediaplayer_type, icon_index} = getColorClass(entity.id, mediaplayer_types);
         // Get the icon and border entities inside the media player entity
         const icon = entity.querySelector('.mediaplayer-icon');        
         const border = entity.querySelector('.mediaplayer-border');
         // Update icon, border and media player colors and icon image
-        icon.setAttribute('material', 'src', mediaplayer_class["icon"][icon_index]);
-        border.setAttribute('material', 'color', getJSColor(mediaplayer_class["dark"]));
-        entity.setAttribute('material', 'color', getJSColor(mediaplayer_class["light"]));
+        icon.setAttribute('material', 'src', mediaplayer_type["icon"][icon_index]);
+        border.setAttribute('material', 'color', getJSColor(mediaplayer_type["dark"]));
+        entity.setAttribute('material', 'color', getJSColor(mediaplayer_type["light"]));
         entity.setAttribute('background_img_id', popupContent.find(item => item.media_id === entity.id).background_img_id);
     });
 
@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     {   
 
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
-            const color_mediaPlayer = getJSColor(mediaplayer_class["dark"]);
+            const {mediaplayer_type, icon_index} = getColorClass(event.target.id, mediaplayer_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_type["dark"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
-            const color_mediaPlayer = getJSColor(mediaplayer_class["light"]);
+            const {mediaplayer_type, icon_index} = getColorClass(event.target.id, mediaplayer_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_type["light"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
         }
 
@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
-            const color_mediaPlayer = getJSColor(mediaplayer_class["light"]);
+            const {mediaplayer_type, icon_index} = getColorClass(event.target.id, mediaplayer_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_type["light"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     {
     if (event.target.classList.contains(main_class))
     {
-        const {mediaplayer_class, icon_index} = getColorClass(event.target.id, media_player_types);
-            const color_mediaPlayer = getJSColor(mediaplayer_class["light"])
+        const {mediaplayer_type, icon_index} = getColorClass(event.target.id, mediaplayer_types);
+            const color_mediaPlayer = getJSColor(mediaplayer_type["light"])
         event.target.setAttribute('material', 'color', color_mediaPlayer); 
     }
     });
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Create an event that sends media id when clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
             {
-                detail: {id: event.target.id, color_class: event.target.getAttribute('color_class'), icon_index: event.target.getAttribute('icon_index')}
+                detail: {id: event.target.id, mediaplayer_type: event.target.getAttribute('mediaplayer_type'), icon_index: event.target.getAttribute('icon_index')}
             });
             scene.dispatchEvent(new_event);
 
@@ -143,14 +143,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 class MediaPlayer {    
-    constructor(id, position, backgroundImgId, color_class, icon_index, title, direction) {
+    constructor(id, position, backgroundImgId, mediaplayer_types, mediaplayer_type_string, icon_index, title, direction) {
         this.id = id;
         this.position = position;
         this.backgroundImgId = backgroundImgId;
         this.name = this.constructor.name;
-        this.color_class = color_class
-        const mediaplayer_class = media_player_types[color_class];
-        this.mediaplayer_class = mediaplayer_class;
+        this.mediaplayer_type_string = mediaplayer_type_string
+        const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
+        this.mediaplayer_type = mediaplayer_type;
         this.icon_index = icon_index
         this.title = title
         this.direction = direction
@@ -198,23 +198,23 @@ class MediaPlayer {
     // HELPER METHOD TO ADD VISUAL ATTRIBUTES TO OBJECTS
     appendComponentsTo(entity) {
 
-        console.log("TEST" + JSON.stringify(this.mediaplayer_class));
+        console.log("TEST" + JSON.stringify(this.mediaplayer_type));
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = document.createElement('a-entity'); 
         iconEntity.setAttribute('mixin', 'mediaplayer_icon');
-        iconEntity.setAttribute('material', 'src', this.mediaplayer_class["icon"][this.icon_index]);
+        iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
         iconEntity.setAttribute('class', 'mediaplayer-icon');
 
         entity.appendChild(iconEntity);
 
         const borderEntity = document.createElement('a-entity');
         borderEntity.setAttribute('mixin', 'mediaplayer_border');
-        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_class["dark"]));   
+        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));   
         borderEntity.setAttribute('class', 'mediaplayer-border');
 
         entity.appendChild(borderEntity);
         
-        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_class["light"]));
+        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
         entity.setAttribute('background_img_id', this.backgroundImgId);
     }
 
@@ -339,8 +339,8 @@ class MediaPlayer {
         return {
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
-            color_class: this.color_class,
-            mediaplayer_class: this.mediaplayer_class,
+            mediaplayer_type: this.mediaplayer_type,
+            mediaplayer_type: this.mediaplayer_type,
             icon_index: this.icon_index,
             title: this.title,
             rotation: this.rotation
@@ -352,8 +352,8 @@ class MediaPlayer {
     applyState(state) {
         this.position = state.position;
         this.backgroundImgId = state.backgroundImgId;
-        this.color_class = state.color_class;
-        this.mediaplayer_class = state.mediaplayer_class;
+        this.mediaplayer_type = state.mediaplayer_type;
+        this.mediaplayer_type = state.mediaplayer_type;
         this.icon_index = state.icon_index;
         this.title = state.title;
         this.rotation = state.rotation;
@@ -375,7 +375,7 @@ class MediaPlayer {
             // Update data attributes related to background images
             entity.setAttribute('background_img_id', this.backgroundImgId);
             // Update attributes
-            entity.setAttribute('color_class', this.color_class);
+            entity.setAttribute('mediaplayer_type', this.mediaplayer_type);
             entity.setAttribute('icon_index', this.icon_index);
             entity.setAttribute('title', this.title);
             // // Update id in case we update the new_background_img_id attribute
