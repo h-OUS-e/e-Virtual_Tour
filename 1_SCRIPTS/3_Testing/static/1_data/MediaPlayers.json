@@ -1,0 +1,64 @@
+[
+    {
+        "id": "mediaplayer_1",
+        "title": "1",
+        "position": "45 2 10",
+        "rotation": "0 90 0",
+        "mediaplayer_type": "pink",
+        "icon_index": "patient",
+        "backgroundImgId" : "01.1"
+    }, 
+
+    {
+        "id": "mediaplayer_2",
+        "title": "2",
+        "position": "7 2 -40",
+        "rotation": "0 150 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "whitening",
+        "backgroundImgId" : "01.1"
+    }, 
+
+    {
+        "id": "mediaplayer_3",
+        "title": "3",
+        "position": "-50 2 20",
+        "rotation": "0 -40 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "emergency",
+        "backgroundImgId" : "01.2"
+    }, 
+
+    {
+        "id": "mediaplayer_4",
+        "title": "4",
+        "position": "7 2 -40",
+        "rotation": "0 180 0",
+        "mediaplayer_type": "green",
+        "icon_index": "diagnostic",
+        "backgroundImgId" : "02.1"
+    }, 
+
+    {
+        "id": "mediaplayer_5",
+        "title": "5",
+        "position": "-12 -20 -40",
+        "rotation": "0 210 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "emergency",
+        "backgroundImgId" : "03.1"
+    }, 
+
+    {
+        "id": "mediaplayer_6",
+        "title": "6",
+        "position": "-50 2 20",
+        "rotation": "0 -30 0",
+        "mediaplayer_type": "pink",
+        "icon_index": "patient",
+        "backgroundImgId" : "03.1"
+    }
+
+
+
+]

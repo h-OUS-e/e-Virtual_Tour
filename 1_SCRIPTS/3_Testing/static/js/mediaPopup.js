@@ -2,6 +2,7 @@
 A script to control popup windows
 */
 import { loadMediaPlayerTypes } from './JSONSetup.js';
+const colors = getComputedStyle(document.documentElement);  
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const overlay = document.getElementById('overlay');
 
     // A function to update popup window content
-    function updatePopupContent(content ) {
+    function updatePopupContent(content, mediaplayer_type) {
         // update popup window content
         document.querySelector('.popup-title').textContent = content.title;
         document.querySelector('.popup-subtitle').textContent = content.subtitle;
@@ -25,10 +26,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelector('#popup_image').src = content.imageUrl;
         document.querySelector('#popup_video').src = content.videoUrl;
         document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
+        console.log("TEST", media_player_types[mediaplayer_type]);
+        const light_color = media_player_types[mediaplayer_type]['light']
+        const dark_color = media_player_types[mediaplayer_type]['dark']
+        
 
         // update popup window colors
-        document.documentElement.style.setProperty('--popupLightColor', media_player_types[content.color_class]['light']);
-        document.documentElement.style.setProperty('--popupDarkColor', media_player_types[content.color_class]['dark']);
+        document.documentElement.style.setProperty('--popupLightColor', colors.getPropertyValue(light_color).trim());
+        document.documentElement.style.setProperty('--popupDarkColor', colors.getPropertyValue(dark_color).trim());
 
 
         // Hiding media element if source is empty
@@ -84,11 +89,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Extract the id of the clicked media
         
         const mediaId = event.detail.id;
+        const mediaplayer_type = event.detail.mediaplayer_type;
         // Find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId);
         // Update popup content
         if (content) {
-            updatePopupContent(content);
+            updatePopupContent(content, mediaplayer_type);
         }
         // Show popup window
         showPopup();

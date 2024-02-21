@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const edit_menu_manager = new EditMenuManager();
     const creation_menu_manager = new CreationFormManager();
 
-
     // For moving objects
     let isDragging = false;
     let startPosition = { x: 0, y: 0, z:0};
@@ -41,13 +40,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const iconIdx_input_Id = document.getElementById('creation_menu_MediaPlayer_iconIdx_input');
 
 
-    // Populate the Color Class dropdown upon initialization
+    // Populate the dropdown upon of mediaplayer creation meny initialization
     populateOptionsDropdown(mediaplayer_types, mediaplayer_type_input_Id);
     onDropdownMenuSelection(mediaplayer_types, mediaplayer_type_input_Id, iconIdx_input_Id)
 
-    // Set up an event listener to update the Icon Index dropdown whenever a new Color Class is selected
+    // Set up an event listener to update the Icon Index dropdown whenever a new mediaplayer type s is selected
     mediaplayer_type_input_Id.addEventListener('change', () => onDropdownMenuSelection(mediaplayer_types, mediaplayer_type_input_Id, iconIdx_input_Id));
-
 
 
     // Activate or deactivate edit mode if button is clicked
@@ -287,7 +285,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 title = title.replace(/ /g, "_");
                 const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
                 let mediaplayer_type = 'green';
-                let icon_index = '1';
+                let icon_index = 'diagnostic';
                 let direction = event.detail.direction;
             
                 media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, direction);
