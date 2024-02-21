@@ -9,6 +9,7 @@ import { TransitionNode } from './transitionNodes.js';
 
 
 
+
 document.addEventListener('DOMContentLoaded', async () => {
     
     let isEditMode = false;
@@ -34,6 +35,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Getting media player types from the JSON file
     const mediaplayer_types = await loadMediaPlayerTypes();
+
+    // Constants for mediaplayer types and icon index
+    const mediaplayer_type_input_Id = document.getElementById('creation_menu_MediaPlayer_type_input');
+    const iconIdx_input_Id = document.getElementById('creation_menu_MediaPlayer_iconIdx_input');
+
+
+    // Populate the Color Class dropdown upon initialization
+    populateOptionsDropdown(mediaplayer_types, mediaplayer_type_input_Id);
+    onDropdownMenuSelection(mediaplayer_types, mediaplayer_type_input_Id, iconIdx_input_Id)
+
+    // Set up an event listener to update the Icon Index dropdown whenever a new Color Class is selected
+    mediaplayer_type_input_Id.addEventListener('change', () => onDropdownMenuSelection(mediaplayer_types, mediaplayer_type_input_Id, iconIdx_input_Id));
+
 
 
     // Activate or deactivate edit mode if button is clicked
@@ -563,4 +577,42 @@ class UndoRedoManager {
     }
 }
 
+
+
+//  A LIST OF FUNCTIONS FOR DROPDOWN MENU AND ANOTHER THAT DEPENDS ON THE ANSWER OF THE FIRST
+// A function to add options to the specified dropdow menu
+function populateDropdown(dropdown, options) {
+    dropdown.innerHTML = ''; // Clear existing options
+    // dropdown.appendChild(new Option(defaultOptionText, '')); // Add a default option at the top
+
+    // Iterate through the options object and add each to the dropdown
+    Object.entries(options).forEach(([value, text]) =>
+        dropdown.appendChild(new Option(text, value))
+    );
+}
+
+// Function to populate the Color Class dropdown based on the keys from the JSON
+function populateOptionsDropdown(options_JSON, dropdown_input_id) {
+    // Transform the keys of icon_color_list into a more user-friendly format
+    const options = Object.keys(options_JSON).reduce((acc, color) => ({
+        ...acc,
+        [color]: color.charAt(0).toUpperCase() + color.slice(1) // Capitalize the first letter
+    }), {});
+
+    // Use the generalized function to populate the dropdown
+    populateDropdown(dropdown_input_id, options);
+}
+
+// Handler for when a color class is selected, updating the Icon Index dropdown accordingly
+function onDropdownMenuSelection(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
+    const selected_input = selected_dropdown_input_id.value;
+    const icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
+    const dependent_options = Object.keys(icons).reduce((acc, key) => ({
+        ...acc,
+        [key]: key.replace(/_/g, ' ') // Replace underscores with spaces for better readability
+    }), {});
+
+    // Populate the Icon Index dropdown with icons related to the selected color
+    populateDropdown(dependent_dropdown_input_id, dependent_options);
+}
 

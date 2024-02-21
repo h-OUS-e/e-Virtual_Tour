@@ -9,7 +9,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
     mediaplayer_type: "pink",
-    icon_index: "1",
+    icon_index: "patient",
     background_img_id: "01.1"
   },
   {
@@ -22,7 +22,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
     mediaplayer_type: "blue",
-    icon_index: "2",
+    icon_index: "emergency",
     background_img_id: "01.1"
     
   },
@@ -36,7 +36,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257641?h=56288e389c&byline=0&portrait=0",
     mediaplayer_type: "green",
-    icon_index: "1",
+    icon_index: "diagnostic",
     background_img_id: "01.2"
   },
   {
@@ -49,7 +49,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "",
     mediaplayer_type: "green",
-    icon_index: "1",
+    icon_index: "diagnostic",
     background_img_id: "02.1"
   },
   {
@@ -62,7 +62,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
     mediaplayer_type: "blue",
-    icon_index: "1",
+    icon_index: "whitening",
     background_img_id: "03.1"
   },
   {
@@ -75,7 +75,7 @@ const popupContent = [
     videoUrl: "",
     videoUrlEmbedded: "",
     mediaplayer_type: "pink",
-    icon_index: "1",
+    icon_index: "patient",
     background_img_id: "03.1"
   },
 
