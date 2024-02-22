@@ -149,7 +149,7 @@ class TransitionNode {
             console.log(`An entity with the ID ${this.id} already exists.`);
             // Alternatively, update the existing entity instead of ignoring the new addition
             // existingEntity.setAttribute('position', this.position);
-            return;
+            return false;
         }
         const entity = document.createElement('a-entity');
         entity.setAttribute('id', this.id);
@@ -164,6 +164,8 @@ class TransitionNode {
         entity.setAttribute('rotation', "90 0 0");
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
+
+        return true; // Indicate successful addition to the scene
     }
 
 
@@ -224,9 +226,16 @@ class TransitionNode {
 
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
-        this.addToScene();
-        console.log("Adding transition node to the scene.");
-        TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        const addedSuccessfully = this.addToScene();
+        if (addedSuccessfully) {
+            console.log("Adding object to the scene.");
+            TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        } else {
+            console.log("Object with the same ID already exists. Creation aborted.");
+            return false; // Indicate that creation was not successful
+        }
+        return true; // Indicate successful creation
+       
     }
 
 
@@ -278,6 +287,8 @@ class TransitionNode {
     // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
     getAction(method, ...args) {
         let action = {
+            initialState: null,
+            finalState: null,
             do: () => {},
             undo: () => {},
             redo: () => {}
@@ -289,10 +300,16 @@ class TransitionNode {
         }
 
         action.do = () => {
+            // Exclude 'create' from initial state capture since it doesn't exist yet
+            if (method !== 'create') {
+                action.initialState = this.captureState();
+            }
             // Execute the action
-            this[method](...args);
+            const result = this[method](...args);
             // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
+            // Return true (success) if the method does not explicitly return a value
+            return result !== undefined ? result : true;
         };
 
         action.undo = () => {
@@ -312,7 +329,7 @@ class TransitionNode {
         action.redo = () => {
             // if action is create or delete, a redo would be the function itself
             if (method === 'create' || method === 'delete') {
-                action.do(); 
+                this[method](...args); 
             } 
             // Otherwise, it is sufficient to just apply final state for redo and update scene
             else {

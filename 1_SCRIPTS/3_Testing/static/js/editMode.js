@@ -488,9 +488,13 @@ class UndoRedoManager {
 
     // Execute an action and add it to the undo stack
     doAction(action) {
-        action.do(); // Execute the "do" part of the action
-        this.undoStack.push(action); // Push the action to the undo stack
-        this.redoStack = []; // Clear the redo stack whenever a new action is performed
+        const success = action.do(); // Execute the "do" part of the action
+        
+        // Only push the action to the undo stack if it was successful
+        if (success !== false) { // Assuming false explicitly indicates failure
+            this.undoStack.push(action);
+            this.redoStack = []; // Clear the redo stack whenever a new action is performed
+        }
     }
 
     // Undo the last action
@@ -506,7 +510,7 @@ class UndoRedoManager {
     redo() {
         if (this.redoStack.length > 0) {
             const action = this.redoStack.pop(); // Remove the last action from the redo stack
-            action.do(); // Re-execute the "do" part of the action
+            action.redo(); // Re-execute the "do" part of the action
             this.undoStack.push(action); // Push the action back to the undo stack
         }
     }

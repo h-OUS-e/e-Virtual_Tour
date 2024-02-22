@@ -172,7 +172,7 @@ class MediaPlayer {
             console.log(`An entity with the ID ${this.id} already exists.`);
             // Alternatively, update the existing entity instead of ignoring the new addition
             // existingEntity.setAttribute('position', this.position);
-            return;
+            return false;
         }
 
         
@@ -199,6 +199,8 @@ class MediaPlayer {
         }
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
+
+        return true;
     }
 
 
@@ -283,9 +285,10 @@ class MediaPlayer {
     }
 
 
-    /// GENERAL METHOD TO PERFORM AND UNDO ACTIONS
     getAction(method, ...args) {
         let action = {
+            initialState: null,
+            finalState: null,
             do: () => {},
             undo: () => {},
             redo: () => {}
@@ -297,10 +300,16 @@ class MediaPlayer {
         }
 
         action.do = () => {
+            // Exclude 'create' from initial state capture since it doesn't exist yet
+            if (method !== 'create') {
+                action.initialState = this.captureState();
+            }
             // Execute the action
-            this[method](...args);
+            const result = this[method](...args);
             // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
+            // Return true (success) if the method does not explicitly return a value
+            return result !== undefined ? result : true;
         };
 
         action.undo = () => {
@@ -320,7 +329,7 @@ class MediaPlayer {
         action.redo = () => {
             // if action is create or delete, a redo would be the function itself
             if (method === 'create' || method === 'delete') {
-                action.do(); 
+                this[method](...args); 
             } 
             // Otherwise, it is sufficient to just apply final state for redo and update scene
             else {
