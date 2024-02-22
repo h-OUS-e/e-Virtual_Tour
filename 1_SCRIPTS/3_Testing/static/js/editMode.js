@@ -245,13 +245,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
 
-    // Undo last command
+    // UNDO LAST COMMAND
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
             event.preventDefault(); // Prevent the browser's default undo action
             undo_redo_manager.undo(); // Call your undo function
             console.log('Undo' + undo_redo_manager.undoStack.length);
+            console.log('mp' + media_player.id);
+
         }
     });
     
@@ -464,19 +466,6 @@ class CreationFormManager  {
 
 
 
-function setupMenuClickHandlers(menuId) {
-    const menu = document.getElementById(menuId);
-    if (menu) {
-        menu.addEventListener('click', function(event) {
-            event.stopPropagation(); // Prevent clicks within the menu from bubbling up
-        }, true);
-    }
-}
-
-
-
-
-
 // UndoRedoManager.js
 class UndoRedoManager {
     constructor() {
@@ -597,6 +586,7 @@ function processCreationMenuSubmit(event, point, direction, backgroundImgId, sel
         // Create a new MediaPlayer instance
         const media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, direction, null);
         const createAction = media_player.getAction('create');
+        console.log("ACTION: " + JSON.stringify(createAction.initialState));
         undo_redo_manager.doAction(createAction);
         console.log("placing MediaPlayer object");
     }

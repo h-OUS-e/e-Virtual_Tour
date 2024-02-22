@@ -160,8 +160,6 @@ class MediaPlayer {
         this.title = title;
         this.direction = direction;
         this.rotation = rotation;
-        console.log("POSITION", position);
-        console.log("POSITION1", this.position);
     }
 
 
@@ -169,7 +167,6 @@ class MediaPlayer {
     addToScene() {
         // Checking if object with same id already exists
         const existingEntity = document.getElementById(this.id);
-        console.log("ENTITY", existingEntity);
         if (existingEntity) {
             console.log(`An entity with the ID ${this.id} already exists.`);
             // Alternatively, update the existing entity instead of ignoring the new addition
@@ -187,7 +184,6 @@ class MediaPlayer {
         entity.setAttribute('toggle_visibility', true);
         entity.setAttribute('background_img_id', this.backgroundImgId);
         entity.setAttribute('mixin', 'mediaplayer_frame');
-        console.log("POSITION2", this.position);
 
         entity.setAttribute('position', this.position);
         entity.setAttribute('icon_index', this.icon_index);
@@ -310,78 +306,56 @@ class MediaPlayer {
             redo: () => {}
         };
 
+        // Exclude 'create' from initial state capture since it doesn't exist yet
+        if (method !== 'create') {
+            action.initialState = this.captureState();
+        }
+
         action.do = () => {
-            // Execute the method
+            // Execute the action
             this[method](...args);
+            // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
         };
 
-        // // Prepare initial and final states without executing the method immediately
-        // let initialState; // Capture the initial state for all actions
-        // let finalState;
-        // if (method !== 'create') {
-        //     initialState = this.captureState();
-        // }
-        
+        action.undo = () => {
+             // If the action was 'create', undoing it means removing the object
+            if (method === 'create') {
+                this.delete();
+                // If the action was 'delete', undoing it involves re-creating the object with its initial state
+            } else if (method === 'delete') {
+                this.applyState(action.initialState); // Assuming create reinstates the initial state
+                this.create();
+             // For all other actions, apply the initial state to undo the action
+            } else {
+                this.applyState(action.initialState); // Apply initial state for undo
+            }
+        };
 
-        // return {
-        //     do: () => {
-        //         if (!finalState) {
-        //             // If the action has not been performed yet, execute it and capture the final state
-        //             // For the 'create' action, we capture the initial state after the action
-        //             // This ensures we have a reference to revert to if the action is undone
-        //             this[method](...args);
-        //             if (method === 'create') {
-        //                 initialState = this.captureState();
-        //             }
-        //             // finalState = this.captureState();
-        //             if (method !== 'create') {
-        //                 this.finalState = this.captureState();
-        //             }
-        //         } 
-        //         // else {
-        //         //     // If redoing the action, just apply the previously captured final state
-        //         //     this.applyState(finalState);
-        //         // }
-        //     },
-        //     undo: () => { 
-        //         if (method === 'create') {
-        //             // If the action was 'create', undoing it means removing the node
-        //             this.delete();
-        //         } else if (method === 'delete') {
-        //             // If the action was 'delete', undoing it involves re-creating the node
-        //             // with its initial state
-        //             this.applyState(initialState);
-        //             this.create();
-        //         } else {
-        //             // For all other actions, apply the initial state to undo the action
-        //             this.applyState(initialState);
-        //         }
-        //     },
-        //     redo: () => {
-        //         if (method === 'create') {
-        //             // Redoing creation simply means re-adding the node
-        //             this.create();
-        //         } else if (method === 'delete') {
-        //             // Redoing deletion means removing the node again
-        //             this.delete();
-        //         } else {
-        //             // For other actions, re-apply the final state to redo the action
-        //             this.applyState(this.finalState);
-        //         }
-        //     }
-        // };
+        action.redo = () => {
+            // if action is create or delete, a redo would be the function itself
+            if (method === 'create' || method === 'delete') {
+                action.do(); 
+            } 
+            // Otherwise, it is sufficient to just apply final state for redo and update scene
+            else {
+                this.applyState(action.finalState); 
+            }
+        };
+
+        
 
         return action;
     }
 
+    
 
     // A METHOD TO CAPTURE OBJECT ATTRIBUTES AND STORE THEM IN A DICTIONARY
     captureState() {
         return {
+            id: this.id,
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
-            mediaplayer_type: this.mediaplayer_type,
             mediaplayer_type: this.mediaplayer_type,
             icon_index: this.icon_index,
             title: this.title,
@@ -393,9 +367,9 @@ class MediaPlayer {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
+        this.id = state.id;
         this.position = state.position;
         this.backgroundImgId = state.backgroundImgId;
-        this.mediaplayer_type = state.mediaplayer_type;
         this.mediaplayer_type = state.mediaplayer_type;
         this.icon_index = state.icon_index;
         this.title = state.title;
