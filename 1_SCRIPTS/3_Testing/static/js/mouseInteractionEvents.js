@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
         if (intersectedObject && ((event.ctrlKey && event.shiftKey)|| event.key === 'm' || event.key === 'M') && event.button === 0) {
-            var new_event = new CustomEvent('mouseDownIntersection', 
+            var new_event = new CustomEvent('ctrlShiftMouseDownIntersection', 
             {
                 detail: {
                     event: 'object_interaction_with_ctrl',

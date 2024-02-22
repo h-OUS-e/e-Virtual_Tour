@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     {
         if (event.target.classList.contains(main_class)){
             const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
+
             const color_mediaPlayer = getJSColor(mediaplayer_type["light"]);
             event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
         }
@@ -266,39 +267,23 @@ class MediaPlayer {
     }
 
 
-    // METHOD TO MOVE THE OBJECT
-    moveTo(newPosition) {
-        const oldPosition = this.position;
-        this.position = newPosition;
-        this.updateScenePosition(); 
-        this.updateSheet();
-
-        // Return an action for undo/redo stack
-        return {
-            do: () => this.moveTo(newPosition),
-            undo: () => this.moveTo(oldPosition)
-        };
-    }
-
-
+    
     // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
         const entity = document.getElementById(this.id);
         if (entity) {
-            entity.setAttribute('position', this.position);
+            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         }
     }
 
-
-    // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
-    // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
-    updatePositionDirectly(newPosition) {
+    // METHOD TO MOVE THE OBJECT
+    moveTo(newPosition) {
         this.position = newPosition;
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
 
-    // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
+    /// GENERAL METHOD TO PERFORM AND UNDO ACTIONS
     getAction(method, ...args) {
         let action = {
             do: () => {},
@@ -341,9 +326,7 @@ class MediaPlayer {
             else {
                 this.applyState(action.finalState); 
             }
-        };
-
-        
+        };       
 
         return action;
     }
@@ -357,6 +340,7 @@ class MediaPlayer {
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
             mediaplayer_type: this.mediaplayer_type,
+            mediaplayer_type_string: this.mediaplayer_type_string,
             icon_index: this.icon_index,
             title: this.title,
             rotation: this.rotation,
@@ -392,7 +376,7 @@ class MediaPlayer {
             // Update data attributes related to background images
             entity.setAttribute('background_img_id', this.backgroundImgId);
             // Update attributes
-            entity.setAttribute('mediaplayer_type', this.mediaplayer_type);
+            entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
             entity.setAttribute('icon_index', this.icon_index);
             entity.setAttribute('title', this.title);
             // // Update id in case we update the new_background_img_id attribute

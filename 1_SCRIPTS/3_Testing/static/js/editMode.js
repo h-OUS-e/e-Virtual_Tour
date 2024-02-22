@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isEditMode = false;
     let editMenuOn = false;
     let selectedObjectClass = 'None'; // Default selection
+    let ctrlShift_selected_object_class = 'None';
+    let object;
 
     const camera = document.querySelector('a-camera');
     const scene = document.querySelector('a-scene');
@@ -163,36 +165,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
     // CODE TO MOVE OBJECTS ON SCENE WHEN HOLDING LEFT CLICK + CTRL AND DRAGGING MOUSE
-    scene.addEventListener('mouseDownIntersection', function (event) {
+    scene.addEventListener('ctrlShiftMouseDownIntersection', function (event) {
         // Check if Ctrl key is pressed and the left mouse button is clicked  
         
         if (!isEditMode) return;  
+        isDragging = true;
             
         let clickedElementId = event.detail.Id;
-        let clickedElementClass = event.detail.class;
-        
-        // Getting the transition node on click if that was clicked
-        transition_node = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+        ctrlShift_selected_object_class = event.detail.class;     
 
-        console.log(clickedElementId);
-        if (validObjectClasses.includes(clickedElementClass)) {
-            isDragging = true;
+        // distinguish between TransitionNode and MediaPlayer for different handling
+        if (ctrlShift_selected_object_class === 'TransitionNode') {
+            object = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+            console.log('TransitionNode selected for dragging');
 
-            // Setting starting position
-            startPosition.x = event.detail.position.x;
-            startPosition.y = event.detail.position.y;
-            startPosition.z = event.detail.position.z;
+        } else if (ctrlShift_selected_object_class === 'mediaplayer') {
+            // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
+            let object_instance = document.getElementById(event.detail.Id);
+            let title = object_instance.getAttribute('title');
+            let mediaplayer_type = object_instance.getAttribute('mediaplayer_type');
+            let icon_index = object_instance.getAttribute('icon_index');
+            let rotation = object_instance.getAttribute('rotation');
 
-            // Optionally, distinguish between TransitionNode and MediaPlayer for different handling
-            if (clickedElementClass === 'TransitionNode') {
-                console.log('TransitionNode selected for dragging');
-            } else if (clickedElementClass === 'MediaPlayer') {
-                console.log('MediaPlayer selected for dragging');
-            }
-            // Prevent default action (e.g., text selection)
-            event.preventDefault();
+            // Create a new MediaPlayer instance
+            object = new MediaPlayer(event.detail.Id, event.detail.position, event.detail.backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, null, rotation);
+            
+            console.log('MediaPlayer selected for dragging');
         }
-        else {console.log("no element clicked");}
+
+        
+        else {console.log("no element clicked", ctrlShift_selected_object_class);}
 
     });
 
@@ -216,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.button === 0) { // Left mouse button
             if (isDragging) {
                 // Record the move action only once upon the correct conditions
-                const createAction = transition_node.getAction('moveTo', startPosition);
+                const createAction = object.getAction('moveTo', startPosition);
                 undo_redo_manager.doAction(createAction);
                 objectMoved = true;
             }
