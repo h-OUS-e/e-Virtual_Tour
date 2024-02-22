@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
+
     // Changing color and scale of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
     {   
-
         if (event.target.classList.contains(main_class)){
             const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
             const color_mediaPlayer = getJSColor(mediaplayer_type["dark"]);
@@ -67,12 +67,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Changing color of objects when hovering over them and unclicking
     scene.addEventListener('hoverin_mouseup', function (event) 
     {
-    if (event.target.classList.contains(main_class))
-    {
-        const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
-        const color_mediaPlayer = getJSColor(mediaplayer_type["light"])
-        event.target.setAttribute('material', 'color', color_mediaPlayer); 
-    }
+        if (event.target.classList.contains(main_class))
+        {
+            const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
+            const color_mediaPlayer = getJSColor(mediaplayer_type["light"])
+            event.target.setAttribute('material', 'color', color_mediaPlayer); 
+        }
     });
 
 
@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
-
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class))) 
         {
             // Create an event that sends media id when clicked
@@ -109,7 +108,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 detail: {id: event.target.id, mediaplayer_type: event.target.getAttribute('mediaplayer_type'), icon_index: event.target.getAttribute('icon_index')}
             });
             scene.dispatchEvent(new_event);
-
         }
     });
 
@@ -127,8 +125,6 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
 
         // Process each object in the JSON array
         mediaPlayer_JSON.forEach(mediaPlayer_item => {
-            console.log(`Creating mediaplayer: ${mediaPlayer_item.id}`);
-            console.log(mediaPlayer_item);
             // Get attributes
             const uniqueId = mediaPlayer_item.id;
             const title = mediaPlayer_item.title;
@@ -164,6 +160,8 @@ class MediaPlayer {
         this.title = title;
         this.direction = direction;
         this.rotation = rotation;
+        console.log("POSITION", position);
+        console.log("POSITION1", this.position);
     }
 
 
@@ -171,6 +169,7 @@ class MediaPlayer {
     addToScene() {
         // Checking if object with same id already exists
         const existingEntity = document.getElementById(this.id);
+        console.log("ENTITY", existingEntity);
         if (existingEntity) {
             console.log(`An entity with the ID ${this.id} already exists.`);
             // Alternatively, update the existing entity instead of ignoring the new addition
@@ -188,8 +187,9 @@ class MediaPlayer {
         entity.setAttribute('toggle_visibility', true);
         entity.setAttribute('background_img_id', this.backgroundImgId);
         entity.setAttribute('mixin', 'mediaplayer_frame');
+        console.log("POSITION2", this.position);
+
         entity.setAttribute('position', this.position);
-        console.log('pos', this.position, `${this.position.x} ${this.position.y} ${this.position.z}`);
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
 
@@ -227,7 +227,6 @@ class MediaPlayer {
     // HELPER METHOD TO ADD VISUAL ATTRIBUTES TO OBJECTS
     appendComponentsTo(entity) {
 
-        console.log("TEST" + JSON.stringify(this.mediaplayer_type));
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = document.createElement('a-entity'); 
         iconEntity.setAttribute('mixin', 'mediaplayer_icon');
@@ -252,10 +251,7 @@ class MediaPlayer {
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         this.addToScene();
-        const existingEntity = document.getElementById(this.id);
-        const existingPosition = existingEntity.getAttribute('position');
-        console.log("Adding mediaplayer to the scene.", existingPosition.x, JSON.stringify(existingPosition));
-
+        console.log("Adding mediaplayer to the scene.");
         // TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
     }
 
@@ -307,60 +303,76 @@ class MediaPlayer {
 
 
     // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
-    performAction(method, ...args) {
-        // Prepare initial and final states without executing the method immediately
-        let initialState;
-        let finalState;
-        if (method !== 'create') {
-            initialState = this.captureState();
-        }
+    getAction(method, ...args) {
+        let action = {
+            do: () => {},
+            undo: () => {},
+            redo: () => {}
+        };
+
+        action.do = () => {
+            // Execute the method
+            this[method](...args);
+            action.finalState = this.captureState(); // Capture the final state after action
+        };
+
+        // // Prepare initial and final states without executing the method immediately
+        // let initialState; // Capture the initial state for all actions
+        // let finalState;
+        // if (method !== 'create') {
+        //     initialState = this.captureState();
+        // }
         
 
-        return {
-            do: () => {
-                if (!finalState) {
-                    // If the action has not been performed yet, execute it and capture the final state
-                    this[method](...args);
-                    if (method === 'create') {
-                        initialState = this.captureState();
-                    }
-                    // finalState = this.captureState();
-                    if (method !== 'create') {
-                        this.finalState = this.captureState();
-                    }
-                } 
-                // else {
-                //     // If redoing the action, just apply the previously captured final state
-                //     this.applyState(finalState);
-                // }
-            },
-            undo: () => { 
-                if (method === 'create') {
-                    // If the action was 'create', undoing it means removing the node
-                    this.delete();
-                } else if (method === 'delete') {
-                    // If the action was 'delete', undoing it involves re-creating the node
-                    // with its initial state
-                    this.applyState(initialState);
-                    this.create();
-                } else {
-                    // For all other actions, apply the initial state to undo the action
-                    this.applyState(initialState);
-                }
-            },
-            redo: () => {
-                if (method === 'create') {
-                    // Redoing creation simply means re-adding the node
-                    this.create();
-                } else if (method === 'delete') {
-                    // Redoing deletion means removing the node again
-                    this.delete();
-                } else {
-                    // For other actions, re-apply the final state to redo the action
-                    this.applyState(this.finalState);
-                }
-            }
-        };
+        // return {
+        //     do: () => {
+        //         if (!finalState) {
+        //             // If the action has not been performed yet, execute it and capture the final state
+        //             // For the 'create' action, we capture the initial state after the action
+        //             // This ensures we have a reference to revert to if the action is undone
+        //             this[method](...args);
+        //             if (method === 'create') {
+        //                 initialState = this.captureState();
+        //             }
+        //             // finalState = this.captureState();
+        //             if (method !== 'create') {
+        //                 this.finalState = this.captureState();
+        //             }
+        //         } 
+        //         // else {
+        //         //     // If redoing the action, just apply the previously captured final state
+        //         //     this.applyState(finalState);
+        //         // }
+        //     },
+        //     undo: () => { 
+        //         if (method === 'create') {
+        //             // If the action was 'create', undoing it means removing the node
+        //             this.delete();
+        //         } else if (method === 'delete') {
+        //             // If the action was 'delete', undoing it involves re-creating the node
+        //             // with its initial state
+        //             this.applyState(initialState);
+        //             this.create();
+        //         } else {
+        //             // For all other actions, apply the initial state to undo the action
+        //             this.applyState(initialState);
+        //         }
+        //     },
+        //     redo: () => {
+        //         if (method === 'create') {
+        //             // Redoing creation simply means re-adding the node
+        //             this.create();
+        //         } else if (method === 'delete') {
+        //             // Redoing deletion means removing the node again
+        //             this.delete();
+        //         } else {
+        //             // For other actions, re-apply the final state to redo the action
+        //             this.applyState(this.finalState);
+        //         }
+        //     }
+        // };
+
+        return action;
     }
 
 
@@ -373,7 +385,8 @@ class MediaPlayer {
             mediaplayer_type: this.mediaplayer_type,
             icon_index: this.icon_index,
             title: this.title,
-            rotation: this.rotation
+            rotation: this.rotation,
+            direction: {...this.direction},
         };
     }
 

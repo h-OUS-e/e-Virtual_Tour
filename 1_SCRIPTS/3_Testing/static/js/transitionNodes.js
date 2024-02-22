@@ -274,7 +274,7 @@ class TransitionNode {
 
 
     // General method to perform and revert actions
-    performAction(method, ...args) {
+    getAction(method, ...args) {
         // Prepare initial and final states without executing the method immediately
         let initialState;
         let finalState;

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let transition_node = null;
     let media_player = null;
 
-    const undoRedoManager = new UndoRedoManager();
+    const undo_redo_manager = new UndoRedoManager();
     const edit_menu_manager = new EditMenuManager();
     const creation_menu_manager = new CreationFormManager();
 
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Getting media player types from the JSON file
     const mediaplayer_types = await loadMediaPlayerTypes();
+    const mediaplayer_types_keys = Object.keys(mediaplayer_types);
 
     // Constants for mediaplayer types and icon index
     const mediaplayer_type_input_Id = document.getElementById('creation_menu_MediaPlayer_type_input');
@@ -126,8 +127,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         menu.addEventListener('click', function(event) {
             // Check if the click is on the "Delete" option
             if (event.target.classList.contains('deleteOption')) {
-                const deleteAction = transition_node.performAction('delete');
-                undoRedoManager.doAction(deleteAction);
+                const deleteAction = transition_node.getAction('delete');
+                undo_redo_manager.doAction(deleteAction);
             }
 
             // Hide the menu after an option is selected
@@ -216,8 +217,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.addEventListener('mouseup', function (event) {
         if (isDragging) {
             objectMoved = true;
-            const createAction = transition_node.performAction('moveTo', startPosition);
-            undoRedoManager.doAction(createAction);
+            const createAction = transition_node.getAction('moveTo', startPosition);
+            undo_redo_manager.doAction(createAction);
         }
         if (event.button === 0) { // Left mouse button
             isDragging = false;
@@ -228,85 +229,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
-    scene.addEventListener('mouseClickedEditMode', function (event) {
-        
-        if (isEditMode && selectedObjectClass !== 'None') {        
-
-            const point = event.detail.intersection_pt;
-            // Get current background image id
-            var sky = document.querySelector('#sky');
-            const backgroundImgId = sky.getAttribute('background_img_id');              
+    scene.addEventListener('mouseClickedEditMode', function (event) {        
             
-            // get all creation menus from the document
-            const creationMenus = document.getElementsByClassName('creationMenu');
-
-            // Logic for creating a TransitionNode
-            if (selectedObjectClass === 'TransitionNode') {
-
-                // setting default attributes
-                let newBackgroundImgId = "01.1";
-
-                // Show creation menu
-                creation_menu_manager.setObjectClass(selectedObjectClass);
-                creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
-
-                // Take newBackroundImgId inputed property
-                Array.from(creationMenus).forEach(menu => {
-                    menu.addEventListener('click', function(event) {
-                        // Check if the click is on the "Delete" option
-                        if (event.target.classList.contains('submitOption')) {
-                            // new background image id needs to be defined on the viewport
-                            newBackgroundImgId = document.getElementById('creation_menu_TransitionNode_newBackgroundImgId_input').value;
-                            // Hide the menu after an option is selected
-                            creation_menu_manager.hideEditMenu();
-                            // Generate a unique ID for the new entity
-                            const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
-                            // Creating node class to get actions for creating node
-                            transition_node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
-                            const createAction = transition_node.performAction('create');
-                            undoRedoManager.doAction(createAction);
-                        }                        
-                    });
-                });
-            }
-
-            // Logic for creation MediaPlayer
-            else if (selectedObjectClass === 'MediaPlayer') {
-                console.log("placing MediaPlayer object");
-
-                // Show creation menu
-                creation_menu_manager.setObjectClass(selectedObjectClass);
-                creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
-
-                // Take inputs from the submitted creation menu to create media player
-
-                // Generate a unique ID for the new entity
-                let title = "a new world of tools";
-                title = title.replace(/ /g, "_");
-                const uniqueId = `mediaplayer_${backgroundImgId}_${title}`;                
-                let mediaplayer_type = 'green';
-                let icon_index = 'diagnostic';
-                let direction = event.detail.direction;
+        if (isEditMode && selectedObjectClass !== 'None') {
+            // Show creation menu manager related to selected object class            
+            creation_menu_manager.setObjectClass(selectedObjectClass);
+            creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+            // Get point and direction of the event
+            const point = event.detail.intersection_pt; 
+            const direction = event.detail.direction; 
+            // Create object in scene when creation meny form is submitted
+            handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, creation_menu_manager, undo_redo_manager); // Include direction in the call
             
-                media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, direction);
-                const createAction = media_player.performAction('create');
-                undoRedoManager.doAction(createAction);
-
-
-            }
-
-
-            // Logic for creation Label Tag
-            else if (selectedObjectClass === 'LabelTag') {
-                // Placeholder for LabelTag creation logic
-                console.log("placing Label tag object");
-            }
-
-            else {console.log("unknown class name");}
-
-        }
-
-        
+        }        
     });
     
 
@@ -315,8 +250,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check for Ctrl+Z or Cmd+Z
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
             event.preventDefault(); // Prevent the browser's default undo action
-            undoRedoManager.undo(); // Call your undo function
-            console.log('Undo' + undoRedoManager.undoStack.length);
+            undo_redo_manager.undo(); // Call your undo function
+            console.log('Undo' + undo_redo_manager.undoStack.length);
         }
     });
     
@@ -614,3 +549,71 @@ function onDropdownMenuSelection(options_JSON, selected_dropdown_input_id, depen
     populateDropdown(dependent_dropdown_input_id, dependent_options);
 }
 
+
+
+
+// CREATION MENU FUNCTIONS
+
+// Function to handle the logic for object creation based on the selected object class.
+function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, creation_menu_manager, undo_redo_manager) {
+    // Fetch the current background image ID from the scene's sky element.
+    const sky = document.querySelector('#sky');
+    const backgroundImgId = sky.getAttribute('background_img_id');
+
+    // Get the creation menu element specific to the selected object class.
+    const creation_menu = document.getElementById(`creation_menu_${selectedObjectClass}`);
+
+    // Define a function to handle submission from the creation menu.
+    const handleMenuSubmit = function(event) {
+        // Check if the submit option was clicked.
+        if (event.target.classList.contains('submitOption')) {
+            event.stopPropagation(); // Stop the event from bubbling to prevent triggering parent event handlers.
+            creation_menu_manager.hideEditMenu(); 
+
+            // Process the creation menu submission for creating the new object.
+            processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, undo_redo_manager);
+            // Remove the event listener to prevent memory leaks and ensure clean-up.
+            creation_menu.removeEventListener('click', handleMenuSubmit);
+        }
+    };
+
+    // Attach the submission handler to the creation menu. 
+    // Previous identical listeners are removed to avoid duplicates.
+    creation_menu.removeEventListener('click', handleMenuSubmit);
+    creation_menu.addEventListener('click', handleMenuSubmit);
+}
+
+// Function to process the form submission for creating new objects in the scene.
+function processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, undo_redo_manager) {
+    // Example logic for creating a MediaPlayer object.
+    
+    if (selectedObjectClass === 'MediaPlayer') {
+        // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
+        let title = document.getElementById('creation_menu_MediaPlayer_title_input').value.replace(/ /g, "_");
+        let uniqueId = `mediaplayer_${backgroundImgId}_${title}`;
+        let mediaplayer_type = document.getElementById('creation_menu_MediaPlayer_type_input').value;
+        let icon_index = document.getElementById('creation_menu_MediaPlayer_iconIdx_input').value;
+
+        // Create a new MediaPlayer instance
+        const media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, direction, null);
+        const createAction = media_player.getAction('create');
+        undo_redo_manager.doAction(createAction);
+        console.log("placing MediaPlayer object");
+    }
+    
+    
+    // Logic for creating a TransitionNode
+    else if (selectedObjectClass === 'TransitionNode') {                
+        
+        // Retrieve values from creation form and create variables for creating transition node
+        let newBackgroundImgId = document.getElementById('creation_menu_TransitionNode_newBackgroundImgId_input').value;
+        const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
+
+        // Creating a new transition node instance
+        const transition_node = new TransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId);
+        const createAction = transition_node.getAction('create');
+        undo_redo_manager.doAction(createAction);
+        console.log("placing TransitionNode object");
+
+    }
+}
