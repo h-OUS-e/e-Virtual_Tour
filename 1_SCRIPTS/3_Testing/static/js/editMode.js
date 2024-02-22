@@ -220,14 +220,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 undo_redo_manager.doAction(createAction);
                 console.log("t1");
                 objectMoved = true;
-
-
             }
-            if (event.button === 0) { // Left mouse button
-                isDragging = false;
-                objectMoved = false;
-            }
-    }
+
+            isDragging = false;
+            objectMoved = false;
+        }
     });
 
 
