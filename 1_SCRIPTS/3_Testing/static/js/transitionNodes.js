@@ -268,8 +268,6 @@ class TransitionNode {
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     moveTo(newPosition) {
-        console.log("moved");
-
         this.position = newPosition;
         this.updateScenePosition(); // Reflect changes in the scene
     }

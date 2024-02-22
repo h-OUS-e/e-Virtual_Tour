@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Record the move action only once upon the correct conditions
                 const createAction = transition_node.getAction('moveTo', startPosition);
                 undo_redo_manager.doAction(createAction);
-                console.log("t1");
                 objectMoved = true;
             }
 
@@ -254,6 +253,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             event.preventDefault(); // Prevent the browser's default undo action
             undo_redo_manager.undo(); // Call your undo function
             console.log('Undo' + undo_redo_manager.undoStack.length);
+        }
+    });
+
+
+    // REDO LAST COMMAND
+    document.addEventListener('keydown', function(event) {
+        // Check for Ctrl+Z or Cmd+Z
+        if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+
+            event.preventDefault(); // Prevent the browser's default undo action
+            undo_redo_manager.redo(); // Call your undo function
+            console.log('redo' + undo_redo_manager.undoStack.length);
         }
     });
     
