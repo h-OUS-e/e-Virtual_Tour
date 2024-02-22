@@ -357,7 +357,7 @@ class TransitionNode {
             backgroundImgId: this.backgroundImgId,
             newBackgroundImgId: this.newBackgroundImgId
         };        
-        fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
+        fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint  (zaaa555aaa GPT Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
