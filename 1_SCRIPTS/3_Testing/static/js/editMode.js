@@ -170,9 +170,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             
         let clickedElementId = event.detail.Id;
         let clickedElementClass = event.detail.class;
-        console.log("TEEEST" + event.detail.backgroundImgId);
+        
+        // Getting the transition node on click if that was clicked
         transition_node = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
-        console.log(event.detail.position);
 
         console.log(clickedElementId);
         if (validObjectClasses.includes(clickedElementClass)) {
@@ -198,7 +198,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // CODE TO MOVE OBJECTS ON SCENE WHEN isDragging and selectedNode are True
     scene.addEventListener('mouseMovingEditMode', function (event) {
-        console.log("TEST");
         if (!isDragging) return;
 
         // Update startPosition for the next move event
@@ -206,8 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         startPosition.y = event.detail.intersection_pt.y;
         startPosition.z = event.detail.intersection_pt.z;
 
-        transition_node.updatePositionDirectly(startPosition);
-        
+        // transition_node.moveTo(startPosition); // for smooth transitioning
         event.preventDefault();
 
 
@@ -215,15 +213,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // CODE TO DISABLE MOVING OBJECTS AFTER MOUSE IS RELEASED
     scene.addEventListener('mouseup', function (event) {
-        if (isDragging) {
-            objectMoved = true;
-            const createAction = transition_node.getAction('moveTo', startPosition);
-            undo_redo_manager.doAction(createAction);
-        }
         if (event.button === 0) { // Left mouse button
-            isDragging = false;
-            objectMoved = false;
-        }
+            if (isDragging) {
+                // Record the move action only once upon the correct conditions
+                const createAction = transition_node.getAction('moveTo', startPosition);
+                undo_redo_manager.doAction(createAction);
+                console.log("t1");
+                objectMoved = true;
+
+
+            }
+            if (event.button === 0) { // Left mouse button
+                isDragging = false;
+                objectMoved = false;
+            }
+    }
     });
 
 
@@ -249,11 +253,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+
             event.preventDefault(); // Prevent the browser's default undo action
             undo_redo_manager.undo(); // Call your undo function
             console.log('Undo' + undo_redo_manager.undoStack.length);
-            console.log('mp' + media_player.id);
-
         }
     });
     

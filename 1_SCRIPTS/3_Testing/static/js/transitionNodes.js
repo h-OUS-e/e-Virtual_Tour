@@ -244,19 +244,19 @@ class TransitionNode {
     }
 
 
-    // METHOD TO MOVE THE OBJECT
-    moveTo(newPosition) {
-        const oldPosition = this.position;
-        this.position = newPosition;
-        this.updateScenePosition(); 
-        this.updateSheet();
+    // // METHOD TO MOVE THE OBJECT
+    // moveTo(newPosition) {
+    //     const oldPosition = this.position;
+    //     this.position = newPosition;
+    //     this.updateScenePosition(); 
+    //     this.updateSheet();
 
-        // Return an action for undo/redo stack
-        return {
-            do: () => this.moveTo(newPosition),
-            undo: () => this.moveTo(oldPosition)
-        };
-    }
+    //     // Return an action for undo/redo stack
+    //     return {
+    //         do: () => this.moveTo(newPosition),
+    //         undo: () => this.moveTo(oldPosition)
+    //     };
+    // }
 
     // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
@@ -267,72 +267,68 @@ class TransitionNode {
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
-    updatePositionDirectly(newPosition) {
+    moveTo(newPosition) {
+        console.log("moved");
+
         this.position = newPosition;
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
+    // METHOD TO UPDATE 
 
-    // General method to perform and revert actions
+
+    // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
     getAction(method, ...args) {
-        // Prepare initial and final states without executing the method immediately
-        let initialState;
-        let finalState;
-        if (method !== 'create') {
-            initialState = this.captureState();
-        }
-        
+        let action = {
+            do: () => {},
+            undo: () => {},
+            redo: () => {}
+        };
 
-        return {
-            do: () => {
-                if (!finalState) {
-                    // If the action has not been performed yet, execute it and capture the final state
-                    this[method](...args);
-                    if (method === 'create') {
-                        initialState = this.captureState();
-                    }
-                    // finalState = this.captureState();
-                    if (method !== 'create') {
-                        this.finalState = this.captureState();
-                    }
-                } 
-                // else {
-                //     // If redoing the action, just apply the previously captured final state
-                //     this.applyState(finalState);
-                // }
-            },
-            undo: () => { 
-                if (method === 'create') {
-                    // If the action was 'create', undoing it means removing the node
-                    this.delete();
-                } else if (method === 'delete') {
-                    // If the action was 'delete', undoing it involves re-creating the node
-                    // with its initial state
-                    this.applyState(initialState);
-                    this.create();
-                } else {
-                    // For all other actions, apply the initial state to undo the action
-                    this.applyState(initialState);
-                }
-            },
-            redo: () => {
-                if (method === 'create') {
-                    // Redoing creation simply means re-adding the node
-                    this.create();
-                } else if (method === 'delete') {
-                    // Redoing deletion means removing the node again
-                    this.delete();
-                } else {
-                    // For other actions, re-apply the final state to redo the action
-                    this.applyState(this.finalState);
-                }
+        // Exclude 'create' from initial state capture since it doesn't exist yet
+        if (method !== 'create') {
+            action.initialState = this.captureState();
+        }
+
+        action.do = () => {
+            // Execute the action
+            this[method](...args);
+            // Capture the final state after the action is performed
+            action.finalState = this.captureState(); // Capture the final state after action
+        };
+
+        action.undo = () => {
+             // If the action was 'create', undoing it means removing the object
+            if (method === 'create') {
+                this.delete();
+                // If the action was 'delete', undoing it involves re-creating the object with its initial state
+            } else if (method === 'delete') {
+                this.applyState(action.initialState); // Assuming create reinstates the initial state
+                this.create();
+             // For all other actions, apply the initial state to undo the action
+            } else {
+                this.applyState(action.initialState); // Apply initial state for undo
             }
         };
+
+        action.redo = () => {
+            // if action is create or delete, a redo would be the function itself
+            if (method === 'create' || method === 'delete') {
+                action.do(); 
+            } 
+            // Otherwise, it is sufficient to just apply final state for redo and update scene
+            else {
+                this.applyState(action.finalState); 
+            }
+        };       
+
+        return action;
     }
 
     // CAPTURE OBJECT ATTRIBUTES AND STORE THEM IN A DICTIONARY
     captureState() {
         return {
+            id: this.id,
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
             newBackgroundImgId: this.newBackgroundImgId
@@ -341,6 +337,7 @@ class TransitionNode {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
+        this.id = state.id;
         this.position = state.position;
         this.backgroundImgId = state.backgroundImgId;
         this.newBackgroundImgId = state.newBackgroundImgId;
