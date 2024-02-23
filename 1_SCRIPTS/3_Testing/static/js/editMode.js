@@ -428,13 +428,30 @@ class EditMenuManager  {
         if (this.objectClass) {
             const menuId = `edit_menu_${this.objectClass}`;
             const menu = document.getElementById(menuId);
+            if (!menu) return; // Exit if the menu doesn't exist
             menu.style.top = `${y}px`;
             menu.style.left = `${x}px`;
             menu.style.display = 'block'; // Show the menu
 
+            this.adjustMenuPosition(menu);
+
             // Track the currently visible menu
             this.currentVisibleMenu = menuId;
             }
+    }
+
+    adjustMenuPosition(menu) {    
+        // Get the menu's dimensions and position
+        const menuRect = menu.getBoundingClientRect();
+    
+        // Calculate the distance from the bottom of the menu to the bottom of the viewport
+        const bottomSpace = window.innerHeight - menuRect.bottom;
+    
+        // If the menu is cut off from the bottom, move it up
+        if (bottomSpace < 0) {
+            // Set the top position to move the menu up by the amount it's cut off, plus a little extra space (5px)
+            menu.style.top = (menu.offsetTop + bottomSpace - 5) + 'px';
+        }
     }
 }
 
