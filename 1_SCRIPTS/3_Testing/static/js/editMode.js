@@ -95,13 +95,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // transition node menu
         if (editMenuOn){
-            const id = event.detail.id;
             const objectClass = event.detail.class;
-            console.log('Right clicked on ' + id);
+            const id = event.detail.id;
+            currentEditMenuId = event.detail.id;  
+            // Show object ID in the edit menu   
+            const object_id_Element = document.getElementById('object_id_display');
+            object_id_Element.textContent = 'Object ID: ' + id; // Update the text to show the object ID
+
+            // Show object ID in the edit menu
             edit_menu_manager.setObjectClass(objectClass);
             edit_menu_manager.showEditMenu(event.detail.x, event.detail.y);
 
-            currentEditMenuId = event.detail.id;            
             // Constructing the object that was just clicked in memory to be able to edit it
             // Should edit this to make it a universal mapping function, all in one place
             if (objectClass == 'TransitionNode'){
