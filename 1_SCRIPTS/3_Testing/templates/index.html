@@ -105,12 +105,35 @@
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="edit_menu_TransitionNode" class="editMenu">
             <ul>
-                <li id="object_id_display" class="editMenuOption">Object ID: </li>
+                <li class="editMenuOption object_id_display">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
-                <li class="editMenuOption changeBackgroundOption">Change newBackgroundImgId</li>
+                <li class="editMenuOption changeBackgroundOption">Change toScene ID</li> 
+                <li class="editMenuOption changeBackgroundOption">Edit object ID</li>
+
                 <!-- Add other options as needed -->
             </ul>
         </div>    
+
+
+        <!-- Edit menu to delete or change values of objects in a-scene -->
+        <div id="edit_menu_MediaPlayer" class="editMenu">
+            <ul>
+                <li class="editMenuOption object_id_display">Object ID: </li>
+                <li class="editMenuOption deleteOption">Delete</li>
+                <li class="editMenuOption changeBackgroundOption">Change thisScene ID</li>
+                <li class="editMenuOption changeBackgroundOption">Edit object ID</li>
+                <li>
+                    <label for="edit_menu_MediaPlayer_type_input">Edit Type</label>
+                    <select id="edit_menu_MediaPlayer_type_input" class="changeMediaPlayerType"></select>
+                </li>
+                <li>
+                    <label for="edit_menu_MediaPlayer_iconIdx_input">Edit icon index</label>
+                    <select id="edit_menu_MediaPlayer_iconIdx_input" class="changeMediaPlayerIconIdx"></select>
+                </li>
+                <li class="editMenuOption changeBackgroundOption">Edit title</li>
+                <!-- Add other options as needed -->
+            </ul>
+        </div>   
           
 
         <!-- Creation menu to when adding transition nodes -->

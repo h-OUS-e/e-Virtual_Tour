@@ -1,6 +1,6 @@
 const popupContent = [
   {
-    media_id: "mediaplayer_1",
+    media_id: "mp_1",
     title: "Advanced Patient Diagnostics",
     subtitle: "SageCare",
     description: "",
@@ -10,7 +10,7 @@ const popupContent = [
     videoUrlEmbedded: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
   },
   {
-    media_id: "mediaplayer_2",
+    media_id: "mp_2",
     title: "Integrated Artificial Intelligence",
     subtitle: "SageCare",
     description: "AI-enhanced X-rays by Sage enable quicker, more accurate diagnoses.",
@@ -21,7 +21,7 @@ const popupContent = [
     
   },
   {
-    media_id: "mediaplayer_3",
+    media_id: "mp_3",
     title: "Superior Revenue Cycle Management",
     subtitle: "BillRIGHT",
     description: "",
@@ -31,7 +31,7 @@ const popupContent = [
     videoUrlEmbedded: "https://player.vimeo.com/video/738257641?h=56288e389c&byline=0&portrait=0",
   },
   {
-    media_id: "mediaplayer_4",
+    media_id: "mp_4",
     title: "SageNet Automated Purchasing System",
     subtitle: "SNAP",
     description: "",
@@ -41,7 +41,7 @@ const popupContent = [
     videoUrlEmbedded: "",
   },
   {
-    media_id: "mediaplayer_5",
+    media_id: "mp_5",
     title: "Actionable Business Intelligence",
     subtitle: "VISION",
     description: "With SAGE VISION, office staff, regional managers, and executive leadership can access real-time key metrics in a format that makes the most sense for their individual needs and perspectives.",
@@ -51,7 +51,7 @@ const popupContent = [
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
   },
   {
-    media_id: "mediaplayer_6",
+    media_id: "mp_6",
     title: "Interactive Patient Management",
     subtitle: "SEAT CRM",
     description: "",

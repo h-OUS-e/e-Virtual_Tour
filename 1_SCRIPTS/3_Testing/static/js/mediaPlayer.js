@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
        
     // Definitions   
     const scene = document.querySelector('a-scene');
-    var main_class = "mediaplayer";
+    var main_class = "MediaPlayer";
    
 
     // Setting initial colors of objects
@@ -179,7 +179,7 @@ class MediaPlayer {
 
         const entity = document.createElement('a-entity');
         entity.setAttribute('id', this.id);
-        entity.setAttribute('class', 'mediaplayer');
+        entity.setAttribute('class', 'MediaPlayer');
         entity.setAttribute('clickable', 'true');
         entity.setAttribute('visible', this.backgroundImgId === '01.1');
         entity.setAttribute('toggle_visibility', true);
@@ -388,12 +388,19 @@ class MediaPlayer {
             entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
             entity.setAttribute('icon_index', this.icon_index);
             entity.setAttribute('title', this.title);
+            // Get the icon and border entities inside the media player entity and update their attributes
+            const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+            iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
+            const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
+            borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));            
+            entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
             // // Update id in case we update the new_background_img_id attribute
             // entity.setAttribute('title', this.id);         
 
-
             // Update visibility
             entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+
+            //
         }
     }
 }

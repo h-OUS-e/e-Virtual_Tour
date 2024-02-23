@@ -1,6 +1,6 @@
 [
     {
-        "id": "mediaplayer_1",
+        "id": "mp_1",
         "title": "1",
         "position": "45 2 10",
         "rotation": "0 90 0",
@@ -10,7 +10,7 @@
     }, 
 
     {
-        "id": "mediaplayer_2",
+        "id": "mp_2",
         "title": "2",
         "position": "7 2 -40",
         "rotation": "0 150 0",
@@ -20,7 +20,7 @@
     }, 
 
     {
-        "id": "mediaplayer_3",
+        "id": "mp_3",
         "title": "3",
         "position": "-50 2 20",
         "rotation": "0 -40 0",
@@ -30,7 +30,7 @@
     }, 
 
     {
-        "id": "mediaplayer_4",
+        "id": "mp_4",
         "title": "4",
         "position": "7 2 -40",
         "rotation": "0 180 0",
@@ -40,7 +40,7 @@
     }, 
 
     {
-        "id": "mediaplayer_5",
+        "id": "mp_5",
         "title": "5",
         "position": "-12 -20 -40",
         "rotation": "0 210 0",
@@ -50,7 +50,7 @@
     }, 
 
     {
-        "id": "mediaplayer_6",
+        "id": "mp_6",
         "title": "6",
         "position": "-50 2 20",
         "rotation": "0 -30 0",
