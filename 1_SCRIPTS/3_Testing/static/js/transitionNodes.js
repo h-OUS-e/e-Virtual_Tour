@@ -386,5 +386,5 @@ class TransitionNode {
 
 
 // Export the function
-export { TransitionNode };
+export { TransitionNode, emitTransitioning };
 

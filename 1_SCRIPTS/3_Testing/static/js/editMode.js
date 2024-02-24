@@ -3,9 +3,9 @@ A script to enter edit mode, where you can place transition nodes and
 media popups on the scene based on where your mouse is pointing.
 */
 
-import { loadMediaPlayerTypes } from './JSONSetup.js';
+import { loadJSON, loadMediaPlayerTypes } from './JSONSetup.js';
 import { MediaPlayer } from './mediaPlayer.js';
-import { TransitionNode } from './transitionNodes.js';
+import { TransitionNode, emitTransitioning } from './transitionNodes.js';
 
 
 
@@ -39,25 +39,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mediaplayer_types = await loadMediaPlayerTypes();
     const mediaplayer_types_keys = Object.keys(mediaplayer_types);
 
+    // Getting scene ids
+    const scenes_JSON = await loadJSON('Scenes');
+
     // Constants for mediaplayer types and icon index
     const creation_menu_MediaPlayer_type_Id = document.getElementById('creation_menu_MediaPlayer_type_input');
     const creation_menu_MediaPlayer_iconIdx_Id = document.getElementById('creation_menu_MediaPlayer_iconIdx_input');
     const edit_menu_MediaPlayer_type_Id = document.getElementById('edit_menu_MediaPlayer_type_input');
     const edit_menu_MediaPlayer_iconIdx_Id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
+    const edit_menu_MediaPlayer_scene_Id = document.getElementById('edit_menu_MediaPlayer_scene_id_input');
+
 
 
     // Populate the dropdown upon of mediaplayer creation meny initialization
     populateOptionsDropdown(mediaplayer_types, creation_menu_MediaPlayer_type_Id);
-    onDropdownMenuSelection(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
+    onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
     populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
-    onDropdownMenuSelection(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
+    onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
+    populateJSONDropdown(edit_menu_MediaPlayer_scene_Id, scenes_JSON, "id");
 
     // Set up an event listener to update the Icon Index dropdown whenever a new mediaplayer type is selected
     creation_menu_MediaPlayer_type_Id.addEventListener('change', () => 
-        onDropdownMenuSelection(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
+        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
     );
     edit_menu_MediaPlayer_type_Id.addEventListener('change', () => 
-        onDropdownMenuSelection(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
+        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
     );
 
     // Activate or deactivate edit mode if button is clicked
@@ -591,12 +597,22 @@ function populateDropdown(dropdown, options) {
     );
 }
 
+function populateJSONDropdown(dropdown, jsonData, attribute) {
+    // Clear existing options
+    dropdown.innerHTML = '';
+
+    // Populate the dropdown with new options
+    jsonData.forEach(item => {
+        let option = new Option(item[attribute], item[attribute]); // new Option(text, value)
+        dropdown.add(option);
+    });
+}
 // Function to populate the Color Class dropdown based on the keys from the JSON
 function populateOptionsDropdown(options_JSON, dropdown_input_id) {
-    // Transform the keys of icon_color_list into a more user-friendly format
-    const options = Object.keys(options_JSON).reduce((acc, color) => ({
+    // Transform the keys of options into a more user-friendly format
+    const options = Object.keys(options_JSON).reduce((acc, option) => ({
         ...acc,
-        [color]: color.charAt(0).toUpperCase() + color.slice(1) // Capitalize the first letter
+        [option]: option.charAt(0).toUpperCase() + option.slice(1) // Capitalize the first letter
     }), {});
 
     // Use the generalized function to populate the dropdown
@@ -604,7 +620,7 @@ function populateOptionsDropdown(options_JSON, dropdown_input_id) {
 }
 
 // Handler for when a color class is selected, updating the Icon Index dropdown accordingly
-function onDropdownMenuSelection(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
+function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
     const selected_input = selected_dropdown_input_id.value;
     const icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
     const dependent_options = Object.keys(icons).reduce((acc, key) => ({
@@ -766,6 +782,10 @@ function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager, me
             case 'edit_menu_MediaPlayer_type_input':
                 changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager);
                 break;
+            case 'edit_menu_MediaPlayer_scene_id_input':
+                changeSceneId(object, undo_redo_manager);
+                break;
+
             // Include other cases if there are more dropdowns
         }
     };
@@ -780,15 +800,6 @@ function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager, me
 }
 
 
-function removeDropdownListeners(menu_id) {
-    const edit_menu = document.getElementById(menu_id);
-    
-    if (edit_menu && edit_menu.dropdownChangeListener) {
-        edit_menu.removeEventListener('change', edit_menu.dropdownChangeListener);
-        edit_menu.dropdownChangeListener = null; // Clear the reference
-    }
-}
-
 
 // Function to remove the event listener
 function removeEditHandling(menu_id) {
@@ -802,10 +813,27 @@ function removeEditHandling(menu_id) {
 }
 
 
+function changeMediaPlayerId(object, undo_redo_manager) {
+    let id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
+    const updateAction = object.getAction('updateScene', id);
+    undo_redo_manager.doAction(updateAction);
+}
+
+function changeSceneId(object, undo_redo_manager) {
+    let backgroundImgId = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
+    // update scene id of object
+    const updateAction = object.getAction('updateScene', {backgroundImgId});
+    undo_redo_manager.doAction(updateAction);
+    // 'WARNING BUGGY WHEN TRANSITIONING change scene to show object in this new scene 
+    emitTransitioning(backgroundImgId);
+
+}
+
+
+
 function changeMediaPlayerIconIdx(object, undo_redo_manager) {
     let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
-    object.icon_index = icon_index;
-    const updateAction = object.getAction('updateScene');
+    const updateAction = object.getAction('updateScene', icon_index);
     undo_redo_manager.doAction(updateAction);
 }
 

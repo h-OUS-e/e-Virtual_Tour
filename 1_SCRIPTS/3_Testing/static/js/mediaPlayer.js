@@ -409,11 +409,12 @@ class MediaPlayer {
 
         // Loop through the updates object to apply updates
         if (updates) {
+            
             for (const [key, value] of Object.entries(updates)) {
                 // Update the object's properties
 
                 if (this.hasOwnProperty(key)) {
-                    console.log("key: ", key, "value: ", value);
+                    // console.log("key: ", key, "value: ", value);
                     this[key] = value;
                 }
                 // Special handling for certain keys or direct update for the entity's attributes
