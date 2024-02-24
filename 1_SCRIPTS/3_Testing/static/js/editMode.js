@@ -705,7 +705,7 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
             event.stopPropagation(); // Stop the event from bubbling to prevent triggering parent event handlers.
             edit_menu_manager.hideEditMenu(); 
             // Process the creation menu submission for creating the new object.
-            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager);
+            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, menu_id);
             // Remove the event listener to prevent memory leaks and ensure clean-up.
             removeEditHandling(menu_id)
         }
@@ -720,7 +720,7 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
 
         else {
             // Process the creation menu submission for creating the new object.
-            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager);
+            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, menu_id);
         }
     };
 
@@ -732,34 +732,60 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
 
 
 // Function to process the form submission for creating new objects in the scene.
-function processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager) {
+function processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, menu_id) {
     // Fetch the current background image ID from the scene's sky element.
     const sky = document.querySelector('#sky');
     const backgroundImgId = sky.getAttribute('background_img_id');    
-    setupDropdownListeners(object, mediaplayer_types, undo_redo_manager);
+    setupDropdownListeners(object, mediaplayer_types, undo_redo_manager, menu_id);
 
 }
 
 
 
 // Function to add or re-add event listeners to dropdown menus
-function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager) {
-    const iconIdxDropdown = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
-    const typeDropdown = document.getElementById('edit_menu_MediaPlayer_type_input');
+function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager, menu_id) {
+    const edit_menu = document.getElementById(menu_id);
 
-    // Remove existing event listeners to avoid duplicates
-    iconIdxDropdown.removeEventListener('change', iconIdxDropdown.changeEventListener);
-    typeDropdown.removeEventListener('change', typeDropdown.changeEventListener);
+    // Check if the edit menu is correctly identified
+    if (!edit_menu) {
+        console.error('Edit menu not found for setupDropdownListeners');
+        return;
+    }
 
-    // Create and assign new event listeners
-    iconIdxDropdown.changeEventListener = () => changeMediaPlayerIconIdx(object, undo_redo_manager);
-    typeDropdown.changeEventListener = () => changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager);
+    // Define a delegated event handler
+    const handleDropdownChange = function(event) {
+        const targetId = event.target.id;
+        
+        // Determine action based on the target dropdown's ID
+        switch(targetId) {
+            case 'edit_menu_MediaPlayer_iconIdx_input':
+                changeMediaPlayerIconIdx(object, undo_redo_manager);
+                break;
+            case 'edit_menu_MediaPlayer_type_input':
+                changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager);
+                break;
+            // Include other cases if there are more dropdowns
+        }
+    };
 
-    // Add the new event listeners
-    iconIdxDropdown.addEventListener('change', iconIdxDropdown.changeEventListener);
-    typeDropdown.addEventListener('change', typeDropdown.changeEventListener);
+    // Attach the event listener for change events on the edit menu
+    // Remove any existing change event listener to prevent duplicates
+    if (edit_menu.dropdownChangeListener) {
+        edit_menu.removeEventListener('change', edit_menu.dropdownChangeListener);
+    }
+    edit_menu.dropdownChangeListener = handleDropdownChange;
+    edit_menu.addEventListener('change', handleDropdownChange);
 }
 
+
+function removeDropdownListeners(menu_id) {
+    const edit_menu = document.getElementById(menu_id);
+    
+    if (edit_menu && edit_menu.dropdownChangeListener) {
+        edit_menu.removeEventListener('change', edit_menu.dropdownChangeListener);
+        edit_menu.dropdownChangeListener = null; // Clear the reference
+    }
+}
 
 
 // Function to remove the event listener
