@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // For moving objects
     let isDragging = false;
     let startPosition = { x: 0, y: 0, z:0};
+    let startDirection = null;
     let validObjectClasses = ['TransitionNode', 'MediaPlayer'];
     let objectMoved = false;
 
@@ -240,6 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         startPosition.x = event.detail.intersection_pt.x;
         startPosition.y = event.detail.intersection_pt.y;
         startPosition.z = event.detail.intersection_pt.z;
+        startDirection = event.detail.direction;
 
         // transition_node.moveTo(startPosition); // for smooth transitioning
         event.preventDefault();
@@ -252,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.button === 0) { // Left mouse button
             if (isDragging) {
                 // Record the move action only once upon the correct conditions
-                const createAction = object.getAction('moveTo', startPosition);
+                const createAction = object.getAction('moveTo', startPosition, startDirection);
                 undo_redo_manager.doAction(createAction);
                 objectMoved = true;
             }

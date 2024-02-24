@@ -204,7 +204,7 @@ class MediaPlayer {
     }
 
 
-    getRotationFromDirection() {
+    getRotationFromDirection(negative) {
 
         // Get the right angle to rotate the object, which is relative to the camera position
         let originalDirection = new THREE.Vector3(0, 0, 1);
@@ -218,7 +218,14 @@ class MediaPlayer {
          // Convert radians to degrees and adjust for A-Frame's rotation system
         var angleDegrees = angleRadians * (180 / Math.PI); // +90 to align with A-Frame's coordinate system
 
-        return {x: 0, y: angleDegrees, z: 0}
+        if (negative)
+        {
+            return {x: 0, y: -angleDegrees, z: 0}
+        }
+        else
+        {
+            return {x: 0, y: angleDegrees, z: 0}
+        }
 
     }
 
@@ -275,12 +282,16 @@ class MediaPlayer {
         const entity = document.getElementById(this.id);
         if (entity) {
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+            entity.setAttribute('rotation', this.rotation); // should be dynamic instead?
         }
     }
 
     // METHOD TO MOVE THE OBJECT
-    moveTo(newPosition) {
+    moveTo(newPosition, newDirection) {
         this.position = newPosition;
+        this.direction = newDirection;
+        this.rotation = this.getRotationFromDirection();
+
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
