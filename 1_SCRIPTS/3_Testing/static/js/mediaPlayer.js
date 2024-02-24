@@ -299,6 +299,7 @@ class MediaPlayer {
             action.initialState = this.captureState();
         }
 
+
         action.do = () => {
             // Exclude 'create' from initial state capture since it doesn't exist yet
             if (method !== 'create') {
@@ -375,35 +376,75 @@ class MediaPlayer {
 
 
     // IMPLEMENTATION TO UPDATE THE SCENE
-    updateScene() {
+    updateScene(updates) {
         
         // Find the corresponding entity in the A-Frame scene
         const entity = document.getElementById(this.id);
-        console.log('mediaplayer_type', this.mediaplayer_type_string);
-        if (entity) {
-            // Update the entity's position and rotation
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
-            entity.setAttribute('rotation', `${this.rotation.x} ${this.rotation.y} ${this.rotation.z}`);
-            // Update data attributes related to background images
-            entity.setAttribute('background_img_id', this.backgroundImgId);
-            // Update attributes
-            entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
-            entity.setAttribute('icon_index', this.icon_index);
-            entity.setAttribute('title', this.title);
-            // Get the icon and border entities inside the media player entity and update their attributes
-            const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
-            iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
-            const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
-            borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));            
-            entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
-            // // Update id in case we update the new_background_img_id attribute
-            // entity.setAttribute('title', this.id);         
-
-            // Update visibility
-            entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
-
-            //
+        if (!entity) {
+            console.error('Entity not found');
+            return;
         }
+
+
+        // Update the entity's position and rotation
+        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+        entity.setAttribute('rotation', `${this.rotation.x} ${this.rotation.y} ${this.rotation.z}`);
+        // Update data attributes related to background images
+        entity.setAttribute('background_img_id', this.backgroundImgId);
+        // Update attributes
+        entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
+        entity.setAttribute('icon_index', this.icon_index);
+        entity.setAttribute('title', this.title);
+
+        // Loop through the updates object to apply updates
+        if (updates) {
+            for (const [key, value] of Object.entries(updates)) {
+                // Update the object's properties
+
+                if (this.hasOwnProperty(key)) {
+                    console.log("key: ", key, "value: ", value);
+                    this[key] = value;
+                }
+                // Special handling for certain keys or direct update for the entity's attributes
+                switch (key) {
+                    case 'position':
+                    case 'rotation':
+                        // Assuming position and rotation are objects with x, y, z
+                        entity.setAttribute(key, `${value.x} ${value.y} ${value.z}`);
+                        break;
+                    case 'backgroundImgId':
+                        entity.setAttribute('background_img_id', value);
+                        break;
+                    case 'mediaplayer_type_string':
+                        console.log(key, value);
+                        entity.setAttribute('mediaplayer_type', value);
+                        break;
+                    case 'icon_index':
+                        entity.setAttribute('icon_index', value);
+                        break;
+                    case 'title':
+                        entity.setAttribute('title', value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+                    
+
+        // Get the icon and border entities inside the media player entity and update their attributes
+        const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+        iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
+        const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
+        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));            
+        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
+        // // Update id in case we update the new_background_img_id attribute
+        // entity.setAttribute('title', this.id);         
+
+        // Update visibility
+        entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+
+
     }
 }
 

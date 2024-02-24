@@ -692,7 +692,7 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
     // Get the creation menu element specific to the selected object class.
     const menu_id = edit_menu_manager.currentVisibleMenu;        
     const edit_menu = document.getElementById(menu_id);
-
+    console.log(object);
     if (!edit_menu) {
         console.error('Edit menu not found');
         return;
@@ -786,17 +786,12 @@ function changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager, dro
     // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
             // let title = document.getElementById('edit_menu_MediaPlayer_title_input').value.replace(/ /g, "_");
             // let uniqueId = `mp_${backgroundImgId}_${title}`;
-            let mediaplayer_type = document.getElementById('edit_menu_MediaPlayer_type_input').value;
+            let mediaplayer_type_string = document.getElementById('edit_menu_MediaPlayer_type_input').value;
             let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
-
-            // change mediaplayer_type
-            object.mediaplayer_type_string = mediaplayer_type;
-            // if we change mediaplayer_type, we have to also change mediaplayer icon index
-            object.mediaplayer_type = mediaplayer_types[mediaplayer_type];
-            object.icon_index = icon_index;
+            let mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
             console.log('didAction');
             // update the object
-            const updateAction = object.getAction('updateScene');
+            const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index});
             undo_redo_manager.doAction(updateAction);
 
 }
