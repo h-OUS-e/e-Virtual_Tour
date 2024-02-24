@@ -59,9 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         onDropdownMenuSelection(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
     );
 
-
-
-
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
         isEditMode = !isEditMode; // Toggle edit mode
@@ -70,7 +67,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         gridCylinder.setAttribute('material', 'visible', isEditMode);
         gridPlane.setAttribute('edit_mode', isEditMode);
         gridCylinder.setAttribute('edit_mode', isEditMode);
-
 
         // Hiding/showing selection bar if edit mode is off/on
         let selection_bar = document.getElementById('object_class_selection_bar');
@@ -82,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-   
+    
     // Activate the class object you want to add in edit mode
     document.querySelectorAll('.objectClassBtn').forEach(button => {
         button.addEventListener('click', function() {
@@ -106,7 +102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (currentEditMenuId != event.detail.id) editMenuOn = true;
         
         // transition node menu
-
         const objectClass = event.detail.class;
         const id = event.detail.id;
         currentEditMenuId = event.detail.id;  
@@ -120,6 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (objectClass == 'TransitionNode'){
             object = new TransitionNode(id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
         } 
+
         else if (objectClass == 'MediaPlayer'){
             // Retrieve values for MediaPlayer object and create variables for creating mediaplayer object
             let object_instance = document.getElementById(event.detail.id);
@@ -129,13 +125,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             let rotation = object_instance.getAttribute('rotation');
             object = new MediaPlayer(event.detail.id, event.detail.position, event.detail.backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, null, rotation);
         }
+
         else { 
             console.log("The object you selected does not have any edit menu :( !!!"); 
             transition_node = null;
-        } 
-        console.log(edit_menu_manager.currentVisibleMenu);
-        handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager);    
+        }
 
+        handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager);    
     });
 
 
@@ -693,20 +689,23 @@ function processCreationMenuSubmit(event, point, direction, backgroundImgId, sel
 
 // Function to handle the logic for object creation based on the selected object class.
 function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager) {
-    const menu_id = edit_menu_manager.currentVisibleMenu;
-    
     // Get the creation menu element specific to the selected object class.
+    const menu_id = edit_menu_manager.currentVisibleMenu;        
     const edit_menu = document.getElementById(menu_id);
-    console.log("edit mnenu", edit_menu);
+
+    if (!edit_menu) {
+        console.error('Edit menu not found');
+        return;
+    }
 
     // Define a function to handle submission from the edit menu.
-    const handleMenuSubmit = function(event) {
+    const handleMenuEvent = function(event) {
         // Check if the submit option was clicked.
         if (event.target.classList.contains('submitOption')) {
             event.stopPropagation(); // Stop the event from bubbling to prevent triggering parent event handlers.
             edit_menu_manager.hideEditMenu(); 
             // Process the creation menu submission for creating the new object.
-            processEditMenuSubmit(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager);
+            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager);
             // Remove the event listener to prevent memory leaks and ensure clean-up.
             removeEditHandling(menu_id)
         }
@@ -721,46 +720,44 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
 
         else {
             // Process the creation menu submission for creating the new object.
-            processEditMenuSubmit(event, object, mediaplayer_types, undo_redo_manager);
+            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager);
         }
     };
 
     // Attach the submission handler to the creation menu. 
-    edit_menu.addEventListener('click', handleMenuSubmit);
+    edit_menu.addEventListener('click', handleMenuEvent);
     // Store a reference to the listener function in the edit menu object for later access
-    edit_menu.listenerReference = handleMenuSubmit;
+    edit_menu.listenerReference = handleMenuEvent;
 }
 
+
 // Function to process the form submission for creating new objects in the scene.
-function processEditMenuSubmit(event, object, mediaplayer_types, undo_redo_manager) {
+function processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager) {
     // Fetch the current background image ID from the scene's sky element.
     const sky = document.querySelector('#sky');
-    const backgroundImgId = sky.getAttribute('background_img_id');
-    
-    if (event.target.classList.contains('changeMediaPlayerIconIdx')) {
-        let dropdown_menu = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
-        const handleDropdownMenuSelection = function(event) {
-            // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
-            let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
-            object.icon_index = icon_index;
-            const updateAction = object.getAction('updateScene');
-            undo_redo_manager.doAction(updateAction);
-            dropdown_menu.removeEventListener('change', handleDropdownMenuSelection);
+    const backgroundImgId = sky.getAttribute('background_img_id');    
+    setupDropdownListeners(object, mediaplayer_types, undo_redo_manager);
 
-        };
-        dropdown_menu.addEventListener('change', handleDropdownMenuSelection);
-    }
+}
 
-    else if (event.target.classList.contains('changeMediaPlayerType')) {
 
-        let dropdown_menu = document.getElementById('edit_menu_MediaPlayer_type_input');
-        const handleDropdownMenuSelection = function(event) {
-            changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager)
-            dropdown_menu.removeEventListener('change', handleDropdownMenuSelection);
-        };
-        dropdown_menu.addEventListener('change', handleDropdownMenuSelection);
-    }
 
+// Function to add or re-add event listeners to dropdown menus
+function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager) {
+    const iconIdxDropdown = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
+    const typeDropdown = document.getElementById('edit_menu_MediaPlayer_type_input');
+
+    // Remove existing event listeners to avoid duplicates
+    iconIdxDropdown.removeEventListener('change', iconIdxDropdown.changeEventListener);
+    typeDropdown.removeEventListener('change', typeDropdown.changeEventListener);
+
+    // Create and assign new event listeners
+    iconIdxDropdown.changeEventListener = () => changeMediaPlayerIconIdx(object, undo_redo_manager);
+    typeDropdown.changeEventListener = () => changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager);
+
+    // Add the new event listeners
+    iconIdxDropdown.addEventListener('change', iconIdxDropdown.changeEventListener);
+    typeDropdown.addEventListener('change', typeDropdown.changeEventListener);
 }
 
 
@@ -776,6 +773,15 @@ function removeEditHandling(menu_id) {
     }
 }
 
+
+function changeMediaPlayerIconIdx(object, undo_redo_manager) {
+    let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
+    object.icon_index = icon_index;
+    const updateAction = object.getAction('updateScene');
+    undo_redo_manager.doAction(updateAction);
+}
+
+
 function changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager, dropdown_menu) {
     // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
             // let title = document.getElementById('edit_menu_MediaPlayer_title_input').value.replace(/ /g, "_");
@@ -783,17 +789,14 @@ function changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager, dro
             let mediaplayer_type = document.getElementById('edit_menu_MediaPlayer_type_input').value;
             let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
 
-            console.log("NOT CHANGED", object.id, object.mediaplayer_type);
             // change mediaplayer_type
             object.mediaplayer_type_string = mediaplayer_type;
             // if we change mediaplayer_type, we have to also change mediaplayer icon index
             object.mediaplayer_type = mediaplayer_types[mediaplayer_type];
             object.icon_index = icon_index;
+            console.log('didAction');
             // update the object
             const updateAction = object.getAction('updateScene');
             undo_redo_manager.doAction(updateAction);
-            console.log("CHANGED", object.id, object.mediaplayer_type);
-            const a = document.getElementById(object.id);
-            console.log("updated", a);
 
 }

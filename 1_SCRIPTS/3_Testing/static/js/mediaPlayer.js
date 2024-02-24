@@ -363,6 +363,7 @@ class MediaPlayer {
         this.id = state.id;
         this.position = state.position;
         this.backgroundImgId = state.backgroundImgId;
+        this.mediaplayer_type_string = state.mediaplayer_type_string;
         this.mediaplayer_type = state.mediaplayer_type;
         this.icon_index = state.icon_index;
         this.title = state.title;
@@ -378,6 +379,7 @@ class MediaPlayer {
         
         // Find the corresponding entity in the A-Frame scene
         const entity = document.getElementById(this.id);
+        console.log('mediaplayer_type', this.mediaplayer_type_string);
         if (entity) {
             // Update the entity's position and rotation
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
