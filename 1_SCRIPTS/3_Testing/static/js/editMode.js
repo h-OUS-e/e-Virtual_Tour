@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
         isEditMode = !isEditMode; // Toggle edit mode
-        this.textContent = isEditMode ? 'Exit Edit Mode' : 'Enter Edit Mode';
+        this.textContent = isEditMode ? 'Exit & Save' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
         gridPlane.setAttribute('edit_mode', isEditMode);
