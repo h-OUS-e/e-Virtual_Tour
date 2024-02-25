@@ -49,6 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const edit_menu_MediaPlayer_type_Id = document.getElementById('edit_menu_MediaPlayer_type_input');
     const edit_menu_MediaPlayer_iconIdx_Id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
     const edit_menu_MediaPlayer_scene_Id = document.getElementById('edit_menu_MediaPlayer_scene_id_input');
+    const edit_menu_TransitionNode_scene_Id = document.getElementById('creation_menu_TransitionNode_scene_id_input');
+    
 
 
 
@@ -58,6 +60,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
     onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
     populateJSONDropdown(edit_menu_MediaPlayer_scene_Id, scenes_JSON, "id");
+    populateJSONDropdown(edit_menu_TransitionNode_scene_Id, scenes_JSON, "id");
+
 
     // Set up an event listener to update the Icon Index dropdown whenever a new mediaplayer type is selected
     creation_menu_MediaPlayer_type_Id.addEventListener('change', () => 
@@ -580,7 +584,24 @@ class CreationFormManager  {
 
             // Track the currently visible menu
             this.currentVisibleMenu = menuId;
+
+            // keep creation menu in visible window bounds
+            this.adjustMenuPosition(menu);
             }
+    }
+
+    adjustMenuPosition(menu) {    
+        // Get the menu's dimensions and position
+        const menuRect = menu.getBoundingClientRect();
+    
+        // Calculate the distance from the bottom of the menu to the bottom of the viewport
+        const bottomSpace = window.innerHeight - menuRect.bottom;
+    
+        // If the menu is cut off from the bottom, move it up
+        if (bottomSpace < 0) {
+            // Set the top position to move the menu up by the amount it's cut off, plus a little extra space (5px)
+            menu.style.top = (menu.offsetTop + bottomSpace - 5) + 'px';
+        }
     }
 }
 
@@ -646,7 +667,38 @@ function populateJSONDropdown(dropdown, jsonData, attribute) {
         let option = new Option(item[attribute], item[attribute]); // new Option(text, value)
         dropdown.add(option);
     });
+
+    // Add a custom option for adding a new scene
+    const customOption = new Option("Add New Option", "add_new");
+    dropdown.add(customOption);
 }
+
+
+function showCustomInputBox(dropdown) {
+    // Check if input box already exists
+    let existingInput = document.getElementById('custom_scene_id_input');
+    if (!existingInput) {
+        // Create a new input element
+        let inputBox = document.createElement('input');
+        inputBox.type = 'text';
+        inputBox.id = 'custom_scene_id_input';
+        inputBox.placeholder = 'Enter new scene ID (##.#)';
+        inputBox.pattern = '\\d{2}\\.\\d{1}'; // Regex for ##.#
+
+        // Insert the input box after the dropdown
+        dropdown.parentNode.insertBefore(inputBox, dropdown.nextSibling);
+    }
+}
+
+
+function hideCustomInputBox() {
+    let existingInput = document.getElementById('custom_scene_id_input');
+    if (existingInput) {
+        existingInput.remove(); // Remove the input box if it exists
+    }
+}
+
+
 // Function to populate the Color Class dropdown based on the keys from the JSON
 function populateOptionsDropdown(options_JSON, dropdown_input_id) {
     // Transform the keys of options into a more user-friendly format
@@ -686,6 +738,10 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
     // Get the creation menu element specific to the selected object class.
     const creation_menu = document.getElementById(`creation_menu_${selectedObjectClass}`);
 
+    if (selectedObjectClass === 'TransitionNode') {
+        setupCustomSceneIdInput();
+    }
+
     // Define a function to handle submission from the creation menu.
     const handleMenuSubmit = function(event) {
         // Check if the submit option was clicked.
@@ -706,6 +762,7 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
     creation_menu.addEventListener('click', handleMenuSubmit);
 }
 
+
 // Function to process the form submission for creating new objects in the scene.
 function processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, undo_redo_manager) {
     // Example logic for creating a MediaPlayer object.
@@ -724,13 +781,16 @@ function processCreationMenuSubmit(event, point, direction, backgroundImgId, sel
         undo_redo_manager.doAction(createAction);
         console.log("placing MediaPlayer object");
     }
-    
-    
+        
     // Logic for creating a TransitionNode
     else if (selectedObjectClass === 'TransitionNode') {                
         
         // Retrieve values from creation form and create variables for creating transition node
-        let newBackgroundImgId = document.getElementById('creation_menu_TransitionNode_newBackgroundImgId_input').value;
+        let newBackgroundImgId = document.getElementById('custom_scene_id_input') ? 
+                             document.getElementById('custom_scene_id_input').value : 
+                             document.getElementById('creation_menu_TransitionNode_scene_id_input').value;
+        newBackgroundImgId = formatSceneId(newBackgroundImgId)
+        console.log("TRANSITION: ", newBackgroundImgId);
         const uniqueId = `move_${backgroundImgId}_${newBackgroundImgId}`;
 
         // Creating a new transition node instance
@@ -742,8 +802,43 @@ function processCreationMenuSubmit(event, point, direction, backgroundImgId, sel
     }
 }
 
+function formatSceneId(sceneId) {
+    let parts = sceneId.split('.');
+
+    // Basic validation to ensure parts are numeric and within expected range
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && parts[1].length <= 1) {
+        // Pad the first part with 0 if it's only one digit
+        parts[0] = parts[0].length === 1 ? '0' + parts[0] : parts[0];
+        return parts.join('.');
+    } else {
+        console.error("Invalid scene ID format.");
+        return null; // or handle the error as appropriate
+    }
+}
+
+function setupCustomSceneIdInput() {
+    const dropdown = document.getElementById('creation_menu_TransitionNode_scene_id_input');
+    if (!dropdown) return; // Exit if dropdown is not found
+
+    // Ensure the event listener is only attached once
+    dropdown.removeEventListener('change', handleCustomSceneOptionSelect);
+    dropdown.addEventListener('change', handleCustomSceneOptionSelect);
+}
+
+function handleCustomSceneOptionSelect() {
+    const dropdown = document.getElementById('creation_menu_TransitionNode_scene_id_input');
+    const selectedValue = dropdown.value;
+    if (selectedValue === 'add_new') {
+        // Show input box for custom scene ID
+        showCustomInputBox(dropdown);
+    } else {
+        // Hide custom input box if it exists and is not relevant
+        hideCustomInputBox();
+    }
+}
 
 
+//  EDIT MENU FUNCTIONS
 
 // Function to handle the logic for object creation based on the selected object class.
 function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, edit_menu_manager) {
