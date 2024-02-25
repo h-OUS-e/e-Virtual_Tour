@@ -726,7 +726,6 @@ function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdow
 
 
 
-
 // CREATION MENU FUNCTIONS
 
 // Function to handle the logic for object creation based on the selected object class.
@@ -957,13 +956,13 @@ function changeMediaPlayerTitle(object, undo_redo_manager) {
 
 
 function changeSceneId(object, undo_redo_manager) {
-    let backgroundImgId = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
+    let background_img_id = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
     // update scene id of object
-    const updateAction = object.getAction('updateScene', {backgroundImgId});
+    const updateAction = object.getAction('updateScene', {background_img_id});
    
     undo_redo_manager.doAction(updateAction);
     // 'WARNING BUGGY WHEN TRANSITIONING change scene to show object in this new scene 
-    emitTransitioning(backgroundImgId);
+    emitTransitioning(background_img_id);
 }
 
 
