@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mediaplayer_types = await loadMediaPlayerTypes();
     // loading MediaPlayers to scene from JSON file
     await loadMediaPlayersFromJSON(mediaplayer_types);
+    
        
     // Definitions   
     const scene = document.querySelector('a-scene');
@@ -86,7 +87,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Create an event that sends media id when double clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
             {
-                detail: {id: event.target.id}
+                detail: {
+                    id: event.target.id,
+                    mediaplayer_type: event.target.getAttribute('mediaplayer_type')}
             });
             // Dispatch event
             scene.dispatchEvent(new_event);
@@ -133,12 +136,13 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
             const rotation = mediaPlayer_item.rotation;
             const mediaplayer_type = mediaPlayer_item.mediaplayer_type;
             const icon_index = mediaPlayer_item.icon_index;
-            const backgroundImgId = mediaPlayer_item.backgroundImgId;
+            const background_img_id = mediaPlayer_item.background_img_id;
             // Create mediaplayer and add to scene
-            const media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_types, mediaplayer_type, icon_index, title, null, rotation);
+            const media_player = new MediaPlayer(uniqueId, point, background_img_id, mediaplayer_types, mediaplayer_type, icon_index, title, null, rotation);
             media_player.addToScene();
-
+            
         });
+        document.dispatchEvent(new CustomEvent('mediaPlayersLoaded'));
     } catch (error) {
         console.error('Could not fetch transitions:', error);
     }
@@ -149,11 +153,11 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
 
 
 class MediaPlayer {    
-    constructor(id, position, backgroundImgId, mediaplayer_types, mediaplayer_type_string, icon_index, title, direction, rotation) {
+    constructor(id, position, background_img_id, mediaplayer_types, mediaplayer_type_string, icon_index, title, direction, rotation) {
         this.id = id;
         this.final_id = id; // for updating id when undoing
         this.position = position;
-        this.backgroundImgId = backgroundImgId;
+        this.background_img_id = background_img_id;
         this.name = this.constructor.name;
         this.mediaplayer_type_string = mediaplayer_type_string;
         const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
@@ -177,15 +181,15 @@ class MediaPlayer {
         }
 
         const entity = document.createElement('a-entity');
-        this.id = `mp_${this.backgroundImgId}_${this.title}`;
+        this.id = `mp_${this.background_img_id}_${this.title}`;
         entity.setAttribute('id', this.id);
         entity.setAttribute('title', this.title);
 
         entity.setAttribute('class', 'MediaPlayer');
         entity.setAttribute('clickable', 'true');
-        entity.setAttribute('visible', this.backgroundImgId === '01.1');
+        entity.setAttribute('visible', this.background_img_id === '01.1');
         entity.setAttribute('toggle_visibility', true);
-        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('background_img_id', this.background_img_id);
         entity.setAttribute('mixin', 'mediaplayer_frame');
 
         entity.setAttribute('position', this.position);
@@ -251,7 +255,7 @@ class MediaPlayer {
         entity.appendChild(borderEntity);
         
         entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
-        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('background_img_id', this.background_img_id);
     }
 
 
@@ -262,7 +266,7 @@ class MediaPlayer {
     create() {
         this.addToScene();
         console.log("Adding mediaplayer to the scene.");
-        // TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        // TransitionNode.addToSheet(this.id, this.position, this.background_img_id, this.background_img_id);
     }
 
 
@@ -373,7 +377,7 @@ class MediaPlayer {
             id: this.id,
             final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
-            backgroundImgId: this.backgroundImgId,
+            background_img_id: this.background_img_id,
             mediaplayer_type: this.mediaplayer_type,
             mediaplayer_type_string: this.mediaplayer_type_string,
             icon_index: this.icon_index,
@@ -409,13 +413,13 @@ class MediaPlayer {
         entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         entity.setAttribute('rotation', `${this.rotation.x} ${this.rotation.y} ${this.rotation.z}`);
         // Update data attributes related to background images
-        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('background_img_id', this.background_img_id);
         // Update attributes
         entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('title', this.title);
 
-        // this.id = `mp_${this.backgroundImgId}_${this.title}`;
+        // this.id = `mp_${this.background_img_id}_${this.title}`;
         entity.setAttribute('id', this.id);
 
 
@@ -430,8 +434,8 @@ class MediaPlayer {
                     this[key] = value;
 
                     //  Updating entity id if background or title has changed
-                    if (key === 'backgroundImgId' || key === 'title') {
-                        let id = `mp_${this.backgroundImgId}_${this.title}`;
+                    if (key === 'background_img_id' || key === 'title') {
+                        let id = `mp_${this.background_img_id}_${this.title}`;
                         // Checking if object with same id already exists
                         const existingEntity = document.getElementById(id);
                         if (existingEntity ) {
@@ -451,7 +455,7 @@ class MediaPlayer {
                         // Assuming position and rotation are objects with x, y, z
                         entity.setAttribute(key, `${value.x} ${value.y} ${value.z}`);
                         break;
-                    case 'backgroundImgId':
+                    case 'background_img_id':
                         entity.setAttribute('background_img_id', value);                        
                         break;
                     case 'mediaplayer_type_string':
@@ -481,7 +485,7 @@ class MediaPlayer {
         // entity.setAttribute('title', this.id);         
 
         // Update visibility
-        entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+        entity.setAttribute('visible', this.background_img_id === '01.1'); // Example condition
 
 
     }

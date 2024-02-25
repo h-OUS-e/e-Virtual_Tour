@@ -416,10 +416,7 @@ class TransitionNode {
         // // Update id in case we update the new_background_img_id attribute
         entity.setAttribute('id', this.id);
 
-            
-
     }
-
 }
 
 

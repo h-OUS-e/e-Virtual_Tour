@@ -2,15 +2,14 @@
 A script to control what shows on the scroll bar based on popup contents.
 */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('mediaPlayersLoaded', async () => {
     
-
     // Getting mediabar elements
     const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
-        console.log(item.title)
+        let entity = document.getElementById(item.media_id);
         
         const media_element_title = document.createElement('div');              
          // Create the title element and edit color of title based on popup color
@@ -33,15 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Change sky image when mouse is clicked and show popup
         media_element.addEventListener('click', function(event) {
+
             var transitioning = new CustomEvent('mediabarItemClicked', {
-                detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
+                detail: {new_background_img_id: entity.getAttribute('background_img_id'), 
+                    id: item.media_id},       
             });
             scene.dispatchEvent(transitioning)
         });
 
         media_element.addEventListener('dblclick', function(event) {
             var transitioning = new CustomEvent('mediabarItemDoubleClicked', {
-                detail: {new_background_img_id: item.background_img_id, id: item.media_id},       
+                detail: {
+                    new_background_img_id: entity.getAttribute('background_img_id'), 
+                    id: item.media_id,  
+                    mediaplayer_type: entity.getAttribute('mediaplayer_type') }
             });
             scene.dispatchEvent(transitioning)
         });

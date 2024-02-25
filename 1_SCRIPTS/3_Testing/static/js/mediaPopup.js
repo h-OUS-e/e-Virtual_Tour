@@ -5,7 +5,7 @@ import { loadMediaPlayerTypes } from './JSONSetup.js';
 const colors = getComputedStyle(document.documentElement);  
 
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('mediaPlayersLoaded', async () => {
     // Getting media player types from the JSON file
     const media_player_types = await loadMediaPlayerTypes();
     //definitions
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelector('#popup_image').src = content.imageUrl;
         document.querySelector('#popup_video').src = content.videoUrl;
         document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
-        console.log("TEST", media_player_types[mediaplayer_type]);
         const light_color = media_player_types[mediaplayer_type]['light']
         const dark_color = media_player_types[mediaplayer_type]['dark']
         
@@ -87,9 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Changing colors of popup window based on mediaPlayer class
     function handleMediaClick(event) {
         // Extract the id of the clicked media
-        
         const mediaId = event.detail.id;
         const mediaplayer_type = event.detail.mediaplayer_type;
+        console.log(mediaId, mediaplayer_type);
         // Find the media in the database with the same matching id
         const content = popupContent.find(item => item.media_id === mediaId);
         // Update popup content
