@@ -1,0 +1,34 @@
+[
+    {
+        "id": "move_01.2_02.1",
+        "position": "-6.5 -2.5 6.5",
+        "background_img_id": "01.2",
+        "new_background_img_id": "02.1"
+    }, 
+    {
+        "id": "move_01.1_03.1",
+        "position": "-9 -2.5 2.2",
+        "background_img_id": "01.1",
+        "new_background_img_id": "03.1"
+    }, 
+    {
+        "id": "move_01.1_01.2",
+        "position": "-9.1 -2.5 -3",
+        "background_img_id": "01.1",
+        "new_background_img_id": "01.2"
+    }, 
+    {
+        "id": "move_01.2_01.1",
+        "position": "-1.0682452242730494 -1.9000000000000026 -6.8224148721058935",
+        "background_img_id": "01.2",
+        "new_background_img_id": "01.1"
+    }, 
+    {
+        "id": "move_03.1_01.2",
+        "position": "1.42823171432526 -3.2000000000000024 -3.3633829836267104",
+        "background_img_id": "03.1",
+        "new_background_img_id": "01.2"
+    }
+
+]
+
