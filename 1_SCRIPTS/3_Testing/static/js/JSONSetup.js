@@ -30,7 +30,7 @@ async function loadJSON(filename) {
     }
 }
 
-async async function prepareEntitiesDataForSaving() {
+async function prepareEntitiesDataForSaving() {
     const media_players_data = [];
     const transion_nodes_data = [];
 

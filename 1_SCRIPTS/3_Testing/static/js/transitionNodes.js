@@ -13,10 +13,10 @@ const scene = document.querySelector('a-scene');
 
     // let deletionHistory = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
     // Read transition nodes and load them to scene
-    loadTransitionNodesFromSheet();    
+    await loadTransitionNodesFromJSON();    
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
@@ -113,23 +113,49 @@ function emitTransitioning(new_background_img_id){
 
 
 
-// A function to load all geometies in the scene
-function loadTransitionNodesFromSheet() {
-    const objectType = "TransitionNode";
-    fetch(`/get_geometries?objectType=${objectType}`)
-    .then(response => response.json())
-    .then(data => {
-        // Assuming data is an array of geometry parameters
-        data.forEach(geometry => {
-            const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
+// // A function to load all geometies in the scene
+// function loadTransitionNodesFromSheet() {
+//     const objectType = "TransitionNode";
+//     fetch(`/get_geometries?objectType=${objectType}`)
+//     .then(response => response.json())
+//     .then(data => {
+//         // Assuming data is an array of geometry parameters
+//         data.forEach(geometry => {
+//             const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
+//             transition_node.addToScene();
+//         });
+//     }).catch(error => console.error(`Failed to load ${objectType}:`, error));
+//     // to use .then() for handling asynchronous completion, the function must return a Promise
+//     return Promise.resolve();
+// }
+
+async function loadTransitionNodesFromJSON() {
+    try {
+        const response = await fetch('../static/1_data/TransitionNodes.json'); // Adjust the path as necessary
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const transitionNode_JSON = await response.json();
+
+        // Process each object in the JSON array
+        transitionNode_JSON.forEach(transitionNode_item => {
+            // Get attributes
+            const id = transitionNode_item.id;
+            const point = transitionNode_item.position;
+            const background_img_id = transitionNode_item.background_img_id;
+            const new_background_img_id = transitionNode_item.new_background_img_id;
+
+            // Create mediaplayer and add to scene
+            const transition_node = new TransitionNode(id, point, background_img_id, new_background_img_id)
             transition_node.addToScene();
+
         });
-    }).catch(error => console.error(`Failed to load ${objectType}:`, error));
-    // to use .then() for handling asynchronous completion, the function must return a Promise
-    return Promise.resolve();
+    } catch (error) {
+        console.error('Could not fetch transitions:', error);
+    }
+    // // to use .then() for handling asynchronous completion, the function must return a Promise
+    // return Promise.resolve();
 }
-
-
 
 
 class TransitionNode {    
