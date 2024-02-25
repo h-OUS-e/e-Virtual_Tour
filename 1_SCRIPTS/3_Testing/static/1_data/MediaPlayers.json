@@ -1,0 +1,62 @@
+[
+    {
+        "id": "mp_01.1_Advanced_Patient_Diagnostics",
+        "title": "Advanced_Patient_Diagnostics",
+        "position": "45 2 10",
+        "rotation": "0 90 0",
+        "mediaplayer_type": "pink",
+        "icon_index": "patient",
+        "background_img_id" : "01.1"
+    }, 
+
+    {
+        "id": "mp_01.1_Integrated_Artificial_Intelligence",
+        "title": "Integrated_Artificial_Intelligence",
+        "position": "7 2 -40",
+        "rotation": "0 150 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "whitening",
+        "background_img_id" : "01.1"
+    }, 
+
+    {
+        "id": "mp_01.2_Superior_Revenue_Cycle_Management",
+        "title": "Superior_Revenue_Cycle_Management",
+        "position": "-50 2 20",
+        "rotation": "0 -40 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "emergency",
+        "background_img_id" : "01.2"
+    }, 
+
+    {
+        "id": "mp_02.1_SageNet_Automated_Purchasing_System",
+        "title": "SageNet_Automated_Purchasing_System",
+        "position": "7 2 -40",
+        "rotation": "0 180 0",
+        "mediaplayer_type": "green",
+        "icon_index": "diagnostic",
+        "background_img_id" : "02.1"
+    }, 
+
+    {
+        "id": "mp_03.1_Actionable_Business_Intelligence",
+        "title": "Actionable_Business_Intelligence",
+        "position": "-12 -20 -40",
+        "rotation": "0 210 0",
+        "mediaplayer_type": "blue",
+        "icon_index": "emergency",
+        "background_img_id" : "03.1"
+    }, 
+
+    {
+        "id": "mp_03.1_Interactive_Patient_Management",
+        "title": "Interactive_Patient_Management",
+        "position": "-50 2 20",
+        "rotation": "0 -30 0",
+        "mediaplayer_type": "pink",
+        "icon_index": "patient",
+        "background_img_id" : "03.1"
+    }
+
+]

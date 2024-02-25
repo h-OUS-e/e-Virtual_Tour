@@ -7,22 +7,45 @@ app = Flask(__name__)
 
 # Define the directory and file for storing geometry parameters
 CSV_DIRECTORY = os.path.join(app.root_path, 'static', '1_data')
-CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, "transition_nodes.csv")
+object_attribute_mapping = {
+    'TransitionNode': ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId'],
+    'MediaPlayer': ['Id', 'url', 'volume', 'looping']
+}
+# CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, "transition_nodes.csv")
 # Ensure the directory exists
 os.makedirs(CSV_DIRECTORY, exist_ok=True)
+
+
+
+@app.route('/static/js/<path:filename>')
+def custom_static_js(filename):
+    """
+    Serve JavaScript files with the correct MIME type.
+    """
+    return send_from_directory(os.path.join(app.root_path, 'static', 'js'), filename, mimetype='text/javascript')
+
 
 @app.route('/')
 def home():
     return render_template('index.html') # this should be the landing page eventually
+
 
 # Endpoint to add geometry parameters to CSV
 @app.route('/add_geometry', methods=['POST'])
 def add_geometry():
     data = request.json
     geometries = []
-    # Check if the CSV file exists and if not, write the header
-    file_exists = os.path.isfile(CSV_FILE_PATH)
+    print(data)
 
+    # Getting requested object type to add
+    fieldnames = object_attribute_mapping[data['objectType']]
+    if not fieldnames:
+        # If objectType is not recognized or fieldnames are not defined
+        return jsonify({"success": False, "message": "Invalid or missing objectType"}), 400
+    
+    # Check if the CSV file exists and if not, write the header
+    CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, f"{data['objectType']}.csv")
+    file_exists = os.path.isfile(CSV_FILE_PATH)
     if (file_exists):
         with open(CSV_FILE_PATH, 'r', newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -35,34 +58,36 @@ def add_geometry():
             # Handle the duplicate ID (skip, update, or return an error)
             return jsonify({"success": False, "message": "Geometry with this ID already exists"})
 
-    
+    # Write object into the CSV file
     with open(CSV_FILE_PATH, 'a', newline='', encoding='utf-8-sig') as csvfile:
-        fieldnames = ['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()  # Write header only once
-        # No need to manually add a new line; DictWriter takes care of it
-        writer.writerow({
-            'Id': data['Id'],
-            'point': data['point'],  # This should be the space-separated string
-            'backgroundImgId': data['backgroundImgId'],
-            'newBackgroundImgId': data['newBackgroundImgId']
-        })
+
+        # Prepare row data based on dynamic fieldnames
+        row_data = {fieldname: data[fieldname] for fieldname in fieldnames}
+        writer.writerow(row_data)
+
     return jsonify({"success": True, "message": "Geometry added"})
+
 
 # Endpoint to get all geometries from CSV
 @app.route('/get_geometries', methods=['GET'])
 def get_geometries():
+    object_type = request.args.get('objectType')  # Get objectType from query parameters
+    if object_type not in object_attribute_mapping.keys():
+        return jsonify({"success": False, "message": "Invalid object type"}), 404
+    print("TEST", object_type)
     geometries = []
-    
+    CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, f"{object_type}.csv")
+
     try:
         with open(CSV_FILE_PATH, mode='r', newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader:
-                geometries.append(row)
-                print(row)
+            geometries = [row for row in reader]            
     except FileNotFoundError:
-        return jsonify({"success": False, "message": "File not found"})
+        return jsonify({"success": False, "message": "File not found"}), 404
+    
     return jsonify(geometries)
 
 
@@ -70,6 +95,8 @@ def get_geometries():
 def delete_geometry():
     data = request.json
     nodeId = data['Id']
+    CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, f"{data['objectType']}.csv")
+
 
     # Temporary list to store all entries except the one to delete
     updated_entries = []
@@ -86,46 +113,59 @@ def delete_geometry():
 
     # Step 2: Rewrite the CSV without the deleted entry
     with open(CSV_FILE_PATH, mode='w', newline='', encoding='utf-8-sig') as csvfile:
+
         if updated_entries:  # Check if there are entries left to write
             fieldnames = updated_entries[0].keys()  # Get field names from the first entry
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(updated_entries)
+
         else:  # If no entries left, write just the header
-            csvfile.write(','.join(['Id', 'point', 'backgroundImgId', 'newBackgroundImgId']) + '\n')
+            if data['objectType'] not in object_attribute_mapping:                
+                return jsonify({"success": False, "message": "Invalid object type"}), 400
+            
+            csvfile.write(','.join(object_attribute_mapping[data['objectType']]) + '\n')
 
     return jsonify({"success": True, "message": "Geometry deleted"})
 
 
 @app.route('/update_geometry', methods=['POST'])
 def update_geometry():
-    data = request.get_json()
-    updated = False
+    data = request.json
+    print(data)
+    nodeId = data['Id']
+    # Getting requested object type to add
+    fieldnames = object_attribute_mapping[data['objectType']]
+    CSV_FILE_PATH = os.path.join(CSV_DIRECTORY, f"{data['objectType']}.csv")
+    
 
     # Load existing data
     try:
-        with open(CSV_FILE_PATH, 'r') as file:
-            geometries = json.load(file)
+        with open(CSV_FILE_PATH, 'r', newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            geometries = list(reader)
     except FileNotFoundError:
-        geometries = []
+        return jsonify({"success": False, "message": "File not found"}), 404
 
     # Update the matching node's data
-    for node in geometries:
-        if node['id'] == data['id']:
-            node.update(data)  # Update node data with provided data
+    updated = False
+    for geometry in geometries:
+        if geometry['Id'] == nodeId:
+            for fieldname in fieldnames:
+                geometry[fieldname] = data.get(fieldname, geometry[fieldname])
             updated = True
             break
 
-    # If no matching node was found, optionally append the new data
     if not updated:
-        geometries.append(data)
+        return jsonify({"success": False, "message": "Geometry not found"}), 404
 
-    # Save the updated data back to the file
-    with open(CSV_FILE_PATH, 'w') as file:
-        json.dump(geometries, file, indent=4)
+    # Write all data back to the CSV file
+    with open(CSV_FILE_PATH, 'w', newline='', encoding='utf-8-sig') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(geometries)
 
     return jsonify({"success": True, "message": "Geometry updated"})
-
 
 @app.route('/download_csv', methods=['GET'])
 def download_csv():

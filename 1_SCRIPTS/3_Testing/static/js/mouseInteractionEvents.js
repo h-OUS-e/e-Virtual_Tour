@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
     const canvas = scene.canvas;
     let lastHovered = null; // To keep track of the last hovered object
     let hasMouseMoved = false;
-
+    const movement_threshold = 5; // Pixels; adjust as needed for sensitivity
+    let mouse_down_position = null;
 
 
 
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     function checkIntersections(raycaster, scene) {
         const intersections = raycaster.intersectObjects(scene.object3D.children, true);
         
+        
         const visibleIntersection = intersections.find(intersection => 
             intersection.object.el && intersection.object.el.getAttribute('visible') && intersection.object.el.getAttribute('clickable')
         );
@@ -60,62 +62,145 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
         return {mode, visibleIntersection};
     }
-
-
-    
-
+   
 
     // Single mouse click
     canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
-        if (intersectedObject) {
+        let edit = checkIntersectionsEditMode(raycaster, scene);
+
+        // FOR EDIT MODE
+        if (edit.mode && !intersectedObject){ 
+            if (hasMouseMoved) {                            
+                // Create an event that sends media id when double clicked
+                var new_event = new CustomEvent('mouseDraggedEditMode', 
+                {
+                    detail: {
+                        event: 'edit_grid_interaction',
+                        origin: raycaster.ray.origin, 
+                        direction: raycaster.ray.direction, 
+                        intersection_pt: edit.visibleIntersection.point,
+                    },
+                });
+
+                // Dispatch event
+                scene.dispatchEvent(new_event);           
+            }
+
+            if (!hasMouseMoved) {  
+                console.log("direction"+ JSON.stringify(raycaster.ray.direction));  
+                // Create an event that sends media id when  clicked
+                var new_event = new CustomEvent('mouseClickedEditMode', 
+                {
+                    detail: {
+                        event: 'edit_grid_interaction',
+                        origin: raycaster.ray.origin, 
+                        direction: raycaster.ray.direction, 
+                        intersection_pt: edit.visibleIntersection.point,
+                        x: event.clientX,
+                        y: event.clientY,
+                    },
+                });
+
+                // Dispatch event
+                scene.dispatchEvent(new_event);  
+                // Reset the flag after the click event has been processed
+            }
+            hasMouseMoved = false;
+            
+        }
+
+        if (intersectedObject && !hasMouseMoved) {
             intersectedObject.emit('mouseClicked'); 
             // console.log("CLICKED:", intersectedObject);             
         }
+
+        // Reset the mouse_down_position to null after processing the click
+        mouse_down_position = null;
     });
+    
 
     // Force Reset the flag after the click event has been processed
-    canvas.addEventListener('mousedown', () => {
+    canvas.addEventListener('mousedown', (event) => {
         hasMouseMoved = false;
-    });
+        mouse_down_position = { x: event.clientX, y: event.clientY };
 
-    canvas.addEventListener('mousemove', () => {
-        hasMouseMoved = true; // Indicate that there was mouse movement
-    });
 
-    // mouse drag on scene
-    canvas.addEventListener('click', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
-        if (hasMouseMoved) {
-            scene.emit('mouseDragged'); 
+        let raycaster = updateRaycaster(event, canvas, scene);
+        let intersectedObject = checkIntersections(raycaster, scene);
+        if (intersectedObject && ((event.ctrlKey && event.shiftKey)|| event.key === 'm' || event.key === 'M') && event.button === 0) {
+            var new_event = new CustomEvent('ctrlShiftMouseDownIntersection', 
+            {
+                detail: {
+                    event: 'object_interaction_with_ctrl',
+                    origin: raycaster.ray.origin, 
+                    direction: raycaster.ray.direction, 
+                    id: intersectedObject.getAttribute('id'),
+                    x: event.clientX,
+                    y: event.clientY,
+                    position: intersectedObject.getAttribute('position'),
+                    class: intersectedObject.getAttribute('class'),
+                    Id: intersectedObject.getAttribute('id'),
+                    backgroundImgId: intersectedObject.getAttribute('background_img_id'),
+                    newBackgroundImgId: intersectedObject.getAttribute('new_background_img_id'),
+                    intersection_pt: intersectedObject.point,
+
+                },
+            });
+
+            // Dispatch event
+            scene.dispatchEvent(new_event);   
+
         }
     });
 
-    // Single mouse click in editor mode
-    canvas.addEventListener('click', (event) => { 
 
-        if (!hasMouseMoved) {
+    canvas.addEventListener('mousemove', (event) => {
+        if (mouse_down_position) {
+            const dx = event.clientX - mouse_down_position.x;
+            const dy = event.clientY - mouse_down_position.y;
+            if (Math.sqrt(dx * dx + dy * dy) > movement_threshold) {
+                hasMouseMoved = true;
+            }
+        }
+        
+        if (hasMouseMoved) {
+            
             let raycaster = updateRaycaster(event, canvas, scene);
-            let edit = checkIntersectionsEditMode(raycaster, scene);
+            let edit = checkIntersectionsEditMode(raycaster, scene);   
 
             // Dispatching event and mouse position projected in 3D space
             if (edit.mode) {                
                 // Create an event that sends media id when double clicked
-                var new_event = new CustomEvent('mouseClickedEditMode', 
+                var new_event = new CustomEvent('mouseMovingEditMode', 
                 {
                     detail: {
+                        event: 'edit_grid_interaction',
                         origin: raycaster.ray.origin, 
                         direction: raycaster.ray.direction, 
-                        intersection: edit.visibleIntersection.point
-                    },
-                });
-                // Dispatch event
-                scene.dispatchEvent(new_event);            
-            }
-        }
+                        intersection_pt: edit.visibleIntersection.point,
 
-        // Reset the flag after the click event has been processed
-        hasMouseMoved = false;
+                    },
+
+                });
+                
+
+                // Dispatch event
+                scene.dispatchEvent(new_event);           
+            } 
+        }
+        else {
+            scene.emit('moving'); 
+        }
+    });
+
+
+    // Single mouse click in editor mode
+    canvas.addEventListener('click', (event) => { 
+        
+
+        
     });
 
     
@@ -135,6 +220,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
                         position: intersectedObject.getAttribute('position'),
                         backgroundImgId: intersectedObject.getAttribute('background_img_id'),
                         newBackgroundImgId: intersectedObject.getAttribute('new_background_img_id'),
+                        class: intersectedObject.getAttribute('class'),
 
                     },
                 });

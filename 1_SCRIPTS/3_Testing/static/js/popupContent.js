@@ -1,6 +1,6 @@
 const popupContent = [
   {
-    media_id: "mediaplayer_1",
+    media_id: "mp_01.1_Advanced_Patient_Diagnostics",
     title: "Advanced Patient Diagnostics",
     subtitle: "SageCare",
     description: "",
@@ -8,12 +8,9 @@ const popupContent = [
     imageUrl: "../static/0_resources/media_popups/diagnostics.png",
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
-    color_class: "pink",
-    icon_index: "1",
-    background_img_id: "01.1"
   },
   {
-    media_id: "mediaplayer_2",
+    media_id: "mp_01.1_Integrated_Artificial_Intelligence",
     title: "Integrated Artificial Intelligence",
     subtitle: "SageCare",
     description: "AI-enhanced X-rays by Sage enable quicker, more accurate diagnoses.",
@@ -21,13 +18,10 @@ const popupContent = [
     imageUrl: "../static/0_resources/media_popups/Intelligent-X-Ray.png",
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
-    color_class: "blue",
-    icon_index: "2",
-    background_img_id: "01.1"
     
   },
   {
-    media_id: "mediaplayer_3",
+    media_id: "mp_01.2_Superior_Revenue_Cycle_Management",
     title: "Superior Revenue Cycle Management",
     subtitle: "BillRIGHT",
     description: "",
@@ -35,12 +29,9 @@ const popupContent = [
     imageUrl: "../static/0_resources/media_popups/revenue.png",
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257641?h=56288e389c&byline=0&portrait=0",
-    color_class: "green",
-    icon_index: "1",
-    background_img_id: "01.2"
   },
   {
-    media_id: "mediaplayer_4",
+    media_id: "mp_02.1_SageNet_Automated_Purchasing_System",
     title: "SageNet Automated Purchasing System",
     subtitle: "SNAP",
     description: "",
@@ -48,12 +39,9 @@ const popupContent = [
     imageUrl: "../static/0_resources/media_popups/snap.png",
     videoUrl: "",
     videoUrlEmbedded: "",
-    color_class: "green",
-    icon_index: "1",
-    background_img_id: "02.1"
   },
   {
-    media_id: "mediaplayer_5",
+    media_id: "mp_03.1_Actionable_Business_Intelligence",
     title: "Actionable Business Intelligence",
     subtitle: "VISION",
     description: "With SAGE VISION, office staff, regional managers, and executive leadership can access real-time key metrics in a format that makes the most sense for their individual needs and perspectives.",
@@ -61,12 +49,9 @@ const popupContent = [
     imageUrl: "",
     videoUrl: "",
     videoUrlEmbedded: "https://player.vimeo.com/video/738257760?h=c948825763&byline=0&portrait=0",
-    color_class: "blue",
-    icon_index: "1",
-    background_img_id: "03.1"
   },
   {
-    media_id: "mediaplayer_6",
+    media_id: "mp_03.1_Interactive_Patient_Management",
     title: "Interactive Patient Management",
     subtitle: "SEAT CRM",
     description: "",
@@ -74,9 +59,6 @@ const popupContent = [
     imageUrl: "",
     videoUrl: "",
     videoUrlEmbedded: "",
-    color_class: "pink",
-    icon_index: "1",
-    background_img_id: "03.1"
   },
 
 ];

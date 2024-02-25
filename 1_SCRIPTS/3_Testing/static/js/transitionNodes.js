@@ -1,5 +1,5 @@
 const scene = document.querySelector('a-scene');
-    const main_class = "transitionNode";
+    const main_class = "TransitionNode";
     const mixin_glow = "transition_node_glow";
     const mixin_icon = "transition_node_icon";
     
@@ -13,10 +13,10 @@ const scene = document.querySelector('a-scene');
 
     // let deletionHistory = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
     // Read transition nodes and load them to scene
-    readTransitionNodesFromSheet();    
+    await loadTransitionNodesFromJSON();    
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
+        console.log("TEEST");
         // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
@@ -111,198 +112,78 @@ function emitTransitioning(new_background_img_id){
 }
 
 
-// Function to create a new transitionNode entity
-function createTransitionNode(uniqueId, point, backgroundImgId, newBackgroundImgId) {
-    // Create main entity
-    const entity = document.createElement('a-entity');
 
-    // Set attributes
-    entity.setAttribute('id', uniqueId);
-    entity.setAttribute('class', 'transitionNode'); //better to have it as ('class', 'transitionNode clickable'), and  check for clickable there
-    entity.setAttribute('clickable', 'true');
-    if (backgroundImgId === '01.1'){ entity.setAttribute('visible', true);}
-    else {entity.setAttribute('visible', false);}
-    
-    entity.setAttribute('toggle_visibility', true);
-    entity.setAttribute('new_background_img_id', newBackgroundImgId);
-    entity.setAttribute('background_img_id', backgroundImgId);
-
-    entity.setAttribute('mixin', 'transition_node_frame');
-    entity.setAttribute('position', point);
-    const rotation = "90 0 0";
-    entity.setAttribute('rotation', rotation);
-
-    // Create icon entity and append to main entity
-    const iconEntity = document.createElement('a-entity');
-    iconEntity.setAttribute('mixin', 'transition_node_icon');
-    iconEntity.setAttribute('material', 'color', color_transitionNode);
-    entity.appendChild(iconEntity);
-
-    // Create glow entity and append to main entity
-    const glowEntity = document.createElement('a-entity');
-    glowEntity.setAttribute('mixin', 'transition_node_glow');
-    glowEntity.setAttribute('material', 'color', color_transitionNode);
-    entity.appendChild(glowEntity);
-
-    // Append the new entity to the A-Frame scene
-    document.querySelector('a-scene').appendChild(entity);
-
-    return entity;
-}
-
-
-// A function to load all geometies in the scene
-function readTransitionNodesFromSheet() {
-    fetch('/get_geometries')
-    .then(response => response.json())
-    .then(data => {
-        // Assuming data is an array of geometry parameters
-        data.forEach(geometry => {
-            const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
-            transition_node.addToScene();
-        });
-    }).catch(error => console.error('Failed to load transition nodes:', error));  
-    // to use .then() for handling asynchronous completion, the function must return a Promise
-    return Promise.resolve();
-}
-
-
-// Function to update transitionNode spreadsheet
-function addTransitionNodeToSheet(uniqueId, point, BackgroundImgId, newBackgroundImgId) {
-    //Format point as a space-separated string
-    const formattedPoint = `${point.x} ${point.y} ${point.z}`;
-
-    // Example data structure, adjust as necessary
-    const nodeDetails = {
-        Id: uniqueId,
-        point: formattedPoint,
-        backgroundImgId: BackgroundImgId,
-        newBackgroundImgId: newBackgroundImgId
-    };
-
-    // Send the data to the Flask server
-    fetch('/add_geometry', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nodeDetails),
-    })
-    .then(response => response.json())
-    .then(nodeDetails => {
-        console.log('Success:', nodeDetails);        
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
-
-
-function delTransitionNodeFromSheet(nodeId) {
-    // Remove from scene
-    const node = document.getElementById(nodeId);
-    if (node) {
-        node.parentNode.removeChild(node);
-    }
-
-    // const nodeDetails = {
-    //     Id: uniqueId,
-    //     point: formattedPoint,
-    //     backgroundImgId: BackgroundImgId,
-    //     newBackgroundImgId: newBackgroundImgId
-    // };
-
-    // // Push this information onto the deletionHistory stack
-    // deletionHistory.push(nodeDetails);
-
-    // Tell the server to remove from CSV
-    fetch('/delete_geometry', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ Id: nodeId }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Delete response:', data);
-        // Optionally, handle any feedback from the server
-    })
-    .catch(error => {
-        console.error('Error deleting node:', error);
-    });
-}
-
-// function undoLastDeletion() {
-//     if (deletionHistory.length === 0) {
-//         console.log("No deletions to undo");
-//         return;
-//     }
-
-//     // Pop the last deleted node's details off the history stack
-//     const lastDeleted = deletionHistory.pop();
-
-//     // Recreate the node in the A-Frame scene
-//     createTransitionNode(lastDeleted.id, lastDeleted.position, lastDeleted.backgroundImgId, lastDeleted.newBackgroundImgId);
-
-//     // Send a request to your server to add the node back to the CSV
-//     addTransitionNodeToSheet(lastDeleted.id, lastDeleted.position, lastDeleted.backgroundImgId, lastDeleted.newBackgroundImgId);
+// // A function to load all geometies in the scene
+// function loadTransitionNodesFromSheet() {
+//     const objectType = "TransitionNode";
+//     fetch(`/get_geometries?objectType=${objectType}`)
+//     .then(response => response.json())
+//     .then(data => {
+//         // Assuming data is an array of geometry parameters
+//         data.forEach(geometry => {
+//             const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
+//             transition_node.addToScene();
+//         });
+//     }).catch(error => console.error(`Failed to load ${objectType}:`, error));
+//     // to use .then() for handling asynchronous completion, the function must return a Promise
+//     return Promise.resolve();
 // }
 
-
-// Function to store actions for redo/undo
-function createTransitionNodeAction(uniqueId, nodeDetails) {
-    return {
-        do: function() {
-            createTransitionNode(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-            addTransitionNodeToSheet(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-        },
-        undo: function() {
-            delTransitionNodeFromSheet(uniqueId);
-            // Assuming you have a function to remove a node from the sheet by ID
+async function loadTransitionNodesFromJSON() {
+    try {
+        const response = await fetch('../static/1_data/TransitionNodes.json'); // Adjust the path as necessary
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    };
+        const transitionNode_JSON = await response.json();
+
+        // Process each object in the JSON array
+        transitionNode_JSON.forEach(transitionNode_item => {
+            // Get attributes
+            const id = transitionNode_item.id;
+            const point = transitionNode_item.position;
+            const background_img_id = transitionNode_item.background_img_id;
+            const new_background_img_id = transitionNode_item.new_background_img_id;
+
+            // Create mediaplayer and add to scene
+            const transition_node = new TransitionNode(id, point, background_img_id, new_background_img_id)
+            transition_node.addToScene();
+
+        });
+    } catch (error) {
+        console.error('Could not fetch transitions:', error);
+    }
+    // // to use .then() for handling asynchronous completion, the function must return a Promise
+    // return Promise.resolve();
 }
 
 
-function DeleteTransitioNodeAction(uniqueId, nodeDetails) {
-    return {
-        do: function() {
-            // Logic to delete the node, might be similar to undo of CreateNodeAction
-            delTransitionNodeFromSheet(nodeuniqueIdId);
-        },
-        undo: function() {
-            // Logic to recreate the node, similar to do of CreateNodeAction
-            createTransitionNode(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-            addTransitionNodeToSheet(uniqueId, nodeDetails.point, nodeDetails.backgroundImgId, nodeDetails.newBackgroundImgId);
-        }
-    };
-}
-
-
-
-
-class TransitionNode {
+class TransitionNode {    
     constructor(id, position, backgroundImgId, newBackgroundImgId) {
         this.id = id;
+        this.final_id = id;
         this.position = position;
         this.backgroundImgId = backgroundImgId;
         this.newBackgroundImgId = newBackgroundImgId;
+        this.name = this.constructor.name;
     }
 
 
-    // Method to create and append the node to the A-Frame scene
+    // METHOD TO CREATE AND ADD OBJECT TO SCENE 
     addToScene() {
+        // Checking if object with same id already exists
         const existingEntity = document.getElementById(this.id);
         if (existingEntity) {
             console.log(`An entity with the ID ${this.id} already exists.`);
             // Alternatively, update the existing entity instead of ignoring the new addition
             // existingEntity.setAttribute('position', this.position);
-            return;
+            return false;
         }
+
         const entity = document.createElement('a-entity');
+        this.id = `move_${this.backgroundImgId}_${this.newBackgroundImgId}`;
         entity.setAttribute('id', this.id);
-        entity.setAttribute('class', 'transitionNode');
+        entity.setAttribute('class', 'TransitionNode');
         entity.setAttribute('clickable', 'true');
         entity.setAttribute('visible', this.backgroundImgId === '01.1');
         entity.setAttribute('toggle_visibility', true);
@@ -313,16 +194,19 @@ class TransitionNode {
         entity.setAttribute('rotation', "90 0 0");
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
+
+        return true; // Indicate successful addition to the scene
     }
 
 
-    // Helper method to append icon and visual effects to the node
+    // HELPER METHOD TO ADD VISUAL ATTRIBUTES TO OBJECTS
     appendComponentsTo(entity) {
         // Add green icon
         const iconEntity = document.createElement('a-entity');
         iconEntity.setAttribute('mixin', 'transition_node_icon');
         iconEntity.setAttribute('material', 'color', color_transitionNode);
         entity.appendChild(iconEntity);
+
         // Add glowing effect
         const glowEntity = document.createElement('a-entity');
         glowEntity.setAttribute('mixin', 'transition_node_glow');
@@ -331,82 +215,89 @@ class TransitionNode {
     }
 
 
-    // Static method to handle adding node data to the backend
-    static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
-        const formattedPoint = `${position.x} ${position.y} ${position.z}`;
-        fetch('/add_geometry', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                Id: id,
-                point: formattedPoint,
-                backgroundImgId: backgroundImgId,
-                newBackgroundImgId: newBackgroundImgId
-            }),
-        }).then(response => response.json())
-        .then(data => console.log('Success:', data))
-        .catch(error => console.error('Error:', error));
-    }
+    // // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
+    // static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
+    //     const formattedPoint = `${position.x} ${position.y} ${position.z}`;
+    //     fetch('/add_geometry', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //             Id: id,
+    //             point: formattedPoint,
+    //             backgroundImgId: backgroundImgId,
+    //             newBackgroundImgId: newBackgroundImgId,
+    //             objectType: this.name,
+    //         }),
+    //     }).then(response => response.json())
+    //     .then(data => console.log('Success:', data))
+    //     .catch(error => console.error('Error:', error));
+    // }
 
-    // Method to synchronize the node's state with the backend
-    updateSheet() {
-        const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
-        const data = {
-            id: this.id,
-            position: formattedPoint, // Ensure this is serialized properly if needed
-            backgroundImgId: this.backgroundImgId,
-            newBackgroundImgId: this.newBackgroundImgId
-        };        
-        fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => console.log('Update successful:', data))
-        .catch(error => console.error('Error updating node:', error));
-    }
+    // // Method to synchronize the node's state with the backend
+    // updateSheet() {
+    //     const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
+    //     const data = {
+    //         Id: this.id,
+    //         point: formattedPoint, // Ensure this is serialized properly if needed
+    //         backgroundImgId: this.backgroundImgId,
+    //         newBackgroundImgId: this.newBackgroundImgId,
+    //         objectType: this.name,
+    //     };    
+    //     console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
+    //     fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(data)
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log('Update successful:', data))
+    //     .catch(error => console.error('Error updating node:', error));
+    // }
 
 
-    // Adds object to scene AND to the sheet
+    // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
-        this.addToScene();
-        console.log("TESTING CREATING", this.backgroundImgId, this.newBackgroundImgId);
-        TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
-        console.log("TESTING CREATING 2");
+        const addedSuccessfully = this.addToScene();
+        // if (addedSuccessfully) {
+        //     console.log("Adding object to the scene.");
+        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        // } else {
+        //     console.log("Object with the same ID already exists. Creation aborted.");
+        //     return false; // Indicate that creation was not successful
+        // }
+        // return true; // Indicate successful creation
     }
 
 
-    // Method to remove the node from the scene and the backend
+    // METHOD TO REMOVE OBJECT FROM THE SCENE AND THE BACKEND DATABASE
     delete() {
-        const node = document.getElementById(this.id);
-        if (node) node.parentNode.removeChild(node);
-        
-        fetch('/delete_geometry', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Id: this.id }),
-        }).then(response => response.json())
-        .then(data => console.log('Delete response:', data))
-        .catch(error => console.error('Error deleting node:', error));
+        const entity = document.getElementById(this.id);
+        if (entity) entity.parentNode.removeChild(entity);
+        // fetch('/delete_geometry', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ Id: this.id, objectType: this.name}),
+        // }).then(response => response.json())
+        // .then(data => console.log('Delete response:', data))
+        // .catch(error => console.error('Error deleting transition node:', error));
     }
 
 
-    // Method to move the node
-    moveTo(newPosition) {
-        const oldPosition = this.position;
-        this.position = newPosition;
-        this.updateScenePosition(); 
-        this.updateSheet();
+    // // METHOD TO MOVE THE OBJECT
+    // moveTo(newPosition) {
+    //     const oldPosition = this.position;
+    //     this.position = newPosition;
+    //     this.updateScenePosition(); 
+    //     this.updateSheet();
 
-        // Return an action for undo/redo stack
-        return {
-            do: () => this.moveTo(newPosition),
-            undo: () => this.moveTo(oldPosition)
-        };
-    }
+    //     // Return an action for undo/redo stack
+    //     return {
+    //         do: () => this.moveTo(newPosition),
+    //         undo: () => this.moveTo(oldPosition)
+    //     };
+    // }
 
-    // Utility to update the scene position (assuming A-Frame or similar)
+    // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
         const entity = document.getElementById(this.id);
         if (entity) {
@@ -414,102 +305,122 @@ class TransitionNode {
         }
     }
 
-
-    // General method to perform and revert actions
-    performAction(method, ...args) {
-        // Prepare initial and final states without executing the method immediately
-        let initialState;
-        let finalState;
-        if (method !== 'create') {
-            initialState = this.captureState();
-        }
-        
-
-        return {
-            do: () => {
-                if (!finalState) {
-                    // If the action has not been performed yet, execute it and capture the final state
-                    this[method](...args);
-                    if (method === 'create') {
-                        initialState = this.captureState();
-                    }
-                    // finalState = this.captureState();
-                    if (method !== 'create') {
-                        this.finalState = this.captureState();
-                    }
-                } 
-                // else {
-                //     // If redoing the action, just apply the previously captured final state
-                //     this.applyState(finalState);
-                // }
-            },
-            undo: () => { 
-                if (method === 'create') {
-                    // If the action was 'create', undoing it means removing the node
-                    this.delete();
-                } else if (method === 'delete') {
-                    // If the action was 'delete', undoing it involves re-creating the node
-                    // with its initial state
-                    this.applyState(initialState);
-                    this.create();
-                } else {
-                    // For all other actions, apply the initial state to undo the action
-                    this.applyState(initialState);
-                }
-            },
-            redo: () => {
-                if (method === 'create') {
-                    // Redoing creation simply means re-adding the node
-                    this.create();
-                } else if (method === 'delete') {
-                    // Redoing deletion means removing the node again
-                    this.delete();
-                } else {
-                    // For other actions, re-apply the final state to redo the action
-                    this.applyState(this.finalState);
-                }
-            }
-        };
+    // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
+    moveTo(new_position) {
+        this.position = new_position;
+        this.updateScenePosition(); // Reflect changes in the scene
     }
 
-    // Captures the current state of the node
+
+    // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
+    getAction(method, ...args) {
+        let action = {
+            initialState: null,
+            finalState: null,
+            do: () => {},
+            undo: () => {},
+            redo: () => {}
+        };
+
+        // Exclude 'create' from initial state capture since it doesn't exist yet
+        if (method !== 'create') {
+            action.initialState = this.captureState();
+        }
+
+        action.do = () => {
+            // Exclude 'create' from initial state capture since it doesn't exist yet
+            if (method !== 'create') {
+                action.initialState = this.captureState();
+            }
+            // Execute the action
+            const result = this[method](...args);
+            // Capture the final state after the action is performed
+            action.finalState = this.captureState(); // Capture the final state after action
+            // set final id of initial state as the updated id and vice versa for finalstate
+            if (method !== 'create' && method !== 'delete') {
+                action.initialState.final_id = this.final_id;
+                action.finalState.final_id = action.initialState.id;
+            }            
+            // Return true (success) if the method does not explicitly return a value
+            return result !== undefined ? result : true;
+        };
+
+        action.undo = () => {
+             // If the action was 'create', undoing it means removing the object
+            if (method === 'create') {
+                this.delete();
+
+            // If the action was 'delete', undoing it involves re-creating the object with its initial state
+            } else if (method === 'delete') {
+                this.applyState(action.initialState); // Assuming create reinstates the initial state
+                this.create();
+
+            // For all other actions, apply the initial state to undo the action
+            } else {
+                this.applyState(action.initialState); // Apply initial state for undo
+            }
+        };
+
+        action.redo = () => {
+            // if action is create or delete, a redo would be the function itself
+            if (method === 'create' || method === 'delete') {
+                this[method](...args); 
+            } 
+            // Otherwise, it is sufficient to just apply final state for redo and update scene
+            else {
+                this.applyState(action.finalState); 
+            }
+        };       
+
+        return action;
+    }
+
+    // CAPTURE OBJECT ATTRIBUTES AND STORE THEM IN A DICTIONARY
     captureState() {
         return {
+            id: this.id,
+            final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
             newBackgroundImgId: this.newBackgroundImgId
         };
     }
 
-    // Applies a captured state to the node
+    // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
-        this.position = state.position;
-        this.backgroundImgId = state.backgroundImgId;
-        this.newBackgroundImgId = state.newBackgroundImgId;
+         // Apply the state to the object
+         Object.assign(this, state);
+         this.id = state.id
+
         // Ensure to update the scene representation as needed
         this.updateScene();
     }
 
-    // Implementation to update the scene, similar to addToScene but for updating
-    updateScene() {
-        
-        // Find the corresponding entity in the A-Frame scene
-        const entity = document.getElementById(this.id);
-        if (entity) {
-            // Update the entity's position
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
-            // Update data attributes related to background images
-            entity.setAttribute('background_img_id', this.backgroundImgId);
-            entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
-            // If you're using visibility toggling, update that too
-            entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
-        }
-    }
+    // IMPLEMENTATION TO UPDATE THE SCENE
+    updateScene(updates) {
 
+        // Find the corresponding entity in the A-Frame scene
+        const entity = document.getElementById(this.final_id);
+        if (!entity) {
+            console.error('Entity not found');
+            return;
+        }
+
+        // Update the entity's position
+        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+        // Update data attributes related to background images
+        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
+        // Update visibility
+        entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+        // // Update id in case we update the new_background_img_id attribute
+        entity.setAttribute('id', this.id);
+
+    }
 }
 
 
 
 // Export the function
-export { DeleteTransitioNodeAction, TransitionNode, addTransitionNodeToSheet, createTransitionNode, createTransitionNodeAction, delTransitionNodeFromSheet, readTransitionNodesFromSheet };
+export { TransitionNode, emitTransitioning };
 

@@ -19,7 +19,8 @@
           }
         }
         </script>
-    <!-- SCRIPTS -->    
+    <!-- SCRIPTS -->   
+    <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
     <script src="../static/js/zoomControl.js"></script> 
@@ -91,21 +92,96 @@
             <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 90px;"></div>
             <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 120px;"></div>
         </div>
+
         
+        <!-- Selection bar to change class option in edit mode -->
+        <div id="object_class_selection_bar" class="bar" >
+            <button class="objectClassBtn" data-class="None">None</button>
+            <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
+            <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
+            <button class="objectClassBtn" data-class="LabelTag">LabelTag</button>
+
+        </div>
+          
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
-        <div id="edit_menu" class="editMenu hidden">
+        <div id="edit_menu_TransitionNode" class="editMenu">
             <ul>
+                <li class="editMenuOption object_id_display">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
-                <li class="editMenuOption changeBackgroundOption">Change newBackgroundImgId</li>
-                <li class="editMenuOption moveOption">Move</li>
+                <!-- <li class="editMenuOption changeBackgroundOption">Change toScene ID</li>  -->
+                <!-- <li class="editMenuOption changeBackgroundOption">Edit object ID</li> -->
+
                 <!-- Add other options as needed -->
+            </ul>
+        </div>    
+
+
+        <!-- Edit menu to delete or change values of objects in a-scene -->
+        <div id="edit_menu_MediaPlayer" class="editMenu">
+            <ul>
+                <li class="editMenuOption object_id_display">Object ID: </li>
+                <li> 
+                    <label for="edit_menu_MediaPlayer_title_input"> <p>Edit title:</p></label>
+                    <input type="text" id="edit_menu_MediaPlayer_title_input" name="edit_menu_MediaPlayer_title_input" >
+                    <input type="button" class="submitOption" value="Submit">
+                </li>
+                <li>
+                    <label for="edit_menu_MediaPlayer_scene_id_input">Select thisScene ID</label>
+                    <select id="edit_menu_MediaPlayer_scene_id_input" class="editMenuOption changeSceneId changeMediaPlayerSceneId"></select>
+                </li>
+                <li>
+                    <label for="edit_menu_MediaPlayer_type_input">Select Type</label>
+                    <select id="edit_menu_MediaPlayer_type_input" class="editMenuOption changeMediaPlayerType"></select>
+                </li>
+                <li>
+                    <label for="edit_menu_MediaPlayer_iconIdx_input">Select icon index</label>
+                    <select id="edit_menu_MediaPlayer_iconIdx_input" class="editMenuOption changeMediaPlayerIconIdx"></select>
+                </li>
+                <li class="editMenuOption deleteOption">Delete</li>
+                
+                <!-- Add other options as needed -->
+            </ul>
+        </div>   
+          
+
+        <!-- Creation menu to when adding transition nodes -->
+        <div id="creation_menu_TransitionNode" class="editMenu creationMenu" >
+            <h4>Transition Node</h4>
+            <ul>
+                <li>
+                    <label for="creation_menu_TransitionNode_scene_id_input">Select New Scene ID</label>
+                    <select id="creation_menu_TransitionNode_scene_id_input" class="creation_menu_TransitionNode_scene_id_input changeSceneId changeMediaPlayerSceneId"></select>
+                    <input type="button" class="submitOption" value="Submit">
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- Creation menu when adding media players -->
+        <div id="creation_menu_MediaPlayer" class="editMenu creationMenu" >
+            <h4>Media Player</h4>
+            <ul>
+                <li>
+                    <label for="creation_menu_MediaPlayer_title_input"> <p>Media player title:</p></label>
+                    <input type="text" id="creation_menu_MediaPlayer_title_input" name="creation_menu_MediaPlayer_title_input" >
+                    <label for="creation_menu_MediaPlayer_type_input"> <p>Select Type:</p></label>
+                    <select  type="text" id="creation_menu_MediaPlayer_type_input" name="creation_menu_MediaPlayer_type_input" >
+                        <option value="">Select Type</option>
+                        <!-- Options will be added dynamically -->
+                    </select>
+                    <label for="creation_menu_MediaPlayer_iconIdx_input"> <p>Icon Index:</p></label>
+                    <select type="text" id="creation_menu_MediaPlayer_iconIdx_input" name="creation_menu_MediaPlayer_iconIdx_input" >
+                        <option value="">Select Icon</option>
+                        <!-- Options will be added dynamically -->
+                    </select>                    
+                </li>
+                <li> <input type="button" class="submitOption" value="Submit"> </li>
             </ul>
         </div>
         
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
-        
 
          <div id="sidebar-container">
             <div id="sidebar-toggler"> 
@@ -115,7 +191,6 @@
             <div id="sidebar">
                 <div id="sidebar-header"> <h1>header</h1>  </div>
                 <div id="sidebar-item-grid"></div>
-
             </div>
         </div>
 
@@ -220,7 +295,7 @@
 
         </a-assets>
 
-        <a-camera id="camera"  custom-look-controls>
+        <a-camera id="camera"  custom-look-controls wasd-controls-enabled="false">
             <a-cursor id="cursor" fuse="True"></a-cursor>
         </a-camera>
         
@@ -231,47 +306,47 @@
         </a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
-        <a-ring id="gridPlane" edit_mode="true" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
-        <a-entity id="gridCylinder" edit_mode="true"  hollow-cylinder="height: 10; radius: 10;"  position="0 0 0" material="visible: false; src: ../static/0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
+        <a-ring id="gridPlane" edit_mode="false" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
+        <a-entity id="gridCylinder" edit_mode="false"  hollow-cylinder="height: 40; radius: 40;"  position="0 0 0" material="visible: false; src: ../static/0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
 
 
 
         <!-- Defining mediaplayers, need to find a way to automate their positions -->
-        <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1"
+        <!-- <a-entity id="mediaplayer_1" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
         mixin="mediaplayer_frame" position="45 2 10" rotation="0 90.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
+        </a-entity> -->
 
-        <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1" 
+        <!-- <a-entity id="mediaplayer_2" visible="true" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
         mixin="mediaplayer_frame" position="7 2 -40" rotation="0 150.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
+        </a-entity> -->
 
-        <a-entity id="mediaplayer_3" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1"
+        <!-- <a-entity id="mediaplayer_3" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
         mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -40.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 
-        <a-entity id="mediaplayer_4" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1" 
+        <a-entity id="mediaplayer_4" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
         mixin="mediaplayer_frame" position="7 2 -40" rotation="180 0.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 
-        <a-entity id="mediaplayer_5" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1"
+        <a-entity id="mediaplayer_5" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
         mixin="mediaplayer_frame" position="-12 -20 -40" rotation="0 210.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
         </a-entity>
 
-        <a-entity id="mediaplayer_6" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" color_class="blue" icon_index="1" 
+        <a-entity id="mediaplayer_6" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
         mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -30.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
+        </a-entity> -->
 
 
         <!-- Creating some buttons to move between 360 images. -->
