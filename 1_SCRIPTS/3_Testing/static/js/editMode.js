@@ -24,10 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let transition_node = null;
     let media_player = null;
 
-    const undo_redo_manager = new UndoRedoManager();
-    const edit_menu_manager = new EditMenuManager();
-    const creation_menu_manager = new CreationFormManager();
-
     // For moving objects
     let isDragging = false;
     let startPosition = { x: 0, y: 0, z:0};
@@ -38,6 +34,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Getting media player types from the JSON file
     const mediaplayer_types = await loadMediaPlayerTypes();
     const mediaplayer_types_keys = Object.keys(mediaplayer_types);
+
+    // getting managers of menus and undo redo actions
+    const undo_redo_manager = new UndoRedoManager();
+    const edit_menu_manager = new EditMenuManager(mediaplayer_types);
+    const creation_menu_manager = new CreationFormManager();
 
     // Getting scene ids
     const scenes_JSON = await loadJSON('Scenes');
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         gridCylinder.setAttribute('material', 'visible', isEditMode);
         gridPlane.setAttribute('edit_mode', isEditMode);
         gridCylinder.setAttribute('edit_mode', isEditMode);
+
 
         // Hiding/showing selection bar if edit mode is off/on
         let selection_bar = document.getElementById('object_class_selection_bar');
@@ -434,10 +436,11 @@ function adjustRadius(event) {
 
 
 class EditMenuManager  {
-    constructor() {        
+    constructor(mediaplayer_types) {        
         this.objectClass = null;
         this.object_id = null;
         this.currentVisibleMenu = null;
+        this.mediaplayer_types = mediaplayer_types;
     }    
 
     // This method is static cuz it is global, doesn't need to know which 
@@ -471,8 +474,29 @@ class EditMenuManager  {
             if (!menu) return; // Exit if the menu doesn't exist
 
             // Show object ID in the edit menu   
-            const object_id_element = menu.getElementsByClassName('objectIdDisplay')[0];
+            const object_id_element = menu.getElementsByClassName('object_id_display')[0];
             object_id_element.textContent = `Object ID: ${this.object_id}`; // Update the text to show the object ID
+
+            
+            // update default values
+            let entity = document.getElementById(this.object_id);
+            console.log(entity.getAttribute('icon_index'));
+            // updates for mediaplayer
+            if (entity.getAttribute('class') === 'MediaPlayer') {
+
+                // update defaults of dropdown menu
+                this.setDropdownDefaultValue('edit_menu_MediaPlayer_type_input',entity.getAttribute('mediaplayer_type'));
+                // update dependent dropdown menu
+                let edit_menu_MediaPlayer_type_Id = document.getElementById('edit_menu_MediaPlayer_type_input');
+                let edit_menu_MediaPlayer_iconIdx_Id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
+                onDropdownMenuSelectionOfMediaPlayerType(this.mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id);
+                this.setDropdownDefaultValue('edit_menu_MediaPlayer_iconIdx_input', entity.getAttribute('icon_index'));
+                this.setDropdownDefaultValue('edit_menu_MediaPlayer_scene_id_input', entity.getAttribute('background_img_id'));
+            }
+            else if (entity.class === 'TransitionNode') {
+                this.setDropdownDefaultValue('edit_menu_MediaPlayer_scene_id_input', entity.getAttribute('background_img_id'));
+            }
+
 
             // Adjust position of menu based on object position
             menu.style.top = `${y}px`;
@@ -497,6 +521,22 @@ class EditMenuManager  {
         if (bottomSpace < 0) {
             // Set the top position to move the menu up by the amount it's cut off, plus a little extra space (5px)
             menu.style.top = (menu.offsetTop + bottomSpace - 5) + 'px';
+        }
+    }
+
+    setDropdownDefaultValue(dropdown_menu_id, default_value) {
+        const dropdown = document.getElementById(dropdown_menu_id);
+        if (!dropdown) {
+            console.error('Dropdown not found:', dropdown_menu_id, Array.from(dropdown.options)[0]);
+            return;
+        }
+   
+        const option_to_select = Array.from(dropdown.options).find(option => option.value === default_value);
+        if (option_to_select) {
+            dropdown.value = default_value; // Set the default value
+        } 
+        else {
+            console.warn('Default value not found in dropdown options:', default_value);
         }
     }
 }
