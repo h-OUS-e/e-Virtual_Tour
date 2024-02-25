@@ -161,6 +161,7 @@ async function loadTransitionNodesFromJSON() {
 class TransitionNode {    
     constructor(id, position, backgroundImgId, newBackgroundImgId) {
         this.id = id;
+        this.final_id = id;
         this.position = position;
         this.backgroundImgId = backgroundImgId;
         this.newBackgroundImgId = newBackgroundImgId;
@@ -168,8 +169,9 @@ class TransitionNode {
     }
 
 
-    // Method to create and append the node to the A-Frame scene
+    // METHOD TO CREATE AND ADD OBJECT TO SCENE 
     addToScene() {
+        // Checking if object with same id already exists
         const existingEntity = document.getElementById(this.id);
         if (existingEntity) {
             console.log(`An entity with the ID ${this.id} already exists.`);
@@ -177,7 +179,9 @@ class TransitionNode {
             // existingEntity.setAttribute('position', this.position);
             return false;
         }
+
         const entity = document.createElement('a-entity');
+        this.id = `move_${this.backgroundImgId}_${this.newBackgroundImgId}`;
         entity.setAttribute('id', this.id);
         entity.setAttribute('class', 'TransitionNode');
         entity.setAttribute('clickable', 'true');
@@ -202,6 +206,7 @@ class TransitionNode {
         iconEntity.setAttribute('mixin', 'transition_node_icon');
         iconEntity.setAttribute('material', 'color', color_transitionNode);
         entity.appendChild(iconEntity);
+
         // Add glowing effect
         const glowEntity = document.createElement('a-entity');
         glowEntity.setAttribute('mixin', 'transition_node_glow');
@@ -210,58 +215,57 @@ class TransitionNode {
     }
 
 
-    // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
-    static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
-        const formattedPoint = `${position.x} ${position.y} ${position.z}`;
-        fetch('/add_geometry', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                Id: id,
-                point: formattedPoint,
-                backgroundImgId: backgroundImgId,
-                newBackgroundImgId: newBackgroundImgId,
-                objectType: this.name,
-            }),
-        }).then(response => response.json())
-        .then(data => console.log('Success:', data))
-        .catch(error => console.error('Error:', error));
-    }
+    // // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
+    // static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
+    //     const formattedPoint = `${position.x} ${position.y} ${position.z}`;
+    //     fetch('/add_geometry', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //             Id: id,
+    //             point: formattedPoint,
+    //             backgroundImgId: backgroundImgId,
+    //             newBackgroundImgId: newBackgroundImgId,
+    //             objectType: this.name,
+    //         }),
+    //     }).then(response => response.json())
+    //     .then(data => console.log('Success:', data))
+    //     .catch(error => console.error('Error:', error));
+    // }
 
-    // Method to synchronize the node's state with the backend
-    updateSheet() {
-        const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
-        const data = {
-            Id: this.id,
-            point: formattedPoint, // Ensure this is serialized properly if needed
-            backgroundImgId: this.backgroundImgId,
-            newBackgroundImgId: this.newBackgroundImgId,
-            objectType: this.name,
-        };    
-        console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
-        fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => console.log('Update successful:', data))
-        .catch(error => console.error('Error updating node:', error));
-    }
+    // // Method to synchronize the node's state with the backend
+    // updateSheet() {
+    //     const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
+    //     const data = {
+    //         Id: this.id,
+    //         point: formattedPoint, // Ensure this is serialized properly if needed
+    //         backgroundImgId: this.backgroundImgId,
+    //         newBackgroundImgId: this.newBackgroundImgId,
+    //         objectType: this.name,
+    //     };    
+    //     console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
+    //     fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(data)
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log('Update successful:', data))
+    //     .catch(error => console.error('Error updating node:', error));
+    // }
 
 
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         const addedSuccessfully = this.addToScene();
-        if (addedSuccessfully) {
-            console.log("Adding object to the scene.");
-            TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
-        } else {
-            console.log("Object with the same ID already exists. Creation aborted.");
-            return false; // Indicate that creation was not successful
-        }
-        return true; // Indicate successful creation
-       
+        // if (addedSuccessfully) {
+        //     console.log("Adding object to the scene.");
+        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        // } else {
+        //     console.log("Object with the same ID already exists. Creation aborted.");
+        //     return false; // Indicate that creation was not successful
+        // }
+        // return true; // Indicate successful creation
     }
 
 
@@ -269,13 +273,13 @@ class TransitionNode {
     delete() {
         const entity = document.getElementById(this.id);
         if (entity) entity.parentNode.removeChild(entity);
-        fetch('/delete_geometry', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Id: this.id, objectType: this.name}),
-        }).then(response => response.json())
-        .then(data => console.log('Delete response:', data))
-        .catch(error => console.error('Error deleting transition node:', error));
+        // fetch('/delete_geometry', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ Id: this.id, objectType: this.name}),
+        // }).then(response => response.json())
+        // .then(data => console.log('Delete response:', data))
+        // .catch(error => console.error('Error deleting transition node:', error));
     }
 
 
@@ -302,12 +306,10 @@ class TransitionNode {
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
-    moveTo(newPosition) {
-        this.position = newPosition;
+    moveTo(new_position) {
+        this.position = new_position;
         this.updateScenePosition(); // Reflect changes in the scene
     }
-
-    // METHOD TO UPDATE 
 
 
     // GENERAL METHOD TO PERFORM AND UNDO ACTIONS
@@ -334,6 +336,11 @@ class TransitionNode {
             const result = this[method](...args);
             // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
+            // set final id of initial state as the updated id and vice versa for finalstate
+            if (method !== 'create' && method !== 'delete') {
+                action.initialState.final_id = this.final_id;
+                action.finalState.final_id = action.initialState.id;
+            }            
             // Return true (success) if the method does not explicitly return a value
             return result !== undefined ? result : true;
         };
@@ -342,11 +349,13 @@ class TransitionNode {
              // If the action was 'create', undoing it means removing the object
             if (method === 'create') {
                 this.delete();
-                // If the action was 'delete', undoing it involves re-creating the object with its initial state
+
+            // If the action was 'delete', undoing it involves re-creating the object with its initial state
             } else if (method === 'delete') {
                 this.applyState(action.initialState); // Assuming create reinstates the initial state
                 this.create();
-             // For all other actions, apply the initial state to undo the action
+
+            // For all other actions, apply the initial state to undo the action
             } else {
                 this.applyState(action.initialState); // Apply initial state for undo
             }
@@ -370,6 +379,7 @@ class TransitionNode {
     captureState() {
         return {
             id: this.id,
+            final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
             newBackgroundImgId: this.newBackgroundImgId
@@ -378,33 +388,36 @@ class TransitionNode {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
-        this.id = state.id;
-        this.position = state.position;
-        this.backgroundImgId = state.backgroundImgId;
-        this.newBackgroundImgId = state.newBackgroundImgId;
+         // Apply the state to the object
+         Object.assign(this, state);
+         this.id = state.id
 
         // Ensure to update the scene representation as needed
         this.updateScene();
     }
 
-    // Implementation to update the scene, similar to addToScene but for updating
-    updateScene() {
-        
+    // IMPLEMENTATION TO UPDATE THE SCENE
+    updateScene(updates) {
+
         // Find the corresponding entity in the A-Frame scene
-        const entity = document.getElementById(this.id);
-        if (entity) {
-            // Update the entity's position
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
-            // Update data attributes related to background images
-            entity.setAttribute('background_img_id', this.backgroundImgId);
-            entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
-            // Update visibility
-            entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
-            // // Update id in case we update the new_background_img_id attribute
-            // entity.setAttribute('title', this.id);
+        const entity = document.getElementById(this.final_id);
+        if (!entity) {
+            console.error('Entity not found');
+            return;
+        }
+
+        // Update the entity's position
+        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+        // Update data attributes related to background images
+        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
+        // Update visibility
+        entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+        // // Update id in case we update the new_background_img_id attribute
+        entity.setAttribute('id', this.id);
 
             
-        }
+
     }
 
 }

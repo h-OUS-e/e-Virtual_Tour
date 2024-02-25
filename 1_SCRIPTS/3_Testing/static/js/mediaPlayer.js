@@ -176,8 +176,6 @@ class MediaPlayer {
             return false;
         }
 
-        
-
         const entity = document.createElement('a-entity');
         this.id = `mp_${this.backgroundImgId}_${this.title}`;
         entity.setAttribute('id', this.id);
@@ -194,6 +192,7 @@ class MediaPlayer {
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
 
+        // Getting rotation, if not defined, we get it from direction
         if (this.rotation !== undefined && this.rotation !== null) {
             entity.setAttribute('rotation', this.rotation); // should be dynamic instead?
         }
@@ -208,6 +207,7 @@ class MediaPlayer {
     }
 
 
+    // Calculate rotation of object from the direction of camera normal
     getRotationFromDirection(negative) {
 
         // Get the right angle to rotate the object, which is relative to the camera position
@@ -291,11 +291,11 @@ class MediaPlayer {
     }
 
     // METHOD TO MOVE THE OBJECT
-    moveTo(newPosition, newDirection) {
-        this.position = newPosition;
-        this.direction = newDirection;
+    moveTo(new_position, new_direction) {
+        this.position = new_position;
+        // dynamically update rotation to reflect the normal of camera at which object is positioned
+        this.direction = new_direction;
         this.rotation = this.getRotationFromDirection();
-
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
@@ -324,6 +324,7 @@ class MediaPlayer {
             const result = this[method](...args);
             // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
+            // set final id of initial state as the updated id and vice versa for finalstate
             if (method !== 'create' && method !== 'delete') {
                 action.initialState.final_id = this.final_id;
                 action.finalState.final_id = action.initialState.id;
@@ -391,31 +392,18 @@ class MediaPlayer {
 
         // Ensure to update the scene representation as needed
         this.updateScene();
-
-        // // Update the DOM element's ID if it has changed
-        // const entity = document.getElementById(state.id);
-        // if (entity) {
-        //     entity.id = state.id;
-        // } else {
-        //     console.error('Entity not found when applying state');
-        // }
-
-        
     }
 
 
     // IMPLEMENTATION TO UPDATE THE SCENE
     updateScene(updates) {
         
-        console.log("ID 0: ", this.id, this.final_id);
-
         // Find the corresponding entity in the A-Frame scene
         const entity = document.getElementById(this.final_id);
         if (!entity) {
             console.error('Entity not found');
             return;
         }
-
 
         // Update the entity's position and rotation
         entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
@@ -429,7 +417,6 @@ class MediaPlayer {
 
         // this.id = `mp_${this.backgroundImgId}_${this.title}`;
         entity.setAttribute('id', this.id);
-        console.log("ID 1: ", this.id);
 
 
         // Loop through the updates object to apply updates
@@ -454,10 +441,9 @@ class MediaPlayer {
                         this.id = id
                         this.final_id = this.id;                    
                         entity.setAttribute('id', this.id);
-                        console.log("ID 2: ", this.id, this.final_id);
                     }
                 }
-                
+
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {
                     case 'position':
