@@ -151,6 +151,7 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
 class MediaPlayer {    
     constructor(id, position, backgroundImgId, mediaplayer_types, mediaplayer_type_string, icon_index, title, direction, rotation) {
         this.id = id;
+        this.final_id = id; // for updating id when undoing
         this.position = position;
         this.backgroundImgId = backgroundImgId;
         this.name = this.constructor.name;
@@ -178,7 +179,10 @@ class MediaPlayer {
         
 
         const entity = document.createElement('a-entity');
+        this.id = `mp_${this.backgroundImgId}_${this.title}`;
         entity.setAttribute('id', this.id);
+        entity.setAttribute('title', this.title);
+
         entity.setAttribute('class', 'MediaPlayer');
         entity.setAttribute('clickable', 'true');
         entity.setAttribute('visible', this.backgroundImgId === '01.1');
@@ -320,19 +324,27 @@ class MediaPlayer {
             const result = this[method](...args);
             // Capture the final state after the action is performed
             action.finalState = this.captureState(); // Capture the final state after action
+            if (method !== 'create' && method !== 'delete') {
+                action.initialState.final_id = this.final_id;
+                action.finalState.final_id = action.initialState.id;
+            }            
             // Return true (success) if the method does not explicitly return a value
             return result !== undefined ? result : true;
         };
 
         action.undo = () => {
+            // getting entity id
+            // const entity_id = method === 'create' ? action.finalState.originalId : action.initialState.originalId;
              // If the action was 'create', undoing it means removing the object
-            if (method === 'create') {
+            if (method === 'create') {                
                 this.delete();
-                // If the action was 'delete', undoing it involves re-creating the object with its initial state
+
+            // If the action was 'delete', undoing it involves re-creating the object with its initial state
             } else if (method === 'delete') {
-                this.applyState(action.initialState); // Assuming create reinstates the initial state
+                this.applyState(action.initialState); // Assuming create reinstates the initial state                
                 this.create();
-             // For all other actions, apply the initial state to undo the action
+
+            // For all other actions, apply the initial state to undo the action
             } else {
                 this.applyState(action.initialState); // Apply initial state for undo
             }
@@ -358,6 +370,7 @@ class MediaPlayer {
     captureState() {
         return {
             id: this.id,
+            final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
             backgroundImgId: this.backgroundImgId,
             mediaplayer_type: this.mediaplayer_type,
@@ -372,25 +385,32 @@ class MediaPlayer {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
-        this.id = state.id;
-        this.position = state.position;
-        this.backgroundImgId = state.backgroundImgId;
-        this.mediaplayer_type_string = state.mediaplayer_type_string;
-        this.mediaplayer_type = state.mediaplayer_type;
-        this.icon_index = state.icon_index;
-        this.title = state.title;
-        this.rotation = state.rotation;
+        // Apply the state to the object
+        Object.assign(this, state);
+        this.id = state.id
 
         // Ensure to update the scene representation as needed
         this.updateScene();
+
+        // // Update the DOM element's ID if it has changed
+        // const entity = document.getElementById(state.id);
+        // if (entity) {
+        //     entity.id = state.id;
+        // } else {
+        //     console.error('Entity not found when applying state');
+        // }
+
+        
     }
 
 
     // IMPLEMENTATION TO UPDATE THE SCENE
     updateScene(updates) {
         
+        console.log("ID 0: ", this.id, this.final_id);
+
         // Find the corresponding entity in the A-Frame scene
-        const entity = document.getElementById(this.id);
+        const entity = document.getElementById(this.final_id);
         if (!entity) {
             console.error('Entity not found');
             return;
@@ -407,6 +427,11 @@ class MediaPlayer {
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('title', this.title);
 
+        // this.id = `mp_${this.backgroundImgId}_${this.title}`;
+        entity.setAttribute('id', this.id);
+        console.log("ID 1: ", this.id);
+
+
         // Loop through the updates object to apply updates
         if (updates) {
             
@@ -416,7 +441,23 @@ class MediaPlayer {
                 if (this.hasOwnProperty(key)) {
                     // console.log("key: ", key, "value: ", value);
                     this[key] = value;
+
+                    //  Updating entity id if background or title has changed
+                    if (key === 'backgroundImgId' || key === 'title') {
+                        let id = `mp_${this.backgroundImgId}_${this.title}`;
+                        // Checking if object with same id already exists
+                        const existingEntity = document.getElementById(id);
+                        if (existingEntity ) {
+                            console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
+                            return false;
+                        }
+                        this.id = id
+                        this.final_id = this.id;                    
+                        entity.setAttribute('id', this.id);
+                        console.log("ID 2: ", this.id, this.final_id);
+                    }
                 }
+                
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {
                     case 'position':
@@ -425,7 +466,7 @@ class MediaPlayer {
                         entity.setAttribute(key, `${value.x} ${value.y} ${value.z}`);
                         break;
                     case 'backgroundImgId':
-                        entity.setAttribute('background_img_id', value);
+                        entity.setAttribute('background_img_id', value);                        
                         break;
                     case 'mediaplayer_type_string':
                         console.log(key, value);
@@ -442,7 +483,7 @@ class MediaPlayer {
                 }
             }
         }
-                    
+                   
 
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 

@@ -471,7 +471,7 @@ class EditMenuManager  {
             if (!menu) return; // Exit if the menu doesn't exist
 
             // Show object ID in the edit menu   
-            const object_id_element = menu.getElementsByClassName('object_id_display')[0];
+            const object_id_element = menu.getElementsByClassName('objectIdDisplay')[0];
             object_id_element.textContent = `Object ID: ${this.object_id}`; // Update the text to show the object ID
 
             // Adjust position of menu based on object position
@@ -722,10 +722,9 @@ function handleObjectEdits(event, object, mediaplayer_types, undo_redo_manager, 
         if (event.target.classList.contains('submitOption')) {
             event.stopPropagation(); // Stop the event from bubbling to prevent triggering parent event handlers.
             edit_menu_manager.hideEditMenu(); 
-            // Process the creation menu submission for creating the new object.
-            processEditMenuEvent(event, object, mediaplayer_types, undo_redo_manager, menu_id);
-            // Remove the event listener to prevent memory leaks and ensure clean-up.
+            changeMediaPlayerTitle(object, undo_redo_manager);
             removeEditHandling(menu_id)
+            edit_menu.removeEventListener('click', handleMenuEvent);
         }
 
         else if (event.target.classList.contains('deleteOption')) {
@@ -813,22 +812,24 @@ function removeEditHandling(menu_id) {
 }
 
 
-function changeMediaPlayerId(object, undo_redo_manager) {
-    let id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
-    const updateAction = object.getAction('updateScene', id);
+// This function changes title, which also changes the id of the mediaplayer element
+function changeMediaPlayerTitle(object, undo_redo_manager) {
+    // Getting title and replacing spaces with "_"
+    let title = document.getElementById('edit_menu_MediaPlayer_title_input').value.replace(/ /g, "_");
+    const updateAction = object.getAction('updateScene', {title});
     undo_redo_manager.doAction(updateAction);
 }
+
 
 function changeSceneId(object, undo_redo_manager) {
     let backgroundImgId = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
     // update scene id of object
     const updateAction = object.getAction('updateScene', {backgroundImgId});
+   
     undo_redo_manager.doAction(updateAction);
     // 'WARNING BUGGY WHEN TRANSITIONING change scene to show object in this new scene 
     emitTransitioning(backgroundImgId);
-
 }
-
 
 
 function changeMediaPlayerIconIdx(object, undo_redo_manager) {
@@ -849,5 +850,4 @@ function changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager, dro
             // update the object
             const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index});
             undo_redo_manager.doAction(updateAction);
-
 }
