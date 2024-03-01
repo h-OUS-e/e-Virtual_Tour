@@ -49,7 +49,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const edit_menu_MediaPlayer_type_Id = document.getElementById('edit_menu_MediaPlayer_type_input');
     const edit_menu_MediaPlayer_iconIdx_Id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
     const edit_menu_MediaPlayer_scene_Id = document.getElementById('edit_menu_MediaPlayer_scene_id_input');
-    const edit_menu_TransitionNode_scene_Id = document.getElementById('creation_menu_TransitionNode_scene_id_input');
+    const creation_menu_TransitionNode_scene_Id = document.getElementById('creation_menu_TransitionNode_scene_id_input');
+    const edit_menu_TransitionNode_scene_Id = document.getElementById('edit_menu_TransitionNode_toScene_id_input');
+
     
 
 
@@ -60,7 +62,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
     onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
     populateJSONDropdown(edit_menu_MediaPlayer_scene_Id, scenes_JSON, "id");
+    populateJSONDropdown(creation_menu_TransitionNode_scene_Id, scenes_JSON, "id");
     populateJSONDropdown(edit_menu_TransitionNode_scene_Id, scenes_JSON, "id");
+
 
 
     // Set up an event listener to update the Icon Index dropdown whenever a new mediaplayer type is selected
@@ -488,7 +492,6 @@ class EditMenuManager  {
             
             // update default values
             let entity = document.getElementById(this.object_id);
-            console.log(entity.getAttribute('icon_index'));
             // updates for mediaplayer
             if (entity.getAttribute('class') === 'MediaPlayer') {
 
@@ -501,8 +504,10 @@ class EditMenuManager  {
                 this.setDropdownDefaultValue('edit_menu_MediaPlayer_iconIdx_input', entity.getAttribute('icon_index'));
                 this.setDropdownDefaultValue('edit_menu_MediaPlayer_scene_id_input', entity.getAttribute('background_img_id'));
             }
-            else if (entity.class === 'TransitionNode') {
-                this.setDropdownDefaultValue('edit_menu_MediaPlayer_scene_id_input', entity.getAttribute('background_img_id'));
+            else if (entity.getAttribute('class') === 'TransitionNode') {
+                console.log("TEST", entity.getAttribute('new_background_img_id'));
+
+                this.setDropdownDefaultValue('edit_menu_TransitionNode_toScene_id_input', entity.getAttribute('new_background_img_id'));
             }
 
 
@@ -919,7 +924,11 @@ function setupDropdownListeners(object, mediaplayer_types, undo_redo_manager, me
             case 'edit_menu_MediaPlayer_type_input':
                 changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager);
                 break;
-            case 'edit_menu_MediaPlayer_scene_id_input':
+            case 'edit_menu_MediaPlayer_scene_id_input' :
+                changeSceneId(object, undo_redo_manager);
+                break;
+
+            case 'edit_menu_TransitionNode_toScene_id_input':
                 changeSceneId(object, undo_redo_manager);
                 break;
 
@@ -960,13 +969,23 @@ function changeMediaPlayerTitle(object, undo_redo_manager) {
 
 
 function changeSceneId(object, undo_redo_manager) {
-    let background_img_id = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
-    // update scene id of object
-    const updateAction = object.getAction('updateScene', {background_img_id});
-   
-    undo_redo_manager.doAction(updateAction);
-    // 'WARNING BUGGY WHEN TRANSITIONING change scene to show object in this new scene 
-    emitTransitioning(background_img_id);
+
+    if (object.name === "TransitionNode") {    
+
+        let new_background_img_id = document.getElementById('edit_menu_TransitionNode_toScene_id_input').value;  
+        // update scene id of object
+        const updateAction = object.getAction('updateScene', {new_background_img_id});    
+        undo_redo_manager.doAction(updateAction);
+    }
+    else if (object.name === "MediaPlayer") {    
+        let background_img_id = document.getElementById('edit_menu_MediaPlayer_scene_id_input').value;  
+        // update scene id of object
+        const updateAction = object.getAction('updateScene', {background_img_id});    
+        undo_redo_manager.doAction(updateAction);
+        // 'WARNING BUGGY WHEN TRANSITIONING change scene to show object in this new scene 
+        emitTransitioning(background_img_id);
+    }
+    
 }
 
 

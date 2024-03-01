@@ -121,7 +121,7 @@ function emitTransitioning(new_background_img_id){
 //     .then(data => {
 //         // Assuming data is an array of geometry parameters
 //         data.forEach(geometry => {
-//             const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.newBackgroundImgId)
+//             const transition_node = new TransitionNode(geometry.Id, geometry.point, geometry.backgroundImgId, geometry.new_background_img_id)
 //             transition_node.addToScene();
 //         });
 //     }).catch(error => console.error(`Failed to load ${objectType}:`, error));
@@ -159,12 +159,12 @@ async function loadTransitionNodesFromJSON() {
 
 
 class TransitionNode {    
-    constructor(id, position, backgroundImgId, newBackgroundImgId) {
+    constructor(id, position, background_img_id, new_background_img_id) {
         this.id = id;
         this.final_id = id;
         this.position = position;
-        this.backgroundImgId = backgroundImgId;
-        this.newBackgroundImgId = newBackgroundImgId;
+        this.background_img_id = background_img_id;
+        this.new_background_img_id = new_background_img_id;
         this.name = this.constructor.name;
     }
 
@@ -181,14 +181,14 @@ class TransitionNode {
         }
 
         const entity = document.createElement('a-entity');
-        this.id = `move_${this.backgroundImgId}_${this.newBackgroundImgId}`;
+        this.id = `move_${this.background_img_id}_${this.new_background_img_id}`;
         entity.setAttribute('id', this.id);
         entity.setAttribute('class', 'TransitionNode');
         entity.setAttribute('clickable', 'true');
-        entity.setAttribute('visible', this.backgroundImgId === '01.1');
+        entity.setAttribute('visible', this.background_img_id === '01.1');
         entity.setAttribute('toggle_visibility', true);
-        entity.setAttribute('new_background_img_id', this.newBackgroundImgId);
-        entity.setAttribute('background_img_id', this.backgroundImgId);
+        entity.setAttribute('new_background_img_id', this.new_background_img_id);
+        entity.setAttribute('background_img_id', this.background_img_id);
         entity.setAttribute('mixin', 'transition_node_frame');
         entity.setAttribute('position', this.position);
         entity.setAttribute('rotation', "90 0 0");
@@ -216,7 +216,7 @@ class TransitionNode {
 
 
     // // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
-    // static addToSheet(id, position, backgroundImgId, newBackgroundImgId) {
+    // static addToSheet(id, position, backgroundImgId, new_background_img_id) {
     //     const formattedPoint = `${position.x} ${position.y} ${position.z}`;
     //     fetch('/add_geometry', {
     //         method: 'POST',
@@ -225,7 +225,7 @@ class TransitionNode {
     //             Id: id,
     //             point: formattedPoint,
     //             backgroundImgId: backgroundImgId,
-    //             newBackgroundImgId: newBackgroundImgId,
+    //             new_background_img_id: new_background_img_id,
     //             objectType: this.name,
     //         }),
     //     }).then(response => response.json())
@@ -240,7 +240,7 @@ class TransitionNode {
     //         Id: this.id,
     //         point: formattedPoint, // Ensure this is serialized properly if needed
     //         backgroundImgId: this.backgroundImgId,
-    //         newBackgroundImgId: this.newBackgroundImgId,
+    //         new_background_img_id: this.new_background_img_id,
     //         objectType: this.name,
     //     };    
     //     console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
@@ -260,7 +260,7 @@ class TransitionNode {
         const addedSuccessfully = this.addToScene();
         // if (addedSuccessfully) {
         //     console.log("Adding object to the scene.");
-        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.newBackgroundImgId);
+        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.new_background_img_id);
         // } else {
         //     console.log("Object with the same ID already exists. Creation aborted.");
         //     return false; // Indicate that creation was not successful
@@ -421,8 +421,8 @@ class TransitionNode {
             id: this.id,
             final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
-            backgroundImgId: this.backgroundImgId,
-            newBackgroundImgId: this.newBackgroundImgId
+            background_img_id: this.background_img_id,
+            new_background_img_id: this.new_background_img_id
         };
     }
 
@@ -449,12 +449,55 @@ class TransitionNode {
         // Update the entity's position
         entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         // Update data attributes related to background images
-        entity.setAttribute('background_img_id', this.backgroundImgId);
-        entity.setAttribute('new_background_img_id', this.newBackgroundImgId);            
+        entity.setAttribute('background_img_id', this.background_img_id);
+        entity.setAttribute('new_background_img_id', this.new_background_img_id);            
         // Update visibility
-        entity.setAttribute('visible', this.backgroundImgId === '01.1'); // Example condition
+        entity.setAttribute('visible', this.background_img_id === '01.1'); // Example condition
         // // Update id in case we update the new_background_img_id attribute
         entity.setAttribute('id', this.id);
+
+        // Loop through the updates object to apply updates
+        if (updates) {
+
+            
+            for (const [key, value] of Object.entries(updates)) {
+                // Update the object's properties
+
+                if (this.hasOwnProperty(key)) {
+                    // console.log("key: ", key, "value: ", value);
+                    this[key] = value;
+
+                    //  Updating entity id if background or title has changed
+                    if (key === 'background_img_id' || key === 'new_background_img_id') {
+                        let id = `move_${this.background_img_id}_${this.new_background_img_id}`;
+                        // Checking if object with same id already exists
+                        const existingEntity = document.getElementById(id);
+                        if (existingEntity ) {
+                            console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
+                            return false;
+                        }
+                        this.id = id
+                        this.final_id = this.id;                    
+                        entity.setAttribute('id', this.id);
+                    }
+                }
+
+                console.log("new_background_img_id", this.new_background_img_id);
+
+                // Special handling for certain keys or direct update for the entity's attributes
+                switch (key) {
+                    case 'position':
+                    case 'background_img_id':
+                        entity.setAttribute('background_img_id', value);                        
+                        break;
+                    case 'new_background_img_id':
+                        entity.setAttribute('new_background_img_id', value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
     }
 }
