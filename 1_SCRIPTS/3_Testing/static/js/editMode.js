@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // distinguish between TransitionNode and MediaPlayer for different handling
         if (ctrlShift_selected_object_class === 'TransitionNode') {
             object = new TransitionNode(event.detail.Id, event.detail.position, event.detail.backgroundImgId, event.detail.newBackgroundImgId);
+            
             console.log('TransitionNode selected for dragging');
 
         } else if (ctrlShift_selected_object_class === 'MediaPlayer') {
@@ -247,6 +248,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // CODE TO MOVE OBJECTS ON SCENE WHEN isDragging and selectedNode are True
     scene.addEventListener('mouseMovingEditMode', function (event) {
+        event.preventDefault();
+
         if (!isDragging) return;
 
         // Update startPosition for the next move event
@@ -254,9 +257,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         startPosition.y = event.detail.intersection_pt.y;
         startPosition.z = event.detail.intersection_pt.z;
         startDirection = event.detail.direction;
-
-        // transition_node.moveTo(startPosition); // for smooth transitioning
-        event.preventDefault();
+        
+        // Move a clone of the object for smooth transitioning
+        // Has to be a clone to be able to undo move to original position
+        object.cloneAndMoveTo(startPosition, startDirection); 
 
 
     });

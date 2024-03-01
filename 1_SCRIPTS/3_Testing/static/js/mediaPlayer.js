@@ -212,12 +212,15 @@ class MediaPlayer {
 
 
     // Calculate rotation of object from the direction of camera normal
-    getRotationFromDirection(negative) {
-
+    getRotationFromDirection(negative, direction) {
+        let d;
+        if (direction) { d = direction;}
+        else { d = this.direction;
+        }
         // Get the right angle to rotate the object, which is relative to the camera position
         let originalDirection = new THREE.Vector3(0, 0, 1);
-        const crossProduct = new THREE.Vector3().crossVectors(originalDirection, this.direction);
-        let dot = originalDirection.dot(this.direction);        
+        const crossProduct = new THREE.Vector3().crossVectors(originalDirection, d);
+        let dot = originalDirection.dot(d);        
         // Calculate the rotation in radians
         var angleRadians = Math.acos(dot);
         if (crossProduct.y < 0) {
@@ -287,6 +290,7 @@ class MediaPlayer {
     
     // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
+        this.deleteClone();
         const entity = document.getElementById(this.id);
         if (entity) {
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
@@ -301,6 +305,50 @@ class MediaPlayer {
         this.direction = new_direction;
         this.rotation = this.getRotationFromDirection();
         this.updateScenePosition(); // Reflect changes in the scene
+    }
+
+
+
+    cloneAndMoveTo(new_position, new_direction) {
+        const originalEntity = document.getElementById(this.id);
+        console.log("ORIGINAL", originalEntity);
+        if (originalEntity) {
+            // Define a consistent ID for the clone to make it identifiable
+            const cloneId = this.id + '_clone';
+
+            // Check if a clone already exists and remove it
+            this.deleteClone();
+
+            // Clone the original entity
+            const clone = originalEntity.cloneNode(true); // true to clone all child nodes and attributes
+
+            
+            // Set the clone ID to the predefined consistent ID
+            clone.id = cloneId;
+
+            // dynamically update rotation to reflect the normal of camera at which object is positioned
+            let rotation = this.getRotationFromDirection(false, new_direction);
+            
+            // Set the new position for the clone
+            clone.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
+            clone.setAttribute('rotation',  rotation);
+
+            console.log("clone", clone);
+
+            
+            // Add the clone to the scene, assuming the scene is the parent of the original entity
+            originalEntity.parentNode.appendChild(clone);
+        }
+    }
+
+    // Check if a clone already exists and remove it
+    deleteClone(){
+        const cloneId = this.id + '_clone';
+        // Check if a clone already exists and remove it
+        const existingClone = document.getElementById(cloneId);
+        if (existingClone) {
+            existingClone.parentNode.removeChild(existingClone);
+        }
     }
 
 

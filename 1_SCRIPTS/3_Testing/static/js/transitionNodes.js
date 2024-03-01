@@ -299,6 +299,7 @@ class TransitionNode {
 
     // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
+        this.deleteClone();
         const entity = document.getElementById(this.id);
         if (entity) {
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
@@ -306,9 +307,48 @@ class TransitionNode {
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
-    moveTo(new_position) {
+    moveTo(new_position) {        
         this.position = new_position;
         this.updateScenePosition(); // Reflect changes in the scene
+    }
+
+    cloneAndMoveTo(new_position) {
+        const originalEntity = document.getElementById(this.id);
+        console.log("ORIGINAL", originalEntity);
+        if (originalEntity) {
+            // Define a consistent ID for the clone to make it identifiable
+            const cloneId = this.id + '_clone';
+
+            // Check if a clone already exists and remove it
+            this.deleteClone();
+
+            // Clone the original entity
+            const clone = originalEntity.cloneNode(true); // true to clone all child nodes and attributes
+
+            
+            // Set the clone ID to the predefined consistent ID
+            clone.id = cloneId;
+            
+            // Set the new position for the clone
+            clone.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
+            clone.setAttribute('rotation', "90 0 0");
+
+            console.log("clone", clone);
+
+            
+            // Add the clone to the scene, assuming the scene is the parent of the original entity
+            originalEntity.parentNode.appendChild(clone);
+        }
+    }
+
+    // Check if a clone already exists and remove it
+    deleteClone(){
+        const cloneId = this.id + '_clone';
+        // Check if a clone already exists and remove it
+        const existingClone = document.getElementById(cloneId);
+        if (existingClone) {
+            existingClone.parentNode.removeChild(existingClone);
+        }
     }
 
 
