@@ -311,7 +311,6 @@ class MediaPlayer {
 
     cloneAndMoveTo(new_position, new_direction) {
         const originalEntity = document.getElementById(this.id);
-        console.log("ORIGINAL", originalEntity);
         if (originalEntity) {
             // Define a consistent ID for the clone to make it identifiable
             const cloneId = this.id + '_clone';
@@ -332,10 +331,7 @@ class MediaPlayer {
             // Set the new position for the clone
             clone.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
             clone.setAttribute('rotation',  rotation);
-
-            console.log("clone", clone);
-
-            
+           
             // Add the clone to the scene, assuming the scene is the parent of the original entity
             originalEntity.parentNode.appendChild(clone);
         }

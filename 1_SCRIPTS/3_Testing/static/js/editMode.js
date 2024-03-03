@@ -273,6 +273,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('MediaPlayer selected for dragging');
         }
 
+        // Updating sky rotation
+        else if (ctrlShift_selected_object_class === 'Sky'){
+            // adjustSceneRotation(event);
+            toggleCameraControls(false); // Disable camera controls when starting to drag.
+        }
+
         
         else {console.log("no element clicked", ctrlShift_selected_object_class);}
 
@@ -284,15 +290,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!isDragging) return;
 
-        // Update startPosition for the next move event
-        startPosition.x = event.detail.intersection_pt.x;
-        startPosition.y = event.detail.intersection_pt.y;
-        startPosition.z = event.detail.intersection_pt.z;
-        startDirection = event.detail.direction;
-        
-        // Move a clone of the object for smooth transitioning
-        // Has to be a clone to be able to undo move to original position
-        object.cloneAndMoveTo(startPosition, startDirection); 
+        if (object) {
+
+            // Update startPosition for the next move event
+            startPosition.x = event.detail.intersection_pt.x;
+            startPosition.y = event.detail.intersection_pt.y;
+            startPosition.z = event.detail.intersection_pt.z;
+            startDirection = event.detail.direction;
+            
+            // Move a clone of the object for smooth transitioning
+            // Has to be a clone to be able to undo move to original position
+            object.cloneAndMoveTo(startPosition, startDirection); 
+        }
+
+        // Update sky rotation if not object
+        else if (!object){
+            adjustSceneRotation(event);
+        }
 
 
     });
@@ -300,15 +314,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // CODE TO DISABLE MOVING OBJECTS AFTER MOUSE IS RELEASED
     scene.addEventListener('mouseup', function (event) {
         if (event.button === 0) { // Left mouse button
-            if (isDragging) {
+            if (isDragging && object) {
                 // Record the move action only once upon the correct conditions
                 const createAction = object.getAction('moveTo', startPosition, startDirection);
                 undo_redo_manager.doAction(createAction);
                 objectMoved = true;
             }
-
+            toggleCameraControls(true); // Disable camera controls when starting to drag.
             isDragging = false;
             objectMoved = false;
+            object = null;
         }
     });
 
@@ -380,19 +395,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-// // Calculates the position of the ray given distance, direction and origin
-// function calculatePointInFrontOfCamera(distance, origin, direction) {
-//     // let direction = new THREE.Vector3();
-//     // camera.object3D.getWorldDirection(direction);
-//     direction.multiplyScalar(distance);
-//     direction.add(origin);
-//     return direction;
-// }
+function adjustSceneRotation(event) {
+    // Update the sky's rotation based on mouse movement.
+    // Adjust these values as needed for smoother or faster rotation.
+    const rotationSpeed = -0.15;
+    const sky = document.getElementById("sky");
+    let rotation = sky.getAttribute('rotation');
 
 
+    rotation.y += event.detail.dx * rotationSpeed;
+    // rotation.x -= event.detail.dy * rotationSpeed;
+
+    sky.setAttribute('rotation', rotation);
+    // lastMousePosition.x = event.clientX;
+    // lastMousePosition.y = event.clientY;
+
+}
 
 
-
+// Enable/disable camera controls.
+function toggleCameraControls(enable) {
+    let camera = document.getElementById('camera');
+    camera.setAttribute('look-controls', 'enabled', enable);    
+}
 
 
 // A function to slide the plane position up and down to place transition nodes on it
@@ -408,7 +433,6 @@ function adjustPlaneHeight(event) {
     const plane = document.getElementById('gridPlane');
     // Get the cylinder element
     const cylinder = document.getElementById('gridCylinder');
-
     // Parse the current position
     const currentPosition = plane.getAttribute('position');
 
