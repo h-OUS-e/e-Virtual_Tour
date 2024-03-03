@@ -9,7 +9,6 @@ import { TransitionNode, emitTransitioning } from './transitionNodes.js';
 
 
 
-
 document.addEventListener('DOMContentLoaded', async () => {
     const scene = document.querySelector('a-scene');
 
@@ -43,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let startDirection = null;
     let validObjectClasses = ['TransitionNode', 'MediaPlayer'];
     let objectMoved = false;
+    let rotating = false;
 
     // Getting media player types from the JSON file
     const mediaplayer_types = await loadMediaPlayerTypes();
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Updating sky rotation
         else if (ctrlShift_selected_object_class === 'Sky'){
-            // adjustSceneRotation(event);
+            rotating = true;
             toggleCameraControls(false); // Disable camera controls when starting to drag.
         }
 
@@ -304,8 +304,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Update sky rotation if not object
-        else if (!object){
-            adjustSceneRotation(event);
+        else if (!object){            
+            adjustCameraRotation(event);
         }
 
 
@@ -320,10 +320,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 undo_redo_manager.doAction(createAction);
                 objectMoved = true;
             }
-            toggleCameraControls(true); // Disable camera controls when starting to drag.
+            toggleCameraControls(true); // Reanable camera controls
             isDragging = false;
             objectMoved = false;
             object = null;
+
+            if (rotating) {
+                emitCameraRotatedEvent();
+                rotating = false;
+            }
         }
     });
 
@@ -395,28 +400,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-function adjustSceneRotation(event) {
+function adjustCameraRotation(event) {
     // Update the sky's rotation based on mouse movement.
     // Adjust these values as needed for smoother or faster rotation.
-    const rotationSpeed = -0.15;
-    const sky = document.getElementById("sky");
-    let rotation = sky.getAttribute('rotation');
-
+    const rotationSpeed = 0.15;
+    const camera_rig = document.getElementById("camera_rig");
+    let rotation = camera_rig.getAttribute('rotation');
 
     rotation.y += event.detail.dx * rotationSpeed;
     // rotation.x -= event.detail.dy * rotationSpeed;
 
-    sky.setAttribute('rotation', rotation);
-    // lastMousePosition.x = event.clientX;
-    // lastMousePosition.y = event.clientY;
+    camera_rig.setAttribute('rotation', rotation);
+    console.log(camera_rig.getAttribute('rotation'));
 
+}
+
+function emitCameraRotatedEvent() {
+    // Emit event to update initial camera rotation of scene
+    let camera_rig = document.getElementById("camera_rig");
+    let rotation = camera_rig.getAttribute('rotation');
+    let sky = document.getElementById("sky");
+    let background_img_id = sky.getAttribute('background_img_id');
+
+    let new_event = new CustomEvent('cameraRotated', 
+    {
+        detail: {
+            event: 'camera_rotated',
+            initial_camera_rotation: `${rotation.x} ${rotation.y} ${rotation.z}`,
+            background_img_id: background_img_id,
+        },
+    });
+        console.log(camera_rig.getAttribute('rotation'));
+
+
+    // Dispatch event
+    scene.dispatchEvent(new_event);  
 }
 
 
 // Enable/disable camera controls.
 function toggleCameraControls(enable) {
     let camera = document.getElementById('camera');
-    camera.setAttribute('look-controls', 'enabled', enable);    
+    camera.setAttribute('look-controls', 'enabled', enable);  
+    camera.setAttribute('custom-look-controls', `enabled: ${enable}`); 
+
 }
 
 

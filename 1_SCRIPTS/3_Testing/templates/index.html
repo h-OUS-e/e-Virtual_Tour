@@ -296,15 +296,16 @@
             
 
         </a-assets>
-
-        <a-camera id="camera"  custom-look-controls="true" wasd-controls-enabled="false">
-            <a-cursor id="cursor" fuse="True"></a-cursor>
-        </a-camera>
+        <a-entity id="camera_rig" rotation="0 0 0">
+            <a-camera id="camera"  custom-look-controls wasd-controls-enabled="false" rotation="45 45 45">
+                <a-cursor id="cursor" fuse="True"></a-cursor>
+            </a-camera>
+        </a-entity>
         
         
 
         <!-- Loading in 360 image. -->
-        <a-sky id="sky" class="Sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0"></a-sky>
+        <a-sky id="sky" class="Sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0" initial_camera_rotation="0 0 0"></a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
         <a-ring 

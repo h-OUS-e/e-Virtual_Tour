@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
-        console.log("TEEST");
         // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  

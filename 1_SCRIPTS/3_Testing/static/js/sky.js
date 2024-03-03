@@ -3,10 +3,10 @@ The sky object determines the background 360 image.
 It listens for changes in transition nodes, on map or on scene
 and changes the sky background image.
 */
-
 document.addEventListener('DOMContentLoaded', async () => {
-    let scenes = await getSceneFromJSON();    
+      
     const scene = document.querySelector('a-scene');
+    let scenes = await getSceneFromJSON();  
     var sky = document.querySelector('#sky');
 
     // Loading initial scene
@@ -21,6 +21,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         var new_background_img_id = event.detail.new_background_img_id;
         changeScene(sky, new_background_img_id, scenes);
         // console.log('New background image ID transitioning:', new_background_img_id, typeof new_background_img_id);
+        
+        
+        // reset the a-frame camera rotation 
+        let camera = document.getElementById('camera');
+        let controls = camera.components['custom-look-controls']
+        controls.pitchObject.rotation.x = 0
+        controls.yawObject.rotation.y = 0
+
+    });
+
+    // Adjusting initial camera rotation of scenes object
+    scene.addEventListener('cameraRotated', function (event)
+    {
+        const scene = scenes.find(scene => scene.background_img_id === event.detail.background_img_id);
+        if (scene) { // Make sure the scene was found
+            scene.initial_camera_rotation = event.detail.initial_camera_rotation; // Update the rotation
+        } else {
+        }
 
     });
 
@@ -104,6 +122,8 @@ function loadImageAsset(asset_object) {
             img_element.setAttribute('description', asset_object.description);
             img_element.setAttribute('background_img_id', asset_object.id);
             img_element.setAttribute('rotation', asset_object.rotation);
+            img_element.setAttribute('initial_camera_rotation', asset_object.initial_camera_rotation);
+
 
             // Apply the initial loading class for transparency
             img_element.classList.add('img-loading');
@@ -126,18 +146,7 @@ function loadImageAsset(asset_object) {
 
 
 
-function getRotationByImageId(scenes, imageId) {
-    // Find the scene object with the specified image ID
-    const scene = scenes.find(scene => scene.id === imageId);
 
-    // If the scene object is found, return its rotation property
-    if (scene) {
-        return scene.rotation;
-    } else {
-        // Return a default value or null if no matching scene is found
-        return null;
-    }
-}
 
 function toggleVisibility(selector, isVisible) {
     // find all intities that have the selector in them (background image ID)
@@ -163,14 +172,18 @@ async function changeScene(sky, new_background_img_id, scenes)
     // Find the scene object with the specified image ID, and add to asset if it don't exist
     const scene = scenes.find(scene => scene.background_img_id === new_background_img_id);
     const current_background_img_id = sky.getAttribute('background_img_id');
-    
+
+    let camera_rig = document.getElementById('camera_rig');
+   
     try {
         let existing_asset = await loadImageAsset(scene);
         
         // Once the image is loaded, update the <a-sky> element
         sky.setAttribute('src', '#scene_' + new_background_img_id); 
         sky.setAttribute('background_img_id', new_background_img_id);
-        sky.setAttribute('rotation', existing_asset.getAttribute('rotation'));        
+        sky.setAttribute('rotation', existing_asset.getAttribute('rotation')); 
+        camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));
+
         console.log('Moved to new scene!', sky.getAttribute('src'));
 
         // Hide the objects in old background
@@ -186,3 +199,6 @@ async function changeScene(sky, new_background_img_id, scenes)
         console.error('Error loading image:', error);
     }
 }
+
+
+
