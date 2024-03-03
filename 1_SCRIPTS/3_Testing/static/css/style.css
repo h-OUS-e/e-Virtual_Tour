@@ -375,6 +375,16 @@ html {
 
 
 
+/* SCENE TRANSITIONING */
+.img-loading {
+    opacity: 0;
+    transition: opacity 1s ease; /* Adjust the time as needed */
+  }
+  
+.img-loaded {
+opacity: 1; /* Fully visible */
+}
+
 
 /* sidebar styles */
 #sidebar-container {
@@ -545,5 +555,6 @@ html {
 
 /*----------------------------------------------------------------*/
 /* make fonts responsive */
+
 
 
