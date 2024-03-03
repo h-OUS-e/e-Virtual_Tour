@@ -1,16 +1,22 @@
 AFRAME.registerComponent('hollow-cylinder', {
     schema: {
-      height: {type: 'number', default: 1},
-      radius: {type: 'number', default: 1},
+      height: {type: 'number', default: 40},
+      radius: {type: 'number', default: 40},
       thetaSegments: {type: 'number', default: 32},
       heightSegments: {type: 'number', default: 4}
     },
     init: function() {
+      console.log("Hollow-cylinder component initialized.");
+      console.log("Initial Data:", this.data);
       this.createGeometry();
     },
     update: function() {
       // Re-create geometry on update
       this.createGeometry();
+    },
+    getRadius: function() {
+      var data = this.data;
+      return this.radius;
     },
     createGeometry: function() {
       var data = this.data;

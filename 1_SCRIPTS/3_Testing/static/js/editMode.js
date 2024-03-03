@@ -11,6 +11,19 @@ import { TransitionNode, emitTransitioning } from './transitionNodes.js';
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const scene = document.querySelector('a-scene');
+
+    // Initializing the custom A-frame components
+
+    // Initializing the grid Cylinder
+    const entity = document.getElementById('gridCylinder');
+    entity.setAttribute('hollow-cylinder', {
+        height: 10,
+        radius: 10, 
+        thetaSegments: 32, 
+        heightSegments: 4 
+    });
+
     
     let isEditMode = false;
     let editMenuOn = false;
@@ -19,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let object;
 
     const camera = document.querySelector('a-camera');
-    const scene = document.querySelector('a-scene');
+    // const scene = document.querySelector('a-scene');
     let currentEditMenuId = null;
     let transition_node = null;
     let media_player = null;
@@ -53,7 +66,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const edit_menu_TransitionNode_scene_Id = document.getElementById('edit_menu_TransitionNode_toScene_id_input');
 
     
-
+    if (!scene.hasLoaded) {
+        scene.addEventListener('loaded', function() {
+            // Access and log the component data here
+            var cylinderEntity = document.querySelector('#gridCylinder');
+            var hollowCylinderData = cylinderEntity.getAttribute('hollow-cylinder');
+            console.log("Radius:", hollowCylinderData ? hollowCylinderData.radius : 'Data not found');
+        });
+    } else {
+        scene.addEventListener('loaded', function() {
+        // The scene is already loaded (relevant if your script might run after the scene has loaded)
+        var cylinderEntity = document.querySelector('#gridCylinder');
+        var hollowCylinderData = cylinderEntity.getAttribute('hollow-cylinder');
+        console.log(cylinderEntity);
+        console.log("Radius:", hollowCylinderData ? hollowCylinderData.radius : 'Data not found 2');
+        })
+    }
 
 
     // Populate the dropdown upon of mediaplayer creation meny initialization
@@ -396,7 +424,7 @@ function adjustPlaneHeight(event) {
 
 // A function to scale the cylinder radius
 function adjustRadius(event) {
-    // Only proceed if the Shift key is pressed
+    // Only proceed if the Alt key is pressed
     if (!event.altKey) return;
 
     // Prevent the default scrolling behavior
@@ -407,9 +435,10 @@ function adjustRadius(event) {
     // Get the cylinder element
     const cylinder = document.getElementById('gridCylinder');
 
-    // Parse the current radius. Assuming the radius is directly accessible and modifiable,
-    // which might need adjustment based on your component's implementation.
-    let currentRadius = parseFloat(cylinder.getAttribute('hollow-cylinder').radius);
+    // Parse the current radius
+    var hollowCylinderProps = cylinder.getAttribute('hollow-cylinder');
+    let currentRadius = hollowCylinderProps.radius;
+
     const currentPosition = plane.getAttribute('position');
     cylinder.setAttribute('position', currentPosition);
 
@@ -418,9 +447,10 @@ function adjustRadius(event) {
     currentRadius += event.deltaY > 0 ? -0.1 : 0.1;
         
     // Update the cylinders's and plane's radius
-    cylinder.setAttribute('hollow-cylinder', 'radius', currentRadius);
-    cylinder.setAttribute('hollow-cylinder', 'height', currentRadius);    
+    cylinder.setAttribute('hollow-cylinder', {radius: currentRadius});
+    cylinder.setAttribute('hollow-cylinder', {height: currentRadius}); 
 
+    // Texture UV values
     const yRepeat = currentRadius*2
     const xRepeat = currentRadius*2
 

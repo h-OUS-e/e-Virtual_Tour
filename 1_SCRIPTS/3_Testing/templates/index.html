@@ -23,6 +23,7 @@
     <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
+    <script type="module" src="../static/js/hollowCylinder.js" ></script>
     <script src="../static/js/zoomControl.js"></script> 
     <script src="../static/js/sky.js"></script> 
     <script type="module" src="../static/js/mouseInteractionEvents.js"></script> 
@@ -35,7 +36,7 @@
     <script src="../static/js/touchInteractionEvents.js"></script>
     <script type="module" src="../static/js/mediaBar.js"></script>
     <script type="module" src="../static/js/editMode.js"></script>
-    <script type="module" src="../static/js/hollowCylinder.js"></script>
+    
 
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
     
@@ -248,21 +249,21 @@
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
             <a-mixin
                 id="mediaplayer_frame"                 
-                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3.1"
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: 1"
                 material="side:double; shader: flat"
                 animation__scale="property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: hoverin"
                 animation__scale_reverse="property: scale; to: 1 1 1; dur: 200; startEvents: hoverout"
             ></a-mixin>
             <a-mixin
                 id="mediaplayer_icon"
-                geometry="primitive: ring; radiusInner: 0; radiusOuter: 3"
+                geometry="primitive: ring; radiusInner: 0; radiusOuter: .94"
                 material="opacity: .99; side:double; shader: flat"
                 position="0 0 -.05"
                 src="../static/0_resources/icons/CMYK_Blue_Emergency.png">
             </a-mixin>
             <a-mixin
                 id="mediaplayer_border"
-                geometry="primitive: ring; radiusInner: 3; radiusOuter: 3.1"
+                geometry="primitive: ring; radiusInner: .93; radiusOuter: 1"
                 material="color:white; side:double; shader: flat"
                 position="0 0 -.05"
                 >
@@ -306,8 +307,22 @@
         <a-sky id="sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0"></a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
-        <a-ring id="gridPlane" edit_mode="false" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>
-        <a-entity id="gridCylinder" edit_mode="false"  hollow-cylinder="height: 40; radius: 40;"  position="0 0 0" material="visible: false; src: ../static/0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"></a-entity>
+        <a-ring 
+            id="gridPlane" 
+            edit_mode="false" 
+            position="0 0 0" 
+            rotation="-90 0 0" 
+            radius-inner="0" 
+            radius-outer="10" 
+            material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"
+        ></a-ring>
+        <a-entity 
+            id="gridCylinder" 
+            edit_mode="false"  
+            hollow-cylinder
+            position="0 0 0" 
+            material="visible: false; src: ../static/0_resources/misc/grid_texture.png;  transparent: true; repeat: 60 10;"
+        ></a-entity>
 
 
 
