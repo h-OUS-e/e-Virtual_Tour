@@ -240,11 +240,10 @@
         
         <a-assets>
             <!-- Can we load on the go instead of waiting for website to load? -->
-            <img id="background_img01.1" src="../static/0_resources/img1.1_lobby.jpeg" background_img_id="01.1" alt="image of the scene"> 
-            <img id="background_img01.2" src="../static/0_resources/img1.2_lobby.jpeg" background_img_id="01.2" alt="image of the scene">
-            <img id="background_img02.1" src="../static/0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1" alt="image of the scene">
-            <img id="background_img03.1" src="../static/0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1" alt="image of the scene">
-            <img id="img03.1" src="../static/0_resources/test.png" background_img_id="03.1" alt="iamge of the scene">
+            <!-- <img id="background_img_01.1" src="../static/0_resources/img1.1_lobby.jpeg" background_img_id="01.1" alt="image of the scene"> 
+            <img id="background_img_01.2" src="../static/0_resources/img1.2_lobby.jpeg" background_img_id="01.2" alt="image of the scene">
+            <img id="background_img_02.1" src="../static/0_resources/img2_dentalRoom1.jpeg" background_img_id="02.1" alt="image of the scene">
+            <img id="background_img_03.1" src="../static/0_resources/img3_dentalRoom2.jpeg" background_img_id="03.1" alt="image of the scene"> -->
 
             <!-- Defining the general mediaPlayer entity, basically like a prefab -->
             <a-mixin
@@ -304,8 +303,7 @@
         
 
         <!-- Loading in 360 image. -->
-        <a-sky id="sky" src="#background_img01.1" background_img_id="01.1">            
-        </a-sky>
+        <a-sky id="sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0"></a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
         <a-ring id="gridPlane" edit_mode="false" position="0 0 0" rotation="-90 0 0" radius-inner="0" radius-outer="10" material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"></a-ring>

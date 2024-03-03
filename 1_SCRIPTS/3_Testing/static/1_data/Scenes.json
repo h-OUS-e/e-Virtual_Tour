@@ -1,23 +1,30 @@
 [
     {
-        "id": "01.1",
-        "description": "",
-        "path": "../static/0_resources/img1.1_lobby.jpeg"
+        "id": "scene_01.1",
+        "background_img_id" : "01.1",
+        "description": "test",
+        "rotation": "0 0 0",
+        "path": "../static/0_resources/img1.1_lobby.jpeg"        
     }, 
     {
-        "id": "01.2",
-        "description": "",
+        "id": "scene_01.2",
+        "background_img_id" : "01.2",
+        "description": "ts",
+        "rotation": "0 0 0",
         "path": "../static/0_resources/img1.2_lobby.jpeg"        
     }, 
     {
-        "id": "02.1",
-        "description": "",
+        "id": "scene_02.1",
+        "background_img_id" : "02.1",
+        "description": "s",
+        "rotation": "0 0 0",
         "path": "../static/0_resources/img2_dentalRoom1.jpeg"
     }, 
     {
-        "id": "03.1",
-        "description": "",
-        "path": "../static/0_resources/img3_dentalRoom1.jpeg"
+        "id": "scene_03.1",
+        "background_img_id" : "03.1",
+        "description": "t",
+        "rotation": "0 0 0",
+        "path": "../static/0_resources/img3_dentalRoom2.jpeg"
     }    
-
 ]
