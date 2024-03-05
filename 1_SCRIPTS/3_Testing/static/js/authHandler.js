@@ -22,7 +22,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     if (error) {
         alert('Error logging in: ' + error.message);
     } else {
-        alert('Login successful!'+ session.access_token);
+        alert('Login successful!'+ user);
         console.log()
          //move to the projects page
     }
