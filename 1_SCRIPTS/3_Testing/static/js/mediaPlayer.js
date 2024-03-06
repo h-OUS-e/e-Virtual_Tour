@@ -1,6 +1,11 @@
 import { loadMediaPlayerTypes } from './JSONSetup.js';
 import { emitGETProjectDataEvent } from './dbEvents.js';
+
+
 const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+
+
+
  // Get colors from CSS palette
  const colors = getComputedStyle(document.documentElement);  
  const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
