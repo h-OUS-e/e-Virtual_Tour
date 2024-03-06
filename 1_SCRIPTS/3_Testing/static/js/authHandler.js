@@ -32,7 +32,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
 document.addEventListener('fetch-project-data', function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
     try {
-        const data = await Promise.all([
+        const results = await Promise.all([
             fetchProjectData(project_uid, 'media'),
             fetchProjectData(project_uid, 'scenes'),
             fetchProjectData(project_uid, 'transition_nodes')
@@ -51,15 +51,16 @@ document.addEventListener('fetch-project-data', function(event) { //needs a vari
 
 
 //get media data
-async function fetchProjectData (project_uid,table) {
-    let { data: media, error } = await supabase
+async function fetchProjectData(project_uid, table) {
+    let { data, error } = await supabase
         .from(table)
         .select('*')
         .eq('project_uid', project_uid);
 
     if (error) {
         console.error('Error fetching data:', error);
+        return { error }; // Return error for the calling context to handle
     } else {
-        document.dispatchEvent(new CustomEvent('media-data', { detail: media }));
+        return { data }; // Return data
     }
 }
