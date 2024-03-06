@@ -28,12 +28,32 @@ document.getElementById('login-form').addEventListener('submit', async function(
          //move to the projects page
     }
 });
-// API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
-//get media data
-async function fetchMediaData(event) {
+// event listeners that connect to API request functions
+document.addEventListener('fetch-project-data', function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
+    try {
+        const data = await Promise.all([
+            fetchProjectData(project_uid, 'media'),
+            fetchProjectData(project_uid, 'scenes'),
+            fetchProjectData(project_uid, 'transition_nodes')
+        ])
+        document.dispatchEvent(new CustomEvent('fetched-project-data', { detail: { results } }));
+        
+    } catch (error) {   
+        console.error('An error occurred:', error);
+    }
+});
+
+
+// API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
+// read
+// get media data
+
+
+//get media data
+async function fetchProjectData (project_uid,table) {
     let { data: media, error } = await supabase
-        .from('media')
+        .from(table)
         .select('*')
         .eq('project_uid', project_uid);
 
@@ -43,5 +63,3 @@ async function fetchMediaData(event) {
         document.dispatchEvent(new CustomEvent('media-data', { detail: media }));
     }
 }
-document.addEventListener('read-media', fetchMediaData); //event read-media must have the project_uid emmited with it
-
