@@ -29,7 +29,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     }
 });
 // event listeners that connect to API request functions
-document.addEventListener('fetch-project-data', function(event) { //needs a variable "project_uid" with it
+document.addEventListener('fetch-project-data', async function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
     try {
         const results = await Promise.all([
@@ -50,7 +50,7 @@ document.addEventListener('fetch-project-data', function(event) { //needs a vari
 // get media data
 
 
-//get media data
+//get table data
 async function fetchProjectData(project_uid, table) {
     let { data, error } = await supabase
         .from(table)
@@ -59,8 +59,8 @@ async function fetchProjectData(project_uid, table) {
 
     if (error) {
         console.error('Error fetching data:', error);
-        return { error }; // Return error for the calling context to handle
+        return { error }; 
     } else {
-        return { data }; // Return data
+        return { data }; 
     }
 }
