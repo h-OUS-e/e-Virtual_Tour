@@ -28,5 +28,20 @@ document.getElementById('login-form').addEventListener('submit', async function(
          //move to the projects page
     }
 });
+// API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
+//get media data
+async function fetchMediaData(event) {
+    const { project_uid } = event.detail;
+    let { data: media, error } = await supabase
+        .from('media')
+        .select('*')
+        .eq('project_uid', project_uid);
 
+    if (error) {
+        console.error('Error fetching data:', error);
+    } else {
+        document.dispatchEvent(new CustomEvent('media-data', { detail: media }));
+    }
+}
+document.addEventListener('read-media', fetchMediaData); //event read-media must have the project_uid emmited with it
 
