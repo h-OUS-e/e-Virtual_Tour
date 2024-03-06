@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
 });
 
-
 async function loadMediaPlayersFromJSON(mediaplayer_types) {
     try {
         const response = await fetch('../static/1_data/MediaPlayers.json'); // Adjust the path as necessary

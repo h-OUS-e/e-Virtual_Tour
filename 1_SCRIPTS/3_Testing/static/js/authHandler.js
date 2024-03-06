@@ -5,7 +5,6 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 
 const supabase = createClient(supabaseUrl,supabaseAnonKey);
-console.log(typeof(supabase));
 
 // Handle the login form submission
 document.getElementById('login-form').addEventListener('submit', async function(event) {
@@ -42,13 +41,18 @@ document.getElementById('login-form').addEventListener('submit', async function(
 document.addEventListener('fetch-project-data', async function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
     try {
-        const results = await Promise.all([
+        const [media, scenes, transitionNodes] = await Promise.all([
             fetchProjectData(project_uid, 'media'),
             fetchProjectData(project_uid, 'scenes'),
             fetchProjectData(project_uid, 'transition_nodes')
         ])
+        const results = {
+            media: media,
+            scenes: scenes,
+            transition_nodes: transitionNodes
+        };
         document.dispatchEvent(new CustomEvent('fetched-project-data', { detail: { results } }));
-        
+        console.log("emmited fetched-project-data" + results)
     } catch (error) {   
         console.error('An error occurred:', error);
     }
@@ -57,10 +61,7 @@ document.addEventListener('fetch-project-data', async function(event) { //needs 
 
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // read
-// get media data
-
-
-//get table data
+//GET table data
 async function fetchProjectData(project_uid, table) {
     let { data, error } = await supabase
         .from(table)
@@ -69,14 +70,13 @@ async function fetchProjectData(project_uid, table) {
 
     if (error) {
         console.error('Error fetching project data:', error);
-        return { error }; 
+        throw new Error(`Error fetching project data: ${error.message}`); 
     } else {
-        console.log(data);
         return { data }; 
     }
 }
 
-//get projects function. I need to add some kind of auth into it fucking sucks
+//GET projects function. I need to add some kind of auth into it fucking sucks
 async function fetchProjects(user_uid) {
     let {projects, error } = await supabase
         .from(table)
@@ -89,3 +89,5 @@ async function fetchProjects(user_uid) {
             return(projects)
         }
 }
+
+
