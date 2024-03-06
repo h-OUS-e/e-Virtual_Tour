@@ -14,6 +14,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    // initialize the session
     let { user, error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password
@@ -27,3 +28,5 @@ document.getElementById('login-form').addEventListener('submit', async function(
          //move to the projects page
     }
 });
+
+
