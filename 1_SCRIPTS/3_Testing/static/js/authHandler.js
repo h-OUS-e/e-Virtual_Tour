@@ -64,3 +64,4 @@ async function fetchProjectData(project_uid, table) {
         return { data }; 
     }
 }
+
