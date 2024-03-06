@@ -23,7 +23,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     if (error) {
         alert('Error logging in: ' + error.message);
     } else {
-        alert('Login successful!'+ user);
+        alert('Login successful!'+ user.id);
         console.log()
          //move to the projects page
     }
