@@ -38,7 +38,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
 });
 
 // event listeners that connect to API request functions
-document.addEventListener('fetch-project-data', async function(event) { //needs a variable "project_uid" with it
+document.addEventListener('GET-project-data', async function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
     try {
         const [media, scenes, transitionNodes] = await Promise.all([
