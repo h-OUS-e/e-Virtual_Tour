@@ -14,20 +14,30 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // initialize the session
-    let { user, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-    });
-
-    if (error) {
-        alert('Error logging in: ' + error.message);
-    } else {
-        alert('Login successful!'+ user.id);
-        console.log()
-         //move to the projects page
+    // initialize supabase client, basically supabase is the dude
+    try {
+        let { user, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+    
+        if (error) {
+            
+            alert('Error logging in: ' + error.message);
+        } else if (user) {
+            
+            alert('Login successful! User ID: ' + user.id);
+        } else {
+           
+            alert('Login failed: no user data returned.');
+        }
+    } catch (err) {
+        
+        alert('An error occurred during login: ' + err.message);
     }
+
 });
+
 // event listeners that connect to API request functions
 document.addEventListener('fetch-project-data', async function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
@@ -58,10 +68,24 @@ async function fetchProjectData(project_uid, table) {
         .eq('project_uid', project_uid);
 
     if (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching project data:', error);
         return { error }; 
     } else {
+        console.log(data);
         return { data }; 
     }
 }
 
+//get projects function. I need to add some kind of auth into it fucking sucks
+async function fetchProjects(user_uid) {
+    let {projects, error } = await supabase
+        .from(table)
+        .select('*');
+        // .eq('user_uid' : user_uid);
+
+        if(error){
+            console.error('Error fetching projects');
+        } else {
+            return(projects)
+        }
+}
