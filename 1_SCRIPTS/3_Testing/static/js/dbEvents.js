@@ -1,14 +1,14 @@
 // client initialization
-console.log('client initialization');
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+
+console.log('client initialization');
 const supabaseUrl = 'https://ngmncuarggoqjwjinfwg.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nbW5jdWFyZ2dvcWp3amluZndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MzU3NzcsImV4cCI6MjAyNDExMTc3N30.kT57r1txjFS1bWZOWIuzLeJ5k2yYi3W8q5tw8JfuXlI';
 
+
 export const supabase = createClient(supabaseUrl,supabaseAnonKey);
-console.log(supabase)
 
-
-const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 
 
 //=======event emmiter functions
@@ -16,29 +16,15 @@ const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 export function emitGETProjectDataEvent(project_id) {
     const event = new CustomEvent('GET-project-data', { detail: { project_id } });
     document.dispatchEvent(event);
-}
-
-
-async function loadMediaPlayersFromDB(project_uid){
-    console.log("emiiting GET project data events: " + project_uid);
-    emitGETProjectDataEvent(project_uid)
-    console.log("waiting for data from fetched-project-data")
-
-    document.addEventListener('fetched-project-data', (e)=>{
-        window.recieved_project_data = e.detail;
-        console.log('recieved fetched-project-data');
-        console.log(recieved_project_data);
-    })
 };
-loadMediaPlayersFromDB(hard_coded_project_uid)
+
 
 
 //========= event Listeners ========
-
-
 // event listeners that connect to API request functions
 document.addEventListener('GET-project-data', async function(event) { //needs a variable "project_uid" with it
     const { project_uid } = event.detail;
+    console.log("API request" + project_uid);
     try {
         const [media, scenes, transitionNodes] = await Promise.all([
             fetchProjectData(project_uid, 'media'),
@@ -63,9 +49,6 @@ document.addEventListener('GET-project-data', async function(event) { //needs a 
 
 
 //========= API Requests========
-
-
-
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // read
 //GET table data
@@ -96,3 +79,16 @@ async function fetchProjects(user_uid) {
             return(projects)
         }
 }
+
+
+
+//========================Data Getter========================================
+const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+fetchProjectData(hard_coded_project_uid, 'media')
+    .then(recieved_project_data => {
+        console.log(recieved_project_data);
+        // Now you can use recieved_project_data here, as it will be the resolved value.
+    })
+    .catch(error => {
+        console.error('Error fetching project data:', error);
+    });

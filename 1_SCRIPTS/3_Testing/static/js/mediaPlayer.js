@@ -1,8 +1,6 @@
 import { loadMediaPlayerTypes } from './JSONSetup.js';
-import { emitGETProjectDataEvent } from './dbEvents.js';
 
-
-const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+console.log('from media player: ' + recieved_project_data)
 
 
 
@@ -19,7 +17,7 @@ const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // Getting media player types from the JSON file
+    // Getting media player types from the JSON filea
     const mediaplayer_types = await loadMediaPlayerTypes();
     // loading MediaPlayers to scene from JSON file
     await loadMediaPlayersFromJSON(mediaplayer_types);
@@ -123,30 +121,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
 });
-
-
-
-
-
-async function loadMediaPlayersFromDB(project_uid){
-    console.log("emiiting GET project data events")
-    emitGETProjectDataEvent(project_uid)
-    console.log("waiting for data from fetched-project-data")
-
-    document.addEventListener('fetched-project-data', (e)=>{
-        window.recieved_project_data = e.detail;
-        console.log('recieved fetched-project-data');
-        console.log(recieved_project_data);
-    })
-};
-
-// console.log('loading data')
-// consoloadMediaPlayerTypes(hard_coded_project_uid);
-
-
-
-
-
 
 
 
