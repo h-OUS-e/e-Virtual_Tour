@@ -140,8 +140,8 @@ async function loadMediaPlayersFromDB(project_uid){
     })
 };
 
-console.log('loading data')
-loadMediaPlayerTypes(hard_coded_project_uid);
+// console.log('loading data')
+// consoloadMediaPlayerTypes(hard_coded_project_uid);
 
 
 

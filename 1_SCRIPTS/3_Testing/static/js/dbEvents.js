@@ -8,6 +8,9 @@ export const supabase = createClient(supabaseUrl,supabaseAnonKey);
 console.log(supabase)
 
 
+const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+
+
 //=======event emmiter functions
 //emmit event functions
 export function emitGETProjectDataEvent(project_id) {
@@ -16,8 +19,18 @@ export function emitGETProjectDataEvent(project_id) {
 }
 
 
+async function loadMediaPlayersFromDB(project_uid){
+    console.log("emiiting GET project data events: " + project_uid);
+    emitGETProjectDataEvent(project_uid)
+    console.log("waiting for data from fetched-project-data")
 
-
+    document.addEventListener('fetched-project-data', (e)=>{
+        window.recieved_project_data = e.detail;
+        console.log('recieved fetched-project-data');
+        console.log(recieved_project_data);
+    })
+};
+loadMediaPlayersFromDB(hard_coded_project_uid)
 
 
 //========= event Listeners ========
