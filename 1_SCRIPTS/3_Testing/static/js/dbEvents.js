@@ -82,9 +82,11 @@ async function fetchProjects(user_uid) {
 
 
 
-//========================Data Getter========================================
-const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
-fetchProjectData(hard_coded_project_uid, 'media')
+//========================Data Getter (TEST)========================================
+let hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+let test_table = 'media'
+function test (hard_coded_project_uid,table) {
+fetchProjectData(hard_coded_project_uid, table)
     .then(recieved_project_data => {
         console.log(recieved_project_data);
         // Now you can use recieved_project_data here, as it will be the resolved value.
@@ -92,3 +94,4 @@ fetchProjectData(hard_coded_project_uid, 'media')
     .catch(error => {
         console.error('Error fetching project data:', error);
     });
+};
