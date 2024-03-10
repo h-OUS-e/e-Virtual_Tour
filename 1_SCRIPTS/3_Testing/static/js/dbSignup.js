@@ -8,19 +8,22 @@ document.getElementById('signup-form').addEventListener('submit', async function
     const companyName = document.getElementById('signup-company-name').value;
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
-
+//https://supabase.com/docs/guides/auth/managing-user-data DOCS
     try {
-        let { user, error } = await supabase.auth.signUp({
+        let { user, error } = await supabase.auth.signUp( //need to add type controls here!!!!!!!!!
+        {
             email: email,
-            password: password
-        }, {
-            data: {
-                first_name: firstName,
-                last_name: lastName,
-                company_name: companyName
+            password: password,
+            options: 
+            {
+                data: 
+                {
+                    first_name: firstName,
+                    last_name: lastName,
+                    company_name: companyName
+                }
             }
         });
-
         if (error) throw error;
 
         alert('Signup successful! Check your email for a confirmation link.');
