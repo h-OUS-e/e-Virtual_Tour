@@ -82,7 +82,7 @@ document.addEventListener('GET-project-data', async function(event) { //needs a 
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // read
 //GET table data
-//GET projects function. I need to add some kind of auth into it fucking sucks
+
 async function fetchProfileData(user_uid) {
     try {
 
@@ -107,8 +107,8 @@ async function fetchProfileData(user_uid) {
 
 
 
-//GET projects function. I need to add some kind of auth into it fucking sucks
-async function fetchProjects(profile_uid) {
+
+async function fetchProjects(profile_uid) {//GET projects function. I need to add some kind of auth into it fucking sucks
     try {
 
         let { data: projects, error } = await supabase
@@ -156,7 +156,37 @@ async function fetchProjectData(project_uid, table) {
 
 
 
-//========================Data Getter========================================
+//=========Functions to get data on the other side ======================
+
+export function waitForProfileData() {
+    return new Promise((resolve, reject) => {
+        document.addEventListener('fetched-profile-data', function(event) {
+            try {
+                const profile_data = event.detail.projects;
+                console.log("Profile Data Received:", profile_data);
+             
+                resolve();
+            } catch (error) {
+                console.error('An error occurred while processing profile data:', error);
+                reject(error);
+            }
+        });
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================test things========================================
 const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 // fetchProjectData(hard_coded_project_uid, 'media')
 //     .then(recieved_project_data => {
@@ -166,18 +196,18 @@ const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 //     .catch(error => {
 //         console.error('Error fetching project data:', error);
 //     });
-const hard_coded_profile_uid = '6f11f8d7-29ff-4d41-88c9-29d153a86cba'
-async function Testing(hard_coded_profile_uid) {
-    try {
-        var projects = await fetchProjects(hard_coded_profile_uid);
-        if (projects) {
-            console.log('Projects:', projects);
-        } else {
-            console.log('No projects found or an error occurred');
-        }
-    } catch (err) {
-        console.error('Error while fetching projects:', err);
-    }
-}
+// const hard_coded_profile_uid = '6f11f8d7-29ff-4d41-88c9-29d153a86cba'
+// async function Testing(hard_coded_profile_uid) {
+//     try {
+//         var projects = await fetchProjects(hard_coded_profile_uid);
+//         if (projects) {
+//             console.log('Projects:', projects);
+//         } else {
+//             console.log('No projects found or an error occurred');
+//         }
+//     } catch (err) {
+//         console.error('Error while fetching projects:', err);
+//     }
+// }
 
-Testing(hard_coded_profile_uid);
+// Testing(hard_coded_profile_uid);
