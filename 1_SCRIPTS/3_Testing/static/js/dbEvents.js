@@ -1,13 +1,4 @@
-// client initialization
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-
-console.log('client initialization');
-const supabaseUrl = 'https://ngmncuarggoqjwjinfwg.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nbW5jdWFyZ2dvcWp3amluZndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MzU3NzcsImV4cCI6MjAyNDExMTc3N30.kT57r1txjFS1bWZOWIuzLeJ5k2yYi3W8q5tw8JfuXlI';
-
-
-export const supabase = createClient(supabaseUrl,supabaseAnonKey);
+import { supabase } from "./dbEvents.js";
 
 
 
@@ -44,6 +35,17 @@ document.addEventListener('GET-project-data', async function(event) { //needs a 
 });
 
 
+document.addEventListener('GET-projects', async function() { //needs a variable "project_uid" with it
+    console.log("GET-projects");
+    try {
+        const projects = await fetchProjects();
+
+        document.dispatchEvent(new CustomEvent('fetched-projects', { detail: { projects } }));
+        console.log("emmited fetched-projects" + results)
+    } catch (error) {   
+        console.error('An error occurred:', error);
+    }
+});
 
 
 
@@ -71,7 +73,6 @@ async function fetchProjects(user_uid) {
     let {projects, error } = await supabase
         .from(table)
         .select('*');
-        // .eq('user_uid' : user_uid);
 
         if(error){
             console.error('Error fetching projects');
@@ -82,16 +83,14 @@ async function fetchProjects(user_uid) {
 
 
 
-//========================Data Getter (TEST)========================================
-let hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
-let test_table = 'media'
-function test (hard_coded_project_uid,table) {
-fetchProjectData(hard_coded_project_uid, table)
-    .then(recieved_project_data => {
-        console.log(recieved_project_data);
-        // Now you can use recieved_project_data here, as it will be the resolved value.
-    })
-    .catch(error => {
-        console.error('Error fetching project data:', error);
-    });
-};
+//========================Data Getter========================================
+const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
+// fetchProjectData(hard_coded_project_uid, 'media')
+//     .then(recieved_project_data => {
+//         console.log(recieved_project_data);
+//         // Now you can use recieved_project_data here, as it will be the resolved value.
+//     })
+//     .catch(error => {
+//         console.error('Error fetching project data:', error);
+//     });
+

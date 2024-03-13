@@ -1,36 +1,34 @@
 import { supabase } from "./dbEvents.js";
+const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
 
-
-console.log('from authhandler');
-console.log(supabase);
 // Handle the login form submission
 document.getElementById('login-form').addEventListener('submit', async function(event) {
     event.preventDefault();
-
+    
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    console.log(email, password);
+    console.log('Attempting to login with:', email, password);
 
-    // initialize supabase client, basically supabase is the dude
     try {
-        let { user, error } = await supabase.auth.signInWithPassword({
+        let { data, session, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
+        console.log('Login Response:', { data, session, error });
+
         if (error) {
-            alert('Error logging in: ' + error.message);
-        } else if (user) {
-            alert('Login successful! User ID: ' + user.id);
+            console.log('Error logging in: ' + error.message);
+        } else if (data) {
+            console.log('Login successful! User ID: ' + data.user.id);
+            window.location.href = projects_directory_path;
         } else {
-            alert('Login failed: no user data returned.');
+            console.log('Login failed: no user data returned.');
         }
         
     } catch (err) {
-        alert('An error occurred during login: ' + err.message);
+        console.error('Error during login:', err);
+        alert('An unexpected error occurred.');
     }
 });
-
-
-
 
