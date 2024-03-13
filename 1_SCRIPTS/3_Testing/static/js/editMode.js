@@ -114,12 +114,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
         // Hiding/showing selection bar if edit mode is off/on
-        let selection_bar = document.getElementById('object_class_selection_bar');
+        let editmode_bar = document.getElementById('editmode_bar');
         if (isEditMode) {
-            selection_bar.style.display = 'flex';
+            editmode_bar.style.display = 'flex';
         }
         else {
-            selection_bar.style.display = 'None';
+            editmode_bar.style.display = 'None';
         }
     });
 

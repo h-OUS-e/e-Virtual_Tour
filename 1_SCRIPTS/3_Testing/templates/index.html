@@ -105,12 +105,18 @@
 
         
         <!-- Selection bar to change class option in edit mode -->
-        <div id="object_class_selection_bar" class="bar" >
-            <button class="objectClassBtn" data-class="None">None</button>
-            <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
-            <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
-            <button class="objectClassBtn" data-class="LabelTag">LabelTag</button>
+        <div id="editmode_bar">
+            <div id="editmode_options" class="editmode" >
+                <button class="objectClassBtn" data-class="addMediaPlayerTypes">Add a Mediaplayer Type</button>
+                <button class="objectClassBtn" data-class="somethingElse">somethingElse</button>
+            </div>
 
+            <div id="object_class_selection_bar" class="bar" >
+                <button class="objectClassBtn" data-class="None">None</button>
+                <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
+                <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
+                <button class="objectClassBtn" data-class="LabelTag">LabelTag</button>
+            </div>
         </div>
           
 
