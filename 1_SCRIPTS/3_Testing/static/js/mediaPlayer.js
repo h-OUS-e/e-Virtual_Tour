@@ -1,6 +1,6 @@
 import { loadMediaPlayerTypes } from './JSONSetup.js';
 
-console.log('from media player: ' + recieved_project_data)
+// console.log('from media player: ' + recieved_project_data)
 
 
 
