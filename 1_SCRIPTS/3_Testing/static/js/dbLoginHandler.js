@@ -1,4 +1,4 @@
-import { supabase } from "./dbEvents.js";
+import { supabase } from "./dbClient.js";
 const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
 
 // Handle the login form submission
@@ -15,7 +15,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
             password: password
         });
 
-        console.log('Login Response:', { data, session, error });
+        console.log('Login Response:', { data, error });
 
         if (error) {
             console.log('Error logging in: ' + error.message);
@@ -23,6 +23,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Login successful! User ID: ' + data.user.id);
             localStorage.setItem('userData', JSON.stringify(data.user));
             window.location.href = projects_directory_path;
+
         } else {
             console.log('Login failed: no user data returned.');
         }
