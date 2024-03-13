@@ -1,5 +1,3 @@
-import { loadMediaPlayerTypes } from './JSONSetup.js';
-
 // console.log('from media player: ' + recieved_project_data)
 
 
@@ -15,13 +13,14 @@ import { loadMediaPlayerTypes } from './JSONSetup.js';
 
 
 // initialize at event, Scene and 3D objects loaded
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('mediaplayerTypeLoaded', async (event) => {
 
     // Getting media player types from the JSON filea
-    const mediaplayer_types = await loadMediaPlayerTypes();
+    const mediaplayer_types = event.detail.mediaplayer_types;
     // loading MediaPlayers to scene from JSON file
     await loadMediaPlayersFromJSON(mediaplayer_types);
     
+  
        
     // Definitions   
     const scene = document.querySelector('a-scene');

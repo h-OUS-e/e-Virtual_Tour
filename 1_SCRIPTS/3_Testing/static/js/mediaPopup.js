@@ -1,13 +1,13 @@
 /*
 A script to control popup windows
 */
-import { loadMediaPlayerTypes } from './JSONSetup.js';
 const colors = getComputedStyle(document.documentElement);  
 
 
-document.addEventListener('mediaPlayersLoaded', async () => {
+document.addEventListener('mediaplayerTypeLoaded', async (event) => {
     // Getting media player types from the JSON file
-    const media_player_types = await loadMediaPlayerTypes();
+    // Getting media player types from the JSON filea
+    const mediaplayer_types = event.detail.mediaplayer_types;
     //definitions
     var main_class = "#popup";    
 
@@ -26,8 +26,8 @@ document.addEventListener('mediaPlayersLoaded', async () => {
         document.querySelector('#popup_image').src = content.imageUrl;
         document.querySelector('#popup_video').src = content.videoUrl;
         document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
-        const light_color = media_player_types[mediaplayer_type]['light']
-        const dark_color = media_player_types[mediaplayer_type]['dark']
+        const light_color = mediaplayer_types[mediaplayer_type]['light']
+        const dark_color = mediaplayer_types[mediaplayer_type]['dark']
         
 
         // update popup window colors

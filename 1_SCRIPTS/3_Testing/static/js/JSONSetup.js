@@ -30,6 +30,22 @@ async function loadJSON(filename) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', async () => {
+    const mediaplayer_types = await loadMediaPlayerTypes();
+
+    if (mediaplayer_types) {
+        // Create an event that send
+        var new_event = new CustomEvent('mediaplayerTypeLoaded', 
+        {
+            detail: {
+                mediaplayer_types: mediaplayer_types,
+            }
+        });
+        // Dispatch event
+        document.dispatchEvent(new_event);
+    }
+});
+
 
 export { loadJSON, loadMediaPlayerTypes };
 
