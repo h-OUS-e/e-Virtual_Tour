@@ -10,7 +10,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     console.log('Attempting to login with:', email, password);
 
     try {
-        let { data, session, error } = await supabase.auth.signInWithPassword({
+        let { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -21,6 +21,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Error logging in: ' + error.message);
         } else if (data) {
             console.log('Login successful! User ID: ' + data.user.id);
+            localStorage.setItem('userData', JSON.stringify(data.user));
             window.location.href = projects_directory_path;
         } else {
             console.log('Login failed: no user data returned.');

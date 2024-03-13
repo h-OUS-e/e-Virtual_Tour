@@ -1,4 +1,4 @@
-import { supabase } from "./dbEvents.js";
+import { supabase } from "./dbClient.js";
 
 
 
@@ -69,17 +69,28 @@ async function fetchProjectData(project_uid, table) {
 }
 
 //GET projects function. I need to add some kind of auth into it fucking sucks
-async function fetchProjects(user_uid) {
-    let {projects, error } = await supabase
-        .from(table)
-        .select('*');
+async function fetchProjects(profile_uid) {
+    try {
 
-        if(error){
-            console.error('Error fetching projects');
-        } else {
-            return(projects)
+        let { data: projects, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('profile_uid', profile_uid);
+                
+
+            if(error){
+                console.error('Error fetching projects', error);
+                throw error;
+
+            } else {
+                return(projects)
+            }
+
+        } catch(err) {
+        console.log('an unexpected error occured:', err)
         }
 }
+
 
 
 
@@ -93,4 +104,18 @@ const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
 //     .catch(error => {
 //         console.error('Error fetching project data:', error);
 //     });
+const hard_coded_profile_uid = '6f11f8d7-29ff-4d41-88c9-29d153a86cba'
+async function Testing(hard_coded_profile_uid) {
+    try {
+        var projects = await fetchProjects(hard_coded_profile_uid);
+        if (projects) {
+            console.log('Projects:', projects);
+        } else {
+            console.log('No projects found or an error occurred');
+        }
+    } catch (err) {
+        console.error('Error while fetching projects:', err);
+    }
+}
 
+Testing(hard_coded_profile_uid);
