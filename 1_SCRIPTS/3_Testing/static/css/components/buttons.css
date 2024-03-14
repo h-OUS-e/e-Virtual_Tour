@@ -1,0 +1,34 @@
+.btn {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #e9e9e9;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px var(--popup_color);
+}
+  
+/* effect while holding button */
+.btn:focus, .btn:active {
+    outline: none;
+    color: #ffffff; /* White text color */
+}
+
+ /* effect after holding button to keep it lit up if clicked elsewhere on screen*/
+.btn.active {
+    outline: none;
+    background-color: var(--popup_color); /* Blue background for active button */
+    color: #ffffff; /* White text color */
+    box-shadow: 0 2px 4px var(--popup_color); /* Slightly more pronounced shadow */
+}
+
+
+
+  

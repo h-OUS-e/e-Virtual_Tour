@@ -120,8 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         else {
             editmode_bar.classList.add('hidden'); // Show the element
-
-
         }
     });
 
@@ -338,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
     scene.addEventListener('mouseClickedEditMode', function (event) {        
-            
+            console.log("TEST", selectedObjectClass);
         if (isEditMode && selectedObjectClass !== 'None') {
             // Show creation menu manager related to selected object class            
             creation_menu_manager.setObjectClass(selectedObjectClass);

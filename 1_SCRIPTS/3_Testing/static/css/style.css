@@ -1,4 +1,5 @@
 @import 'components/forms.css';
+@import 'components/buttons.css';
 @import 'layout.css';
 
 :root {
@@ -20,11 +21,14 @@
     --coolBlue: #D0F9F2;    
     --popupDarkColor: #2dc84d;
     --popupLightColor: #DBFFE5;
+    --popup_color: var(--sageGreen);
+    
 
     /* CONSTANTS */
     --sidebar_width: 2vw;
 
     --bottom-border-styles: 1px rgb(94, 94, 94) solid;
+
 
 }
 
@@ -512,67 +516,8 @@ opacity: 1; /* Fully visible */
 #editmode_bar {
   position: absolute;
   top: 5px;
-  left: 50%;
-  padding: 5px;
-  transform: translateX(-50%);
-  z-index: 1000;
-  background: #f0f0f0;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#editmode_options {
-    position: relative;
-    top: 5px;
-    padding: 5px;
-    background: #f0f0f0; /* Light grey background */
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    z-index: 100; /* Ensure it's above other content */
-}
-
-/* Container for the selection bar */
-#object_class_selection_bar {
-    position: relative;
-    top: 5px;
-    padding: 5px;
-    background: #f0f0f0; /* Light grey background */
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    z-index: 100; /* Ensure it's above other content */
-}
-
-
-/* Styles for the buttons */
-.objectClassBtn {
-    padding: 8px 15px;
-    font-size: 14px; /* Adjust based on your preference */
-    color: #333; /* Dark text color for contrast */
-    background-color: #fff; /* White background */
-    border: none; /* Remove default border */
-    cursor: pointer; /* Change mouse cursor to indicate interactivity */
-    border-radius: 4px; /* Slightly rounded corners for the buttons */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions for interactions */
-}
-
-/* Hover effect for buttons */
-.objectClassBtn:hover {
-    background-color: #e9e9e9; /* Light grey background on hover */
-    transform: translateY(-2px); /* Slight raise effect */
-}
-
-/* Active/focused button effect */
-.objectClassBtn:focus, .objectClassBtn:active {
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 0 0 2px var(--sageGreen); /* Add a custom focus/active state */
-}
-
-/* Style for the active button */
-.objectClassBtn.active {
-    background-color: var(--sageGreen); /* Blue background for active button */
-    color: #ffffff; /* White text color */
-    box-shadow: 0 2px 4px var(--sageGreen); /* Slightly more pronounced shadow */
-}
 
 /*----------------------------------------------------------------*/
 /* make fonts responsive */
