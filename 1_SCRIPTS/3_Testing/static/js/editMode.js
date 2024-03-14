@@ -116,10 +116,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Hiding/showing selection bar if edit mode is off/on
         let editmode_bar = document.getElementById('editmode_bar');
         if (isEditMode) {
-            editmode_bar.style.display = 'flex';
+            editmode_bar.classList.remove('hidden'); // Show the element
         }
         else {
-            editmode_bar.style.display = 'None';
+            editmode_bar.classList.add('hidden'); // Show the element
+
+
         }
     });
 
@@ -1088,4 +1090,9 @@ function changeMediaPlayerType(object, mediaplayer_types, undo_redo_manager, dro
             // update the object
             const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index});
             undo_redo_manager.doAction(updateAction);
+}
+
+
+function edit_Mediaplayer_types() {
+    
 }
