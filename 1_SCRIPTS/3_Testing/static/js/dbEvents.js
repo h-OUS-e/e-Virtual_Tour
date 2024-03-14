@@ -84,9 +84,11 @@ document.addEventListener('GET-project-data', async function(event) { //needs a 
 //GET table data
 
 async function fetchProfileData(user_uid) {
+    // input: user_uid; useres unique identifier from users table (string)
+    // return: projects; the list of profiles that have the user_uid in there id field (JSON object)
     try {
 
-        let { data: projects, error } = await supabase
+        let { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user_uid);
@@ -97,7 +99,7 @@ async function fetchProfileData(user_uid) {
                 throw error;
 
             } else {
-                return(projects);
+                return(profile);
             }
 
         } catch(err) {
@@ -108,7 +110,9 @@ async function fetchProfileData(user_uid) {
 
 
 
-async function fetchProjects(profile_uid) {//GET projects function. I need to add some kind of auth into it fucking sucks
+async function fetchProjects(profile_uid) {//I need to add some kind of auth into it fucking sucks
+    // input: profile_uid; profile unique identifier from users table (string)
+    // return: profiles; the list of projects that have the profile_uid in there profile_uid field (JSON object)
     try {
 
         let { data: projects, error } = await supabase
@@ -133,6 +137,12 @@ async function fetchProjects(profile_uid) {//GET projects function. I need to ad
 
 
 async function fetchProjectData(project_uid, table) {
+    // input:   project_uid; profile unique identifier for each project (string)
+    //          table: what table to pull data from (string)
+                        //"media", popus and what populates them
+                        //"scenes", the background pictures
+                        //"transition_nodes", the nodes that transition from background image to background image
+    // return: data; a json object containing the project information that contains project_uid in the table specified by table (JSON object)
     try {
         let { data, error } = await supabase
         .from(table)

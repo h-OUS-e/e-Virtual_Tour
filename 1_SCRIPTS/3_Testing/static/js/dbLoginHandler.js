@@ -25,10 +25,10 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Error logging in: ' + error.message);
         } else if (data) {
             console.log('Login successful! User ID: ' + data.user.id);
-            localStorage.setItem('userData',(data.user));
+            localStorage.setItem('userData',JSON.stringify(data.user));
             emitGETProfileData();
             waitForProfileData().then(() => {
-                redirectToProjectsDirectory();
+                redirectToProjectsDirectory(projects_directory_path);
             }).catch(error => {
                 console.error('Error waiting for profile data:', error);
             });
