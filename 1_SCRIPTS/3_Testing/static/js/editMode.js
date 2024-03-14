@@ -128,8 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('.objectClassBtn').forEach(button => {
         button.addEventListener('click', function() {
             selectedObjectClass = this.getAttribute('data-class');
-            console.log(`Selected object class: ${selectedObjectClass}`);
-
             // Remove active class from all buttons
             document.querySelectorAll('.objectClassBtn').forEach(btn => btn.classList.remove('active'));
             // Add active class to clicked button
@@ -336,7 +334,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
     scene.addEventListener('mouseClickedEditMode', function (event) {        
-            console.log("TEST", selectedObjectClass);
         if (isEditMode && selectedObjectClass !== 'None') {
             // Show creation menu manager related to selected object class            
             creation_menu_manager.setObjectClass(selectedObjectClass);
@@ -567,7 +564,7 @@ class EditMenuManager  {
             if (!menu) return; // Exit if the menu doesn't exist
 
             // Show object ID in the edit menu   
-            const object_id_element = menu.getElementsByClassName('object_id_display')[0];
+            const object_id_element = menu.getElementsByClassName('menu_item_display')[0];
             object_id_element.textContent = `Object ID: ${this.object_id}`; // Update the text to show the object ID
 
             
@@ -649,12 +646,15 @@ class CreationFormManager  {
 
             const menu = document.getElementById(this.currentVisibleMenu);
             if (menu) {
-                menu.style.display = 'none';
+                menu.classList.add('hidden'); // Show the element
+                menu.style.width = '0px';
+
             }
             // Reset the tracker
             this.currentVisibleMenu = null;
             // this.objectClass = null;
-        }
+        }       
+
     }
 
     // Static method to update the class globally
@@ -666,11 +666,14 @@ class CreationFormManager  {
     showEditMenu(x, y) {
         this.hideEditMenu(); // hides any other menu if displayed
         if (this.objectClass) {
+
             const menuId = `creation_menu_${this.objectClass}`;
             const menu = document.getElementById(menuId);
             menu.style.top = `${y}px`;
             menu.style.left = `${x}px`;
-            menu.style.display = 'block'; // Show the menu
+            menu.style.width = '250px';
+            menu.classList.remove('hidden'); // Show the element
+            console.log(menu);
 
             // Track the currently visible menu
             this.currentVisibleMenu = menuId;

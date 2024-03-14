@@ -1,0 +1,111 @@
+
+/* EDIT MENU */
+.menu {
+    position: absolute;
+    z-index: 10000;
+    
+    /* SIZING */
+    width: 0px; /* Initially sidebar width is 0 */
+    
+    /* DISPLAY */
+    overflow: hidden;
+    display: block;
+
+    /* STYLING */
+    background-color: #111; /* Sidebar background color */
+    transition: 0.4s; /* Smooth transition */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding:10px;
+}
+  
+.menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+  
+.menu ul li {
+    padding: 5px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+/* .menu ul li:hover {
+    background-color: rgb(29, 29, 29);  
+} */
+
+.menu h4 {
+    color: rgb(78, 78, 78);
+}
+
+.menu label {
+    color: rgb(78, 78, 78);
+}
+
+
+.menu a {   
+    /* LAYOUT */ 
+    display: block;
+
+    /* MARGINS AND PADDINGS */
+    padding: 10px 15px;
+
+    /* STYLING */
+    transition: 0.3s;
+    color: white;
+    text-decoration: none;
+    font-size: 25px;
+}
+
+.menu a:hover {
+    color: var(--popup_color);
+}
+
+
+.creationMenu input[type="text"] {
+box-sizing: border-box; /* Make sure padding doesn't affect overall width */
+padding: 5px;
+margin-bottom: 10px; /* Space below the input field */
+width: calc(100% - 10px); /* Adjust width as needed, considering padding */
+border: 1px solid #ccc; /* Light border similar to editMenu style */
+border-radius: 3px; /* Optional: rounded corners for the input */
+}
+
+.menu_item_display {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #333;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #eee;
+}
+
+.menu_input {
+    box-sizing: border-box;
+    padding: 2px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: calc(100% - 10px);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+
+.dashboardMenu {  
+    /* SIZING */
+    height: 100%;    
+    /* LAYOUT */  
+    position: relative;
+    left: 0px;
+
+    /* MARGINS AND PADDINGS */
+    margin-bottom: auto;    
+    padding-top: 60px; /* Some padding at the top */
+
+    /* STYLING */
+    border-radius: 0px;
+
+
+}
+

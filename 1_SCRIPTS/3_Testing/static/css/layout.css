@@ -5,7 +5,7 @@
 .container {
     position: relative;
     padding: 8px;
-    background: #fffcfc;
+    background: #fffcfc81;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
@@ -32,6 +32,7 @@
 /* ADD TO CLASS IN HTML TO INITIALLY HIDE ITEMS */
 .hidden {
     display: none;
+    visibility: hidden;
   }
 
   
