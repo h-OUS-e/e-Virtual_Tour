@@ -18,17 +18,25 @@ document.getElementById('login-form').addEventListener('submit', async function(
             email: email,
             password: password
         });
-
         console.log('Login Response:', { data, error });
 
         if (error) {
             console.log('Error logging in: ' + error.message);
+
         } else if (data) {
-            console.log('Login successful! User ID: ' + data.user.id);
+            let user_uid = data.user.id
+            console.log('Login successful! User ID: ' + user_uid  + typeof(user_uid));
             localStorage.setItem('userData',JSON.stringify(data.user));
-            emitGETProfileData();
-            waitForProfileData().then(() => {
-                redirectToProjectsDirectory(projects_directory_path);
+
+            // let profile = fetchProfileData(data.user.id)
+            // console.log('Profile from loginHandler', profile);
+
+
+            emitGETProfileData(user_uid);
+            waitForProfileData().then((profile_data) => { 
+                const profile = profile_data;
+                console.log(profile);
+                // redirectToProjectsDirectory(projects_directory_path);
             }).catch(error => {
                 console.error('Error waiting for profile data:', error);
             });
@@ -50,3 +58,30 @@ document.getElementById('login-form').addEventListener('submit', async function(
 function redirectToProjectsDirectory(projects_directory_path ) {
     window.location.href = projects_directory_path ;
 }
+
+
+
+async function fetchProfileData(user_uid) {
+    // input: user_uid; useres unique identifier from users table (string)
+    // return: projects; the list of profiles that have the user_uid in there id field (JSON object)
+    try {
+
+        let { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user_uid);
+                
+
+            if(error){
+                console.error('Error fetching profile', error);
+                throw error;
+
+            } else {
+
+                return(profile);
+            }
+
+        } catch(err) {
+        console.log('an unexpected error occured in fetchProfileData(user_uid):', err);
+        }
+};
