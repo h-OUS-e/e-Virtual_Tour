@@ -28,29 +28,23 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Login successful! User ID: ' + user_uid  + typeof(user_uid));
             localStorage.setItem('userData',JSON.stringify(data.user));
 
-            // let profile = fetchProfileData(data.user.id)
-            // console.log('Profile from loginHandler', profile);
-
 
             emitGETProfileData(user_uid);
             waitForProfileData().then((profile_data) => { 
                 const profile = profile_data;
                 console.log(profile);
-                // redirectToProjectsDirectory(projects_directory_path);
-            }).catch(error => {
-                console.error('Error waiting for profile data:', error);
-            });
-
-  
-        } else {
-            console.log('Login failed: no user data returned.');
-        }
+                localStorage.setItem('userProfile',JSON.stringify(profile));
+                setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
+                
+            }).catch(error => { console.error('Error waiting for profile data:', error);});
+        } else { console.log('Login failed: no user data returned.');}
         
     } catch (err) {
         console.error('Error during login:', err);
         alert('An unexpected error occurred.');
     }
 });
+
 
 
 
