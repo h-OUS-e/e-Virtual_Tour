@@ -13,6 +13,7 @@ export function emitGETProjectDataEvent(project_uid) {
     document.dispatchEvent(event);
 };
 
+
 export function emitGETProjectsEvent(profile_uid) {
     if (profile_uid === undefined) {
         throw new Error('emitGETProjectsEvent requires an argument for profile_uid');
@@ -59,7 +60,7 @@ document.addEventListener('GET-projects', async function(event) { //needs a vari
         const projects = await fetchProjects(profile_uid);
 
         document.dispatchEvent(new CustomEvent('fetched-projects', { detail: { projects } }));
-        console.log("emmited fetched-projects" + results)
+        console.log("emmited fetched-projects" + projects)
     } catch (error) {   
         console.error('An error occurred: ', error);
     }
@@ -178,7 +179,7 @@ async function fetchProjectData(project_uid, table) {
 
 
 
-//=========Functions to get data on the other side ======================
+//=========Functions to get data on the other side ====================== we can probably rewriet this code to be one function that is called on diff things dynamically
 
 export function waitForProfileData() {
     return new Promise((resolve, reject) => {
@@ -198,6 +199,22 @@ export function waitForProfileData() {
 
 
 
+
+export function waitForProjects() {
+    return new Promise((resolve, reject) => {
+        document.addEventListener('fetched-projects', function(event) {
+            try {
+                const projects = event.detail.projects
+                console.log("projects Received:", projects);
+
+                resolve(projects);
+            } catch (error) {
+                console.error('An error occurred while processing project data:', error);
+                reject(error);
+            }
+        });
+    });
+}
 
 
 

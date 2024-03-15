@@ -1,3 +1,28 @@
+import { supabase } from "./dbClient.js";
+import {emitGETProjectsEvent} from './dbEvents.js'
+import {waitForProjects} from './dbEvents.js'
+
+
+const profile_stored = JSON.parse(localStorage.getItem('userProfile'));
+const profile_uid = profile_stored[0].profile_uid;
+console.log(profile_uid);
+
+try { 
+    emitGETProjectsEvent(profile_uid);
+    waitForProjects().then((projects) => {
+        console.log(projects);
+        localStorage.setItem('userProjects', projects)
+}).catch(err => {console.log('an error occured while getting projects: ', err);});
+
+
+}catch (err) {
+    console.error('Error when loading projects:', err);
+    alert('An unexpected error occurred.');
+}
+
+
+
+
 function listLocalStorageVariables(){
     //just for debugging do not worry about it
 
