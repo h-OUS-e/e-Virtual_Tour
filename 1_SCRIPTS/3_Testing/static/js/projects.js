@@ -10,14 +10,37 @@ console.log(profile_uid);
 try { 
     emitGETProjectsEvent(profile_uid);
     waitForProjects().then((projects) => {
+        buildTable(projects)
         console.log(projects);
-        localStorage.setItem('userProjects', projects)
+        localStorage.setItem('userProjects', JSON.stringify(projects));
 }).catch(err => {console.log('an error occured while getting projects: ', err);});
 
 
 }catch (err) {
     console.error('Error when loading projects:', err);
     alert('An unexpected error occurred.');
+}
+
+
+function buildTable(data) {
+    var table = document.getElementById('myTable');
+    for (var i = 0; i < data.length; i++) {
+        var row = table.insertRow(-1);
+        var cell = row.insertCell(0);
+        cell.innerHTML = data[i].project_name;
+        cell.style.cursor = "pointer";
+        // Use an IIFE to capture the current value of `i`
+        (function(index){
+            row.onclick = function() { 
+                onRowClick(data[index].project_name); 
+            };
+        })(i);
+    }
+}
+
+function onRowClick(projectName) {
+    console.log("Clicked on " + projectName);
+    // Additional logic here
 }
 
 
@@ -45,4 +68,3 @@ function retreiveUserDatafromLocalStorage(){
     }
 
 }
-
