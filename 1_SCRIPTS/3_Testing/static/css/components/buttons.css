@@ -7,28 +7,63 @@
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn:hover {
-    background-color: #e9e9e9;
     transform: translateY(-2px);
     box-shadow: 0 2px 4px var(--popup_color);
 }
   
-/* effect while holding button */
 .btn:focus, .btn:active {
     outline: none;
-    color: #ffffff; /* White text color */
 }
 
- /* effect after holding button to keep it lit up if clicked elsewhere on screen*/
 .btn.active {
     outline: none;
-    background-color: var(--popup_color); /* Blue background for active button */
-    color: #ffffff; /* White text color */
-    box-shadow: 0 2px 4px var(--popup_color); /* Slightly more pronounced shadow */
+    background-color: var(--popup_color);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: default;
+  }
+  
+/* click effect */
+.btnClickEffect::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 5px;
+  background-color: var(--popup_color);
+  box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001;
+  transition: all 0.3s ease;
 }
 
+  
+.btnClickEffect:active::after {
+    animation: clickEffect 0.3s ease-out;
+}
+  
+@keyframes clickEffect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.4;
+    }
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
 
 
   

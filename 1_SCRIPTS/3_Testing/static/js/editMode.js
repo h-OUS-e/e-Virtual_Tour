@@ -333,8 +333,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     // CODE TO ADD OBJECT IN SCENE IF IN EDIT MODE
-    scene.addEventListener('mouseClickedEditMode', function (event) {        
-        if (isEditMode && selectedObjectClass !== 'None') {
+    scene.addEventListener('mouseClickedEditMode', function (event) {   
+        if (!isEditMode) return;     
+        if (selectedObjectClass !== 'None') {
             // Show creation menu manager related to selected object class            
             creation_menu_manager.setObjectClass(selectedObjectClass);
             creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
@@ -343,8 +344,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const direction = event.detail.direction; 
             // Create object in scene when creation meny form is submitted
             handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, creation_menu_manager, undo_redo_manager); // Include direction in the call
-            
-        }        
+        }   
+        else {
+            console.log("TEST", event);
+        }
     });
     
 
@@ -540,7 +543,8 @@ class EditMenuManager  {
 
             const menu = document.getElementById(this.currentVisibleMenu);
             if (menu) {
-                menu.style.display = 'none';
+                menu.classList.add('hidden'); // Show the element
+                menu.style.width = '0px';
             }
             // Reset the tracker
             this.currentVisibleMenu = null;
@@ -592,13 +596,16 @@ class EditMenuManager  {
             // Adjust position of menu based on object position
             menu.style.top = `${y}px`;
             menu.style.left = `${x}px`;
-            menu.style.display = 'block'; // Show the menu
+            menu.classList.remove('hidden'); // Show the element
+            menu.style.width = '250px';
+
+
 
             this.adjustMenuPosition(menu);
 
             // Track the currently visible menu
             this.currentVisibleMenu = menuId;
-            }
+        }
     }
 
     adjustMenuPosition(menu) {    
@@ -673,7 +680,6 @@ class CreationFormManager  {
             menu.style.left = `${x}px`;
             menu.style.width = '250px';
             menu.classList.remove('hidden'); // Show the element
-            console.log(menu);
 
             // Track the currently visible menu
             this.currentVisibleMenu = menuId;
