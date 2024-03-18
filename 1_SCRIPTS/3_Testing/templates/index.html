@@ -42,6 +42,8 @@
     <script src="../static/js/touchInteractionEvents.js"></script>
     <script type="module" src="../static/js/mediaBar.js"></script>
     <script type="module" src="../static/js/editMode.js"></script>
+    <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script>
+
     
 
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
@@ -49,9 +51,12 @@
     
 </head>
 <body>
+    
 
     <!-- A screen container to store all screen elements on the front -->
     <div id="'screen_container" class="screen">
+
+        
 
         <!-- A dashboard at the bottom that reveals the minimap and other items-->
         <div id="dashboard-container">
@@ -103,7 +108,7 @@
         <!-- Selection bar to change class option in edit mode -->
         <div id="editmode_bar" class="container flexColumn hidden">
             <div id="editmode_options" class="editmode flexRow"  >
-                <button class="btn btnClickEffect" data-class="mediaplayerTypes">Edit Mediaplayer Types</button>
+                <button class="btn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Edit Mediaplayer Types</button>
                 <button class="btn btnClickEffect" data-class="somethingElse">somethingElse</button>
             </div>
 
@@ -116,13 +121,49 @@
         </div>
           
         <!-- Edit menu to add or edit types of mediaplayers -->
-        <div id="edit_menu_mediaplayerTypes" class="menu hidden">
+        <!-- <div id="edit_menu_mediaplayerTypes" class="menu hidden">
             <h2>Edit Menu</h2>
             <ul>
                 <li>
                     <label for="edit_menu_mediaplayerTypes_add"> <p>Add New Type</p></label>
                     <input type="text" id="edit_menu_mediaplayerTypes_add" placeholder="Enter new type">
                     <button class="btn" id="edit_menu_mediaplayerTypes_add_btn">Add Type</button>
+                </li>
+            </ul>
+        </div> -->
+
+        <div  id="edit_menu_MediaplayerTypes" class="menu hidden">
+            <h2>Edit Menu</h2>
+            <!-- <div class="edit-section">
+              <h3>Add New Type</h3>
+              <input type="text" id="newType" placeholder="Enter new type">
+              <button class="btn" id="addTypeBtn">Add Type</button>
+            </div> -->
+            <div class="edit-section">
+              <h3>Edit Existing Type</h3>
+              <select id="typeSelect">
+                <!-- Options will be populated dynamically -->
+              </select>
+              <div id="editFields">
+                <input type="text" id="darkColor" placeholder="Enter dark color">
+                <input type="text" id="lightColor" placeholder="Enter light color">
+                <div id="iconFields">
+                  <!-- Icon fields will be added dynamically -->
+                </div>
+                <button class="btn" id="addIconBtn">Add Icon</button>
+                <button class="btn" id="saveBtn">Save</button>
+              </div>
+            </div>
+          </div>
+
+        <!-- Edit menu to add or edit types of mediaplayers -->
+        <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
+            <h2>Edit Menu</h2>
+            <ul>
+                <li>
+                    <label for="creation_menu_mediaplayerTypes_add"> <p>Add New Type</p></label>
+                    <input type="text" id="creation_menu_mediaplayerTypes_add" placeholder="Enter new type">
+                    <button class="btn" id="creation_menu_mediaplayerTypes_add_btn">Add Type</button>
                 </li>
             </ul>
         </div>
