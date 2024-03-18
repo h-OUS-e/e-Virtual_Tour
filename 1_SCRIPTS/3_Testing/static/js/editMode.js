@@ -141,7 +141,7 @@ document.addEventListener('mediaplayerTypeLoaded', async (event) => {
     });
 
     // Activating/deactivating normal class buttons
-    document.querySelectorAll('.btn').forEach(button => {
+    document.querySelectorAll('.nonObjectClassBtn').forEach(button => {
         // Activating/deactivating object class buttons
         button.addEventListener('click', function() {
             // Get related menu to the button
@@ -378,7 +378,7 @@ document.addEventListener('mediaplayerTypeLoaded', async (event) => {
             const point = event.detail.intersection_pt; 
             const direction = event.detail.direction; 
             // Create object in scene when creation meny form is submitted
-            handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, creation_menu_manager, undo_redo_manager); // Include direction in the call
+            handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager); // Include direction in the call
         }   
         else {
             console.log("TEST", event);
@@ -846,13 +846,12 @@ function populateOptionsDropdown(options_JSON, dropdown_input_id) {
 function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
     const selected_input = selected_dropdown_input_id.value;
     const icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
-    const dependent_options = Object.keys(icons).reduce((acc, key) => ({
-        ...acc,
-        [key]: key.replace(/_/g, ' ') // Replace underscores with spaces for better readability
-    }), {});
-
+    // const dependent_options = Object.keys(icons).reduce((acc, key) => ({
+    //     ...acc,
+    //     [key]: key.replace(/_/g, ' ') // Replace underscores with spaces for better readability
+    // }), {});
     // Populate the Icon Index dropdown with icons related to the selected color
-    populateDropdown(dependent_dropdown_input_id, dependent_options);
+    populateDropdown(dependent_dropdown_input_id, icons);
 }
 
 
@@ -860,7 +859,7 @@ function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdow
 // CREATION MENU FUNCTIONS
 
 // Function to handle the logic for object creation based on the selected object class.
-function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, creation_menu_manager, undo_redo_manager) {
+function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager) {
     // Fetch the current background image ID from the scene's sky element.
     const sky = document.querySelector('#sky');
     const backgroundImgId = sky.getAttribute('background_img_id');
@@ -880,7 +879,7 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
             creation_menu_manager.hideEditMenu(); 
 
             // Process the creation menu submission for creating the new object.
-            processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, undo_redo_manager);
+            processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager);
             // Remove the event listener to prevent memory leaks and ensure clean-up.
             creation_menu.removeEventListener('click', handleMenuSubmit);
         }
@@ -894,7 +893,7 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
 
 
 // Function to process the form submission for creating new objects in the scene.
-function processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, undo_redo_manager) {
+function processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager) {
     // Example logic for creating a MediaPlayer object.
     
     if (selectedObjectClass === 'MediaPlayer') {
