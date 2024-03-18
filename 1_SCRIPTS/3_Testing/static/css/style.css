@@ -1,5 +1,7 @@
 @import 'components/forms.css';
 @import 'components/buttons.css';
+@import 'components/colorPicker.css';
+
 @import 'layout.css';
 @import 'base.css';
 
@@ -336,6 +338,19 @@ opacity: 1; /* Fully visible */
 
 /*----------------------------------------------------------------*/
 /* make fonts responsive */
+
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    /* display: none;
+     <- Crashes Chrome on hover */
+     -webkit-appearance: none;
+     margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+
+
+
 
 
 
