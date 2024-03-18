@@ -5,7 +5,7 @@
     z-index: 10000;
     
     /* SIZING */
-    width: 300px; /* Initially sidebar width is 0 */
+    width: 300px;
     
     /* DISPLAY */
     overflow: hidden;
@@ -63,6 +63,10 @@
     color: var(--popup_color);
 }
 
+.widerMenu {
+    width: 500px; 
+}
+
 
 .creationMenu input[type="text"] {
 box-sizing: border-box; /* Make sure padding doesn't affect overall width */
@@ -76,7 +80,7 @@ border-radius: 3px; /* Optional: rounded corners for the input */
 .menuItem {
     font-size: 0.95rem;
     font-weight: bold;
-    color: #333;
+    color: #8a8a8a;
     /* background-color: #f7f7f7; */
     border-bottom: 1px solid #eee;
 }
@@ -106,3 +110,33 @@ border-radius: 3px; /* Optional: rounded corners for the input */
     border-radius: 0px;
 }
 
+  
+  .dropdown {
+    padding: px;
+    display: block;
+    position: absolute;
+    top: 20%;
+    left: 80%;
+    background-color: #f9f9f9;
+    width: 80px;
+    box-shadow: 20px 20px 20px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 3px;
+
+  }
+  
+  .dropdown a {
+    font-size: 14px;
+
+    color: black;
+    padding: 7px;
+    display: block;
+    cursor: pointer;
+  }
+  
+  
+  .dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+  

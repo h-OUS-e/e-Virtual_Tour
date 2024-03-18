@@ -1,0 +1,103 @@
+:root {
+    /* COLORS */
+    --primary: #2dc84d;
+    --secondary: #33FF57;
+    --accent: #3357FF;
+    --background: #363434;
+    --text: #ebe7e7;
+    --hoverIn: #DBFFE5;
+    --hoverInClicked:gray;
+    --transitionNode:#2dc84d;
+    --mediaPlayer:rgb(159, 115, 39);
+    --sageGreen: #2dc84d;
+    --mintGreen: #DBFFE5;
+    --oceanBlue: #009A9F;
+    --popPink: #FB7698;
+    --coolPink: rgb(255, 216, 226);
+    --coolBlue: #D0F9F2;    
+    --popupDarkColor: #2dc84d;
+    --popupLightColor: #DBFFE5;
+    --popup_color: var(--sageGreen);
+    
+
+    /* CONSTANTS */
+    --sidebar_width: 2vw;
+    --bottom-border-styles: 1px rgb(94, 94, 94) solid;
+}
+
+
+/* Adding fonts */
+@font-face {
+    font-family: 'CircularStd';
+    src: url('../fonts/CircularStd-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('../fonts/CircularStd-Black.otf') format('opentype');
+    font-weight: 900; /* 900 is typically used for the black weight */
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'CircularStd';
+    src: url('../fonts/CircularStd-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+
+/* Defining styles of general classes */
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: clamp(1rem, 1.5vw, 1.5rem); /* Adjust as needed */
+    cursor: auto; 
+}
+
+h1 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Adjust as needed */
+    color: var(--text);
+}
+
+h2 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); /* Adjust as needed */
+    color: var(--text);
+}
+
+h3 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: clamp(1rem, 1.5rem, 1.5rem); /* Adjust as needed */
+    color: var(--text);
+}
+
+h4 {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 900;
+    font-size: clamp(.9rem, 1.2rem, 1.2rem); /* Adjust as needed */
+    color: var(--text);
+}
+
+p {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'CircularStd', Helvetica;
+    font-weight: 300;
+    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Adjust as needed */
+    color: rgb(187, 184, 184);
+    margin-left: 0.2rem;
+}
