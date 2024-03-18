@@ -73,20 +73,19 @@ border: 1px solid #ccc; /* Light border similar to editMenu style */
 border-radius: 3px; /* Optional: rounded corners for the input */
 }
 
-.menu_item_display {
+.menuItem {
     font-size: 0.95rem;
     font-weight: bold;
     color: #333;
-    background-color: #f7f7f7;
+    /* background-color: #f7f7f7; */
     border-bottom: 1px solid #eee;
 }
 
-.menu_input {
+.menuInput {
     box-sizing: border-box;
     padding: 2px;
     margin-top: 5px;
     margin-bottom: 10px;
-    width: calc(100% - 10px);
     border: 1px solid #ccc;
     border-radius: 3px;
 }
@@ -105,7 +104,5 @@ border-radius: 3px; /* Optional: rounded corners for the input */
 
     /* STYLING */
     border-radius: 0px;
-
-
 }
 

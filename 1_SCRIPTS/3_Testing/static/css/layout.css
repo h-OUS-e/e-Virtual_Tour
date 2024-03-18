@@ -20,13 +20,30 @@
     gap: 10px;
     justify-content: center;    
     flex-wrap: wrap;
+    align-items: center;
+
+}
+
+.flexRowLeft{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .flexColumn {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: center;
+    
+    /* align-items: center; */
+}
+
+/* GRID LAYOUTS */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 5px;
 }
 
 /* ADD TO CLASS IN HTML TO INITIALLY HIDE ITEMS */

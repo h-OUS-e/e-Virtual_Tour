@@ -2,17 +2,19 @@
 document.addEventListener('mediaplayerTypeLoaded', async (event) => {
 
 // Getting media player types from the JSON filea
-const data = event.detail.mediaplayer_types;
+const mediaplayer_types = event.detail.mediaplayer_types;
+const icons = event.detail.icons;
+
 // Assuming the variable is named 'data'
 const editMenu = document.getElementById('edit_menu_MediaplayerTypes');
-const newTypeInput = document.getElementById('newType');
+// const newTypeInput = document.getElementById('newType');
 // const addTypeBtn = document.getElementById('addTypeBtn');
-const typeSelect = document.getElementById('typeSelect');
-const darkColorInput = document.getElementById('darkColor');
-const lightColorInput = document.getElementById('lightColor');
-const iconFields = document.getElementById('iconFields');
-const addIconBtn = document.getElementById('addIconBtn');
-const saveBtn = document.getElementById('saveBtn');
+const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
+const darkColorInput = document.getElementById('edit_menu_MediaplayerTypes_darkColor_input');
+const lightColorInput = document.getElementById('edit_menu_MediaplayerTypes_lightColor_input');
+const iconFields = document.getElementById('edit_menu_MediaplayerTypes_icons');
+const addIconBtn = document.getElementById('edit_menu_MediaplayerTypes_addIcon_button');
+const saveBtn = document.getElementById('edit_menu_MediaplayerTypes_save_button');
 
 // Populate the type select dropdown
 function populateTypeSelect(types) {
@@ -28,33 +30,58 @@ function populateTypeSelect(types) {
 // Update the edit fields based on the selected type
 function updateEditFields() {
   const selectedType = typeSelect.value;
-  darkColorInput.value = data[selectedType].dark;
-  lightColorInput.value = data[selectedType].light;
+  darkColorInput.value = mediaplayer_types[selectedType].dark;
+  lightColorInput.value = mediaplayer_types[selectedType].light;
   
   iconFields.innerHTML = '';
-  for (const iconType in data[selectedType].icon) {
-    const iconField = document.createElement('div');
-    iconField.classList.add('icon-field');
-    
-    const iconTypeInput = document.createElement('input');
-    iconTypeInput.type = 'text';
-    iconTypeInput.value = iconType;
-    iconField.appendChild(iconTypeInput);
-    
-    const iconUrlInput = document.createElement('input');
-    iconUrlInput.type = 'text';
-    iconUrlInput.value = data[selectedType].icon[iconType];
-    iconField.appendChild(iconUrlInput);
-    
-    iconFields.appendChild(iconField);
+  for (const icon_index in mediaplayer_types[selectedType].icon) {
+
+
+    // Get icon image url and name
+    const icon_image = document.createElement('img');
+    let mediaplayer_type = mediaplayer_types[selectedType];
+    let icon_name = mediaplayer_type["icon"][icon_index]
+    let icon_url = icons[icon_name];
+
+    // Add icon image
+    icon_image.src = icon_url;
+    icon_image.alt = icon_name;
+    // Set the width and height of the image
+    icon_image.width = 50; // Set the desired width in pixels
+    icon_image.height = 50; // Set the desired height in pixels
+    iconFields.appendChild(icon_image);
+
+    // Add icon name input field
+    const icon_name_input = document.createElement('input');
+    icon_name_input.classList.add('menuInput');
+    icon_name_input.type = 'text';
+    icon_name_input.value = icon_name;
+    iconFields.appendChild(icon_name_input);   
+
   }
+
+    
+    // const iconTypeInput = document.createElement('input');
+    // iconTypeInput.type = 'text';
+    // iconTypeInput.value = iconType;
+    // iconField.appendChild(iconTypeInput);
+    
+    // const iconUrlInput = document.createElement('input');
+    // iconUrlInput.type = 'text';
+    // iconUrlInput.value = mediaplayer_types[selectedType].icon[iconType];
+    // iconField.appendChild(iconUrlInput);
+    
+    // iconFields.appendChild(iconField);
+
 }
+
+
 
 // Add a new type to the data object
 function addNewType() {
   const newType = newTypeInput.value.trim();
   if (newType !== '') {
-    data[newType] = {
+    mediaplayer_types[newType] = {
       dark: '',
       light: '',
       icon: {}
@@ -85,11 +112,11 @@ function addNewIconField() {
 // Save the edited type data
 function saveEditedType() {
   const selectedType = typeSelect.value;
-  data[selectedType].dark = darkColorInput.value;
-  data[selectedType].light = lightColorInput.value;
+  mediaplayer_types[selectedType].dark = darkColorInput.value;
+  mediaplayer_types[selectedType].light = lightColorInput.value;
   
   const iconFieldInputs = iconFields.querySelectorAll('.icon-field input');
-  data[selectedType].icon = {};
+  mediaplayer_types[selectedType].icon = {};
   for (let i = 0; i < iconFieldInputs.length; i += 2) {
     const iconType = iconFieldInputs[i].value.trim();
     const iconUrl = iconFieldInputs[i + 1].value.trim();
@@ -98,7 +125,7 @@ function saveEditedType() {
     }
   }
   
-  console.log('Edited type saved:', data[selectedType]);
+  console.log('Edited type saved:', mediaplayer_types[selectedType]);
 }
 
 // Event listeners
@@ -108,6 +135,6 @@ addIconBtn.addEventListener('click', addNewIconField);
 saveBtn.addEventListener('click', saveEditedType);
 
 // Initialize the edit menu
-populateTypeSelect(data);
-// updateEditFields();
+populateTypeSelect(mediaplayer_types);
+updateEditFields();
 });
