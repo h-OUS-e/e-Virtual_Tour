@@ -251,6 +251,7 @@ opacity: 1; /* Fully visible */
 }
 
 
+
 /* sidebar styles */
 #sidebar-container {
     height: 100%;
@@ -301,7 +302,6 @@ opacity: 1; /* Fully visible */
 
 #sidebar-toggler {
     /* flex-grow: 1; */
-    
     flex-direction: column;
     height: 100%;
     width: var(--sidebar_width);
