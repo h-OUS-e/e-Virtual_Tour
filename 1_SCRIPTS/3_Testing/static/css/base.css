@@ -17,8 +17,7 @@
     --coolBlue: #D0F9F2;    
     --popupDarkColor: #2dc84d;
     --popupLightColor: #DBFFE5;
-    --popup_color: var(--sageGreen);
-    
+    --popup_color: var(--sageGreen);    
 
     /* CONSTANTS */
     --sidebar_width: 2vw;

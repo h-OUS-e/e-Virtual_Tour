@@ -9,6 +9,7 @@ document.addEventListener('mediaPlayersLoaded', async () => {
     
     // Getting mediabar elements
     const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');
+    console.log("TEST",mediabar_item_container);
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
