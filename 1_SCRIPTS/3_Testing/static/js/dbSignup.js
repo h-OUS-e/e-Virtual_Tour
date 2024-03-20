@@ -1,4 +1,4 @@
-import { supabase } from "./dbEvents.js";
+import { supabase } from "./dbClient.js";
 
 document.getElementById('signup-form').addEventListener('submit', async function(event) {
     event.preventDefault();
