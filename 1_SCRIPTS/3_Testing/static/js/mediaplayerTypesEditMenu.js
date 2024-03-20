@@ -1,3 +1,6 @@
+import tinycolor from "https://esm.sh/tinycolor2";
+import { ColorPicker, colorToPos } from './colorPicker.js';
+
 
 document.addEventListener('mediaplayerTypeLoaded', async (event) => {
 
@@ -10,13 +13,18 @@ const editMenu = document.getElementById('edit_menu_MediaplayerTypes');
 // const newTypeInput = document.getElementById('newType');
 // const addTypeBtn = document.getElementById('addTypeBtn');
 const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
-const darkColorInput = document.getElementById('edit_menu_MediaplayerTypes_darkColor_input');
-const lightColorInput = document.getElementById('edit_menu_MediaplayerTypes_lightColor_input');
 const icon_fields = document.getElementById('edit_menu_MediaplayerTypes_icons');
 const addIconBtn = document.getElementById('edit_menu_MediaplayerTypes_addIcon_button');
 const saveBtn = document.getElementById('edit_menu_MediaplayerTypes_save_button');
 
 const iconDropdown = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
+
+// Get the color input elements
+const darkColorInput = document.getElementById('edit_menu_MediaplayerTypes_darkColor_input');
+const lightColorInput = document.getElementById('edit_menu_MediaplayerTypes_lightColor_input');
+
+// Get the color picker containers
+const colorPickerContainer = document.getElementById('color_picker');
 
 
 // Populate the type select dropdown
@@ -75,16 +83,20 @@ function addIconField(icon_name) {
 // Update the edit fields based on the selected type
 function updateEditFields() {
   const selected_type = typeSelect.value;
+
+  // Update color input values
   darkColorInput.value = mediaplayer_types[selected_type].dark;
   lightColorInput.value = mediaplayer_types[selected_type].light;
-  console.log(selected_type);
+
+  // Update color input background colors
+  darkColorInput.style.backgroundColor = mediaplayer_types[selected_type].dark;
+  lightColorInput.style.backgroundColor = mediaplayer_types[selected_type].light;
+
   icon_fields.innerHTML = '';
   // Add existing icons
   for (const icon_index in mediaplayer_types[selected_type].icon) {
-
     let mediaplayer_type = mediaplayer_types[selected_type];
     let icon_name = mediaplayer_type["icon"][icon_index]
-
     addIconField(icon_name);
   }
 
@@ -106,8 +118,6 @@ function addNewType() {
     populateTypeSelect();
   }
 }
-
-
 
 // // Save the edited type data
 // function saveEditedType() {
@@ -164,7 +174,50 @@ function closeIconDropdown(event) {
   }
 }
 
+
+// COLOR PICKER INITIALIZATION
+
+// Updating color input
+function updateColorInput(colorInput, color) {
+  colorInput.value = color.toHexString();
+  colorInput.style.backgroundColor = color.toHexString();
+}
+
+// Event listener for the dark color input
+darkColorInput.addEventListener('click', function() {
+  colorPickerContainer.classList.toggle('hidden');
+  
+  // if (!colorPickerContainer.classList.contains('hidden')) {
+  //   colorPicker.colorToPos(darkColorInput.value);
+  // }
+});
+
+// Event listener for the light color input
+lightColorInput.addEventListener('click', function() {
+  colorPickerContainer.classList.toggle('hidden');
+  
+  // if (!colorPickerContainer.classList.contains('hidden')) {
+  //   colorPicker.colorToPos(lightColorInput.value);
+  // }
+});
+
+// Function to handle color selection from the color pickers
+function handleColorSelection(colorPicker, colorInput) {
+  const selectedColor = colorPicker.getCurrentColor();
+  updateColorInput(colorInput, selectedColor);
+}
+
+// // Event listener for the color picker's color selection
+// colorPickerContainer.addEventListener('mouseup', function() {
+//   handleColorSelection(colorPickerContainer, darkColorInput);
+// });
+
+
+// let color2 = tinycolor('hsl ' + 30 + ' ' + 66 + ' ' + 50);
+// updateColorInput(lightColorInput, color2);
+
 // Initialize the edit menu
+
 populateTypeSelect(mediaplayer_types);
 populateIconDropdown(icons);
 updateEditFields();

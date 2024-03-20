@@ -126,7 +126,7 @@
           
 
 
-        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
+        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu ">
 
             <h3 class="header">Edit Mediaplayer Types</h3>
             <select id="edit_menu_MediaplayerTypes_select" title="Select Mediaplayer type">
@@ -136,9 +136,19 @@
             <div class="container">
                 <div id="edit_menu_MediaplayerTypes_colors" class="grid">
                     <p>dark color: </p>
-                    <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem" type="color"  placeholder="Enter dark color">
+                    <div class="color_input_container">
+                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem color_input" type="text" placeholder="Enter dark color" readonly>
+                        <div id="dark_color_picker_container" class="hidden">
+                          <!-- Color picker elements go here -->
+                        </div>
+                      </div>
                     <p>light color: </p>
-                    <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem" type="color" placeholder="Enter light color">
+                    <div class="color_input_container">
+                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem color_input" type="text" placeholder="Enter light color" readonly>
+                        <div id="light_color_picker_container" class="hidden">
+                          <!-- Color picker elements go here -->
+                        </div>
+                      </div>
                 </div>
                 <div class="grid">
                     <p>icons: </p>
@@ -305,7 +315,7 @@
 
 
         <!-- A code for a color picker -->
-        <div class="color-picker-panel">
+        <div id="color_picker" class="color-picker-panel hidden">
             <!-- Typical Color Swatches and eye dropper -->
             <div class="panel-row">
               <div class="swatches default-swatches"></div>
@@ -352,6 +362,10 @@
               <button id="add-swatch" class="button add-swatch">
                 <span id="color-indicator" class="color-indicator"></span><span>Add to Swatches</span>
               </button>
+            </div>
+            <div class="flexRow">
+                  <button id="color_picker_ok_button" class="btn okBtn ">OK</button>
+                  <button id="color_picker_exit_button" class="btn exitBtn">X</button>
             </div>
         </div>         
 
