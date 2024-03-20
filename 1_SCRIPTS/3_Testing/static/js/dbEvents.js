@@ -173,7 +173,7 @@ export function waitForProfileData() { // listen to 'fetched-project-data' event
 }
 
 export async function upsertProfiles(dataArray) {
-    // project fields:
+    // profiles fields:
         // profile_uid uuid not null default uuid_generate_v4 (),
         // id uuid null,
         // user_name character varying(255) null,
@@ -286,7 +286,7 @@ export function waitForProjectData() { // listen to 'fetched-project-data' event
 }
 
 export async function upsertMedia(dataArray) {
-    // project fields:
+    // media fields:
         // media_uid uuid not null default uuid_generate_v4 (),
         // x double precision null,
         // y double precision null,
@@ -333,7 +333,7 @@ export async function upsertMedia(dataArray) {
 }
 
 export async function upsertTransitionNodes(dataArray) {
-    // project fields:
+    // transition_nodes fields:
         // node_uid uuid not null default uuid_generate_v4 (),
         // x double precision null,
         // y double precision null,
