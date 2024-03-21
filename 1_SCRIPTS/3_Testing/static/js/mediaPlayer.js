@@ -1,5 +1,3 @@
-import { loadMediaPlayerTypes } from './JSONSetup.js';
-
 // console.log('from media player: ' + recieved_project_data)
 
 
@@ -15,13 +13,15 @@ import { loadMediaPlayerTypes } from './JSONSetup.js';
 
 
 // initialize at event, Scene and 3D objects loaded
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('mediaplayerTypeLoaded', async (event) => {
 
-    // Getting media player types from the JSON filea
-    const mediaplayer_types = await loadMediaPlayerTypes();
+    // Getting media player types and icons from the JSON filea
+    const mediaplayer_types = event.detail.mediaplayer_types;
+    const icons = event.detail.icons;
     // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaplayer_types);
+    await loadMediaPlayersFromJSON(mediaplayer_types, icons);
     
+  
        
     // Definitions   
     const scene = document.querySelector('a-scene');
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-async function loadMediaPlayersFromJSON(mediaplayer_types) {
+async function loadMediaPlayersFromJSON(mediaplayer_types, icons) {
     try {
         const response = await fetch('../static/1_data/MediaPlayers.json'); // Adjust the path as necessary
         if (!response.ok) {
@@ -139,11 +139,13 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
             const title = mediaPlayer_item.title;
             const point = mediaPlayer_item.position;
             const rotation = mediaPlayer_item.rotation;
-            const mediaplayer_type = mediaPlayer_item.mediaplayer_type;
+            const mediaplayer_type_string = mediaPlayer_item.mediaplayer_type;
+            const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
             const icon_index = mediaPlayer_item.icon_index;
+            const icon_url = icons[mediaplayer_type["icon"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;
             // Create mediaplayer and add to scene
-            const media_player = new MediaPlayer(uniqueId, point, background_img_id, mediaplayer_types, mediaplayer_type, icon_index, title, null, rotation);
+            const media_player = new MediaPlayer(uniqueId, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
             media_player.addToScene();
             
         });
@@ -158,15 +160,15 @@ async function loadMediaPlayersFromJSON(mediaplayer_types) {
 
 
 class MediaPlayer {    
-    constructor(id, position, background_img_id, mediaplayer_types, mediaplayer_type_string, icon_index, title, direction, rotation) {
+    constructor(id, position, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, rotation) {
         this.id = id;
         this.final_id = id; // for updating id when undoing
         this.position = position;
         this.background_img_id = background_img_id;
         this.name = this.constructor.name;
         this.mediaplayer_type_string = mediaplayer_type_string;
-        const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
         this.mediaplayer_type = mediaplayer_type;
+        this.icon_url = icon_url;
         this.icon_index = icon_index;
         this.title = title;
         this.direction = direction;
@@ -252,7 +254,7 @@ class MediaPlayer {
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = document.createElement('a-entity'); 
         iconEntity.setAttribute('mixin', 'mediaplayer_icon');
-        iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
+        iconEntity.setAttribute('material', 'src', this.icon_url);
         iconEntity.setAttribute('class', 'mediaplayer-icon');
         entity.appendChild(iconEntity);
 
@@ -430,6 +432,7 @@ class MediaPlayer {
             mediaplayer_type: this.mediaplayer_type,
             mediaplayer_type_string: this.mediaplayer_type_string,
             icon_index: this.icon_index,
+            icon_url: this.icon_url,
             title: this.title,
             rotation: this.rotation,
             direction: {...this.direction},
@@ -471,6 +474,12 @@ class MediaPlayer {
         // this.id = `mp_${this.background_img_id}_${this.title}`;
         entity.setAttribute('id', this.id);
 
+        // Get the icon and border entities inside the media player entity and update their attributes
+        console.log("TEST", entity);
+        const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+        console.log("TEST", iconEntity);
+
+
 
         // Loop through the updates object to apply updates
         if (updates) {
@@ -479,7 +488,6 @@ class MediaPlayer {
                 // Update the object's properties
 
                 if (this.hasOwnProperty(key)) {
-                    // console.log("key: ", key, "value: ", value);
                     this[key] = value;
 
                     //  Updating entity id if background or title has changed
@@ -508,11 +516,13 @@ class MediaPlayer {
                         entity.setAttribute('background_img_id', value);                        
                         break;
                     case 'mediaplayer_type_string':
-                        console.log(key, value);
                         entity.setAttribute('mediaplayer_type', value);
                         break;
                     case 'icon_index':
-                        entity.setAttribute('icon_index', value);
+                        entity.setAttribute('icon_index', value);                    
+                        break;
+                    case 'icon_url':
+                        console.log("TEST3", value);
                         break;
                     case 'title':
                         entity.setAttribute('title', value);
@@ -524,9 +534,8 @@ class MediaPlayer {
         }
                    
 
-        // Get the icon and border entities inside the media player entity and update their attributes
-        const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
-        iconEntity.setAttribute('material', 'src', this.mediaplayer_type["icon"][this.icon_index]);
+        
+        iconEntity.setAttribute('material', 'src', this.icon_url);
         const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
         borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));            
         entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));

@@ -28,9 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (menu.style.width === '250px') {
             menu.style.width = '0';
             menu_content.style.width = '0';
+            menu.classList.add('hidden'); // Show the element
+
+            
         } else {
             menu.style.width = '250px';
             menu_content.style.width = '250px';
+            menu.classList.remove('hidden'); // Show the element
+
         }
     });
 

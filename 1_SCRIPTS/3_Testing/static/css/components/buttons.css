@@ -1,0 +1,104 @@
+.btn {
+    padding: 8px 8px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px var(--popup_color);
+}
+  
+.btn:focus, .btn:active {
+    outline: none;
+}
+
+.btn.active {
+    outline: none;
+    background-color: var(--popup_color);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: default;
+  }
+  
+/* click effect */
+.btnClickEffect::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 5px;
+  background-color: var(--popup_color);
+  box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001;
+  transition: all 0.3s ease;
+}
+
+  
+.btnClickEffect:active::after {
+    animation: clickEffect 0.3s ease-out;
+}
+  
+@keyframes clickEffect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.4;
+    }
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+
+  
+
+/* ADDITIONAL BUTTON TYPES */
+.addBtn {
+  padding: 5px;
+  margin: 10px;
+  width: 50px;
+  height:50px;
+    font-size: 30px;
+    color: #8a8a8a;
+    background-color: #49434375;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    position: relative;
+    vertical-align: middle;
+    overflow: hidden;
+    
+}
+
+.okBtn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+.exitBtn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  padding: 5px 10px;
+  background-color: #ff0000;
+  color: #ffffff;
+}

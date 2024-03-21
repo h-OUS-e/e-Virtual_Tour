@@ -14,6 +14,8 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
 
+
+
     <script type="importmap">
         {
           "imports": {
@@ -23,11 +25,8 @@
         }
         </script>
     <!-- SCRIPTS -->   
-<<<<<<< HEAD
     <script type="module" src="../static/js/dbEvents.js" ></script>
-=======
     <script type="module" src="../static/js/auth_handler.js"></script>
->>>>>>> 1f007762ae7771b6a70691ea36f201f43bfe0d63
     <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
@@ -45,6 +44,10 @@
     <script src="../static/js/touchInteractionEvents.js"></script>
     <script type="module" src="../static/js/mediaBar.js"></script>
     <script type="module" src="../static/js/editMode.js"></script>
+    <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script>
+    <script type="module" src="../static/js/colorPicker.js"></script>
+
+
     
 
     <!-- <script src="assets/js/cameraOffset.js"></script> -->
@@ -52,40 +55,41 @@
     
 </head>
 <body>
+    
 
     <!-- A screen container to store all screen elements on the front -->
-    <div id="'screen_container" class="container screen">
+    <div id="'screen_container" class="screen">        
 
         <!-- A dashboard at the bottom that reveals the minimap and other items-->
         <div id="dashboard-container">
-        <div id="dashboard" class="container">
-            
-            <div id="burger_menu" >
-                <button id="burger_button" class="dashboard-item">
-                    <img src="../static/0_resources/icons/burger.png" alt="Menu">
+            <div id="dashboard" class="">
+                
+                <div id="burger_menu" >
+                    <button id="burger_button" class="dashboard-item">
+                        <img src="../static/0_resources/icons/burger.png" alt="Menu">
+                    </button>
+                </div>
+                
+
+                <div id="icon_gallery" class="dashboard-item">
+                    <!-- Icons go here -->
+                </div>
+
+                <!-- a button to toggle edit mode -->
+                <button id="editModeToggle">Toggle Edit Mode</button>
+
+
+                <!-- other utilities -->
+                <button id="fullscreen_button" class="dashboard-item">
+                    <img src="../static/0_resources/icons/fullscreen.png" alt="Fullscreen">
+                </button>
+                <button id="minimap_button" class="dashboard-item">
+                    <img src="../static/0_resources/icons/minimap.png" alt="Minimap">
                 </button>
             </div>
-            
-
-            <div id="icon_gallery" class="dashboard-item">
-                <!-- Icons go here -->
-            </div>
-
-            <!-- a button to toggle edit mode -->
-            <button id="editModeToggle">Toggle Edit Mode</button>
-
-
-            <!-- other utilities -->
-            <button id="fullscreen_button" class="dashboard-item">
-                <img src="../static/0_resources/icons/fullscreen.png" alt="Fullscreen">
-            </button>
-            <button id="minimap_button" class="dashboard-item">
-                <img src="../static/0_resources/icons/minimap.png" alt="Minimap">
-            </button>
-        </div>
         </div>
 
-        <div id="menu_container" class="container menu">
+        <div id="menu_container" class="menu dashboardMenu hidden">
             <div id="menu_content" class="menu">
                 <a href="#home">Home</a>
                 <a href="#about">About</a>
@@ -95,29 +99,95 @@
             </div>
         </div>
 
-        <div id="minimap_container" class="container floating">
+        <div id="minimap_container" class="floating">
             <!-- Minimap nodes -->
             <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 235px; top: 130px;"></div>
             <div id= "minimap_node_01.2" class="minimapNode" imgId="01.2" current = "False" style="left: 160px; top: 90px;"></div>
             <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 90px;"></div>
             <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 120px;"></div>
         </div>
-
         
         <!-- Selection bar to change class option in edit mode -->
-        <div id="object_class_selection_bar" class="bar" >
-            <button class="objectClassBtn" data-class="None">None</button>
-            <button class="objectClassBtn" data-class="TransitionNode">TransitionNode</button>
-            <button class="objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
-            <button class="objectClassBtn" data-class="LabelTag">LabelTag</button>
+        <div id="editmode_bar" class="container flexColumn hidden">
+            <div id="editmode_options" class="editmode flexRow"  >
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Mediaplayer Type Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="create_menu_MediaplayerTypes">Add Mediaplayer Type</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_icons">Icon Editor</button>
 
+            </div>
+
+            <div id="object_class_selection_bar" class="bar flexRow" >
+                <button class="btn objectClassBtn" data-class="None">None</button>
+                <button class="btn objectClassBtn" data-class="TransitionNode">TransitionNode</button>
+                <button class="btn objectClassBtn" data-class="MediaPlayer">MediaPlayer</button>
+                <button class="btn objectClassBtn" data-class="LabelTag">LabelTag</button>
+            </div>
         </div>
           
 
-        <!-- Edit menu to delete or change values of objects in a-scene -->
-        <div id="edit_menu_TransitionNode" class="editMenu">
+
+        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu ">
+
+            <h3 class="header">Edit Mediaplayer Types</h3>
+            <select id="edit_menu_MediaplayerTypes_select" title="Select Mediaplayer type">
+            <!-- Options will be populated dynamically -->
+            </select>
+            
+            <div class="container">
+                <div id="edit_menu_MediaplayerTypes_colors" class="grid">
+                    <p>dark color: </p>
+                    <div class="color_input_container">
+                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem color_input" type="text" placeholder="Enter dark color" readonly>
+                        <div id="dark_color_picker_container" class="hidden">
+                          <!-- Color picker elements go here -->
+                        </div>
+                      </div>
+                    <p>light color: </p>
+                    <div class="color_input_container">
+                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem color_input" type="text" placeholder="Enter light color" readonly>
+                        <div id="light_color_picker_container" class="hidden">
+                          <!-- Color picker elements go here -->
+                        </div>
+                      </div>
+                </div>
+                <div class="grid">
+                    <p>icons: </p>
+                    <div class="grid2Column">
+                        <div id="edit_menu_MediaplayerTypes_icons" class="grid3Column"></div>    
+                        <div > 
+                            <button id="edit_menu_MediaplayerTypes_addIcon_button" class="btn addBtn" >+</button>  
+                            <p class="menuItem">Add Icon</p>
+                        </div>    
+                    </div>
+                    
+                </div>
+                <div id="edit_menu_MediaplayerTypes_iconDropdown" class="dropdown hidden">
+                    <!-- Options will be populated dynamically -->
+                </div>   
+            </div>
+
+            <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button>
+        </div>
+
+                   
+
+        <!-- Edit menu to add or edit types of mediaplayers -->
+        <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
+            <h2>Edit Menu</h2>
             <ul>
-                <li class="editMenuOption object_id_display">Object ID: </li>
+                <li>
+                    <label for="creation_menu_mediaplayerTypes_add"> <p>Add New Type</p></label>
+                    <input type="text" id="creation_menu_mediaplayerTypes_add" placeholder="Enter new type">
+                    <button class="btn" id="creation_menu_mediaplayerTypes_add_btn">Add Type</button>
+                </li>
+            </ul>
+        </div>
+        
+
+        <!-- Edit menu to delete or change values of objects in a-scene -->
+        <div id="edit_menu_TransitionNode" class="menu hidden">
+            <ul>
+                <li class="editMenuOption menuItem">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
                 <li>
                     <label for="edit_menu_TransitionNode_toScene_id_input">Change toScene ID</label>
@@ -130,12 +200,12 @@
 
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
-        <div id="edit_menu_MediaPlayer" class="editMenu">
+        <div id="edit_menu_MediaPlayer" class="menu hidden">
             <ul>
-                <li class="editMenuOption object_id_display">Object ID: </li>
+                <li class="editMenuOption menuItem">Object ID: </li>
                 <li> 
                     <label for="edit_menu_MediaPlayer_title_input"> <p>Edit title:</p></label>
-                    <input type="text" id="edit_menu_MediaPlayer_title_input" name="edit_menu_MediaPlayer_title_input" >
+                    <input type="text" id="edit_menu_MediaPlayer_title_input" name="menu_input edit_menu_MediaPlayer_title_input" >
                     <input type="button" class="submitOption" value="Submit">
                 </li>
                 <li>
@@ -158,12 +228,12 @@
           
 
         <!-- Creation menu to when adding transition nodes -->
-        <div id="creation_menu_TransitionNode" class="editMenu creationMenu" >
+        <div id="creation_menu_TransitionNode" class="menu creationMenu hidden" >
             <h4>Transition Node</h4>
             <ul>
                 <li>
                     <label for="creation_menu_TransitionNode_scene_id_input">Select New Scene ID</label>
-                    <select id="creation_menu_TransitionNode_scene_id_input" class="creation_menu_TransitionNode_scene_id_input changeSceneId changeMediaPlayerSceneId"></select>
+                    <select id="creation_menu_TransitionNode_scene_id_input" class="menuInput creation_menu_TransitionNode_scene_id_input changeSceneId changeMediaPlayerSceneId"></select>
                     <input type="button" class="submitOption" value="Submit">
                 </li>
 
@@ -171,19 +241,19 @@
         </div>
 
         <!-- Creation menu when adding media players -->
-        <div id="creation_menu_MediaPlayer" class="editMenu creationMenu" >
+        <div id="creation_menu_MediaPlayer" class="menu creationMenu hidden" >
             <h4>Media Player</h4>
             <ul>
                 <li>
                     <label for="creation_menu_MediaPlayer_title_input"> <p>Media player title:</p></label>
-                    <input type="text" id="creation_menu_MediaPlayer_title_input" name="creation_menu_MediaPlayer_title_input" >
+                    <input type="text" id="creation_menu_MediaPlayer_title_input" name="menuInput creation_menu_MediaPlayer_title_input" >
                     <label for="creation_menu_MediaPlayer_type_input"> <p>Select Type:</p></label>
-                    <select  type="text" id="creation_menu_MediaPlayer_type_input" name="creation_menu_MediaPlayer_type_input" >
+                    <select  type="text" id="creation_menu_MediaPlayer_type_input" name="menu_input creation_menu_MediaPlayer_type_input" >
                         <option value="">Select Type</option>
                         <!-- Options will be added dynamically -->
                     </select>
                     <label for="creation_menu_MediaPlayer_iconIdx_input"> <p>Icon Index:</p></label>
-                    <select type="text" id="creation_menu_MediaPlayer_iconIdx_input" name="creation_menu_MediaPlayer_iconIdx_input" >
+                    <select type="text" id="creation_menu_MediaPlayer_iconIdx_input" name="menu_input creation_menu_MediaPlayer_iconIdx_input" >
                         <option value="">Select Icon</option>
                         <!-- Options will be added dynamically -->
                     </select>                    
@@ -242,6 +312,63 @@
                 
             </div>
         </div>
+
+
+        <!-- A code for a color picker -->
+        <div id="color_picker" class="color-picker-panel hidden">
+            <!-- Typical Color Swatches and eye dropper -->
+            <div class="panel-row">
+              <div class="swatches default-swatches"></div>
+              <button class="button eyedropper">Get Color</button>
+            </div>
+            
+            <!--Color picker map -->
+            <div class="panel-row">
+              <div class="spectrum-map">
+                <button id="spectrum-cursor" class="color-cursor"></button>
+                <canvas id="spectrum-canvas"></canvas>
+              </div>
+              <div class="hue-map">
+                <button id="hue-cursor" class="color-cursor"></button>
+                <canvas id="hue-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="panel-row">
+              <div id="rgb-fields" class="field-group value-fields rgb-fields active">
+                <div class="field-group">
+                  <label for="" class="field-label">R:</label>
+                  <input type="number" max="255" min="0" id="red" class="field-input rgb-input"/>
+                </div>
+                <div class="field-group">
+                  <label for="" class="field-label">G:</label>
+                  <input type="number" max="255" min="0" id="green" class="field-input rgb-input"/>
+                </div>
+                <div class="field-group">
+                  <label for="" class="field-label">B:</label>
+                  <input type="number" max="255" min="0" id="blue" class="field-input rgb-input"/>
+                </div>
+              </div>
+              <div id="hex-field" class="field-group value-fields hex-field">
+                <label for="" class="field-label">Hex:</label>
+                <input type="text" id="hex" class="field-input"/>
+              </div>
+              <button id="mode-toggle" class="button mode-toggle">Mode</button>
+            </div>
+
+            <div class="panel-row">
+              <h4 class="panel-header">User Colors</h4>
+              <div id="user-swatches" class="swatches custom-swatches"></div>
+              <button id="add-swatch" class="button add-swatch">
+                <span id="color-indicator" class="color-indicator"></span><span>Add to Swatches</span>
+              </button>
+            </div>
+            <div class="flexRow">
+                  <button id="color_picker_ok_button" class="btn okBtn ">OK</button>
+                  <button id="color_picker_exit_button" class="btn exitBtn">X</button>
+            </div>
+        </div>         
+
     </div>
       
     

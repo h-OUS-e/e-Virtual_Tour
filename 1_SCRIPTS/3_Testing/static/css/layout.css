@@ -1,0 +1,76 @@
+
+
+/* CONTAINER LAYOUT */
+
+.container {
+    position: relative;
+    padding: 8px;
+    /* background: #fffcfc81; */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    text-align: center;
+}
+
+.header {
+  position: relative;
+  padding: 20px;
+  z-index: 100;
+  
+}
+
+
+/* FLEX LAYOUTS */
+
+.flexRow {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;    
+    flex-wrap: wrap;
+    align-items: center;
+
+}
+
+.flexRowLeft{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;    
+    align-items: center;
+}
+
+/* GRID LAYOUTS */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 5px;
+}
+
+.grid3Column {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+}
+
+.grid2Column {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 5px;
+  align-items: flex-end;
+
+}
+
+/* ADD TO CLASS IN HTML TO INITIALLY HIDE ITEMS */
+.hidden {
+    display: none;
+    visibility: hidden;
+  }
+
+  
