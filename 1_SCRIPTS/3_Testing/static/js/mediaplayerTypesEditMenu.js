@@ -231,4 +231,5 @@ saveBtn.addEventListener('click', saveEditedType);
 
 
 
+
 });
