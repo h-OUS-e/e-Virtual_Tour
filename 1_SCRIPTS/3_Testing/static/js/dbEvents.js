@@ -311,8 +311,9 @@ export async function upsertMedia(dataArray) {
         // constraint media_pkey primary key (media_uid),
         // constraint media_project_uid_fkey foreign key (project_uid) references projects (project_uid)
 
-    //input: dataArray = [ {project_uid: 'some id', project_name: 'new project name'}, {project_uid: 'some id', is_published: bool} ]
+    //input: dataArray = [ {media_uid: 'some id', project_name: 'new project name'}, {media_uid: 'some id', is_published: bool} ]
     //output: 
+
     try {
         const { data, error } = await supabase
             .from('media')
