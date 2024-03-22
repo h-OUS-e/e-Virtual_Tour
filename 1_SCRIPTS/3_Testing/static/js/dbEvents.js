@@ -2,6 +2,80 @@ import { supabase } from "./dbClient.js";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 
+class Supabase_Table_Editor {
+    constructor(table_name) {
+        this.table_name = table_name;
+    }
+
+    async supbaseUpsert(data_array) { 
+        //input: [ { id: 1, 'column_name': 'Albania' },{ id: 2, 'column_name': 'Algeria', 'column_name2': 'other thing} ]
+        try {
+            const {data, error} = await supabase
+            .from(this.table_name)
+            .upsert(data_array)
+            .select();
+        
+        if (error) {
+            console.error(`upsert error in table ${this.table_name}: `, error );
+            return { success: false, error};
+        }
+
+        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+            return { success: true, data };
+
+        } catch (error) {
+            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            return { success: false, error };
+        }
+    }
+
+    async supabaseDelete (data_array) { 
+        //input: array of uids to delete [id1,id2,id3] strings
+        try {
+            const { data, error } = await supabase
+            .from(this.table_name)
+            .insert(data_array)
+            .select()
+            .in(id_column,[data_array]);
+                    
+        if (error) {
+            console.error(`upsert error in table ${this.table_name}: `, error );
+            return { success: false, error};
+        }
+
+        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+            return { success: true, data };
+
+        } catch (error) {
+            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            return { success: false, error };
+        }
+    }
+
+    
+    async supabaseDelete (data_array) { //
+        try {
+            const { error } = await supabase
+            .from('media')
+            .delete()
+            .eq(data_array)
+                    
+                    
+        if (error) {
+            console.error(`upsert error in table ${this.table_name}: `, error );
+            return { success: false, error};
+        }
+
+        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+            return { success: true, data };
+
+        } catch (error) {
+            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            return { success: false, error };
+        }
+    }
+
+}
 
 
 
@@ -311,8 +385,9 @@ export async function upsertMedia(dataArray) {
         // constraint media_pkey primary key (media_uid),
         // constraint media_project_uid_fkey foreign key (project_uid) references projects (project_uid)
 
-    //input: dataArray = [ {project_uid: 'some id', project_name: 'new project name'}, {project_uid: 'some id', is_published: bool} ]
+    //input: dataArray = [ {media_uid: 'some id', project_name: 'new project name'}, {media_uid: 'some id', is_published: bool} ]
     //output: 
+
     try {
         const { data, error } = await supabase
             .from('media')
