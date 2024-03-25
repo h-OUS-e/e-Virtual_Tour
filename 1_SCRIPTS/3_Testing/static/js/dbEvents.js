@@ -7,24 +7,24 @@ class Supabase_Table_Editor {
         this.table_name = table_name;
     }
 
-    async supbaseUpsert(data_array) { 
+    async supbaseinsert(data_array) { 
         //input: [ { id: 1, 'column_name': 'Albania' },{ id: 2, 'column_name': 'Algeria', 'column_name2': 'other thing} ]
         try {
             const {data, error} = await supabase
             .from(this.table_name)
-            .upsert(data_array)
+            .insert(data_array)
             .select();
         
         if (error) {
-            console.error(`upsert error in table ${this.table_name}: `, error );
+            console.error(`insert error in table ${this.table_name}: `, error );
             return { success: false, error};
         }
 
-        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+        console.log(`insert successful in table ${this.table_name}, data:`, data);
             return { success: true, data };
 
         } catch (error) {
-            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            console.error(`Exception during insert in table ${this.table_name}:`, error);
             return { success: false, error };
         }
     }
@@ -39,15 +39,15 @@ class Supabase_Table_Editor {
             .in(id_column,[data_array]);
                     
         if (error) {
-            console.error(`upsert error in table ${this.table_name}: `, error );
+            console.error(`insert error in table ${this.table_name}: `, error );
             return { success: false, error};
         }
 
-        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+        console.log(`insert successful in table ${this.table_name}, data:`, data);
             return { success: true, data };
 
         } catch (error) {
-            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            console.error(`Exception during insert in table ${this.table_name}:`, error);
             return { success: false, error };
         }
     }
@@ -62,15 +62,15 @@ class Supabase_Table_Editor {
                     
                     
         if (error) {
-            console.error(`upsert error in table ${this.table_name}: `, error );
+            console.error(`insert error in table ${this.table_name}: `, error );
             return { success: false, error};
         }
 
-        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
+        console.log(`insert successful in table ${this.table_name}, data:`, data);
             return { success: true, data };
 
         } catch (error) {
-            console.error(`Exception during upsert in table ${this.table_name}:`, error);
+            console.error(`Exception during insert in table ${this.table_name}:`, error);
             return { success: false, error };
         }
     }
@@ -141,7 +141,7 @@ export function waitForProjects() { // listen to 'fetched-projects'
     });
 }
 
-export async function upsertProjects(dataArray) {
+export async function insertProjects(dataArray) {
     // project fields:
         // project_uid uuid not null default uuid_generate_v4 (),
         // project_name character varying(255) null,
@@ -154,23 +154,59 @@ export async function upsertProjects(dataArray) {
         // constraint projects_pkey primary key (project_uid),
         // constraint projects_profile_uid_fkey foreign key (profile_uid) references profiles (profile_uid)
 
-    //input: dataArray = [ {project_uid: 'some id', project_name: 'new project name'}, {project_uid: 'some id', is_published: bool} ]
+    //input: dataArray = [ {project_name: 'new project name', is_published: bool} ]                 
     //output: 
     try {
         const { data, error } = await supabase
             .from('projects')
-            .upsert(dataArray) 
+            .insert(dataArray) 
             .select();
 
         if (error) {
-            console.error('Upsert error:', error);
+            console.error('insert error:', error);
             return { success: false, error };
         }
 
-        console.log('Upsert successful, data:', data);
+        console.log('insert successful, data:', data);
         return { success: true, data };
     } catch (error) {
-        console.error('Exception during upsert:', error);
+        console.error('Exception during insert:', error);
+        return { success: false, error };
+    }
+}
+
+export async function updatetProjects(dataArray) {
+    // project fields:
+        // project_uid uuid not null default uuid_generate_v4 (),
+        // project_name character varying(255) null,
+        // profile_uid uuid null,
+        // date_created timestamp with time zone null,
+        // last_update timestamp with time zone null,
+        // update_uid uuid null,
+        // date_deleted timestamp with time zone null,
+        // is_published boolean null default true,
+        // constraint projects_pkey primary key (project_uid),
+        // constraint projects_profile_uid_fkey foreign key (profile_uid) references profiles (profile_uid)
+
+    //input: dataArray = [ {project_uid: 'some id',
+    //                      project_name: 'new project name', 
+    //                      
+    //output: 
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .update(dataArray) 
+            .select();
+
+        if (error) {
+            console.error('insert error:', error);
+            return { success: false, error };
+        }
+
+        console.log('insert successful, data:', data);
+        return { success: true, data };
+    } catch (error) {
+        console.error('Exception during insert:', error);
         return { success: false, error };
     }
 }
@@ -246,7 +282,7 @@ export function waitForProfileData() { // listen to 'fetched-project-data' event
     });
 }
 
-export async function upsertProfiles(dataArray) {
+export async function insertProfiles(dataArray) {
     // profiles fields:
         // profile_uid uuid not null default uuid_generate_v4 (),
         // id uuid null,
@@ -266,18 +302,18 @@ export async function upsertProfiles(dataArray) {
     try {
         const { data, error } = await supabase
             .from('profiles')
-            .upsert(dataArray) 
+            .insert(dataArray) 
             .select();
 
         if (error) {
-            console.error('Upsert error:', error);
+            console.error('insert error:', error);
             return { success: false, error };
         }
 
-        console.log('Upsert successful, data:', data);
+        console.log('insert successful, data:', data);
         return { success: true, data };
     } catch (error) {
-        console.error('Exception during upsert:', error);
+        console.error('Exception during insert:', error);
         return { success: false, error };
     }
 }
@@ -359,7 +395,7 @@ export function waitForProjectData() { // listen to 'fetched-project-data' event
     });
 }
 
-export async function upsertMedia(dataArray) {
+export async function insertMedia(dataArray) {
     // media fields:
         // media_uid uuid not null default uuid_generate_v4 (),
         // x double precision null,
@@ -391,23 +427,23 @@ export async function upsertMedia(dataArray) {
     try {
         const { data, error } = await supabase
             .from('media')
-            .upsert(dataArray) 
+            .insert(dataArray) 
             .select();
 
         if (error) {
-            console.error('Upsert error:', error);
+            console.error('insert error:', error);
             return { success: false, error };
         }
 
-        console.log('Upsert successful, data:', data);
+        console.log('insert successful, data:', data);
         return { success: true, data };
     } catch (error) {
-        console.error('Exception during upsert:', error);
+        console.error('Exception during insert:', error);
         return { success: false, error };
     }
 }
 
-export async function upsertTransitionNodes(dataArray) {
+export async function insertTransitionNodes(dataArray) {
     // transition_nodes fields:
         // node_uid uuid not null default uuid_generate_v4 (),
         // x double precision null,
@@ -432,18 +468,18 @@ export async function upsertTransitionNodes(dataArray) {
     try {
         const { data, error } = await supabase
             .from('Transition_nodes')
-            .upsert(dataArray) 
+            .insert(dataArray) 
             .select();
 
         if (error) {
-            console.error('Upsert error:', error);
+            console.error('insert error:', error);
             return { success: false, error };
         }
 
-        console.log('Upsert successful, data:', data);
+        console.log('insert successful, data:', data);
         return { success: true, data };
     } catch (error) {
-        console.error('Exception during upsert:', error);
+        console.error('Exception during insert:', error);
         return { success: false, error };
     }
 }
