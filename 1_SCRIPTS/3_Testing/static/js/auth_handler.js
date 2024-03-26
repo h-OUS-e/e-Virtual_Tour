@@ -4,3 +4,5 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 console.log(typeof(supabase))
 const supabase = supabase.createClient(supabaseUrl,supabaseAnonKey)
+
+//https://zone-www-dot-lmn02xr2l-supabase.vercel.app/docs/reference/javascript/select
