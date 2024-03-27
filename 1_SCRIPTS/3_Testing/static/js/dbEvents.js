@@ -2,75 +2,105 @@ import { supabase } from "./dbClient.js";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 
-class Supabase_Table_Editor {
+
+
+class Supabase_Table_Events {
     constructor(table_name) {
         this.table_name = table_name;
     }
 
-    async supbaseinsert(data_array) { 
-        //input: [ { id: 1, 'column_name': 'Albania' },{ id: 2, 'column_name': 'Algeria', 'column_name2': 'other thing} ]
+    async supabaseSelect () {
+        try {
+            let { data, error } = await supabase
+            .from(this.table_name)
+            .select('*')
+
+            if (error) {
+                console.error(`Select error in table ${this.table_name}: `, error );
+                return { success: false, error};
+            } 
+            else {
+            console.log(`Select successful in table ${this.table_name}, data:`, data);
+                return { success: true, data };
+            }
+            
+
+        } catch (err) {
+            console.error(`Exception during Select in table ${this.table_name}: `, error);
+            return { success: false, error };
+        }
+
+    }
+
+    async supbaseInsert(data_to_insert) { 
+        //input:
+                //data_to_insert =  [ {'column_name': 'Albania' } ,{ 'column_name': 'something', 'column_name2': 45} ]
         try {
             const {data, error} = await supabase
             .from(this.table_name)
-            .insert(data_array)
+            .insert(data_to_insert)
             .select();
         
         if (error) {
             console.error(`insert error in table ${this.table_name}: `, error );
             return { success: false, error};
+        } 
+        else {
+        console.log(`insert successful in table ${this.table_name}, data: `, data);
+            return { success: true, data };
         }
 
-        console.log(`insert successful in table ${this.table_name}, data:`, data);
-            return { success: true, data };
-
-        } catch (error) {
-            console.error(`Exception during insert in table ${this.table_name}:`, error);
+        } 
+        catch (error) {
+            console.error(`Exception during insert in table ${this.table_name}: `, error);
             return { success: false, error };
         }
     }
 
-    async supabaseDelete (data_array) { 
-        //input: array of uids to delete [id1,id2,id3] strings
+    async supabaseDelete (id_field_name, ids_to_delete_array) { 
+        //input:    
+                //ids_to_delete = [id1,id2,id3,id4] array of uids to delete [id1,id2,id3] strings
+                //id_field_name = name of the uid field in target table
         try {
             const { data, error } = await supabase
             .from(this.table_name)
-            .insert(data_array)
+            .delete()
             .select()
-            .in(id_column,[data_array]);
+            .in(id_field_name,[ids_to_delete_array]); //should I unify all id column names hmm...
                     
         if (error) {
-            console.error(`insert error in table ${this.table_name}: `, error );
+            console.error(`Delete error in table ${this.table_name}: `, error );
             return { success: false, error};
         }
-
-        console.log(`insert successful in table ${this.table_name}, data:`, data);
+        else {console.log(`Delete successful in table ${this.table_name}, data: `, data);
             return { success: true, data };
+        }
 
-        } catch (error) {
-            console.error(`Exception during insert in table ${this.table_name}:`, error);
+        } 
+        catch (error) {
+            console.error(`Exception during Delete in table ${this.table_name}: `, error);
             return { success: false, error };
         }
     }
 
     
-    async supabaseDelete (data_array) { //
+    async supabaseUpsert (data_array) { //
         try {
-            const { error } = await supabase
-            .from('media')
-            .delete()
-            .eq(data_array)
+            const { data, error } = await supabase
+            .upsert(data_array)
+            .select();
                     
                     
         if (error) {
-            console.error(`insert error in table ${this.table_name}: `, error );
+            console.error(`Upsert error in table ${this.table_name}: `, error );
             return { success: false, error};
         }
 
-        console.log(`insert successful in table ${this.table_name}, data:`, data);
+        console.log(`Upsert successful in table ${this.table_name}, data:`, data);
             return { success: true, data };
 
         } catch (error) {
-            console.error(`Exception during insert in table ${this.table_name}:`, error);
+            console.error(`Exception during Upsert in table ${this.table_name}:`, error);
             return { success: false, error };
         }
     }
