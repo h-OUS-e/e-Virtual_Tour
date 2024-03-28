@@ -530,34 +530,3 @@ export async function insertTransitionNodes(dataArray) {
 
 
 
-
-
-
-
-
-
-//========================test things========================================
-// const hard_coded_project_uid = 'f09b3f7b-edc9-4964-83a2-a13835f0fdb9';
-// fetchProjectData(hard_coded_project_uid, 'media')
-//     .then(recieved_project_data => {
-//         console.log(recieved_project_data);
-//         // Now you can use recieved_project_data here, as it will be the resolved value.
-//     })
-//     .catch(error => {
-//         console.error('Error fetching project data:', error);
-//     });
-// const hard_coded_profile_uid = '6f11f8d7-29ff-4d41-88c9-29d153a86cba'
-// async function Testing(hard_coded_profile_uid) {
-//     try {
-//         var projects = await fetchProjects(hard_coded_profile_uid);
-//         if (projects) {
-//             console.log('Projects:', projects);
-//         } else {
-//             console.log('No projects found or an error occurred');
-//         }
-//     } catch (err) {
-//         console.error('Error while fetching projects:', err);
-//     }
-// }
-
-// Testing(hard_coded_profile_uid);
