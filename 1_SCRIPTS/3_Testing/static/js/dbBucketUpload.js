@@ -1,18 +1,17 @@
-import Uppy from '@uppy/core';
-import Dashboard from '@uppy/dashboard';
 
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
-import Tus from "@uppy/tus";
 import { supabase } from "./dbClient.js";
-
+import {
+  Uppy,
+  Dashboard,
+  Tus,
+} from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
 
 const SUPABASE_ANON_KEY = 'replace-with-your-anon-key'
-const SUPABASE_PROJECT_ID = 'replace-with-your-project-id'
-const STORAGE_BUCKET = 'replace-with-your-bucket-id'
+const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
+const STORAGE_BUCKET = 'icons_img'
 const BEARER_TOKEN='replace-with-your-bearer-token'
 
-const folder = ''
+const folder = 'test-folder' //replace with project_id
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
 
 //docs
@@ -31,10 +30,10 @@ const uppy = new Uppy()
         })
         .use(Tus, {
           endpoint: supabaseStorageURL,
-          headers: {
-            authorization: `Bearer ${BEARER_TOKEN}`,
-            apikey: SUPABASE_ANON_KEY,
-          },
+          // headers: {
+          //   authorization: `Bearer ${BEARER_TOKEN}`,
+          //   apikey: SUPABASE_ANON_KEY,
+          // },
           uploadDataDuringCreation: true,
           chunkSize: 6 * 1024 * 1024,
           allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],

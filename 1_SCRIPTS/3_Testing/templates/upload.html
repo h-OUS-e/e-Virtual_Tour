@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>uploader</title>
-
-    <script src = '../static/js/dbClient.js'></script>
-    <script src = '../static/js/dbBucketUpload.js'></script>
-    <!-- The bundle consists of most Uppy plugins, so this method is not recommended for production, as your users will have to download all plugins when you are likely using only a few.    It can be useful to speed up your development environment, so don't hesitate to use it to get you started. -->
     <link href="https://releases.transloadit.com/uppy/v3.23.0/uppy.min.css" rel="stylesheet">
-    <!-- 2. Initialize -->
-    <div id="uppy"></div>
+    <script src="https://releases.transloadit.com/uppy/v3.23.0/uppy.min.js"></script>
 
-    <script type="module">
-    import { Uppy, Dashboard } from "https://releases.transloadit.com/uppy/v3.23.0/uppy.min.mjs"
-    const uppy = new Uppy()
-    uppy.use(Dashboard, { target: '#uppy', inline: true })
-    </script>
+    <script type = 'module' src = '../static/js/dbClient.js'></script>
+    <script type = 'module' src = '../static/js/dbBucketUpload.js'></script>
+    <!-- The bundle consists of most Uppy plugins, so this method is not recommended for production, as your users will have to download all plugins when you are likely using only a few.    It can be useful to speed up your development environment, so don't hesitate to use it to get you started. -->
+    
+    <!-- 2. Initialize -->
+    <div id="drag-drop-area"></div>
+
 
 
 </head>

@@ -25,7 +25,7 @@ class Supabase_Table_Events {
             }
             
 
-        } catch (err) {
+        } catch (error) {
             console.error(`Exception during Select in table ${this.table_name}: `, error);
             return { success: false, error };
         }
