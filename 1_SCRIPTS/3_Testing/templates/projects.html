@@ -15,6 +15,21 @@
 
         </tbody>    
     </table>
+    <button id="uploadButton">Upload</button>
+
+    <script>
+        function redirectToProjectsDirectory(path) {
+            window.location.href = path;
+        }
+    
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            redirectToProjectsDirectory('upload.html');
+        });
+    </script>
+    
+    
+  
+
 </body>
 <script type="module" src="../static/js/dbEvents.js"></script>
 <script type="module" src="../static/js/projects.js"></script>

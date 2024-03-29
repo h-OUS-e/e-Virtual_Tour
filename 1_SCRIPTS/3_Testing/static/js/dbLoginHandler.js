@@ -2,6 +2,27 @@ import { supabase } from "./dbClient.js";
 import {emitGETProfileData} from './dbEvents.js'
 import {waitForProfileData} from './dbEvents.js'
 
+function getCurrentSession() {
+    const session = supabase.auth.getUser;
+  
+    if (session) {
+        // Session is present
+        console.log("Current session:", session);
+        return session;
+    } else {
+        // No active session
+        console.log("No active session.");
+        return null;
+    }
+  }
+  
+  // Usage
+  const session = getCurrentSession();
+  if (session) {
+    // Use the session info, e.g., session.token
+    console.log("Session token:", session.access_token);
+  }
+  
 
 const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
 
@@ -34,7 +55,13 @@ document.getElementById('login-form').addEventListener('submit', async function(
                 const profile = profile_data;
                 console.log(profile);
                 localStorage.setItem('userProfile',JSON.stringify(profile));
-                setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
+                //setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
+                setTimeout(function() {                  const session = getCurrentSession();
+                    if (session) {
+                      // Use the session info, e.g., session.token
+                      console.log("after login - Session token:", session.access_token);
+                    }},1000);
+                  
                 
             }).catch(error => { console.error('Error waiting for profile data:', error);});
         } else { console.log('Login failed: no user data returned.');}
