@@ -4,27 +4,6 @@ import {waitForProjects} from './dbEvents.js'
 import {waitForProjectData} from './dbEvents.js'
 
 
-function getCurrentSession() {
-    const session = supabase.auth.session;
-  
-    if (session) {
-        // Session is present
-        console.log("Current session:", session);
-        return session;
-    } else {
-        // No active session
-        console.log("No active session.");
-        return null;
-    }
-  }
-  
-  // Usage
-  const session = getCurrentSession();
-  if (session) {
-    // Use the session info, e.g., session.token
-    console.log("Session token:", session.access_token);
-  }
-  
 
 
 

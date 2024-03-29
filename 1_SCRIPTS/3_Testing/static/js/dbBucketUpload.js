@@ -6,10 +6,22 @@ import {
   Tus,
 } from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
 
+
+let accessToken
+const jsonString = localStorage.getItem('sb-ngmncuarggoqjwjinfwg-auth-token');
+if (jsonString) {
+    const jsonData = JSON.parse(jsonString);
+    accessToken = jsonData.access_token;
+} else {
+    console.log('No data found in localStorage for the specified key.');
+}
+
+
+
 const SUPABASE_ANON_KEY = 123
 const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
 const STORAGE_BUCKET = 'icons_img'
-const BEARER_TOKEN='replace-with-your-bearer-token'
+const BEARER_TOKEN = accessToken
 
 const folder = 'test-folder' //replace with project_id
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
@@ -21,26 +33,6 @@ const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v
 //https://www.restack.io/docs/supabase-knowledge-supabase-storage-metadata
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
-function getCurrentSession() {
-  const session = supabase.auth.session;
-
-  if (session) {
-      // Session is present
-      console.log("Current session:", session);
-      return session;
-  } else {
-      // No active session
-      console.log("No active session.");
-      return null;
-  }
-}
-
-// Usage
-const session = getCurrentSession();
-if (session) {
-  // Use the session info, e.g., session.token
-  console.log("Session token:", session.access_token);
-}
 
 
 const uppy = new Uppy()
@@ -54,7 +46,7 @@ const uppy = new Uppy()
           endpoint: supabaseStorageURL,
           headers: {
             authorization: `Bearer ${BEARER_TOKEN}`,
-            apikey: SUPABASE_ANON_KEY,
+            // apikey: SUPABASE_ANON_KEY,
           },
           uploadDataDuringCreation: true,
           chunkSize: 6 * 1024 * 1024,

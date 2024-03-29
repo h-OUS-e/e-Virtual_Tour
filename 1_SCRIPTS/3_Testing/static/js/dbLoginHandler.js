@@ -2,27 +2,7 @@ import { supabase } from "./dbClient.js";
 import {emitGETProfileData} from './dbEvents.js'
 import {waitForProfileData} from './dbEvents.js'
 
-function getCurrentSession() {
-    const session = supabase.auth.getUser;
-  
-    if (session) {
-        // Session is present
-        console.log("Current session:", session);
-        return session;
-    } else {
-        // No active session
-        console.log("No active session.");
-        return null;
-    }
-  }
-  
-  // Usage
-  const session = getCurrentSession();
-  if (session) {
-    // Use the session info, e.g., session.token
-    console.log("Session token:", session.access_token);
-  }
-  
+
 
 const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
 
