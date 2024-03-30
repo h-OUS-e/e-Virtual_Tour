@@ -39,14 +39,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
                 const profile = profile_data;
                 console.log(profile);
                 localStorage.setItem('userProfile',JSON.stringify(profile));
-                //setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
-                setTimeout(async function() { 
-                    try {
-                    const { data, error } = await supabase.auth.getSession();
-                    if (error) { console.log("error in session: " + error);}
-                    else { console.log(data); }
-                    } catch (error) { throw error; }
-                })
+                setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
+
                 
             }).catch(error => { console.error('Error waiting for profile data:', error);});
         } else { console.log('Login failed: no user data returned.');}

@@ -1,12 +1,16 @@
 import { supabase } from "./dbClient.js";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
+// get session https://supabase.com/docs/reference/javascript/auth-getsession
 
 export async function supabaseGetSession() { 
     try {
     const { data, error } = await supabase.auth.getSession();
     if (error) { console.log("error in session: " + error);}
-    else { console.log(data); }
+    else { 
+        console.log(data); 
+        return data; 
+    }
     } catch (error) { throw error; }
 }
 

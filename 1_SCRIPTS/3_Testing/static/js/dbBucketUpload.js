@@ -1,5 +1,6 @@
 
 import { supabase } from "./dbClient.js";
+import { supabaseGetSession } from "./dbEvents.js";
 import {
   Uppy,
   Dashboard,
@@ -7,21 +8,14 @@ import {
 } from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
 
 
-let accessToken
-const jsonString = localStorage.getItem('sb-ngmncuarggoqjwjinfwg-auth-token');
-if (jsonString) {
-    const jsonData = JSON.parse(jsonString);
-    accessToken = jsonData.access_token;
-} else {
-    console.log('No data found in localStorage for the specified key.');
-}
-
+let session_data = await supabaseGetSession().then(function (data) {console.log(data.access_token);});
 
 
 const SUPABASE_ANON_KEY = 123
 const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
 const STORAGE_BUCKET = 'icons_img'
-const BEARER_TOKEN = accessToken
+const BEARER_TOKEN = 'something'
+console.log(BEARER_TOKEN);
 
 const folder = 'test-folder' //replace with project_id
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
