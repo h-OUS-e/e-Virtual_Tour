@@ -2,6 +2,13 @@ import { supabase } from "./dbClient.js";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 
+export async function supabaseGetSession() { 
+    try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) { console.log("error in session: " + error);}
+    else { console.log(data); }
+    } catch (error) { throw error; }
+}
 
 
 class Supabase_Table_Events {
