@@ -3,6 +3,11 @@ import {emitGETProfileData} from './dbEvents.js'
 import {waitForProfileData} from './dbEvents.js'
 
 
+supabase.auth.onAuthStateChange((event, session) => {
+    console.log(event)
+    if (event == 'SIGNED_IN') console.log('SIGNED_IN', session)
+  })
+  
 
 const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
 
@@ -29,19 +34,19 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Login successful! User ID: ' + user_uid  + typeof(user_uid));
             localStorage.setItem('userData',JSON.stringify(data.user));
 
-
             emitGETProfileData(user_uid);
             waitForProfileData().then((profile_data) => { 
                 const profile = profile_data;
                 console.log(profile);
                 localStorage.setItem('userProfile',JSON.stringify(profile));
                 //setTimeout(function() {redirectToProjectsDirectory(projects_directory_path)},1000);
-                setTimeout(function() {                  const session = getCurrentSession();
-                    if (session) {
-                      // Use the session info, e.g., session.token
-                      console.log("after login - Session token:", session.access_token);
-                    }},1000);
-                  
+                setTimeout(async function() { 
+                    try {
+                    const { data, error } = await supabase.auth.getSession();
+                    if (error) { console.log("error in session: " + error);}
+                    else { console.log(data); }
+                    } catch (error) { throw error; }
+                })
                 
             }).catch(error => { console.error('Error waiting for profile data:', error);});
         } else { console.log('Login failed: no user data returned.');}
@@ -86,3 +91,18 @@ async function fetchProfileData(user_uid) {
         console.log('an unexpected error occured in fetchProfileData(user_uid):', err);
         }
 };
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const signOutButton = document.getElementById('signOutButton');
+    signOutButton.addEventListener('click', async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {throw error;}
+            else {console.log('You have been signed out!')}
+
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    });
+});
