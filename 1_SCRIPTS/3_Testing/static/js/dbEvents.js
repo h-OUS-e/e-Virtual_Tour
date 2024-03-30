@@ -3,17 +3,21 @@ import { supabase } from "./dbClient.js";
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // get session https://supabase.com/docs/reference/javascript/auth-getsession
 
-export async function supabaseGetSession() { 
+export async function supabaseGetSession() {
     try {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) { console.log("error in session: " + error);}
-    else { 
-        console.log(data); 
-        return data; 
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error in session: ", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception in supabaseGetSession: ", error);
+      throw error;
     }
-    } catch (error) { throw error; }
-}
-
+  }
+  
+  
 
 class Supabase_Table_Events {
     constructor(table_name) {
