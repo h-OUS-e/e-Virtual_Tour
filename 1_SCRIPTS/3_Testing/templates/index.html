@@ -137,14 +137,14 @@
                 <div id="edit_menu_MediaplayerTypes_colors" class="grid">
                     <p>dark color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem color_input" type="text" placeholder="Enter dark color" readonly>
+                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem colorInput" type="text" placeholder="Enter dark color" readonly>
                         <div id="dark_color_picker_container" class="hidden">
                           <!-- Color picker elements go here -->
                         </div>
                       </div>
                     <p>light color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem color_input" type="text" placeholder="Enter light color" readonly>
+                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem colorInput" type="text" placeholder="Enter light color" readonly>
                         <div id="light_color_picker_container" class="hidden">
                           <!-- Color picker elements go here -->
                         </div>
@@ -318,7 +318,12 @@
         <div id="color_picker" class="color-picker-panel hidden">
             <!-- Typical Color Swatches and eye dropper -->
             <div class="panel-row">
-              <div class="swatches default-swatches"></div>
+                <div id="project_colors" class="swatches default-swatches"></div>
+                <button class="button eyedropper">Get Color</button>
+            </div>
+            <!-- Typical Color Swatches and eye dropper -->
+            <div class="panel-row">
+              <div id="color_palette" class="swatches default-swatches"></div>
               <button class="button eyedropper">Get Color</button>
             </div>
             

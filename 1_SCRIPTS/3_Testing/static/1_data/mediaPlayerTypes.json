@@ -1,6 +1,6 @@
 {
     "green": {
-        "dark": "--sageGreen",
+        "dark": "#ef06c0",
         "light": "--mintGreen",
         "icon": {
             "0": "diagnostic"

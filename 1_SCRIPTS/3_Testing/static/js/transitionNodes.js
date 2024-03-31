@@ -5,18 +5,34 @@ const scene = document.querySelector('a-scene');
     
     // Get colors from CSS palette
     const colors = getComputedStyle(document.documentElement);
-    const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
-    const color_mintGreen = colors.getPropertyValue('--mintGreen').trim();
+    const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();
+    const color_mintGreen = colors.getPropertyValue('--transition_node_light_color').trim();
     const color_hoverIn = color_mintGreen;
     const color_hoverInClicked = "gray";
-    const color_transitionNode = color_sageGreen;
+    const color_main = color_sageGreen;
 
     // let deletionHistory = [];
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('mediaplayerTypeLoaded', async () => {
+     // Get colors from CSS palette
+     const colors = getComputedStyle(document.documentElement);
+     const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();
+     const color_mintGreen = colors.getPropertyValue('--transition_node_light_color').trim();
+     const color_hoverIn = color_mintGreen;
+     const color_hoverInClicked = "gray";
+     const color_main = color_sageGreen;
+ 
 
     // Read transition nodes and load them to scene
-    await loadTransitionNodesFromJSON();    
+    await loadTransitionNodesFromJSON();   
+    
+    // Set initial colors of transition nodes
+    setTransitionNodeColor(color_main)
+
+    // Reset colors if new transition node colors selected
+    scene.addEventListener("transitionNodesColorChange", function() {
+        setTransitionNodeColor(color_main);
+    });
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
@@ -53,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     {
         if (event.target.classList.contains(main_class)){
             const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
-            icon.setAttribute('material', 'color', color_transitionNode);
+            icon.setAttribute('material', 'color', color_main);
         }
     });
 
@@ -64,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event.target.classList.contains(main_class))
         {
             const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
-            icon.setAttribute('material', 'color', color_transitionNode); 
+            icon.setAttribute('material', 'color', color_main); 
         }
     });
 
@@ -110,6 +126,14 @@ function emitTransitioning(new_background_img_id){
     scene.dispatchEvent(transitioning);
 }
 
+function setTransitionNodeColor(color){
+    let transition_nodes = document.getElementsByClassName("TransitionNode");
+    for (let i = 0; i < transition_nodes.length; i++) {
+        let icon = transition_nodes[i].querySelector('[mixin=' + mixin_icon + ']')
+        icon.setAttribute('material', 'color', color);
+    }
+}
+
 
 
 // // A function to load all geometies in the scene
@@ -149,6 +173,7 @@ async function loadTransitionNodesFromJSON() {
             transition_node.addToScene();
 
         });
+
     } catch (error) {
         console.error('Could not fetch transitions:', error);
     }
@@ -203,13 +228,13 @@ class TransitionNode {
         // Add green icon
         const iconEntity = document.createElement('a-entity');
         iconEntity.setAttribute('mixin', 'transition_node_icon');
-        iconEntity.setAttribute('material', 'color', color_transitionNode);
+        iconEntity.setAttribute('material', 'color', color_main);
         entity.appendChild(iconEntity);
 
         // Add glowing effect
         const glowEntity = document.createElement('a-entity');
         glowEntity.setAttribute('mixin', 'transition_node_glow');
-        glowEntity.setAttribute('material', 'color', color_transitionNode);
+        glowEntity.setAttribute('material', 'color', color_main);
         entity.appendChild(glowEntity);
     }
 

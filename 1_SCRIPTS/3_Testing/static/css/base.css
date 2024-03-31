@@ -8,16 +8,14 @@
     --hoverIn: #DBFFE5;
     --hoverInClicked:gray;
     --transitionNode:#2dc84d;
-    --mediaPlayer:rgb(159, 115, 39);
-    --sageGreen: #2dc84d;
-    --mintGreen: #DBFFE5;
-    --oceanBlue: #009A9F;
-    --popPink: #FB7698;
-    --coolPink: rgb(255, 216, 226);
-    --coolBlue: #D0F9F2;    
+    --mediaPlayer:rgb(159, 115, 39); 
     --popupDarkColor: #2dc84d;
-    --popupLightColor: #DBFFE5;
-    --popup_color: var(--sageGreen);    
+    --popupLightColor: #ffffff;
+    --default_color: #ffffff;
+    --popup_color: #ffffff;  
+
+    --transition_node_dark_color: #c13636;
+    --transition_node_light_color: #ffffff;
 
     /* CONSTANTS */
     --sidebar_width: 2vw;

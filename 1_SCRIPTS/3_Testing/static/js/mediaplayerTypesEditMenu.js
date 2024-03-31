@@ -1,5 +1,5 @@
 import tinycolor from "https://esm.sh/tinycolor2";
-import { ColorPicker, colorToPos } from './colorPicker.js';
+// import { ColorPicker, colorToPos } from './colorPicker.js';
 
 
 document.addEventListener('mediaplayerTypeLoaded', async (event) => {
@@ -20,7 +20,7 @@ const saveBtn = document.getElementById('edit_menu_MediaplayerTypes_save_button'
 const iconDropdown = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
 
 // Get the color input elements
-const darkColorInput = document.getElementById('edit_menu_MediaplayerTypes_darkColor_input');
+const dark_color_input = document.getElementById('edit_menu_MediaplayerTypes_darkColor_input');
 const lightColorInput = document.getElementById('edit_menu_MediaplayerTypes_lightColor_input');
 
 // Get the color picker containers
@@ -85,11 +85,11 @@ function updateEditFields() {
   const selected_type = typeSelect.value;
 
   // Update color input values
-  darkColorInput.value = mediaplayer_types[selected_type].dark;
+  dark_color_input.value = mediaplayer_types[selected_type].dark;
   lightColorInput.value = mediaplayer_types[selected_type].light;
 
   // Update color input background colors
-  darkColorInput.style.backgroundColor = mediaplayer_types[selected_type].dark;
+  dark_color_input.style.backgroundColor = mediaplayer_types[selected_type].dark;
   lightColorInput.style.backgroundColor = mediaplayer_types[selected_type].light;
 
   icon_fields.innerHTML = '';
@@ -124,7 +124,7 @@ function addNewType() {
 function saveEditedType() {
 
   const selected_type = typeSelect.value;
-  mediaplayer_types[selected_type].dark = darkColorInput.value;
+  mediaplayer_types[selected_type].dark = dark_color_input.value;
   mediaplayer_types[selected_type].light = lightColorInput.value;
   
   mediaplayer_types[selected_type].icon = {};
@@ -166,7 +166,7 @@ function updateColorInput(colorInput, color) {
 }
 
 // Event listener for the dark color input
-darkColorInput.addEventListener('click', function() {
+dark_color_input.addEventListener('click', function() {
   // Show color picker  
   let event = new CustomEvent('toggleColorPicker');
   scene.dispatchEvent(event); 

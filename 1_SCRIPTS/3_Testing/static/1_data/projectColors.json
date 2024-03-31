@@ -1,0 +1,6 @@
+{
+    "default_color":"#2dc84d",
+    "popup_color": "#DBFFE5",
+    "transition_node_dark_color":"#2dc84d",
+    "transition_node_light_color":"#DBFFE5"
+}
