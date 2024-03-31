@@ -293,8 +293,22 @@ import tinycolor from "https://esm.sh/tinycolor2";
     colorPickerContainer.classList.add('hidden');
   }
 
+  // Function to handle color selection from the color pickers
+  function handleColorSelection(colorPicker, colorInput) {
+    const selectedColor = colorPicker.getCurrentColor();
+    updateColorInput(colorInput, selectedColor);
+  }
+
+
+  function toggleColorPickerContainer() {
+    colorPickerContainer.classList.toggle('hidden');
+    refreshElementRects();
+  }
+
   okButton.addEventListener('click', handleOkButton);
   exitButton.addEventListener('click', handleExitButton);
+  scene.addEventListener('toggleColorPicker', toggleColorPickerContainer);
+
 
   new ColorPicker();
 

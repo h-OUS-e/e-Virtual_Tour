@@ -119,24 +119,6 @@ function addNewType() {
   }
 }
 
-// // Save the edited type data
-// function saveEditedType() {
-//   const selectedType = typeSelect.value;
-//   mediaplayer_types[selectedType].dark = darkColorInput.value;
-//   mediaplayer_types[selectedType].light = lightColorInput.value;
-  
-//   const iconFieldInputs = iconFields.querySelectorAll('.icon-field input');
-//   mediaplayer_types[selectedType].icon = {};
-//   for (let i = 0; i < iconFieldInputs.length; i += 2) {
-//     const iconType = iconFieldInputs[i].value.trim();
-//     const iconUrl = iconFieldInputs[i + 1].value.trim();
-//     if (iconType !== '' && iconUrl !== '') {
-//       data[selectedType].icon[iconType] = iconUrl;
-//     }
-//   }
-  
-//   console.log('Edited type saved:', mediaplayer_types[selectedType]);
-// }
 
 // Save the edited type data
 function saveEditedType() {
@@ -185,36 +167,19 @@ function updateColorInput(colorInput, color) {
 
 // Event listener for the dark color input
 darkColorInput.addEventListener('click', function() {
-  colorPickerContainer.classList.toggle('hidden');
-  
-  // if (!colorPickerContainer.classList.contains('hidden')) {
-  //   colorPicker.colorToPos(darkColorInput.value);
-  // }
+  // Show color picker  
+  let event = new CustomEvent('toggleColorPicker');
+  scene.dispatchEvent(event); 
 });
 
 // Event listener for the light color input
 lightColorInput.addEventListener('click', function() {
-  colorPickerContainer.classList.toggle('hidden');
-  
-  // if (!colorPickerContainer.classList.contains('hidden')) {
-  //   colorPicker.colorToPos(lightColorInput.value);
-  // }
+  // Show color picker  
+  let event = new CustomEvent('toggleColorPicker');
+  scene.dispatchEvent(event); 
+
 });
 
-// Function to handle color selection from the color pickers
-function handleColorSelection(colorPicker, colorInput) {
-  const selectedColor = colorPicker.getCurrentColor();
-  updateColorInput(colorInput, selectedColor);
-}
-
-// // Event listener for the color picker's color selection
-// colorPickerContainer.addEventListener('mouseup', function() {
-//   handleColorSelection(colorPickerContainer, darkColorInput);
-// });
-
-
-// let color2 = tinycolor('hsl ' + 30 + ' ' + 66 + ' ' + 50);
-// updateColorInput(lightColorInput, color2);
 
 // Initialize the edit menu
 
