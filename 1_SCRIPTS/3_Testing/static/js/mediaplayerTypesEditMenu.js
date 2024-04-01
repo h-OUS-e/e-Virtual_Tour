@@ -63,18 +63,37 @@ document.addEventListener('jsonLoaded', async (event) => {
     const icon_field = document.createElement('div');
     icon_field.classList.add('flexColumn');
 
+    // Create a container for the icon and the "X" button
+    const icon_container = document.createElement('div');
+    icon_container.classList.add('flexRowTop');
+
     // Get icon image url and name
     const icon_image = document.createElement('img');
-
     let icon_url = icons[icon_name];
 
     // Add icon image
     icon_image.src = icon_url;
     icon_image.alt = icon_name;
+
     // Set the width and height of the image
     icon_image.width = 50; // Set the desired width in pixels
     icon_image.height = 50; // Set the desired height in pixels
-    icon_field.appendChild(icon_image);
+    icon_container.appendChild(icon_image);
+
+    // Create the "X" button
+    const delete_button = document.createElement('button');
+    delete_button.classList.add('XButton');
+    delete_button.textContent = 'X';
+
+    // Add event listener to the "X" button
+    delete_button.addEventListener('click', function() {
+      icon_field.remove();
+    });
+    icon_container.appendChild(delete_button);
+
+    // Add icon image and "X" button to icon column grid
+    icon_field.appendChild(icon_container);
+
 
     // Add icon name 
     const icon_name_input = document.createElement('p');
@@ -123,7 +142,6 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   function updateProjectColors(selected_type, property, color) {
     const selected_color = `${selected_type}_${property}`;
-    console.log("TEST", project_colors, selected_color);
     project_colors[selected_color] = color;
 
     let event = new CustomEvent('updatedProjectColors', 
@@ -177,7 +195,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
     dropdown_menu.classList.toggle('hidden');
   }
-
+  
   // Close the dropdown when clicking outside
   function closeIconDropdown(event) {
     let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
@@ -185,6 +203,11 @@ document.addEventListener('jsonLoaded', async (event) => {
       dropdown_menu.classList.add('hidden');
       saveEditedType();
     }
+  }
+
+  // Removes icon from the list
+  function removeIcon(event){
+
   }
 
 
