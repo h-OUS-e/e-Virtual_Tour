@@ -562,6 +562,7 @@ class MediaPlayer {
                         entity.setAttribute('material', 'color', value);
                         break;
                     case 'dark_color':
+                        const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
                         borderEntity.setAttribute('material', 'color', value);
                         break;
                     default:

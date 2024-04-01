@@ -202,7 +202,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             transition_node = null;
         }
 
-        handleObjectEdits(event, object, mediaplayer_types, icons, undo_redo_manager, edit_menu_manager);    
+        handleObjectEdits(event, object, mediaplayer_types, project_colors, icons, undo_redo_manager, edit_menu_manager);    
     });
 
 
@@ -972,7 +972,7 @@ function handleCustomSceneOptionSelect() {
 //  EDIT MENU FUNCTIONS
 
 // Function to handle the logic for object creation based on the selected object class.
-function handleObjectEdits(event, object, mediaplayer_types, icons, undo_redo_manager, edit_menu_manager) {
+function handleObjectEdits(event, object, mediaplayer_types,project_colors, icons, undo_redo_manager, edit_menu_manager) {
     // Get the creation menu element specific to the selected object class.
     const menu_id = edit_menu_manager.currentVisibleMenu; 
     const edit_menu = document.getElementById(menu_id);
@@ -1003,7 +1003,7 @@ function handleObjectEdits(event, object, mediaplayer_types, icons, undo_redo_ma
 
         else {
             // Process the creation menu submission for creating the new object.
-            processEditMenuEvent(event, object, mediaplayer_types, icons, undo_redo_manager, menu_id);
+            processEditMenuEvent(event, object, mediaplayer_types, project_colors, icons, undo_redo_manager, menu_id);
         }
     };
 
@@ -1015,18 +1015,18 @@ function handleObjectEdits(event, object, mediaplayer_types, icons, undo_redo_ma
 
 
 // Function to process the form submission for creating new objects in the scene.
-function processEditMenuEvent(event, object, mediaplayer_types, icons, undo_redo_manager, menu_id) {
+function processEditMenuEvent(event, object, mediaplayer_types, project_colors, icons, undo_redo_manager, menu_id) {
     // Fetch the current background image ID from the scene's sky element.
     const sky = document.querySelector('#sky');
     const backgroundImgId = sky.getAttribute('background_img_id');    
-    setupDropdownListeners(object, mediaplayer_types, icons, undo_redo_manager, menu_id);
+    setupDropdownListeners(object, mediaplayer_types, project_colors, icons, undo_redo_manager, menu_id);
 
 }
 
 
 
 // Function to add or re-add event listeners to dropdown menus
-function setupDropdownListeners(object, mediaplayer_types, icons, undo_redo_manager, menu_id) {
+function setupDropdownListeners(object, mediaplayer_types, project_colors, icons, undo_redo_manager, menu_id) {
     const edit_menu = document.getElementById(menu_id);
 
     // Check if the edit menu is correctly identified
@@ -1045,7 +1045,7 @@ function setupDropdownListeners(object, mediaplayer_types, icons, undo_redo_mana
                 changeMediaPlayerIconIdx(object, undo_redo_manager, mediaplayer_types, icons);
                 break;
             case 'edit_menu_MediaPlayer_type_input':
-                changeMediaPlayerType(object, mediaplayer_types, icons, undo_redo_manager);
+                changeMediaPlayerType(object, mediaplayer_types, project_colors, icons, undo_redo_manager);
                 break;
             case 'edit_menu_MediaPlayer_scene_id_input' :
                 changeSceneId(object, undo_redo_manager);
@@ -1125,7 +1125,7 @@ function changeMediaPlayerIconIdx(object, undo_redo_manager, mediaplayer_types, 
 }
 
 
-function changeMediaPlayerType(object, mediaplayer_types, icons, undo_redo_manager, dropdown_menu) {
+function changeMediaPlayerType(object, mediaplayer_types, project_colors, icons, undo_redo_manager) {
     // Retrieve values for mediaplayer object and create variables for creating mediaplayer object
     // let title = document.getElementById('edit_menu_MediaPlayer_title_input').value.replace(/ /g, "_");
     // let uniqueId = `mp_${backgroundImgId}_${title}`;
@@ -1133,9 +1133,12 @@ function changeMediaPlayerType(object, mediaplayer_types, icons, undo_redo_manag
     let mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
     let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
     let icon_url = icons[mediaplayer_type["icon"][icon_index]];
+    const dark_color = project_colors[mediaplayer_type_string + "_dark"];
+    const light_color = project_colors[mediaplayer_type_string + "_light"];
+
     console.log('didAction');
     // update the object
-    const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index, icon_url});
+    const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index, icon_url, light_color, dark_color});
     undo_redo_manager.doAction(updateAction);
 }
 
