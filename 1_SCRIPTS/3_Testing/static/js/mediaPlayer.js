@@ -15,11 +15,13 @@
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('jsonLoaded', async (event) => {
 
+    let project_colors = event.detail.project_colors;
+
     // Getting media player types and icons from the JSON filea
     const mediaplayer_types = event.detail.mediaplayer_types;
     const icons = event.detail.icons;
     // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaplayer_types, icons);
+    await loadMediaPlayersFromJSON(mediaplayer_types, icons, project_colors);
     
   
        
@@ -36,13 +38,12 @@ document.addEventListener('jsonLoaded', async (event) => {
     });
 
 
-
     // Changing color and scale of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
     {   
         if (event.target.classList.contains(main_class)){
-            const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
-            const color_mediaPlayer = getJSColor(mediaplayer_type["dark"]);
+            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
+            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_dark"];
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -51,9 +52,8 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
-
-            const color_mediaPlayer = getJSColor(mediaplayer_type["light"]);
+            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
+            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
             event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
         }
 
@@ -64,8 +64,8 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(main_class)){
-            const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
-            const color_mediaPlayer = getJSColor(mediaplayer_type["light"]);
+            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
+            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
@@ -75,14 +75,12 @@ document.addEventListener('jsonLoaded', async (event) => {
     {
         if (event.target.classList.contains(main_class))
         {
-            const mediaplayer_type = mediaplayer_types[event.target.getAttribute('mediaplayer_type')];
-            const color_mediaPlayer = getJSColor(mediaplayer_type["light"])
+            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
+            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
             event.target.setAttribute('material', 'color', color_mediaPlayer); 
         }
     });
 
-
-    
 
     // Double clicking the object
     scene.addEventListener('mouseDoubleClicked', function(event) {
@@ -102,8 +100,6 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
 
-        
-
 
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
@@ -119,12 +115,33 @@ document.addEventListener('jsonLoaded', async (event) => {
         }
     });
 
+    // CODE TO UPDATE COLORS OF OBJECTS
+    scene.addEventListener('updatedProjectColors', async function(event) 
+    {
+        // Get project colors from event
+        project_colors = event.detail.project_colors;
+
+        // Update colors of all mediaplayer objects
+        document.querySelectorAll('.MediaPlayer').forEach(object => {
+            // get colors from project colors
+            const mediaplayer_type = object.getAttribute("mediaplayer_type");
+            let dark_color = project_colors[mediaplayer_type+"_dark"];
+            let light_color = project_colors[mediaplayer_type+"_light"];
+
+            // update element colors
+            const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
+            borderEntity.setAttribute('material', 'color', dark_color);            
+            object.setAttribute('material', 'color', light_color);
+        });
+
+    
+    });
     
 });
 
 
 
-async function loadMediaPlayersFromJSON(mediaplayer_types, icons) {
+async function loadMediaPlayersFromJSON(mediaplayer_types, icons, project_colors) {
     try {
         const response = await fetch('../static/1_data/MediaPlayers.json'); // Adjust the path as necessary
         if (!response.ok) {
@@ -145,7 +162,7 @@ async function loadMediaPlayersFromJSON(mediaplayer_types, icons) {
             const icon_url = icons[mediaplayer_type["icon"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;
             // Create mediaplayer and add to scene
-            const media_player = new MediaPlayer(uniqueId, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
+            const media_player = new MediaPlayer(uniqueId, project_colors, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
             media_player.addToScene();
             
         });
@@ -160,7 +177,7 @@ async function loadMediaPlayersFromJSON(mediaplayer_types, icons) {
 
 
 class MediaPlayer {    
-    constructor(id, position, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, rotation) {
+    constructor(id, project_colors, position, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, rotation) {
         this.id = id;
         this.final_id = id; // for updating id when undoing
         this.position = position;
@@ -173,6 +190,9 @@ class MediaPlayer {
         this.title = title;
         this.direction = direction;
         this.rotation = rotation;
+        this.dark_color = project_colors[this.mediaplayer_type_string+"_dark"];
+        this.light_color = project_colors[this.mediaplayer_type_string+"_light"];
+
     }
 
 
@@ -260,11 +280,11 @@ class MediaPlayer {
 
         const borderEntity = document.createElement('a-entity');
         borderEntity.setAttribute('mixin', 'mediaplayer_border');
-        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));   
+        borderEntity.setAttribute('material', 'color', this.dark_color);   
         borderEntity.setAttribute('class', 'mediaplayer-border');
         entity.appendChild(borderEntity);
         
-        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
+        entity.setAttribute('material', 'color', this.light_color);
         entity.setAttribute('background_img_id', this.background_img_id);
     }
 
@@ -354,6 +374,17 @@ class MediaPlayer {
         }
     }
 
+    updateColor(project_colors){
+        const entity = document.getElementById(this.id);
+        // get colors from project colors
+        this.dark_color = project_colors[this.mediaplayer_type_string+"_dark"];
+        this.light_color = project_colors[this.mediaplayer_type_string+"_light"];
+        // update element colors
+        const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
+        borderEntity.setAttribute('material', 'color', this.dark_color);            
+        entity.setAttribute('material', 'color', this.light_color);
+    }
+
 
     getAction(method, ...args) {
         let action = {
@@ -436,6 +467,8 @@ class MediaPlayer {
             title: this.title,
             rotation: this.rotation,
             direction: {...this.direction},
+            dark_color: this.dark_color,
+            light_color: this.light_color,
         };
     }
 
@@ -475,9 +508,7 @@ class MediaPlayer {
         entity.setAttribute('id', this.id);
 
         // Get the icon and border entities inside the media player entity and update their attributes
-        console.log("TEST", entity);
         const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
-        console.log("TEST", iconEntity);
 
 
 
@@ -522,23 +553,27 @@ class MediaPlayer {
                         entity.setAttribute('icon_index', value);                    
                         break;
                     case 'icon_url':
-                        console.log("TEST3", value);
+                        console.log("icon url", value);
                         break;
                     case 'title':
                         entity.setAttribute('title', value);
+                        break;
+                    case 'light_color':
+                        entity.setAttribute('material', 'color', value);
+                        break;
+                    case 'dark_color':
+                        borderEntity.setAttribute('material', 'color', value);
                         break;
                     default:
                         break;
                 }
             }
         }
-                   
-
-        
+                           
         iconEntity.setAttribute('material', 'src', this.icon_url);
         const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
-        borderEntity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["dark"]));            
-        entity.setAttribute('material', 'color', getJSColor(this.mediaplayer_type["light"]));
+        borderEntity.setAttribute('material', 'color', this.dark_color);            
+        entity.setAttribute('material', 'color', this.light_color);
         // // Update id in case we update the new_background_img_id attribute
         // entity.setAttribute('title', this.id);         
 

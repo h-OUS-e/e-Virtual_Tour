@@ -1,22 +1,16 @@
 {
     "green": {
-        "dark": "green_dark",
-        "light": "green_light",
         "icon": {
             "0": "diagnostic"
         }
     },
     "blue": {
-        "dark": "blue_dark",
-        "light": "blue_light",
         "icon": {
             "0": "emergency",
             "1": "whitening"
         }
     },
     "pink": {
-        "dark": "--popPink",
-        "light": "--coolPink",
         "icon": {
             "0": "patient"
         }

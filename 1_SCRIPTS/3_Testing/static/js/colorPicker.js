@@ -59,13 +59,15 @@ document.addEventListener('jsonLoaded', async (event) => {
   let [project_color_names, project_color_values] = getColorNamesAndValues(event.detail.project_colors);
   let [default_swatches_names, default_swatches_values] = getColorNamesAndValues(event.detail.color_palette);
   ColorPicker.prototype.defaultSwatches = default_swatches_values;
-
+  ColorPicker.prototype.default_swatches_names = default_swatches_names;
   ColorPicker.prototype.project_colors = project_color_values;
+  ColorPicker.prototype.project_color_names = project_color_names;
 
-  function createSwatch(target, color){
+
+  function createSwatch(target, color, name){
     const swatch = document.createElement('button');
     swatch.classList.add('swatch');
-    swatch.setAttribute('title', color);
+    swatch.setAttribute('title', name + "_" + color);
     swatch.style.backgroundColor = color;
     swatch.addEventListener('click', function(){
       let color = tinycolor(this.style.backgroundColor);     
@@ -80,7 +82,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   ColorPicker.prototype.addDefaultSwatches = function() {
     for(let i = 0; i < this.defaultSwatches.length; ++i){
-      createSwatch(swatches, this.defaultSwatches[i]);
+      createSwatch(swatches, this.defaultSwatches[i], this.default_swatches_names[i]);
     } 
   }
 
@@ -89,13 +91,14 @@ document.addEventListener('jsonLoaded', async (event) => {
     project_colors_swatches.innerHTML = '';
     // Add swatches
     for(let i = 0; i < this.project_colors.length; ++i){
-      createSwatch(project_colors_swatches, this.project_colors[i]);
+      createSwatch(project_colors_swatches, this.project_colors[i], this.project_color_names[i]);
     } 
   }
 
-  ColorPicker.prototype.updateProjectColors = function(new_colors) {
+  ColorPicker.prototype.updateProjectColors = function(new_colors, new_color_names) {
     // Update colors
     this.project_colors = new_colors;
+    this.project_color_names = new_color_names;
     // Refresh the swatches
     this.addProjectColors();
   }
@@ -295,7 +298,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   scene.addEventListener('updatedProjectColors', function(event){
     const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(event.detail.project_colors);
     ColorPicker.prototype.project_colors = project_color_values;
-    ColorPicker.prototype.updateProjectColors(project_color_values_updated);
+    ColorPicker.prototype.updateProjectColors(project_color_values_updated, project_color_names_updated);
     refreshElementRects();
   });
 

@@ -91,12 +91,12 @@ document.addEventListener('jsonLoaded', async (event) => {
     const selected_type = typeSelect.value;
 
     // Update color input values
-    dark_color_input.value = mediaplayer_types[selected_type].dark;
-    lightColorInput.value = mediaplayer_types[selected_type].light;
+    dark_color_input.value = selected_type +"_dark";
+    lightColorInput.value = selected_type +"_light";
 
     // Update color input background colors
-    dark_color_input.style.backgroundColor = mediaplayer_types[selected_type].dark;
-    lightColorInput.style.backgroundColor = mediaplayer_types[selected_type].light;
+    dark_color_input.style.backgroundColor = project_colors[selected_type +"_dark"];
+    lightColorInput.style.backgroundColor = project_colors[selected_type +"_light"];
 
     icon_fields.innerHTML = '';
     // Add existing icons
@@ -123,7 +123,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   function updateProjectColors(selected_type, property, color) {
     const selected_color = `${selected_type}_${property}`;
-
+    console.log("TEST", project_colors, selected_color);
     project_colors[selected_color] = color;
 
     let event = new CustomEvent('updatedProjectColors', 

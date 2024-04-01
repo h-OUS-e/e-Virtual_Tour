@@ -6,5 +6,7 @@
     "green_dark": "#2dc84d",
     "green_light": "#DBFFE5",
     "blue_dark": "#009A9F",
-    "blue_light": "#D0F9F2" 
+    "blue_light": "#D0F9F2",
+    "pink_dark": "#FB7698",
+    "pink_light": "#f9d5de"
 }

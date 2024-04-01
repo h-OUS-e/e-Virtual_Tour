@@ -60,6 +60,9 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Getting scene ids
     const scenes_JSON = await loadJSON('Scenes');
 
+    // Get project colors
+    let project_colors = event.detail.project_colors; 
+
     // Constants for mediaplayer types and icon index
     const creation_menu_MediaPlayer_type_Id = document.getElementById('creation_menu_MediaPlayer_type_input');
     const creation_menu_MediaPlayer_iconIdx_Id = document.getElementById('creation_menu_MediaPlayer_iconIdx_input');
@@ -191,7 +194,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             let icon_index = object_instance.getAttribute('icon_index');
             let icon_url = icons[mediaplayer_type["icon"][icon_index]];
             let rotation = object_instance.getAttribute('rotation');
-            object = new MediaPlayer(event.detail.id, event.detail.position, event.detail.backgroundImgId, mediaplayer_type, mediaplayer_type_string , icon_url, icon_index, title, null, rotation);
+            object = new MediaPlayer(event.detail.id, project_colors, event.detail.position, event.detail.backgroundImgId, mediaplayer_type, mediaplayer_type_string , icon_url, icon_index, title, null, rotation);
         }
 
         else { 
@@ -269,9 +272,6 @@ document.addEventListener('jsonLoaded', async (event) => {
     }, true); // Using capture phase to catch the event early
 
 
-  
-
-
     
     // CODE TO MOVE OBJECTS ON SCENE WHEN HOLDING LEFT CLICK + CTRL AND DRAGGING MOUSE
     scene.addEventListener('ctrlShiftMouseDownIntersection', function (event) {
@@ -301,7 +301,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             let rotation = object_instance.getAttribute('rotation');
 
             // Create a new MediaPlayer instance
-            object = new MediaPlayer(event.detail.Id, event.detail.position, event.detail.backgroundImgId, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
+            object = new MediaPlayer(event.detail.Id, project_colors, event.detail.position, event.detail.backgroundImgId, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
             
             console.log('MediaPlayer selected for dragging');
         }
@@ -378,7 +378,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             const point = event.detail.intersection_pt; 
             const direction = event.detail.direction; 
             // Create object in scene when creation meny form is submitted
-            handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager); // Include direction in the call
+            handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager, project_colors); // Include direction in the call
         }   
         else {
             console.log("TEST", event);
@@ -603,7 +603,7 @@ class EditMenuManager  {
             if (!menu) return; // Exit if the menu doesn't exist
 
             // Show object ID in the edit menu   
-            const object_id_element = menu.getElementsByClassName('menu_item_display')[0];
+            const object_id_element = menu.getElementsByClassName('menuItem')[0];
             object_id_element.textContent = `Object ID: ${this.object_id}`; // Update the text to show the object ID
 
             
@@ -859,7 +859,7 @@ function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdow
 // CREATION MENU FUNCTIONS
 
 // Function to handle the logic for object creation based on the selected object class.
-function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager) {
+function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager, project_colors) {
     // Fetch the current background image ID from the scene's sky element.
     const sky = document.querySelector('#sky');
     const backgroundImgId = sky.getAttribute('background_img_id');
@@ -879,7 +879,7 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
             creation_menu_manager.hideEditMenu(); 
 
             // Process the creation menu submission for creating the new object.
-            processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager);
+            processCreationMenuSubmit(event, project_colors, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager);
             // Remove the event listener to prevent memory leaks and ensure clean-up.
             creation_menu.removeEventListener('click', handleMenuSubmit);
         }
@@ -893,7 +893,7 @@ function handleObjectCreation(point, direction, selectedObjectClass, mediaplayer
 
 
 // Function to process the form submission for creating new objects in the scene.
-function processCreationMenuSubmit(event, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager) {
+function processCreationMenuSubmit(event, project_colors, point, direction, backgroundImgId, selectedObjectClass, mediaplayer_types, icons, undo_redo_manager) {
     // Example logic for creating a MediaPlayer object.
     
     if (selectedObjectClass === 'MediaPlayer') {
@@ -906,7 +906,7 @@ function processCreationMenuSubmit(event, point, direction, backgroundImgId, sel
         let icon_url = icons[mediaplayer_type["icon"][icon_index]];
 
         // Create a new MediaPlayer instance
-        const media_player = new MediaPlayer(uniqueId, point, backgroundImgId, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, null);
+        const media_player = new MediaPlayer(uniqueId, project_colors, point, backgroundImgId, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, null);
         const createAction = media_player.getAction('create');
         console.log("ACTION: " + JSON.stringify(createAction.initialState));
         undo_redo_manager.doAction(createAction);
