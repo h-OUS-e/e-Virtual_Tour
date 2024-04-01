@@ -13,7 +13,7 @@
 
 
 // initialize at event, Scene and 3D objects loaded
-document.addEventListener('mediaplayerTypeLoaded', async (event) => {
+document.addEventListener('jsonLoaded', async (event) => {
 
     // Getting media player types and icons from the JSON filea
     const mediaplayer_types = event.detail.mediaplayer_types;

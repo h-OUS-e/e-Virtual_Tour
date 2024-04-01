@@ -13,7 +13,7 @@ const scene = document.querySelector('a-scene');
 
     // let deletionHistory = [];
 
-document.addEventListener('mediaplayerTypeLoaded', async () => {
+document.addEventListener('jsonLoaded', async () => {
      // Get colors from CSS palette
      const colors = getComputedStyle(document.documentElement);
      const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();

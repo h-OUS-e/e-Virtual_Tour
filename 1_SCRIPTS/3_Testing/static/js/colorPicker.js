@@ -3,7 +3,7 @@ import tinycolor from "https://esm.sh/tinycolor2";
 
 
 
-document.addEventListener('colorsLoaded', async (event) => {
+document.addEventListener('jsonLoaded', async (event) => {
   const addSwatch = document.getElementById('add-swatch');
   const modeToggle = document.getElementById('mode-toggle');
   const swatches = document.getElementById('color_palette');
@@ -56,8 +56,8 @@ document.addEventListener('colorsLoaded', async (event) => {
     return [colorNames, colorValues];
   }
 
-  const [project_color_names, project_color_values] = getColorNamesAndValues(event.detail.project_colors);
-  const [default_swatches_names, default_swatches_values] = getColorNamesAndValues(event.detail.color_palette);
+  let [project_color_names, project_color_values] = getColorNamesAndValues(event.detail.project_colors);
+  let [default_swatches_names, default_swatches_values] = getColorNamesAndValues(event.detail.color_palette);
   ColorPicker.prototype.defaultSwatches = default_swatches_values;
 
   ColorPicker.prototype.project_colors = project_color_values;
@@ -76,6 +76,8 @@ document.addEventListener('colorsLoaded', async (event) => {
     refreshElementRects();
   };
 
+
+
   ColorPicker.prototype.addDefaultSwatches = function() {
     for(let i = 0; i < this.defaultSwatches.length; ++i){
       createSwatch(swatches, this.defaultSwatches[i]);
@@ -83,9 +85,19 @@ document.addEventListener('colorsLoaded', async (event) => {
   }
 
   ColorPicker.prototype.addProjectColors = function() {
+    // Clear existing swatches
+    project_colors_swatches.innerHTML = '';
+    // Add swatches
     for(let i = 0; i < this.project_colors.length; ++i){
       createSwatch(project_colors_swatches, this.project_colors[i]);
     } 
+  }
+
+  ColorPicker.prototype.updateProjectColors = function(new_colors) {
+    // Update colors
+    this.project_colors = new_colors;
+    // Refresh the swatches
+    this.addProjectColors();
   }
 
   function refreshElementRects(){
@@ -280,16 +292,26 @@ document.addEventListener('colorsLoaded', async (event) => {
     refreshElementRects();
   });
 
+  scene.addEventListener('updatedProjectColors', function(event){
+    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(event.detail.project_colors);
+    ColorPicker.prototype.project_colors = project_color_values;
+    ColorPicker.prototype.updateProjectColors(project_color_values_updated);
+    refreshElementRects();
+  });
+
 
 
   function handleOkButton() {
     // Save the current color    
     let event = new CustomEvent('colorChosen', 
+    
     {
         detail: {
-            color: currentColor,
+            hex_color: `#${currentColor.toHex()}`,
         },
     });
+    console.log("TEST2", ColorPicker.prototype.project_colors);
+
     console.log("A color has been selected! ", currentColor);
     scene.dispatchEvent(event);   
 
@@ -317,7 +339,6 @@ document.addEventListener('colorsLoaded', async (event) => {
   okButton.addEventListener('click', handleOkButton);
   exitButton.addEventListener('click', handleExitButton);
   scene.addEventListener('toggleColorPicker', toggleColorPickerContainer);
-
 
   new ColorPicker();
 

@@ -51,28 +51,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         root.style.setProperty(`--${name}`, value);
     }
 
-    var new_event = new CustomEvent('colorsLoaded', 
-    {
-        detail: {
-            project_colors: project_colors,
-            color_palette: colors,
-        }
-    });
-    // Dispatch event
-    document.dispatchEvent(new_event);
- 
-
-
+    
 
     if (mediaplayer_types) {
         // Create an event that send
-        var new_event = new CustomEvent('mediaplayerTypeLoaded', 
+        var new_event = new CustomEvent('jsonLoaded', 
         {
             detail: {
                 mediaplayer_types: mediaplayer_types,
                 icons: icons,
+                project_colors: project_colors,
+                color_palette: colors,
             }
         });
+
         // Dispatch event
         document.dispatchEvent(new_event);
     }

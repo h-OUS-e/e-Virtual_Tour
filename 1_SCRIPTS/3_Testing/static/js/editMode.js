@@ -9,7 +9,7 @@ import { TransitionNode, emitTransitioning } from './transitionNodes.js';
 
 
 
-document.addEventListener('mediaplayerTypeLoaded', async (event) => {
+document.addEventListener('jsonLoaded', async (event) => {
     const scene = document.querySelector('a-scene');
     // Initializing the custom A-frame components
 

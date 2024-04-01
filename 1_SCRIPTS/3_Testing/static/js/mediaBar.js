@@ -5,7 +5,7 @@ const sidebar_styles = getComputedStyle(document.documentElement);
 const sidebar_width = sidebar_styles.getPropertyValue('--sidebar_width').trim();
 
 
-document.addEventListener('mediaPlayersLoaded', async () => {
+document.addEventListener('jsonLoaded', async () => {
     
     // Getting mediabar elements
     const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');

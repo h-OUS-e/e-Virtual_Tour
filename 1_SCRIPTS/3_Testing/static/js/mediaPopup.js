@@ -4,7 +4,7 @@ A script to control popup windows
 const colors = getComputedStyle(document.documentElement);  
 
 
-document.addEventListener('mediaplayerTypeLoaded', async (event) => {
+document.addEventListener('jsonLoaded', async (event) => {
     // Getting media player types from the JSON file
     // Getting media player types from the JSON filea
     const mediaplayer_types = event.detail.mediaplayer_types;

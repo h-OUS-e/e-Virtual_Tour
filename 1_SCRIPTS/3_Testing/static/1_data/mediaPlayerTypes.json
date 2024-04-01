@@ -1,14 +1,14 @@
 {
     "green": {
-        "dark": "#ef06c0",
-        "light": "--mintGreen",
+        "dark": "green_dark",
+        "light": "green_light",
         "icon": {
             "0": "diagnostic"
         }
     },
     "blue": {
-        "dark": "--oceanBlue",
-        "light": "--coolBlue",
+        "dark": "blue_dark",
+        "light": "blue_light",
         "icon": {
             "0": "emergency",
             "1": "whitening"
