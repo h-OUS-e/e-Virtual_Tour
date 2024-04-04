@@ -10,10 +10,10 @@ document.addEventListener('jsonLoaded', async (event) => {
   // Getting media player types from the JSON filea
   let mediaplayer_types = event.detail.mediaplayer_types;
   const icons = event.detail.icons;
+  let available_icons = icons;
 
   // Assuming the variable is named 'data'
   const editMenu = document.getElementById('edit_menu_MediaplayerTypes');
-  // const newTypeInput = document.getElementById('newType');
   // const addTypeBtn = document.getElementById('addTypeBtn');
   const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
   let color_type = "dark";
@@ -35,33 +35,81 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   // Populate the type select dropdown
   function populateTypeSelect(types) {
+    // Clear options
     typeSelect.innerHTML = '';
+
+    // Add type options
     for (const type in types) {
       const option = document.createElement('option');
       option.value = type;
       option.textContent = type;
       typeSelect.appendChild(option);
     }
-  }
 
+    // Add the "add type" option
+    const add_option = document.createElement('option');
+    add_option.value = "add type";
+    add_option.textContent = "add type";
+    typeSelect.appendChild(add_option);
+  }
 
 
   // Populate the icon dropdown
+  // function populateIconDropdown(icons) {
+  //   iconDropdown.innerHTML = '';
+  //   for (const iconName in icons) {
+  //     const option = document.createElement('a');
+  //     option.textContent = iconName;
+
+  //     option.addEventListener('click', () => addIconField(iconName));
+  //     iconDropdown.appendChild(option);
+  //   }
+  // }
+
   function populateIconDropdown(icons) {
     iconDropdown.innerHTML = '';
-    for (const iconName in icons) {
+        
+    for (const icon_name in icons) {
+      
       const option = document.createElement('a');
-      option.textContent = iconName;
+      option.textContent = icon_name;
+      console.log(available_icons, `${icon_name}_icon`, document.getElementById(`${icon_name}_icon`));
+  
+      // Check if the icon is already present in the icon field    
 
-      option.addEventListener('click', () => addIconField(iconName));
+      const iconExists = Array.from(icon_fields.querySelectorAll('p')).some(p => p.textContent.trim() === icon_name);
+      if (iconExists) {
+        option.classList.add('disabled');
+        option.addEventListener('click', (event) => event.preventDefault());
+      } else {
+        option.addEventListener('click', () => addIconField(icon_name));        
+        
+      } 
       iconDropdown.appendChild(option);
     }
   }
+  
+
+  // Toggle the dropdown when the "Add Icon" button is clicked
+  function toggleIconDropdown() {
+    let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
+    dropdown_menu.classList.toggle('hidden');
+  }
+  
+  // Close the dropdown when clicking outside
+  function closeIconDropdown(event) {
+    let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
+    if (!event.target.matches('.addBtn') && !event.target.matches('.dropdown-content a')) {
+      dropdown_menu.classList.add('hidden');
+      saveEditedType();
+    }
+  }
+
 
   function addIconField(icon_name) {
-    const icon_grid = document.getElementById('edit_menu_MediaplayerTypes_icons');
     const icon_field = document.createElement('div');
     icon_field.classList.add('flexColumn');
+
 
     // Create a container for the icon and the "X" button
     const icon_container = document.createElement('div');
@@ -87,58 +135,101 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     // Add event listener to the "X" button
     delete_button.addEventListener('click', function() {
-      icon_field.remove();
+      // Should event listener be removed?
+      icon_field.remove();      
     });
     icon_container.appendChild(delete_button);
 
     // Add icon image and "X" button to icon column grid
     icon_field.appendChild(icon_container);
 
-
     // Add icon name 
     const icon_name_input = document.createElement('p');
     icon_name_input.classList.add('menuItem');
+    icon_name_input.id = `${icon_name}_icon`;
     icon_name_input.textContent = icon_name;
-    icon_field.appendChild(icon_name_input);   
-    icon_grid.appendChild(icon_field); 
+    icon_field.appendChild(icon_name_input);
+    const paragraphs = icon_fields.getElementsByTagName('p'); 
+    let textContent = '';
+    for (let i = 0; i < paragraphs.length; i++) {
+      textContent += paragraphs[i].textContent + '\n';
+    } 
+    let icon_name_exists = textContent.includes(icon_name);
+    if (!icon_name_exists) {
+      icon_fields.appendChild(icon_field);
+    }
+    else{
+      console.log("Icon already exists in mediaplayer type"); 
+    }
+    
 
   }
 
 
   // Update the edit fields based on the selected type
   function updateEditFields() {
+    // Get selected type
     const selected_type = typeSelect.value;
+    const addTypeForm = document.getElementById('edit_menu_MediaplayerTypes_name_input');
+    const addType_btn = document.getElementById('edit_menu_MediaplayerTypes_add_type_button');    
 
-    // Update color input values
-    dark_color_input.value = selected_type +"_dark";
-    lightColorInput.value = selected_type +"_light";
+    // Add mediaplayer type if "add type" option is selected
+    if (selected_type === "add type") {
 
-    // Update color input background colors
-    dark_color_input.style.backgroundColor = project_colors[selected_type +"_dark"];
-    lightColorInput.style.backgroundColor = project_colors[selected_type +"_light"];
+      addTypeForm.classList.remove('hidden');
+      addType_btn.classList.remove('hidden');
 
-    icon_fields.innerHTML = '';
-    // Add existing icons
-    for (const icon_index in mediaplayer_types[selected_type].icon) {
-      let mediaplayer_type = mediaplayer_types[selected_type];
-      let icon_name = mediaplayer_type["icon"][icon_index]
-      addIconField(icon_name);
+      // Add event listener to the "Add Type" button
+      addType_btn.addEventListener('click', addNewType);
     }
+    
+    // Update menu with other type otherwise
+    else {  
 
-    // populateIconSelect(icons);  
-  }
+      // Update color input values
+      dark_color_input.value = selected_type +"_dark";
+      lightColorInput.value = selected_type +"_light";
 
-
-  function updateMediaPlayerTypeColor(selected_type, property, color) {
-    if (mediaplayer_types.hasOwnProperty(selected_type)) {
-      if (property === 'dark') {
-        mediaplayer_types[selected_type].dark = color;
-      } else if (property === 'light') {
-          mediaplayer_types[selected_type].light = color;
+      // Update color input background colors
+      dark_color_input.style.backgroundColor = project_colors[selected_type +"_dark"];
+      lightColorInput.style.backgroundColor = project_colors[selected_type +"_light"];
+      
+      // Add existing icons
+      icon_fields.innerHTML = '';
+      
+      for (const icon_index in mediaplayer_types[selected_type].icon) {
+        let mediaplayer_type = mediaplayer_types[selected_type];
+        let icon_name = mediaplayer_type["icon"][icon_index]      
+        addIconField(icon_name);
       }
-      updateProjectColors(selected_type, property, color);
+
+      
     }
   }
+
+  // Add a new type to the data object
+  function addNewType() {
+    // Get elements
+    const addTypeForm = document.getElementById('edit_menu_MediaplayerTypes_name_input');
+    const addType_btn = document.getElementById('edit_menu_MediaplayerTypes_add_type_button');    
+
+    // Hide add forms and clean listeners
+    addTypeForm.classList.add('hidden');
+    addType_btn.classList.add('hidden');
+    addType_btn.removeEventListener('click', addNewType);
+
+    if (addTypeForm !== '') {
+      mediaplayer_types[addTypeForm] = {
+        dark: '',
+        light: '',
+        icon: {}
+      };
+      newTypeInput.value = '';
+      populateTypeSelect(mediaplayer_types);
+      updateEditFields();
+    }    
+  }
+
 
   function updateProjectColors(selected_type, property, color) {
     const selected_color = `${selected_type}_${property}`;
@@ -151,21 +242,6 @@ document.addEventListener('jsonLoaded', async (event) => {
         },
     });
     scene.dispatchEvent(event);  
-  }
-
-
-  // Add a new type to the data object
-  function addNewType() {
-    const newType = newTypeInput.value.trim();
-    if (newType !== '') {
-      mediaplayer_types[newType] = {
-        dark: '',
-        light: '',
-        icon: {}
-      };
-      newTypeInput.value = '';
-      populateTypeSelect();
-    }
   }
 
 
@@ -183,41 +259,17 @@ document.addEventListener('jsonLoaded', async (event) => {
     for (let i = 0; i < icon_images.length; i++) {
       const icon_name = icon_names[i].textContent.trim();
       const icon_url = icon_images[i].src;
-      if (icon_name !== '' && icon_url !== '') {
+      
+      // Saving icons and ensuring icon_names are not duplicated in icon_fields
+      let icon_name_exists = Object.values(mediaplayer_types[selected_type].icon).includes(icon_name)              
+      if (icon_name !== '' && icon_url !== '' &&  !icon_name_exists) {
         mediaplayer_types[selected_type].icon[i] = icon_name;
       }
+
     }  
   }
 
 
-  // Toggle the dropdown when the "Add Icon" button is clicked
-  function toggleIconDropdown() {
-    let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
-    dropdown_menu.classList.toggle('hidden');
-  }
-  
-  // Close the dropdown when clicking outside
-  function closeIconDropdown(event) {
-    let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
-    if (!event.target.matches('.addBtn') && !event.target.matches('.dropdown-content a')) {
-      dropdown_menu.classList.add('hidden');
-      saveEditedType();
-    }
-  }
-
-  // Removes icon from the list
-  function removeIcon(event){
-
-  }
-
-
-  // COLOR PICKER INITIALIZATION
-
-  // Updating color input
-  function updateColorInput(colorInput, color) {
-    colorInput.value = color.toHexString();
-    colorInput.style.backgroundColor = color.toHexString();
-  }
 
   // Event listener for the dark color input
   dark_color_input.addEventListener('click', function() {
@@ -233,35 +285,27 @@ document.addEventListener('jsonLoaded', async (event) => {
     let event = new CustomEvent('toggleColorPicker');
     color_type = "light";
     scene.dispatchEvent(event); 
-
   });
 
-
   // Initialize the edit menu
-
   populateTypeSelect(mediaplayer_types);
   populateIconDropdown(icons);
   updateEditFields();
 
-
   // Event listeners
-  // addTypeBtn.addEventListener('click', addNewType);
   addIconBtn.addEventListener('click', toggleIconDropdown);
   typeSelect.addEventListener('change', updateEditFields);
   document.addEventListener('click', closeIconDropdown);
   saveBtn.addEventListener('click', saveEditedType);
 
   // Change color of mediaplayer types if color is chosen
-  // document.addEventListener('colorChosen', updateEditFields);
-
   scene.addEventListener('colorChosen', function(event) {
     const color = event.detail.hex_color;
     const selected_type = typeSelect.value;
     // Updates project colors and mediaplayer types colors
-    updateMediaPlayerTypeColor(selected_type, color_type, color);
+    updateProjectColors(selected_type, color_type, color);
     // Update the colors of the input edit fields
     updateEditFields();
-});
-
+  });
 
 });

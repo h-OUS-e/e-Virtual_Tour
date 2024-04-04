@@ -79,4 +79,8 @@
     visibility: hidden;
   }
 
+/* Gray out an option and disable its clicking */
+.disabled {
+  color: red;
+}
   

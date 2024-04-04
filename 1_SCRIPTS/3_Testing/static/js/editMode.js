@@ -478,7 +478,6 @@ function toggleCameraControls(enable) {
     let camera = document.getElementById('camera');
     camera.setAttribute('look-controls', 'enabled', enable);  
     camera.setAttribute('custom-look-controls', `enabled: ${enable}`); 
-
 }
 
 
@@ -718,7 +717,7 @@ class CreationFormManager  {
 
             // keep creation menu in visible window bounds
             this.adjustMenuPosition(menu);
-            }
+        }
     }
 
     adjustMenuPosition(menu) {    
