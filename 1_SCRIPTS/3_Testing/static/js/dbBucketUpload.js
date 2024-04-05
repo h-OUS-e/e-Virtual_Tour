@@ -19,7 +19,7 @@ import {
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-function setUpUppy (token) {
+function setUpUppy (token, storage_bucket, folder) {
   const uppy = new Uppy()
           .use(Dashboard, {
             inline: true,
@@ -31,7 +31,6 @@ function setUpUppy (token) {
             endpoint: supabaseStorageURL,
             headers: {
               authorization: `Bearer ${BEARER_TOKEN}`,
-              // apikey: SUPABASE_ANON_KEY,
             },
             uploadDataDuringCreation: true,
             chunkSize: 6 * 1024 * 1024,
@@ -63,7 +62,7 @@ function setUpUppy (token) {
 
   
 const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
-const STORAGE_BUCKET = 'icons_img' //make dynamic
+const STORAGE_BUCKET = 'icons_img' 
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
 const folder = 'test-folder' //replace with project_id
 let BEARER_TOKEN 
@@ -74,14 +73,7 @@ session_data_promise.then(data => {
     if (data && data.session.access_token) {
       BEARER_TOKEN = data.session.access_token;
       console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN)
-
-
-
-
-
-
-
+      setUpUppy(BEARER_TOKEN, STORAGE_BUCKET, folder)
 
     } else { console.log('no session found')}
 

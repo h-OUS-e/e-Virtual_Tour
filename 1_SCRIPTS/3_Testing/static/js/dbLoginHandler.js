@@ -1,6 +1,5 @@
 import { supabase } from "./dbClient.js";
-import {emitGETProfileData} from './dbEvents.js'
-import {waitForProfileData} from './dbEvents.js'
+
 
 
 supabase.auth.onAuthStateChange((event, session) => {
@@ -34,8 +33,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
             console.log('Login successful! User ID: ' + user_uid  + typeof(user_uid));
             localStorage.setItem('userData',JSON.stringify(data.user));
 
-            emitGETProfileData(user_uid);
-            waitForProfileData().then((profile_data) => { 
+            fetchProfileData(user_uid).then((profile_data) => { 
                 const profile = profile_data;
                 console.log(profile);
                 localStorage.setItem('userProfile',JSON.stringify(profile));

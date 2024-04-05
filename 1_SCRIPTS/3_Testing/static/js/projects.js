@@ -1,7 +1,6 @@
 import { supabase } from "./dbClient.js";
-import {emitGETProjectDataEvent, emitGETProjectsEvent} from './dbEvents.js'
-import {waitForProjects} from './dbEvents.js'
-import {waitForProjectData} from './dbEvents.js'
+import {fetchProjects, fetchProjectData} from './dbEvents.js'
+
 
 
 
@@ -13,9 +12,8 @@ const profile_uid = profile_stored[0].profile_uid;
 console.log(profile_uid);
 
 try { 
-    emitGETProjectsEvent(profile_uid);
-    waitForProjects().then((projects) => {
-        buildTable(projects)
+    fetchProjects(profile_uid).then((projects) => {
+        buildTable(projects, 'projectsTable')
         console.log(projects);
         localStorage.setItem('userProjects', JSON.stringify(projects));
 }).catch(err => {console.log('an error occured while getting projects: ', err);});
@@ -27,30 +25,30 @@ try {
 }
 
 
-function buildTable(data) {
-    var table = document.getElementById('myTable');
+async function buildTable(data, html_element) {
+    var table = document.getElementById(html_element); // Changed from 'myTable' to 'html_element'
     for (var i = 0; i < data.length; i++) {
         var row = table.insertRow(-1);
         var cell = row.insertCell(0);
         cell.innerHTML = data[i].project_name;
         cell.style.cursor = "pointer";
-        
-        
-        (function(index){
-            row.onclick = function() { 
-                let clicked_project = onRowClick(data[index].project_name); 
-
-
-                emitGETProjectDataEvent(clicked_project);
-                waitForProjectData().then(function(project_data) {
-                    selected_project_data = project_data;
-                    console.log(selected_project_data);
-                    localStorage.setItem('projectData',JSON.stringify(selected_project_data));
-               })
+        row.onclick = (function(index) {
+            return async function() {
+                let clicked_project = onRowClick(data[index].project_name);
+                const project_tables = ['media', 'scenes', 'transition_nodes'];
+                let selected_project_data = {};
+                for (const table of project_tables) {
+                    try {
+                        let result = await fetchProjectData(clicked_project, table);
+                        selected_project_data[table] = result.data;
+                    } catch (error) {
+                        console.error(`Error in fetching data for table ${table}: ${error}`);
+                    }
+                }
+                console.log(selected_project_data);
+                localStorage.setItem('projectData', JSON.stringify(selected_project_data));
             };
-        })
-
-        (i);
+        })(i);
     }
 }
 
