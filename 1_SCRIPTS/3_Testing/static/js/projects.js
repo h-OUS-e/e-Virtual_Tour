@@ -36,6 +36,8 @@ async function buildTable(data, html_element) {
             
             return async function() {
                 let clicked_project = onRowClick(data[index].project_name);
+                localStorage.setItem('clickedProject', clicked_project)
+                //fetch the project data form db
                 const project_tables = ['media', 'scenes', 'transition_nodes'];
                 let selected_project_data = {};
                 for (const table of project_tables) {
@@ -55,14 +57,15 @@ async function buildTable(data, html_element) {
 
 
 
-function onRowClick(projectName) {
-    console.log("Clicked on " + projectName);
-    let userProjects = JSON.parse(localStorage.getItem('userProjects'));
-    let clickedProject = userProjects.find(project => project.project_name === projectName);
-    upload_button.disabled = !upload_button.disabled; 
-    if (clickedProject) {
-        console.log("Project found:", clickedProject);
-        return clickedProject.project_uid;
+function onRowClick(project_name) {
+    console.log("Clicked on " + project_name);
+    updateParagraph("ClickedProject", project_name);
+    let user_projects = JSON.parse(localStorage.getItem('userProjects'));
+    let clicked_project = user_projects.find(project => project.project_name === project_name);
+    upload_button.disabled = false; 
+    if (clicked_project) {
+        console.log("Project found:", clicked_project);
+        return clicked_project.project_uid;
     } else {
         console.log("Project not found");
     }
@@ -79,7 +82,7 @@ function listLocalStorageVariables(){
         var value = localStorage.getItem(key);
         console.log(key + ":", value);
     }
-}
+};
 
 function retreiveUserDatafromLocalStorage(){
     //get userData from LocalStorage; saved there at login.
@@ -92,4 +95,10 @@ function retreiveUserDatafromLocalStorage(){
         console.log('No userData found in local storage.');
     }
 
-}
+};
+
+
+function updateParagraph(html_element, text) {
+    document.getElementById(html_element).textContent = text;
+};
+
