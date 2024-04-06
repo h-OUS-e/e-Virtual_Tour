@@ -15,6 +15,20 @@ async function loadJSON(filename) {
 }
 
 
+
+// fetch('colors.json')
+//   .then(response => response.json())
+//   .then(data => {
+//     const root = document.documentElement;
+//     for (const [name, value] of Object.entries(data)) {
+//       root.style.setProperty(`--${name}`, value);
+//     }
+//   })
+//   .catch(error => {
+//     console.error('Error loading colors:', error);
+//   });
+
+
 // Loading files and emitting them to document
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -24,16 +38,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load icons
     const icons = await loadJSON("Icons");
 
+    // Load color palette
+    const colors = await loadJSON("colorPalette");
+    const root = document.documentElement;
+    for (const [name, value] of Object.entries(colors)) {
+        root.style.setProperty(`--${name}`, value);
+    }
+
+    // Load project colors
+    const project_colors = await loadJSON("projectColors");
+    for (const [name, value] of Object.entries(project_colors)) {
+        root.style.setProperty(`--${name}`, value);
+    }
+
+    
 
     if (mediaplayer_types) {
         // Create an event that send
-        var new_event = new CustomEvent('mediaplayerTypeLoaded', 
+        var new_event = new CustomEvent('jsonLoaded', 
         {
             detail: {
                 mediaplayer_types: mediaplayer_types,
                 icons: icons,
+                project_colors: project_colors,
+                color_palette: colors,
             }
         });
+
         // Dispatch event
         document.dispatchEvent(new_event);
     }

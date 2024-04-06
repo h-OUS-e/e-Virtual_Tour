@@ -1,0 +1,12 @@
+{
+    "default_color":"#2dc84d",
+    "popup_color": "#DBFFE5",
+    "transition_node_dark_color":"#2dc84d",
+    "transition_node_light_color":"#DBFFE5",
+    "green_dark": "#2dc84d",
+    "green_light": "#DBFFE5",
+    "blue_dark": "#009A9F",
+    "blue_light": "#D0F9F2",
+    "pink_dark": "#FB7698",
+    "pink_light": "#f9d5de"
+}

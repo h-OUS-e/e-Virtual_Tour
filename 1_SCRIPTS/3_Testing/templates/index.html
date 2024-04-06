@@ -126,7 +126,7 @@
           
 
 
-        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu ">
+        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu">
 
             <h3 class="header">Edit Mediaplayer Types</h3>
             <select id="edit_menu_MediaplayerTypes_select" title="Select Mediaplayer type">
@@ -134,21 +134,20 @@
             </select>
             
             <div class="container">
+                <div id="edit_menu_MediaplayerTypes_name_input" class="grid hidden">
+                    <p>Name:</p>
+                    <input type="text" id="new_type_name menuItem">
+                </div>
                 <div id="edit_menu_MediaplayerTypes_colors" class="grid">
                     <p>dark color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem color_input" type="text" placeholder="Enter dark color" readonly>
-                        <div id="dark_color_picker_container" class="hidden">
-                          <!-- Color picker elements go here -->
-                        </div>
+                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem colorInput" type="text" placeholder="Enter dark color" readonly>
+    
                       </div>
                     <p>light color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem color_input" type="text" placeholder="Enter light color" readonly>
-                        <div id="light_color_picker_container" class="hidden">
-                          <!-- Color picker elements go here -->
-                        </div>
-                      </div>
+                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem colorInput" type="text" placeholder="Enter light color" readonly>
+                    </div>
                 </div>
                 <div class="grid">
                     <p>icons: </p>
@@ -158,14 +157,13 @@
                             <button id="edit_menu_MediaplayerTypes_addIcon_button" class="btn addBtn" >+</button>  
                             <p class="menuItem">Add Icon</p>
                         </div>    
-                    </div>
-                    
+                    </div>                    
                 </div>
                 <div id="edit_menu_MediaplayerTypes_iconDropdown" class="dropdown hidden">
                     <!-- Options will be populated dynamically -->
-                </div>   
-            </div>
-
+                </div> 
+                <button id="edit_menu_MediaplayerTypes_add_type_button" class="btn hidden">Add New Type</button>  
+            </div>            
             <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button>
         </div>
 
@@ -318,7 +316,12 @@
         <div id="color_picker" class="color-picker-panel hidden">
             <!-- Typical Color Swatches and eye dropper -->
             <div class="panel-row">
-              <div class="swatches default-swatches"></div>
+                <div id="project_colors" class="swatches default-swatches"></div>
+                <button class="button eyedropper">Get Color</button>
+            </div>
+            <!-- Typical Color Swatches and eye dropper -->
+            <div class="panel-row">
+              <div id="color_palette" class="swatches default-swatches"></div>
               <button class="button eyedropper">Get Color</button>
             </div>
             
@@ -357,7 +360,7 @@
             </div>
 
             <div class="panel-row">
-              <h4 class="panel-header">User Colors</h4>
+              <h4 class="panel-header">Temp Swatches</h4>
               <div id="user-swatches" class="swatches custom-swatches"></div>
               <button id="add-swatch" class="button add-swatch">
                 <span id="color-indicator" class="color-indicator"></span><span>Add to Swatches</span>

@@ -29,7 +29,6 @@
     justify-content: center;    
     flex-wrap: wrap;
     align-items: center;
-
 }
 
 .flexRowLeft{
@@ -37,6 +36,13 @@
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.flexRowTop{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: flex-start;
 }
 
 .flexColumn {
@@ -73,4 +79,8 @@
     visibility: hidden;
   }
 
+/* Gray out an option and disable its clicking */
+.disabled {
+  color: red;
+}
   

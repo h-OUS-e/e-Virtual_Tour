@@ -45,12 +45,12 @@ html {
 #dashboard-container {
     height: 100%;
     width: var(--sidebar_width);
-    background-color: var(--mintGreen);
+    background-color: var(--default_color);
     z-index: 2000;
     position: relative 
 }
 #dashboard {
-    /* background-color: var(--mintGreen);  */
+    /* background-color: var(--default_color);  */
     /* PROPERTIES and INDEX*/
     z-index: 1000; /* High enough to be on top of other elements */
     position: relative;
@@ -296,7 +296,7 @@ opacity: 1; /* Fully visible */
 
 .sidebar-item {
     z-index: 1003;
-    background-color: var-background; 
+    background-color: var(--background); 
     border-bottom: var(--bottom-border-styles);
     padding-left: 7%;
     padding-top: 3%;
@@ -307,7 +307,7 @@ opacity: 1; /* Fully visible */
     flex-direction: column;
     height: 100%;
     width: var(--sidebar_width);
-    background-color: var(--mintGreen);;
+    background-color: var(--default_color);;
 
     display: flex;
     flex-direction: column;
@@ -315,7 +315,7 @@ opacity: 1; /* Fully visible */
     align-items: center;
 }
 #sidebar-toggler-button{
-    background-color: var(--mintGreen);;
+    background-color: var(--default_color);;
     display: block;
     width: 10%;
     /* Adjust the size of the arrow by changing the border sizes */
