@@ -19,52 +19,11 @@ import {
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-function setUpUppy (token, storage_bucket, folder) {
-  const uppy = new Uppy()
-          .use(Dashboard, {
-            inline: true,
-            limit: 10,
-            target: '#drag-drop-area',
-            showProgressDetails: true,
-          })
-          .use(Tus, {
-            endpoint: supabaseStorageURL,
-            headers: {
-              authorization: `Bearer ${BEARER_TOKEN}`,
-            },
-            uploadDataDuringCreation: true,
-            chunkSize: 6 * 1024 * 1024,
-            allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
-            onError: function (error) {
-              console.log('Failed because: ' + error)
-            },
-          })
 
-        uppy.on('file-added', (file) => {
-          const supabaseMetadata = {
-            bucketName: STORAGE_BUCKET,
-            objectName: folder ? `${folder}/${file.name}` : file.name,
-            contentType: file.type,
-          }
-
-          file.meta = {
-            ...file.meta,
-            ...supabaseMetadata,
-          }
-
-          console.log('file added', file)
-        })
-
-        uppy.on('complete', (result) => {
-          console.log('Upload complete! We’ve uploaded these files:', result.successful)
-        })
-  }
-
-  
+const chosen_project = localStorage.getItem('clickedProject');
 const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
 const STORAGE_BUCKET = 'icons_img' 
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
-const folder = 'test-folder' //replace with project_id
 let BEARER_TOKEN 
 
 // get session token from supabse and then start uppy instance
@@ -73,7 +32,7 @@ session_data_promise.then(data => {
     if (data && data.session.access_token) {
       BEARER_TOKEN = data.session.access_token;
       console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN, STORAGE_BUCKET, folder)
+      setUpUppy(BEARER_TOKEN, STORAGE_BUCKET, chosen_project)
 
     } else { console.log('no session found')}
 
@@ -82,7 +41,47 @@ session_data_promise.then(data => {
     console.error("Error in getSession: ", error);
   });
 
-console.log(BEARER_TOKEN);
 
 
 
+
+function setUpUppy (token, storage_bucket, folder) {
+  const uppy = new Uppy()
+    .use(Dashboard, {
+      inline: true,
+      limit: 10,
+      target: '#drag-drop-area',
+      showProgressDetails: true,
+    })
+    .use(Tus, {
+      endpoint: supabaseStorageURL,
+      headers: {
+        authorization: `Bearer ${BEARER_TOKEN}`,
+      },
+      uploadDataDuringCreation: true,
+      chunkSize: 6 * 1024 * 1024,
+      allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
+      onError: function (error) {
+        console.log('Failed because: ' + error)
+      },
+    })
+
+  uppy.on('file-added', (file) => {
+    const supabaseMetadata = {
+      bucketName: STORAGE_BUCKET,
+      objectName: folder ? `${folder}/${file.name}` : file.name,
+      contentType: file.type,
+    }
+
+    file.meta = {
+      ...file.meta,
+      ...supabaseMetadata,
+    }
+
+    console.log('file added', file)
+  })
+
+  uppy.on('complete', (result) => {
+    console.log('Upload complete! We’ve uploaded these files:', result.successful)
+  })
+}
