@@ -6,7 +6,7 @@ import {
   Dashboard,
   Tus,
 } from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
-
+const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
 
 //docs
@@ -67,9 +67,10 @@ function setUpUppy (token, storage_bucket, folder) {
     })
 
   uppy.on('file-added', (file) => {
+    const fileUUID = uuidv4();
     const supabaseMetadata = {
       bucketName: STORAGE_BUCKET,
-      objectName: folder ? `${folder}/${file.name}` : file.name,
+      objectName: `${folder}//${fileUUID}/${file.name}`,
       contentType: file.type,
     }
 
