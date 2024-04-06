@@ -5,8 +5,8 @@ import {fetchProjects, fetchProjectData} from './dbEvents.js'
 
 
 
-
-var selected_project_data;
+const upload_button = document.getElementById('uploadButton');
+let selected_project_data;
 const profile_stored = JSON.parse(localStorage.getItem('userProfile'));
 const profile_uid = profile_stored[0].profile_uid;
 console.log(profile_uid);
@@ -33,6 +33,7 @@ async function buildTable(data, html_element) {
         cell.innerHTML = data[i].project_name;
         cell.style.cursor = "pointer";
         row.onclick = (function(index) {
+            
             return async function() {
                 let clicked_project = onRowClick(data[index].project_name);
                 const project_tables = ['media', 'scenes', 'transition_nodes'];
@@ -58,6 +59,7 @@ function onRowClick(projectName) {
     console.log("Clicked on " + projectName);
     let userProjects = JSON.parse(localStorage.getItem('userProjects'));
     let clickedProject = userProjects.find(project => project.project_name === projectName);
+    upload_button.disabled = !upload_button.disabled; 
     if (clickedProject) {
         console.log("Project found:", clickedProject);
         return clickedProject.project_uid;
