@@ -1,7 +1,7 @@
 import { supabase } from "./dbClient.js";
 import {fetchProjects, fetchAllProjectData} from './dbEvents.js'
 import { fetchIcons } from "./dbEvents.js";
-let icons = await fetchAllProjectData("f09b3f7b-edc9-4964-83a2-a13835f0fdb9").then((results) => console.log(results));
+let icons = await fetchIcons().then((results) => console.log(results));
 
 
 

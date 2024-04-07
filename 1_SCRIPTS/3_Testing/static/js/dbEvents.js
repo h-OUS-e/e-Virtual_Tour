@@ -447,7 +447,13 @@ export async function fetchIcons() {
                 icon_name,
                 icons_date_created,
                 shades (
-                    shade_id
+                    shade_id,
+                    type,
+                    value,
+                    colors(
+                        color_id,
+                        name
+                    )
                 )
             `);
         
