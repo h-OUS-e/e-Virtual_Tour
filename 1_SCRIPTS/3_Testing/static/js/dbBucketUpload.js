@@ -70,7 +70,7 @@ function setUpUppy (token, storage_bucket, folder) {
     const fileUUID = uuidv4();
     const supabaseMetadata = {
       bucketName: STORAGE_BUCKET,
-      objectName: `${folder}//${fileUUID}/${file.name}`,
+      objectName: `${folder}/${fileUUID}/${file.name}`,
       contentType: file.type,
     }
 

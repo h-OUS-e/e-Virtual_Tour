@@ -1,6 +1,7 @@
 import { supabase } from "./dbClient.js";
-import {fetchProjects, fetchProjectData} from './dbEvents.js'
-
+import {fetchProjects, fetchAllProjectData} from './dbEvents.js'
+import { fetchIcons } from "./dbEvents.js";
+let icons = await fetchAllProjectData("f09b3f7b-edc9-4964-83a2-a13835f0fdb9").then((results) => console.log(results));
 
 
 
@@ -36,24 +37,23 @@ async function buildTable(data, html_element) {
             
             return async function() {
                 let clicked_project = onRowClick(data[index].project_name);
-                localStorage.setItem('clickedProject', clicked_project)
-                //fetch the project data form db
-                const project_tables = ['media', 'scenes', 'transition_nodes'];
-                let selected_project_data = {};
-                for (const table of project_tables) {
-                    try {
-                        let result = await fetchProjectData(clicked_project, table);
-                        selected_project_data[table] = result.data;
-                    } catch (error) {
-                        console.error(`Error in fetching data for table ${table}: ${error}`);
-                    }
+                localStorage.setItem('clickedProject', clicked_project);
+
+                try {
+                    let result = await fetchAllProjectData(clicked_project);
+                    return result
+                } catch (error) {
+                    console.error(`Error in fetching data for table ${table}: ${error}`);
                 }
+                
                 console.log(selected_project_data);
                 localStorage.setItem('projectData', JSON.stringify(selected_project_data));
             };
+
         })(i);
     }
 }
+
 
 
 

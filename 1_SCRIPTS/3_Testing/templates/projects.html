@@ -20,9 +20,10 @@
     </table>
     <button id="uploadButton" disabled>Upload</button>
     <script>
+
         function redirectToProjectsDirectory(path) {
             window.location.href = path;
-        }
+        };
     
         document.getElementById('uploadButton').addEventListener('click', function() {
             redirectToProjectsDirectory('upload.html');

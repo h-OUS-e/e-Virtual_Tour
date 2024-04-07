@@ -290,12 +290,30 @@ export async function insertProfiles(dataArray) {
 
 
 
+// select all relevant media, scenes, transition_nodes tables, only one API call so it is kind of better.
+export async function fetchAllProjectData(project_uid) { //async api function.
+    // input:   project_uid; profile unique identifier for each project (string)
 
+    // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
+    try {
+        let { data, error } = await supabase
+        .from('view_project_data')
+        .select('*')
+        .eq('project_uid', project_uid);
 
+        if (error) {
+        console.error('Error fetching project data:', error);
+        throw new Error(`Error fetching project data: ${error.message}`); 
+        } else {
+            return { data }; 
+        }
+    } catch (error) {
+        console.log('an unexpected error occured in fetchProjectData( ',project_uid, "): ", error);
+    }
+};
 
-
-// select from media, scenes, transition_nodes tables
-export async function fetchProjectData(project_uid, table) { //async api function.
+// select from media, scenes, transition_nodes tables !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!!
+export async function fetchSpecificProjectData(project_uid, table) { //async api function.
     // input:   project_uid; profile unique identifier for each project (string)
     //          table: what table to pull data from (string)
                         //"media", popus and what populates them
@@ -309,13 +327,13 @@ export async function fetchProjectData(project_uid, table) { //async api functio
         .eq('project_uid', project_uid);
 
         if (error) {
-        console.error('Error fetching project data:', error);
+        console.error('Error fetching project data: !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!!', error);
         throw new Error(`Error fetching project data: ${error.message}`); 
         } else {
             return { data }; 
         }
     } catch {
-        console.log('an unexpected error occured in fetchProjectData( ',project_uid,", ",table,"): ", err);
+        console.log('an unexpected error occured in fetchProjectData( ',project_uid,", ",table,"):  !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!! ", err);
     }
 };
 
@@ -412,11 +430,35 @@ export async function insertTransitionNodes(dataArray) {
 
 
 
-
-
-
-
-
+export async function fetchIcons() {
+    //icon fields
+        // icon_id bigint generated always as identity,
+        // icon_name text null,
+        // icons_shade_id bigint null,
+        // icons_date_created timestamp with time zone null,
+        // icon_img_uid UUID,
+        // constraint icons_pkey primary key (icon_id),
+        // constraint icons_shade_id_fkey foreign key (icons_shade_id) references shades (shade_id)
+    try {
+        const { data: icons, error } = await supabase
+            .from('icons')
+            .select(`
+                icon_id,
+                icon_name,
+                icons_date_created,
+                shades (
+                    shade_id
+                )
+            `);
+        
+   
+        return { data: icons, error };
+    } catch (error) {
+        console.error('Error fetching icons:', error);
+    
+        return { error };
+    }
+}
 
 
 
