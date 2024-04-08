@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>360 Image in A-Frame</title>
     <!-- <link rel="colors" href="colorPalette.css"> -->
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
+    <!-- CSS IMPORTS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/forms.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/buttons.css">
+
+    
     <!-- CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
-
-
 
     <script type="importmap">
         {
@@ -126,7 +131,7 @@
           
 
 
-        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
+        <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu">
 
             <h3 class="header">Edit Mediaplayer Types</h3>
             <select id="edit_menu_MediaplayerTypes_select" title="Select Mediaplayer type">
@@ -134,19 +139,18 @@
             </select>
             
             <div class="container">
-                <div id="edit_menu_MediaplayerTypes_name_input" class="grid hidden">
+                <div id="edit_menu_MediaplayerTypes_name_input_container" class="grid">
                     <p>Name:</p>
-                    <input type="text" id="new_type_name menuItem">
+                    <input id="edit_menu_MediaplayerTypes_name_input" type="text" class="new_type_name gridItem">
                 </div>
                 <div id="edit_menu_MediaplayerTypes_colors" class="grid">
                     <p>dark color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="menuItem colorInput" type="text" placeholder="Enter dark color" readonly>
-    
+                        <input id="edit_menu_MediaplayerTypes_darkColor_input" class="gridItem colorInput" type="text" placeholder="Enter dark color" readonly>    
                       </div>
                     <p>light color: </p>
                     <div class="color_input_container">
-                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="menuItem colorInput" type="text" placeholder="Enter light color" readonly>
+                        <input id="edit_menu_MediaplayerTypes_lightColor_input" class="gridItem colorInput" type="text" placeholder="Enter light color" readonly>
                     </div>
                 </div>
                 <div class="grid">
@@ -155,7 +159,7 @@
                         <div id="edit_menu_MediaplayerTypes_icons" class="grid3Column"></div>    
                         <div > 
                             <button id="edit_menu_MediaplayerTypes_addIcon_button" class="btn addBtn" >+</button>  
-                            <p class="menuItem">Add Icon</p>
+                            <p class="gridItem">Add Icon</p>
                         </div>    
                     </div>                    
                 </div>

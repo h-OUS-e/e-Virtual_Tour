@@ -313,7 +313,6 @@ document.addEventListener('jsonLoaded', async (event) => {
             hex_color: `#${currentColor.toHex()}`,
         },
     });
-    console.log("TEST2", ColorPicker.prototype.project_colors);
 
     console.log("A color has been selected! ", currentColor);
     scene.dispatchEvent(event);   
