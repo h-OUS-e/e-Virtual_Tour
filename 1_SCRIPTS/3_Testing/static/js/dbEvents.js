@@ -127,28 +127,7 @@ class Supabase_Table_Events {
 
 
 // select from projects table
-export function emitGETProjectsEvent(profile_uid) { //emit 'GET-projects'
-    if (profile_uid === undefined) {
-        throw new Error('emitGETProjectsEvent requires an argument for profile_uid');
-    }
-    const event = new CustomEvent('GET-projects', { detail: {profile_uid}}); //listen to fetched-projects
-    document.dispatchEvent(event)
-};
-
-document.addEventListener('GET-projects', async function(event) { //listen to 'fetched-projects'
-    const { profile_uid} = event.detail;
-    console.log("API request " + profile_uid);
-    try {
-        const projects = await fetchProjects(profile_uid);
-
-        document.dispatchEvent(new CustomEvent('fetched-projects', { detail: { projects } }));
-        console.log("emmited fetched-projects" + projects)
-    } catch (error) {   
-        console.error('An error occurred: ', error);
-    }
-});
-
-async function fetchProjects(profile_uid) { //async api function.
+export async function fetchProjects(profile_uid) { //async api function.
     // input: profile_uid; profile unique identifier from users table (string)
     // return: profiles; the list of projects that have the profile_uid in there profile_uid field (JSON object)
     try {
@@ -170,21 +149,6 @@ async function fetchProjects(profile_uid) { //async api function.
         }
 };
 
-export function waitForProjects() { // listen to 'fetched-projects'
-    return new Promise((resolve, reject) => {
-        document.addEventListener('fetched-projects', function(event) {
-            try {
-                const projects = event.detail.projects
-                console.log("projects Received:", projects);
-
-                resolve(projects);
-            } catch (error) {
-                console.error('An error occurred while processing user projects:', error);
-                reject(error);
-            }
-        });
-    });
-}
 
 export async function insertProjects(dataArray) {
     // project fields:
@@ -263,30 +227,7 @@ export async function updatetProjects(dataArray) {
 
 
 // select from profiles table
-export function emitGETProfileData(user_uid) {  //emit 'GET-profile-data'
-    if (user_uid === undefined) {
-        throw new Error('emitGETProfileData requires an argument for user_uid');
-    }
-    const event = new CustomEvent('GET-profile-data', {detail: {user_uid}}); //listen to fetched-profile-data
-    document.dispatchEvent(event)
-}
-
-document.addEventListener('GET-profile-data', async function(event) {  //listen to 'fetched-profile-data'
-    const { user_uid } = event.detail;
-    console.log("API request " + user_uid);
-    try {
-        const profile = await fetchProfileData(user_uid);
-
-        document.dispatchEvent(new CustomEvent('fetched-profile-data', { detail: { profile } }));
-        console.log('fetched-profile-data: ', + profile)
-
-
-    } catch (error) {   
-        console.error('An error occurred:', error);
-    }
-});
-
-async function fetchProfileData(user_uid) { //async api function.
+export async function fetchProfileData(user_uid) { //async api function.
     // input: user_uid; useres unique identifier from users table (string)
     // return: projects; the list of profiles that have the user_uid in there id field (JSON object)
     try {
@@ -309,23 +250,6 @@ async function fetchProfileData(user_uid) { //async api function.
         console.log('an unexpected error occured in fetchProfileData(user_uid):', err);
         }
 };
-
-
-export function waitForProfileData() { // listen to 'fetched-project-data' event
-    return new Promise((resolve, reject) => {
-        document.addEventListener('fetched-profile-data', function(event) {
-            try {
-                const profile_data = event.detail.profile
-                console.log("Profile Data Received:", profile_data);
-
-                resolve(profile_data);
-            } catch (error) {
-                console.error('An error occurred while processing profile data:', error);
-                reject(error);
-            }
-        });
-    });
-}
 
 export async function insertProfiles(dataArray) {
     // profiles fields:
@@ -366,20 +290,30 @@ export async function insertProfiles(dataArray) {
 
 
 
+// select all relevant media, scenes, transition_nodes tables, only one API call so it is kind of better.
+export async function fetchAllProjectData(project_uid) { //async api function.
+    // input:   project_uid; profile unique identifier for each project (string)
 
+    // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
+    try {
+        let { data, error } = await supabase
+        .from('view_project_data')
+        .select('*')
+        .eq('project_uid', project_uid);
 
-
-
-// select from media, scenes, transition_nodes tables
-export function emitGETProjectDataEvent(project_uid) { //emit 'GET-project-data'
-    if (project_uid === undefined) {
-        throw new Error('emitGETProjectDataEvent requires an argument for project_ui');
+        if (error) {
+        console.error('Error fetching project data:', error);
+        throw new Error(`Error fetching project data: ${error.message}`); 
+        } else {
+            return { data }; 
+        }
+    } catch (error) {
+        console.log('an unexpected error occured in fetchProjectData( ',project_uid, "): ", error);
     }
-    const event = new CustomEvent('GET-project-data', { detail: { project_uid } }); //listen to fetched-project-data
-    document.dispatchEvent(event);
 };
 
-async function fetchProjectData(project_uid, table) { //async api function.
+// select from media, scenes, transition_nodes tables !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!!
+export async function fetchSpecificProjectData(project_uid, table) { //async api function.
     // input:   project_uid; profile unique identifier for each project (string)
     //          table: what table to pull data from (string)
                         //"media", popus and what populates them
@@ -393,52 +327,17 @@ async function fetchProjectData(project_uid, table) { //async api function.
         .eq('project_uid', project_uid);
 
         if (error) {
-        console.error('Error fetching project data:', error);
+        console.error('Error fetching project data: !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!!', error);
         throw new Error(`Error fetching project data: ${error.message}`); 
         } else {
             return { data }; 
         }
     } catch {
-        console.log('an unexpected error occured in fetchProjectData( ',project_uid,", ",table,"): ", err);
+        console.log('an unexpected error occured in fetchProjectData( ',project_uid,", ",table,"):  !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!! ", err);
     }
 };
 
-document.addEventListener('GET-project-data', async function(event) { //listen to 'fetched-project-data'
-    const { project_uid } = event.detail;
-    console.log("API request " + project_uid);
-    try {
-        const [media, scenes, transitionNodes] = await Promise.all([
-            fetchProjectData(project_uid, 'media'),
-            fetchProjectData(project_uid, 'scenes'),
-            fetchProjectData(project_uid, 'transition_nodes')
-        ])
-        const project_data = {
-            media: media,
-            scenes: scenes,
-            transition_nodes: transitionNodes
-        };
-        document.dispatchEvent(new CustomEvent('fetched-project-data', { detail: { project_data } }));
-        console.log("emmited fetched-project-data" + project_data)
-    } catch (error) {   
-        console.error('An error occurred: ', error);
-    }
-});
 
-export function waitForProjectData() { // listen to 'fetched-project-data' event
-    return new Promise((resolve, reject) => {
-        document.addEventListener('fetched-project-data', function(event) {
-            try {
-                const project_data = event.detail.project_data
-                console.log("project data Received:", project_data);
-
-                resolve(project_data);
-            } catch (error) {
-                console.error('An error occurred while processing project data:', error);
-                reject(error);
-            }
-        });
-    });
-}
 
 export async function insertMedia(dataArray) {
     // media fields:
@@ -531,11 +430,41 @@ export async function insertTransitionNodes(dataArray) {
 
 
 
-
-
-
-
-
+export async function fetchIcons() {
+    //icon fields
+        // icon_id bigint generated always as identity,
+        // icon_name text null,
+        // icons_shade_id bigint null,
+        // icons_date_created timestamp with time zone null,
+        // icon_img_uid UUID,
+        // constraint icons_pkey primary key (icon_id),
+        // constraint icons_shade_id_fkey foreign key (icons_shade_id) references shades (shade_id)
+    try {
+        const { data: icons, error } = await supabase
+            .from('icons')
+            .select(`
+                icon_id,
+                icon_name,
+                icons_date_created,
+                shades (
+                    shade_id,
+                    type,
+                    value,
+                    colors(
+                        color_id,
+                        name
+                    )
+                )
+            `);
+        
+   
+        return { data: icons, error };
+    } catch (error) {
+        console.error('Error fetching icons:', error);
+    
+        return { error };
+    }
+}
 
 
 
