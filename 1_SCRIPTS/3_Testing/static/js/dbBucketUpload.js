@@ -18,7 +18,15 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID library
 //https://www.restack.io/docs/supabase-knowledge-supabase-storage-metadata
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
-
+document.getElementById('icons-button').addEventListener('click', setBucketToIcons);
+document.getElementById('scenes-button').addEventListener('click', setBucketToScenes);
+let bucket;
+function setBucketToIcons(){
+  bucket = 'icons_img' 
+};
+function setBucketToScenes(){
+  bucket = 'scenes_img'  
+};
 
 const chosen_project = localStorage.getItem('clickedProject');
 const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
