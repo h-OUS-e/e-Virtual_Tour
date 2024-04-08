@@ -18,8 +18,8 @@ document.addEventListener('jsonLoaded', async (event) => {
     let project_colors = event.detail.project_colors;
 
     // Getting media player types and icons from the JSON filea
-    const mediaplayer_types = event.detail.mediaplayer_types;
-    const icons = event.detail.icons;
+    let mediaplayer_types = event.detail.mediaplayer_types;
+    let icons = event.detail.icons;
     // loading MediaPlayers to scene from JSON file
     await loadMediaPlayersFromJSON(mediaplayer_types, icons, project_colors);
     
@@ -132,11 +132,27 @@ document.addEventListener('jsonLoaded', async (event) => {
             const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
             borderEntity.setAttribute('material', 'color', dark_color);            
             object.setAttribute('material', 'color', light_color);
-        });
-
-    
+        });    
     });
     
+
+    // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
+    scene.addEventListener('updatedMediaplayerTypeNames', async function(event) {
+        // Get mediaplayer types from event
+        mediaplayer_types = event.detail.mediaplayer_types;
+    
+        // Get the old and new names from the event detail
+        const old_type_name = event.detail.old_type_name;
+        const new_type_name = event.detail.new_type_name;
+    
+        // Update the type of all mediaplayer objects with the old name
+        document.querySelectorAll('.MediaPlayer').forEach(object => {
+            const mediaplayer_type = object.getAttribute("mediaplayer_type");
+            if (mediaplayer_type === old_type_name) {
+                object.setAttribute('mediaplayer_type', new_type_name);
+            }
+        });
+    });
 });
 
 
