@@ -258,7 +258,7 @@ document.addEventListener('jsonLoaded', async (event) => {
       {      
         addProjectColor(new_type_name, "dark", "#606060");
       }
-      if (!(new_type_name +"_dark" in project_colors))
+      if (!(new_type_name +"_light" in project_colors))
       {      
         addProjectColor(new_type_name, "light", "#ffffff");
       }
