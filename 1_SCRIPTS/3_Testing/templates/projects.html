@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>PROJECTS</h1>
+    <h3 id='ClickedProjectHeader'> Chosen Project </h3>
+    <p id="ClickedProject"></p>
+
     <table id="projectsTable">
         <tr class = 'bg-ingo'> </tr>
             <th>project name</th>
@@ -15,12 +18,12 @@
 
         </tbody>    
     </table>
-    <button id="uploadButton">Upload</button>
-
+    <button id="uploadButton" disabled>Upload</button>
     <script>
+
         function redirectToProjectsDirectory(path) {
             window.location.href = path;
-        }
+        };
     
         document.getElementById('uploadButton').addEventListener('click', function() {
             redirectToProjectsDirectory('upload.html');
