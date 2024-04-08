@@ -175,21 +175,26 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Add mediaplayer type if "add type" option is selected
     if (selected_type === "add type") {
       const new_type_name = mediaplayerType_name_input.value.trim().replace(/\s+/g, '_');  
+
       // Clear the input fields
       if (new_type_name === "" || new_type_name in mediaplayer_types){
         mediaplayerType_name_input.value = "";
-        dark_color_input.value = "";
-        light_color_input.value = "";
-        icon_fields.innerHTML = "";
-        dark_color_input.style.backgroundColor = "#606060";
-        light_color_input.style.backgroundColor = "#ffffff";
       }
-      else {
+      // Clear the other input fields
+      dark_color_input.value = "";
+      light_color_input.value = "";
+      icon_fields.innerHTML = "";
+      dark_color_input.style.backgroundColor = "#606060";
+      light_color_input.style.backgroundColor = "#ffffff";
+      
+      // If color exists, set it, otherwise keep default
+      if (new_type_name +"_dark" in project_colors) {
         dark_color_input.style.backgroundColor = project_colors[new_type_name +"_dark"];
+      }
+      if (new_type_name +"_light" in project_colors) {
         light_color_input.style.backgroundColor = project_colors[new_type_name +"_light"];
       }
       
-
       // Show add button and add an event listener to handle click
       addType_btn.classList.remove('hidden');
 

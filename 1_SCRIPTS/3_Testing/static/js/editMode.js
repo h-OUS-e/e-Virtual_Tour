@@ -44,7 +44,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     let rotating = false;
 
     // Getting media player types from the JSON file
-    const mediaplayer_types = event.detail.mediaplayer_types;
+    let mediaplayer_types = event.detail.mediaplayer_types;
     const icons = event.detail.icons;
     const mediaplayer_types_keys = Object.keys(mediaplayer_types);
 
@@ -421,15 +421,29 @@ document.addEventListener('jsonLoaded', async (event) => {
         passive: false; 
     });
 
-    // Add mediaPlayer nodes if click detected under edit_mode==2
+    
 
-    // // Adjust the cylinder grid scale if shift+scroll is detected
-    // document.addEventListener('wheel', function(event) {
-    //     if (!isEditMode) return; 
-    //     adjustCylinderPosition(event);
-    //     //prevents page from scrolling down, or prevents browser executing other commands
-    //     passive: false;
-    // });
+    // UPDATING GLOBAL VARIABLES
+
+    // CODE TO UPDATE PROJECT COLORS
+    scene.addEventListener('updatedProjectColors', async function(event) 
+    {
+        project_colors = event.detail.project_colors; 
+    });
+
+    // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
+    function handleMediaplayerTypesUpdate(event) {
+        mediaplayer_types = event.detail.mediaplayer_types; 
+        // Populate the dropdown upon of mediaplayer creation meny initialization
+        populateOptionsDropdown(mediaplayer_types, creation_menu_MediaPlayer_type_Id);
+        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
+        populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
+        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
+    }
+    scene.addEventListener('updatedMediaplayerTypeNames', handleMediaplayerTypesUpdate);
+    scene.addEventListener('updatedMediaplayerTypes', handleMediaplayerTypesUpdate);
+
+    
 
 
 });
