@@ -229,7 +229,10 @@ document.addEventListener('jsonLoaded', async (event) => {
         let mediaplayer_type = mediaplayer_types[selected_type];
         let icon_name = mediaplayer_type["icon"][icon_index]      
         addIconField(icon_name);
-      }      
+      }   
+      
+      // Emit edit mediaplayer types
+      emitMediaplayerTypes(mediaplayer_types);
     }    
   }
 
@@ -262,6 +265,9 @@ document.addEventListener('jsonLoaded', async (event) => {
       mediaplayer_types[new_type_name] = {
         icon: new_icons      };
 
+      // Emit newly mediaplayer types
+      emitMediaplayerTypes(mediaplayer_types);
+
       // Hide add forms and clean listeners
       addType_btn.classList.add('hidden');
       addType_btn.removeEventListener('click', addNewType);
@@ -275,6 +281,7 @@ document.addEventListener('jsonLoaded', async (event) => {
       {      
         addProjectColor(new_type_name, "light", "#ffffff");
       }
+      
 
       // Update fields of mediaplayer types edit menu
       populateTypeSelect(mediaplayer_types);
@@ -311,7 +318,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.dispatchEvent(event);
   }
 
-  function emitMediaplayerTypes(mediaplayer_types, old_type_name, new_type_name) {
+  function emitMediaplayerTypesNameChange(mediaplayer_types, old_type_name, new_type_name) {
     let event = new CustomEvent('updatedMediaplayerTypeNames', 
     {
         detail: {
@@ -323,33 +330,46 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.dispatchEvent(event);
   }
 
+  function emitMediaplayerTypes(mediaplayer_types) {
+    let event = new CustomEvent('updatedMediaplayerTypes', 
+    {
+        detail: {
+            mediaplayer_types: mediaplayer_types,
+        },
+    });
+    scene.dispatchEvent(event);
+  }
+
 
   function updateMediaplayerTypeName() {
     // Update mediaplayer type names
     const old_type_name = typeSelect.value;
     const new_type_name = mediaplayerType_name_edit_input.value;
 
-    // Add new color entries with the same color values
-    project_colors[`${new_type_name}_dark`] = project_colors[`${old_type_name}_dark`];
-    project_colors[`${new_type_name}_light`] = project_colors[`${old_type_name}_light`];
+    if (old_type_name !== new_type_name) {
 
-    // Remove old color entries
-    delete project_colors[`${old_type_name}_dark`];
-    delete project_colors[`${old_type_name}_light`];
-  
-    // Add mediaplayer types object with the new name
-    mediaplayer_types[new_type_name] = mediaplayer_types[old_type_name];
+      // Add new color entries with the same color values
+      project_colors[`${new_type_name}_dark`] = project_colors[`${old_type_name}_dark`];
+      project_colors[`${new_type_name}_light`] = project_colors[`${old_type_name}_light`];
 
-    // Remove old mediaplayer types
-    delete mediaplayer_types[old_type_name];
-  
-    // Update typeselect values
-    populateTypeSelect(mediaplayer_types);
-    updateEditFields();
-  
-    // Emit project colors and mediaplayer types (order of emittion matters)
-    emitMediaplayerTypes(mediaplayer_types, old_type_name, new_type_name);
-    emitProjectColors(project_colors);
+      // Remove old color entries
+      delete project_colors[`${old_type_name}_dark`];
+      delete project_colors[`${old_type_name}_light`];
+    
+      // Add mediaplayer types object with the new name
+      mediaplayer_types[new_type_name] = mediaplayer_types[old_type_name];
+
+      // Remove old mediaplayer types
+      delete mediaplayer_types[old_type_name];
+    
+      // Update typeselect values
+      populateTypeSelect(mediaplayer_types);
+      updateEditFields();
+    
+      // Emit project colors and mediaplayer types (order of emittion matters)
+      emitMediaplayerTypesNameChange(mediaplayer_types, old_type_name, new_type_name);
+      emitProjectColors(project_colors);
+    }
 
   }
 

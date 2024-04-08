@@ -153,6 +153,27 @@ document.addEventListener('jsonLoaded', async (event) => {
             }
         });
     });
+
+    // CODE TO UPDATE MEDIAPLAYER TYPES 
+    // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
+    scene.addEventListener('updatedMediaplayerTypes', async function(event) {
+        // Get mediaplayer types from event
+        mediaplayer_types = event.detail.mediaplayer_types;
+    
+        // // Update colors of all mediaplayer objects
+        // document.querySelectorAll('.MediaPlayer').forEach(object => {
+        //     // get colors from project colors
+        //     const mediaplayer_type = object.getAttribute("mediaplayer_type");
+        //     let dark_color = project_colors[mediaplayer_type+"_dark"];
+        //     let light_color = project_colors[mediaplayer_type+"_light"];
+
+        //     // update element colors
+        //     const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
+        //     borderEntity.setAttribute('material', 'color', dark_color);            
+        //     object.setAttribute('material', 'color', light_color);
+        // });   
+    });
+
 });
 
 
