@@ -27,6 +27,7 @@ let uppy;
 
 
 function setBucketToIconsAndReinitializeUppy (bucket) {
+  console.log('uploading to ', bucket);
   let session_data_promise = supabaseGetSession();
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
