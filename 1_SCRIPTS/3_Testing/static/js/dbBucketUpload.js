@@ -18,9 +18,12 @@ import {
 //https://www.restack.io/docs/supabase-knowledge-supabase-storage-metadata
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
+
+
+// make sure to set this variable before uplaoding!!!!
 document.getElementById('icons-button').addEventListener('click', setBucketToIcons);
 document.getElementById('scenes-button').addEventListener('click', setBucketToScenes);
-let buckets;
+let buckets = 'icons_img'
 function setBucketToIcons(){
   buckets = 'icons_img' 
 };
