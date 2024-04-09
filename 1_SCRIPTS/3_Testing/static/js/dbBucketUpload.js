@@ -48,7 +48,7 @@ function setBucketToIconsAndReinitializeUppy (bucket) {
 
 
 
-function setUpUppy (token, storage_bucket, folder) {
+function setUpUppy (token, storage_bucket, project_uid) {
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
   if (uppy) {
@@ -69,7 +69,7 @@ function setUpUppy (token, storage_bucket, folder) {
       },
       uploadDataDuringCreation: true,
       chunkSize: 6 * 1024 * 1024,
-      allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
+      allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl', 'metadata'],
       onError: function (error) {
         console.log('Failed because: ' + error)
       },
@@ -79,8 +79,15 @@ function setUpUppy (token, storage_bucket, folder) {
     const fileUUID = uuid.v4();
     const supabaseMetadata = {
       bucketName: storage_bucket,
-      objectName: `${folder}/${fileUUID}/${file.name}`,
+      objectName: `${project_uid}/${fileUUID}/${file.name}`,
       contentType: file.type,
+      metadata: { 
+        img_project_uid: project_uid,
+        file_name: file.name,
+        storage_bucket: storage_bucket,
+        img_id: fileUUID
+      }
+
     }
 
     file.meta = {
