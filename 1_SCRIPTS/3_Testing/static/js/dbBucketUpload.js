@@ -6,7 +6,7 @@ import {
   Dashboard,
   Tus,
 } from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
-const { v4: uuidv4 } = require('uuid'); // Import UUID library
+
 
 
 //docs
@@ -20,19 +20,19 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID library
 
 document.getElementById('icons-button').addEventListener('click', setBucketToIcons);
 document.getElementById('scenes-button').addEventListener('click', setBucketToScenes);
-let bucket;
+let buckets;
 function setBucketToIcons(){
-  bucket = 'icons_img' 
+  buckets = 'icons_img' 
 };
 function setBucketToScenes(){
-  bucket = 'scenes_img'  
+  buckets = 'scenes_img'  
 };
 
 const chosen_project = localStorage.getItem('clickedProject');
-const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
-const STORAGE_BUCKET = 'icons_img' 
-const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
-let BEARER_TOKEN 
+const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
+const STORAGE_BUCKET = buckets;
+const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
+let BEARER_TOKEN ;
 
 // get session token from supabse and then start uppy instance
 let session_data_promise = supabaseGetSession();
@@ -75,7 +75,7 @@ function setUpUppy (token, storage_bucket, folder) {
     })
 
   uppy.on('file-added', (file) => {
-    const fileUUID = uuidv4();
+    const fileUUID = uuid.v4();
     const supabaseMetadata = {
       bucketName: STORAGE_BUCKET,
       objectName: `${folder}/${fileUUID}/${file.name}`,
