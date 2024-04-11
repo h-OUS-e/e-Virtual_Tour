@@ -104,6 +104,7 @@
             </div>
         </div>
 
+
         <div id="minimap_container" class="floating">
             <!-- Minimap nodes -->
             <div id= "minimap_node_01.1" class="minimapNode" imgId="01.1" current = "True" style="left: 235px; top: 130px;"></div>
@@ -111,14 +112,15 @@
             <div id= "minimap_node_02.1" class="minimapNode" imgId="02.1" current = "False" style="left: 90px; top: 90px;"></div>
             <div id= "minimap_node_04.1" class="minimapNode" imgId="03.1" current = "False" style="left: 150px; top: 120px;"></div>
         </div>
+
         
         <!-- Selection bar to change class option in edit mode -->
         <div id="editmode_bar" class="container flexColumn hidden">
             <div id="editmode_options" class="editmode flexRow"  >
                 <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Mediaplayer Type Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="create_menu_MediaplayerTypes">Add Mediaplayer Type</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_icons">Icon Editor</button>
-
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_icons">Icon Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_scenes">Edit Scenes</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_colors">Project Colors</button>
             </div>
 
             <div id="object_class_selection_bar" class="bar flexRow" >
@@ -128,9 +130,8 @@
                 <button class="btn objectClassBtn" data-class="LabelTag">LabelTag</button>
             </div>
         </div>
+
           
-
-
         <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
 
             <h3 class="header">Edit Mediaplayer Types</h3>
@@ -176,6 +177,30 @@
             <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button>
         </div>
 
+
+        <div  id="edit_menu_icons" class="menu widerMenu hidden">
+            <h3 class="header">Edit Icons</h3>   
+            <div class="container scrollable">
+                <div class="grid">
+                    <!-- <p>icons: </p> -->
+                    <div class="grid2Column">
+                        <div id="em_icon_gallery" class="grid3Column"></div>    
+                        <div > 
+                            <button id="em_icon_uploadIcon" class="btn addBtn" >+</button>  
+                            <p class="gridItem">Add New Icon</p>
+                            <!-- Name Input placeholder -->
+                        </div>    
+                    </div>                    
+                </div>
+                <div id="em_icon_upload_container" class="uploadImageMenu hidden">
+                    <!-- A container to upload an image -->
+                    <!-- Image placeholder, with option to upload or choose from existing emojis-->
+                    <!-- Name Input placeholder -->
+                    <button id="em_icon_upload_btn" class="btn">Upload</button>
+                </div> 
+            </div>            
+            <!-- <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button> -->
+        </div>
                    
 
         <!-- Edit menu to add or edit types of mediaplayers -->
