@@ -21,6 +21,9 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
 
+    <!-- Sweet Alert-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <script type="importmap">
         {
           "imports": {
@@ -176,15 +179,15 @@
         <div  id="edit_menu_icons" class="menu widerMenu ">
             <h3 class="header">Edit Icons</h3>   
             <div class="container scrollable">
-                    <!-- <p>icons: </p> -->
-                    <div class="grid2Column">
-                        <div id="em_icon_gallery" class="grid3Column"></div>    
-                        <div > 
-                            <button id="em_icon_uploadIcon" class="btn addBtn" >+</button>  
-                            <p class="gridItem">Add New Icon</p>
-                            <!-- Name Input placeholder -->
-                        </div>    
-                    </div>                    
+                <!-- <p>icons: </p> -->
+                <div class="grid2Column">
+                    <div id="em_icon_gallery" class="grid3Column"></div>    
+                    <div > 
+                        <button id="em_icon_uploadIcon" class="btn addBtn" >+</button>  
+                        <p class="gridItem">Add New Icon</p>
+                        <!-- Name Input placeholder -->
+                    </div>    
+                </div>                    
                 <div id="em_icon_upload_container" class="uploadImageMenu hidden">
                     <!-- A container to upload an image -->
                     <!-- Image placeholder, with option to upload or choose from existing emojis-->

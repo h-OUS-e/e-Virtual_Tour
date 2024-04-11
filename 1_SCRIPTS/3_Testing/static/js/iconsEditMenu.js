@@ -52,8 +52,22 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     // Add event listener to the "X" button
     delete_button.addEventListener('click', function() {
-      // Should event listener be removed?
-      icon_field.remove();      
+      event.preventDefault();
+      // Adding a warning message before user deletes with Swal    
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this icon!",
+        icon: "warning",
+        buttons: true, // Shows a cancel button in addition to the ok button
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          icon_field.remove();  
+        } 
+      });
+
+
     });
     icon_container.appendChild(delete_button);
 
