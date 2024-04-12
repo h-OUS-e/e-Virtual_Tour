@@ -100,6 +100,10 @@
   padding: 3px 10px;
   background-color: #ff0000;
   color: #ffffff;
+  align-self: flex-start;
+  margin: 0;
+  padding-right: 40px;
+  padding-left: 40px;
 
 }
 

@@ -150,6 +150,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             // Get related menu to the button
             const related_menu_ID = this.getAttribute('related_menu_id');
             related_menu = document.getElementById(related_menu_ID);
+            console.log(related_menu_ID);
             related_menu_button = this;
             // Remove active class from all buttons
             document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));

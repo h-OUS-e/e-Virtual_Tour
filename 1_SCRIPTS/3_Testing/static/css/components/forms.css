@@ -9,6 +9,7 @@
     
     /* DISPLAY */
     overflow: hidden;
+
     display: block;
 
     /* STYLING */
@@ -16,7 +17,6 @@
     box-shadow: 0 2px 5px rgba(224, 203, 203, 0.2);
     border-radius: 5px;
     padding:10px;
-
 }
   
 .menu ul {
@@ -37,7 +37,11 @@
 } */
 
 .menu h4 {
-    color: rgb(78, 78, 78);
+    color: rgb(134, 134, 134);    
+}
+
+.menu span {
+  color: rgb(134, 134, 134);    
 }
 
 .menu label {
@@ -67,6 +71,12 @@
     width: 500px; 
 }
 
+.menuTopBar {
+  width: auto;
+  margin-bottom: 30px;  
+  cursor: move;
+}
+
 
 .creationMenu input[type="text"] {
 box-sizing: border-box; /* Make sure padding doesn't affect overall width */
@@ -93,6 +103,8 @@ border-radius: 3px; /* Optional: rounded corners for the input */
     border: 1px solid #ccc;
     border-radius: 3px;
 }
+
+
 
 
 .dashboardMenu {  

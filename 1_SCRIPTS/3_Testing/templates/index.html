@@ -55,7 +55,8 @@
     <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script>
     <script type="module" src="../static/js/iconsEditMenu.js"></script>
     <script type="module" src="../static/js/imageUploadMenu.js"></script>
-
+    <script type="module" src="../static/js/colorEditMenu.js"></script>
+    <script type="module" src="../static/js/makeMenusDraggable.js"></script>    
     <script type="module" src="../static/js/colorPicker.js"></script>
     
 </head>
@@ -119,8 +120,8 @@
             <div id="editmode_options" class="editmode flexRow"  >
                 <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Mediaplayer Type Editor</button>
                 <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_icons">Icon Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_scenes">Edit Scenes</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_ids="edit_menu_colors">Project Colors</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_scenes">Edit Scenes</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_colors">Project Colors</button>
             </div>
 
             <div id="object_class_selection_bar" class="bar flexRow" >
@@ -143,7 +144,7 @@
                 <div id="edit_menu_MediaplayerTypes_name_input_container" class="grid">
                     <p>Name:</p>
                     <input id="edit_menu_MediaplayerTypes_name_input" type="text" class="new_type_name gridItem hidden">
-                    <div id="edit_menu_MediaplayerTypes_name_edit" class="grid2Column">
+                    <div id="edit_menu_MediaplayerTypes_name_edit" class="grid2Column col41">
                         <input id="edit_menu_MediaplayerTypes_name_edit_input" type="text" class="new_type_name gridItem">
                         <button id="edit_menu_MediaplayerTypes_editname_btn" class="btn" >edit name</button>  
                     </div>
@@ -161,7 +162,7 @@
                 </div>
                 <div class="grid">
                     <p>icons: </p>
-                    <div class="grid2Column">
+                    <div class="grid2Column col41">
                         <div id="edit_menu_MediaplayerTypes_icons" class="grid3Column"></div>    
                         <div > 
                             <button id="edit_menu_MediaplayerTypes_addIcon_button" class="btn addBtn" >+</button>  
@@ -182,7 +183,7 @@
             <h3 class="header">Edit Icons</h3>   
             <div class="container scrollable">
                 <!-- <p>icons: </p> -->
-                <div class="grid2Column">
+                <div class="grid2Column col41">
                     <div id="em_icon_gallery" class="grid3Column"></div>    
                     <div > 
                         <button id="em_icon_addIcon_btn" class="btn addBtn" >+</button>  
@@ -194,10 +195,35 @@
             <!-- <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button> -->            
         </div>
 
+
+        <div  id="edit_menu_colors" class="menu widerMenu hidden">
+            <div class="container">
+
+                <div class="menuTopBar flexRow">
+                    <h3 class="header">COLOR EDITOR</h3>   
+                    <button class="btn exitBtn">X</button> 
+                </div>
+
+                <div class="grid2Column col21">
+                    <h4 class="header">Project Colors</h4>   
+                    <h4 class="header">Color Palette</h4>   
+                </div>
+
+                <div class="grid2Column col21">
+                    <div id="em_project_colors_gallery" class="grid2Column scrollable">
+                        <!-- To populate color projects -->
+                    </div> 
+                    <div id="em_color_palette_gallery" class="">
+                         <!-- To populate color palettes -->
+                    </div> 
+                </div>
+            </div>    
+        </div>
+
         <!-- A menu that pops up to upload an image -->
         <div id="image_upload_menu" class="menu widerMenu uploadImageMenu hidden">  
             <div class="">
-                <div class="grid2Column">   
+                <div class="grid2Column col41">   
                     <h3 id="image_upload_header"> Upload Image</h3>  
                     <button id="image_upload_exit_btn" class="btn exitBtn">X</button> 
                 </div> 

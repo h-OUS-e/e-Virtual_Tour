@@ -339,7 +339,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
   function emitMediaplayerTypes(mediaplayer_types) {
-    console.log("EMITTING");
+    
     let event = new CustomEvent('updatedMediaplayerTypes', 
     {
         detail: {

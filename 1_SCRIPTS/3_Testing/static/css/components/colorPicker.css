@@ -258,3 +258,23 @@ background:#ccc;
   z-index: 10;
 }
 
+
+.colorBar {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+} 
+.colorField {
+  width: 100%;
+  height: 60px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+} 
+
+.colorInfo {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: start;
+}
+
+

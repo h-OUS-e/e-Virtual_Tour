@@ -26,9 +26,9 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-    justify-content: center;    
-    flex-wrap: wrap;
-    align-items: center;
+    justify-content: space-between;    
+    flex-wrap: nowrap;
+    align-items: stretch;
 }
 
 
@@ -73,9 +73,17 @@
 
 .grid2Column {
   display: grid;
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 5px;
   margin-bottom:30px;
+}
+
+.col41 {
+  grid-template-columns: 4fr 1fr;
+}
+
+.col21 {
+  grid-template-columns: 2fr 1fr;
 }
 
 .grid2ColumnSym {
@@ -102,5 +110,10 @@
 /* Gray out an option and disable its clicking */
 .disabled {
   color: red;
+}
+
+.scrollable {
+  height: auto; /* Set the desired height for the scrollable container */
+  overflow-y: scroll;
 }
   
