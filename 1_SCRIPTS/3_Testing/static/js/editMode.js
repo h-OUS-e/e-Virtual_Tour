@@ -45,7 +45,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     // Getting media player types from the JSON file
     let mediaplayer_types = event.detail.mediaplayer_types;
-    const icons = event.detail.icons;
+    let icons = event.detail.icons;
     const mediaplayer_types_keys = Object.keys(mediaplayer_types);
 
     // getting managers of menus and undo redo actions
@@ -374,6 +374,11 @@ document.addEventListener('jsonLoaded', async (event) => {
             // Show creation menu manager related to selected object class            
             creation_menu_manager.setObjectClass(selectedObjectClass);
             creation_menu_manager.showEditMenu(event.detail.x, event.detail.y);
+            // Populate the dropdown upon of mediaplayer creation menu initialization
+            populateOptionsDropdown(mediaplayer_types, creation_menu_MediaPlayer_type_Id);
+            onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id);
+            populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
+            onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id);
             // Get point and direction of the event
             const point = event.detail.intersection_pt; 
             const direction = event.detail.direction; 
@@ -432,21 +437,29 @@ document.addEventListener('jsonLoaded', async (event) => {
     });
 
     // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
-    function handleMediaplayerTypesUpdate(event) {
-        mediaplayer_types = event.detail.mediaplayer_types; 
-        // Populate the dropdown upon of mediaplayer creation meny initialization
-        populateOptionsDropdown(mediaplayer_types, creation_menu_MediaPlayer_type_Id);
-        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, creation_menu_MediaPlayer_type_Id, creation_menu_MediaPlayer_iconIdx_Id)
-        populateOptionsDropdown(mediaplayer_types, edit_menu_MediaPlayer_type_Id);
-        onDropdownMenuSelectionOfMediaPlayerType(mediaplayer_types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id)
-    }
-    scene.addEventListener('updatedMediaplayerTypeNames', handleMediaplayerTypesUpdate);
-    scene.addEventListener('updatedMediaplayerTypes', handleMediaplayerTypesUpdate);
 
-    
 
+    scene.addEventListener('updatedMediaplayerTypes', async function(event) 
+    {
+        mediaplayer_types = event.detail.mediaplayer_types
+    });
+    scene.addEventListener('updatedMediaplayerTypeNames', async function(event) 
+    {
+        mediaplayer_types = event.detail.mediaplayer_types
+    });
+
+
+
+
+
+    // CODE TO UPDATE PROJECT COLORS
+scene.addEventListener('updatedIcons', async function(event) 
+{
+    icons = event.detail.icons; 
+});
 
 });
+
 
 
 function adjustCameraRotation(event) {
@@ -858,13 +871,14 @@ function populateOptionsDropdown(options_JSON, dropdown_input_id) {
 // Handler for when a color class is selected, updating the Icon Index dropdown accordingly
 function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
     const selected_input = selected_dropdown_input_id.value;
-    const icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
+    const selected_icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
+    console.log("TEST", selected_icons, options_JSON[selected_input].icon, options_JSON[selected_input], JSON.parse(JSON.stringify(options_JSON)));
     // const dependent_options = Object.keys(icons).reduce((acc, key) => ({
     //     ...acc,
     //     [key]: key.replace(/_/g, ' ') // Replace underscores with spaces for better readability
     // }), {});
     // Populate the Icon Index dropdown with icons related to the selected color
-    populateDropdown(dependent_dropdown_input_id, icons);
+    populateDropdown(dependent_dropdown_input_id, selected_icons);
 }
 
 
@@ -1131,7 +1145,6 @@ function changeMediaPlayerIconIdx(object, undo_redo_manager, mediaplayer_types, 
     let mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
     let icon_index = document.getElementById('edit_menu_MediaPlayer_iconIdx_input').value;
     let icon_url = icons[mediaplayer_type["icon"][icon_index]];
-    console.log(icon_url);
 
     const updateAction = object.getAction('updateScene', {icon_index, icon_url});
     undo_redo_manager.doAction(updateAction);
@@ -1149,7 +1162,6 @@ function changeMediaPlayerType(object, mediaplayer_types, project_colors, icons,
     const dark_color = project_colors[mediaplayer_type_string + "_dark"];
     const light_color = project_colors[mediaplayer_type_string + "_light"];
 
-    console.log('didAction');
     // update the object
     const updateAction = object.getAction('updateScene', {mediaplayer_type_string, mediaplayer_type, icon_index, icon_url, light_color, dark_color});
     undo_redo_manager.doAction(updateAction);

@@ -9,8 +9,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   // Getting media player types from the JSON filea
   let mediaplayer_types = event.detail.mediaplayer_types;
-  const icons = event.detail.icons;
-  let available_icons = icons;
+  let icons = event.detail.icons;
 
   // Assuming the variable is named 'data'
   const editMenu = document.getElementById('edit_menu_MediaplayerTypes');
@@ -158,7 +157,11 @@ document.addEventListener('jsonLoaded', async (event) => {
     } 
     let icon_name_exists = textContent.includes(icon_name);
     if (!icon_name_exists) {
+      // Add icon to icon fields
       icon_fields.appendChild(icon_field);
+      // Emit new mediaplayer types
+      emitMediaplayerTypes(mediaplayer_types);
+
     }
     else{
       console.log("Icon already exists in mediaplayer type"); 
@@ -336,6 +339,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
   function emitMediaplayerTypes(mediaplayer_types) {
+    console.log("EMITTING");
     let event = new CustomEvent('updatedMediaplayerTypes', 
     {
         detail: {
@@ -431,6 +435,13 @@ document.addEventListener('jsonLoaded', async (event) => {
   typeSelect.addEventListener('change', updateEditFields);
   document.addEventListener('click', closeIconDropdown);
   saveBtn.addEventListener('click', saveEditedType);
+
+  // Update icon dropdown menu when icons variable change
+  document.addEventListener('updatedIcons', function(event) {
+    icons = event.detail.icons;
+    populateIconDropdown(icons);
+  });
+
 
   // Change color of mediaplayer types if color is chosen
   scene.addEventListener('colorChosen', function(event) {

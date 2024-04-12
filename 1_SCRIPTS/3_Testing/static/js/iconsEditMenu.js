@@ -1,21 +1,13 @@
 
-function getColorNamesAndValues(colors) {
-  const colorNames = Object.keys(colors);
-  const colorValues = Object.values(colors);
-  return [colorNames, colorValues];
-}
 
 document.addEventListener('jsonLoaded', async (event) => {
 
   // Getting relevant information
-  let mediaplayer_types = event.detail.mediaplayer_types;
-  let project_colors = event.detail.project_colors;
   const icons = event.detail.icons;
 
   // Get elements
   const icon_gallery = document.getElementById('em_icon_gallery');
   const add_btn = document.getElementById('em_icon_addIcon_btn');
-
 
 
   // A function to populate the container with all icons and their names
@@ -109,58 +101,14 @@ document.addEventListener('jsonLoaded', async (event) => {
     }
 
 
-  // Update the edit fields based on the selected type
-  function updateEditFields() {
-    // Get selected type
-    let selected_type = typeSelect.value;
-    const edit_name_field = document.getElementById('edit_menu_MediaplayerTypes_name_edit');
-
-     
-    // Hide name input and show edit name input
-    edit_name_field.classList.remove('hidden');
-    mediaplayerType_name_input.classList.add('hidden');
-
-    // Remove event listener from addType_btn and hide it
-    addType_btn.classList.add('hidden');
-    addType_btn.removeEventListener('click', addNewType);
-
-    // Update name of the type
-    mediaplayerType_name_edit_input.value = selected_type;
-
-    // Update color input background colors
-    dark_color_input.style.backgroundColor = project_colors[selected_type +"_dark"];
-    light_color_input.style.backgroundColor = project_colors[selected_type +"_light"];
-
-    // Update color input values
-    dark_color_input.value = "Edit the dark color '" + selected_type + "_dark'";
-    light_color_input.value = "Edit the light color '" + selected_type + "_light'";
-    
-    // Add existing icons
-    icon_fields.innerHTML = '';
-    
-    for (const icon_index in mediaplayer_types[selected_type].icon) {
-      let mediaplayer_type = mediaplayer_types[selected_type];
-      let icon_name = mediaplayer_type["icon"][icon_index]      
-      addIconField(icon_name);
-    }   
-    
-    // Emit edit mediaplayer types
-    emitMediaplayerTypes(mediaplayer_types);
-      
-  }
-
-
-  // Add a new type to the data object
-
-
-  function updateIcons(selected_type, property, new_color) {
-    // Get selected color of the mediaplayer type to update
-    const selected_color = `${selected_type}_${property}`;
-    // Update project colors with new color
-    project_colors[selected_color] = new_color;  
-    // Emit project colors
-    emitIcons(project_colors);
-  }
+  // function updateIcons(selected_type, property, new_color) {
+  //   // Get selected color of the mediaplayer type to update
+  //   const selected_color = `${selected_type}_${property}`;
+  //   // Update project colors with new color
+  //   project_colors[selected_color] = new_color;  
+  //   // Emit project colors
+  //   emitIcons(project_colors);
+  // }
 
  
   function emitIcons(icons) {
@@ -170,7 +118,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             icons: icons,
         },
     });
-    scene.dispatchEvent(event);
+    document.dispatchEvent(event);
   }
 
   function emitIconNameChange(icon, old_icon_name, new_icon_name) {
@@ -182,40 +130,43 @@ document.addEventListener('jsonLoaded', async (event) => {
             new_name: new_type_name,
         },
     });
-    scene.dispatchEvent(event);
+    document.dispatchEvent(event);
   }
 
 
 
-  function updateIconName() {
-    // Update mediaplayer type names
-    const old_type_name = typeSelect.value;
-    const new_type_name = mediaplayerType_name_edit_input.value;
+  // function updateIconName() {
+  //   // Update mediaplayer type names
+  //   const old_type_name = typeSelect.value;
+  //   const new_type_name = mediaplayerType_name_edit_input.value;
 
-    if (old_type_name !== new_type_name) {
+  //   if (old_type_name !== new_type_name) {
 
-      // Add new color entries with the same color values
-      project_colors[`${new_type_name}_dark`] = project_colors[`${old_type_name}_dark`];
-      project_colors[`${new_type_name}_light`] = project_colors[`${old_type_name}_light`];
+  //     // Add new color entries with the same color values
+  //     project_colors[`${new_type_name}_dark`] = project_colors[`${old_type_name}_dark`];
+  //     project_colors[`${new_type_name}_light`] = project_colors[`${old_type_name}_light`];
 
-      // Remove old color entries
-      delete project_colors[`${old_type_name}_dark`];
-      delete project_colors[`${old_type_name}_light`];
+  //     // Remove old color entries
+  //     delete project_colors[`${old_type_name}_dark`];
+  //     delete project_colors[`${old_type_name}_light`];
     
-      // Add mediaplayer types object with the new name
-      mediaplayer_types[new_type_name] = mediaplayer_types[old_type_name];
+  //     // Add mediaplayer types object with the new name
+  //     mediaplayer_types[new_type_name] = mediaplayer_types[old_type_name];
 
-      // Remove old mediaplayer types
-      delete mediaplayer_types[old_type_name];
+  //     // Remove old mediaplayer types
+  //     delete mediaplayer_types[old_type_name];
     
-      // Update typeselect values
-      populateTypeSelect(mediaplayer_types);
-      updateEditFields();
+  //     // Update typeselect values
+  //     populateTypeSelect(mediaplayer_types);
+  //     updateEditFields();
     
-      // Emit project colors and mediaplayer types (order of emittion matters)
-      emitIconNameChange(mediaplayer_types, old_type_name, new_type_name);
-    }
-  }
+  //     // Emit project colors and mediaplayer types (order of emittion matters)
+  //     emitIconNameChange(mediaplayer_types, old_type_name, new_type_name);
+  //   }
+  // }
+
+
+
 
 
   // Initialize the edit menu
@@ -246,27 +197,5 @@ document.addEventListener('jsonLoaded', async (event) => {
     const icon_URL = event.detail.img_URL;
     addNewIcon(icon_name, icon_URL, icon_gallery);
   });
-  // edit_MediaplayerType_name_btn.addEventListener('click', updateMediaplayerTypeName);
-  // typeSelect.addEventListener('change', updateEditFields);
-  // document.addEventListener('click', closeIconDropdown);
-  // saveBtn.addEventListener('click', saveEditedType);
 
-  // // Change color of mediaplayer types if color is chosen
-  // scene.addEventListener('colorChosen', function(event) {
-  //   const color = event.detail.hex_color;
-  //   const selected_type = typeSelect.value;
-
-  //   // Add color to project colors if it don't exist already
-  //   if (!(selected_type in mediaplayer_types)) {
-  //     const new_type_name = mediaplayerType_name_input.value.trim().replace(/\s+/g, '_');
-  //     addProjectColor(new_type_name, color_type, color);
-  //   }
-  //   else {
-  //     // Updates project colors and mediaplayer types colors
-  //     updateProjectColors(selected_type, color_type, color);
-  //   }
-
-  //   // Update the colors of the input edit fields
-  //   updateEditFields();
-  // });
 });
