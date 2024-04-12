@@ -66,7 +66,13 @@ document.addEventListener('jsonLoaded', async (event) => {
       })
       .then((willDelete) => {
         if (willDelete) {
+          // Remove icon from gallery
           icon_field.remove();  
+          // Remove icon from variables and emit
+          delete icons[icon_name];
+          emitIcons(icons);
+          // Update database with deleted icon
+
         } 
       });
 
@@ -86,6 +92,21 @@ document.addEventListener('jsonLoaded', async (event) => {
     icon_gallery.appendChild(icon_field);
 
   }
+
+
+    // Add a new type to the data object
+    function addNewIcon(icon_name, icon_URL, icon_gallery) {
+  
+      // Add new icon to icons variable and emit
+      icons[icon_name] = icon_URL;
+      emitIcons(icons);
+
+      // Add icon field to gallery
+      addIconField(icon_name, icon_gallery);
+
+      // Update database with new icon
+
+    }
 
 
   // Update the edit fields based on the selected type
@@ -130,55 +151,6 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
   // Add a new type to the data object
-  function addNewIcon() {
-    // Get elements
-    
-    // Get the new type name
-    const new_type_name = mediaplayerType_name_input.value.trim().replace(/\s+/g, '_');   
-
-    // Get the new icons
-    const new_icons = Array.from(icon_fields.querySelectorAll('p')).map(p => p.textContent.trim());
-
-    // Warn if name is empty
-    if (new_type_name === '') {
-      alert("Please enter a name for the new type.");
-    }  
-
-    // Warn if name already exists
-    else if (new_type_name in mediaplayer_types) {
-      alert("Name already exists. Consider a different one.");
-
-    }
-    // Add new type to mediaplayer type and corresponding proejct colors
-    else {
-
-      // Add new mediaplayer types
-      mediaplayer_types[new_type_name] = {
-        icon: new_icons      };
-
-      // Emit newly mediaplayer types
-      emitMediaplayerTypes(mediaplayer_types);
-
-      // Hide add forms and clean listeners
-      addType_btn.classList.add('hidden');
-      addType_btn.removeEventListener('click', addNewType);
-
-      // Add default color to project colors if no color chosen
-      if (!(new_type_name +"_dark" in project_colors))
-      {      
-        addProjectColor(new_type_name, "dark", "#606060");
-      }
-      if (!(new_type_name +"_light" in project_colors))
-      {      
-        addProjectColor(new_type_name, "light", "#ffffff");
-      }
-      
-
-      // Update fields of mediaplayer types edit menu
-      populateTypeSelect(mediaplayer_types);
-      updateEditFields();
-    }
-  }
 
 
   function updateIcons(selected_type, property, new_color) {
@@ -191,11 +163,11 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
  
-  function emitIcons(project_colors) {
-    let event = new CustomEvent('updatedProjectColors', 
+  function emitIcons(icons) {
+    let event = new CustomEvent('updatedIcons', 
     {
         detail: {
-            project_colors: project_colors,
+            icons: icons,
         },
     });
     scene.dispatchEvent(event);
@@ -246,135 +218,34 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
-  // A function to show upload icon image menu
-  function toggleUploadMenu() {
-    // Show upload menu
-    const uploade_menu = document.getElementById('image_upload_menu');
-    uploade_menu.classList.toggle('hidden');
-  
-    // Clear previous content
-    // uploade_menu.innerHTML = '';
-  
-    // Create image upload input
-    const imageUpload = document.createElement('input');
-    imageUpload.type = 'file';
-    imageUpload.accept = 'image/*';
-    imageUpload.id = 'em_icon_image_upload';
-    imageUpload.classList.add('hidden');
-    uploade_menu.appendChild(imageUpload);
-
-    // Create label for image upload
-    const imageUploadLabel = document.createElement('label');
-    imageUploadLabel.setAttribute('for', 'em_icon_image_upload');
-    imageUploadLabel.classList.add('uploadImageContainer');
-
-    const uploadText = document.createElement('span');
-    uploadText.textContent = 'UPLOAD IMAGE';
-    imageUploadLabel.appendChild(uploadText);
-
-    uploade_menu.appendChild(imageUploadLabel);
-
-    // Handle file input change event
-    imageUpload.addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const imageURL = URL.createObjectURL(file);
-        const uploadedImage = document.createElement('img');
-        uploadedImage.src = imageURL;
-        uploadedImage.classList.add('uploaded-image');
-
-        // Clear previous content of the uploadContainer
-        uploade_menu.innerHTML = '';
-
-        // Append the uploaded image to the uploadContainer
-        uploade_menu.appendChild(uploadedImage);
-      }
-    });
-
-  
-    // Create emoji select dropdown
-    const emojiSelect = document.createElement('select');
-    emojiSelect.id = 'em_icon_emoji_select';
-    // Add emoji options dynamically
-    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇'];
-    emojis.forEach(emoji => {
-      const option = document.createElement('option');
-      option.value = emoji;
-      option.textContent = emoji;
-      emojiSelect.appendChild(option);
-    });
-    uploade_menu.appendChild(emojiSelect);
-  
-    // Create name input
-    const nameInput = document.createElement('input');
-    nameInput.type = 'text';
-    nameInput.id = 'em_icon_name_input';
-    nameInput.placeholder = 'Enter icon name';
-    uploade_menu.appendChild(nameInput);
-  
-    // Create OK button
-    const okButton = document.createElement('button');
-    okButton.textContent = 'OK';
-    okButton.classList.add('btn');
-    okButton.addEventListener('click', addIcon);
-    uploade_menu.appendChild(okButton);
-  }
-  
-  function addIcon() {
-    const imageUpload = document.getElementById('em_icon_image_upload');
-    const emojiSelect = document.getElementById('em_icon_emoji_select');
-    const nameInput = document.getElementById('em_icon_name_input');
-  
-    const iconGallery = document.getElementById('em_icon_gallery');
-  
-    // Create icon container
-    const iconContainer = document.createElement('div');
-    iconContainer.classList.add('gridItem');
-  
-    // Add selected image or emoji
-    if (imageUpload.files.length > 0) {
-      const imageURL = URL.createObjectURL(imageUpload.files[0]);
-      const iconImage = document.createElement('img');
-      iconImage.src = imageURL;
-      iconContainer.appendChild(iconImage);
-    } else {
-      const iconEmoji = document.createElement('span');
-      iconEmoji.textContent = emojiSelect.value;
-      iconContainer.appendChild(iconEmoji);
-    }
-  
-    // Add icon name
-    const iconName = document.createElement('p');
-    iconName.textContent = nameInput.value;
-    iconContainer.appendChild(iconName);
-  
-    // Add icon to the gallery
-    iconGallery.appendChild(iconContainer);
-  
-    // Clear input values
-    imageUpload.value = '';
-    nameInput.value = '';
-  
-    // Hide the upload menu
-    const uploade_menu = document.getElementById('image_upload_menu');
-    uploade_menu.classList.add('hidden');
-  }
-
-
   // Initialize the edit menu
   populateIconGallery(icon_gallery);
   // updateEditFields();
 
-  // // Event listener for the light color input
-  // light_color_input.addEventListener('click', function() {
-  //   // Show color picker  
-  //   let event = new CustomEvent('toggleColorPicker');
-  //   color_type = "light";
-  //   scene.dispatchEvent(event); 
-  // });
+  // A function to toggle upload image menu
+  function emitUploadImage() {
+    const event = new CustomEvent('uploadImage', 
+    {
+        detail: {
+          event_type: "Icon",
+          header: "Add a new icon",
+          existing_image_names: icons,
+        },
+    });
+    document.dispatchEvent(event);
+  }
+
+  function test() {
+    console.log("WORKS");
+  }
 
   // Event listeners
-  add_btn.addEventListener('click', toggleUploadMenu);
+  add_btn.addEventListener('click', emitUploadImage);
+  document.addEventListener('imageUploadedIcon', async function(event) {
+    const icon_name = event.detail.image_name;
+    const icon_URL = event.detail.img_URL;
+    addNewIcon(icon_name, icon_URL, icon_gallery);
+  });
   // edit_MediaplayerType_name_btn.addEventListener('click', updateMediaplayerTypeName);
   // typeSelect.addEventListener('change', updateEditFields);
   // document.addEventListener('click', closeIconDropdown);

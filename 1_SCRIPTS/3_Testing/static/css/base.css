@@ -62,7 +62,7 @@ h1 {
     color: var(--text);
 }
 
-h2 {
+h2 {    
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
@@ -71,7 +71,7 @@ h2 {
     color: var(--text);
 }
 
-h3 {
+h3 {    
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
@@ -97,4 +97,11 @@ p {
     font-size: clamp(0.8rem, 2.5vw, 1rem); /* Adjust as needed */
     color: rgb(187, 184, 184);
     margin-left: 0.2rem;
+}
+
+.centerText {
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 }

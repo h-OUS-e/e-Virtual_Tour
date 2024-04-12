@@ -31,6 +31,7 @@
     align-items: center;
 }
 
+
 .flexRowLeft{
   display: flex;
   flex-direction: row;
@@ -66,11 +67,20 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 5px;
+  margin-bottom: 30px;
 }
+
 
 .grid2Column {
   display: grid;
   grid-template-columns: 4fr 1fr;
+  gap: 5px;
+  margin-bottom:30px;
+}
+
+.grid2ColumnSym {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 5px;
   align-items: flex-end;
 }

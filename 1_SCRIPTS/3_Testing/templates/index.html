@@ -8,8 +8,8 @@
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <!-- CSS IMPORTS -->
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="stylesheet" type="text/css" href="../static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">    
     <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/forms.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
@@ -54,6 +54,8 @@
     <script type="module" src="../static/js/editMode.js"></script>
     <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script>
     <script type="module" src="../static/js/iconsEditMenu.js"></script>
+    <script type="module" src="../static/js/imageUploadMenu.js"></script>
+
     <script type="module" src="../static/js/colorPicker.js"></script>
     
 </head>
@@ -176,7 +178,7 @@
         </div>
 
 
-        <div  id="edit_menu_icons" class="menu widerMenu ">
+        <div  id="edit_menu_icons" class="menu widerMenu hidden">
             <h3 class="header">Edit Icons</h3>   
             <div class="container scrollable">
                 <!-- <p>icons: </p> -->
@@ -193,29 +195,35 @@
         </div>
 
         <!-- A menu that pops up to upload an image -->
-        <div id="image_upload_menu" class="menu widerMenu uploadImageMenu hidden">    
-            <div class="grid2ColumnSym">  
-                <div> 
-                    <!-- Image placeholder, with option to upload or choose from existing emojis-->
-                    <label for="image_upload_placeholder"> <span>UPLOAD IMAGE</span></label>
-                    <input id="image_upload_placeholder" accept="image/*" type="file" class="hidden">                    
+        <div id="image_upload_menu" class="menu widerMenu uploadImageMenu hidden">  
+            <div class="">
+                <div class="grid2Column">   
+                    <h3 id="image_upload_header"> Upload Image</h3>  
+                    <button id="image_upload_exit_btn" class="btn exitBtn">X</button> 
                 </div> 
-                <div>
-                    <select id="emoji_select" class="">
+            </div>
+
+            <div class="flexColumn image_upload_wrapper">  
+                <div id="image_upload_container"> 
+                    <!-- Image placeholder, with option to upload or choose from existing emojis-->
+                    <input id="image_upload_placeholder" accept="image/*" type="file" class="hidden"> 
+                    <label for="image_upload_placeholder" class="uploadImageContainer">                              
+                            <span class="centerText">UPLOAD IMAGE</span> 
+                    </label>                         
+                </div>    
+                <input id="name_input" class="textInput" type="text" placeholder="Enter name">           
+                <div class="">
+                    <select id="image_upload_emoji_selector" class="emojiSelector">
                         <!-- Emoji options will be populated dynamically -->
-                      </select>
+                    </select>                       
                 </div>
             </div> 
-            <!-- Name Input placeholder -->
-            <div>
-                <input id="name_input" type="text" placeholder="Enter name">
-            </div>
-            <button id="image_upload_btn" class="btn">Upload</button>
+                <button id="image_upload_btn" class="btn">Upload</button>          
         </div> 
                    
 
         <!-- Edit menu to add or edit types of mediaplayers -->
-        <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
+        <!-- <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
             <h2>Edit Menu</h2>
             <ul>
                 <li>
@@ -224,7 +232,7 @@
                     <button class="btn" id="creation_menu_mediaplayerTypes_add_btn">Add Type</button>
                 </li>
             </ul>
-        </div>
+        </div> -->
         
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
