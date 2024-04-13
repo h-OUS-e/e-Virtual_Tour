@@ -119,8 +119,6 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.addEventListener('updatedProjectColors', async function(event) 
     {
         try {
-            console.log("1: " + JSON.stringify(project_colors));
-
             // Get project colors from event
             project_colors = event.detail.project_colors;
 
@@ -134,7 +132,6 @@ document.addEventListener('jsonLoaded', async (event) => {
             
                 // update element colors
                 const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
-            console.log("2: " + light_color, object, project_colors, mediaplayer_type+"_light");
 
                 borderEntity.setAttribute('material', 'color', dark_color);            
                 object.setAttribute('material', 'color', light_color);
@@ -142,10 +139,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);
-            console.log("error: " + this.scehema);
-
         }
-
     });
     
 
