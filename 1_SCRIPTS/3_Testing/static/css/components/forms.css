@@ -6,6 +6,7 @@
     
     /* SIZING */
     width: 300px;
+    max-height: 500px;
     
     /* DISPLAY */
     overflow: hidden;
@@ -38,6 +39,11 @@
 
 .menu h4 {
     color: rgb(134, 134, 134);    
+}
+
+.menu p {
+  color: rgb(175, 175, 175);
+  font-size: 0.9rem;    
 }
 
 .menu span {
@@ -74,6 +80,8 @@
 .menuTopBar {
   width: auto;
   margin-bottom: 30px;  
+  max-height: 500px;
+
   cursor: move;
 }
 

@@ -306,8 +306,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   function handleOkButton() {
     // Save the current color    
-    let event = new CustomEvent('colorChosen', 
-    
+    let event = new CustomEvent('colorChosen',     
     {
         detail: {
             hex_color: `#${currentColor.toHex()}`,
@@ -333,17 +332,24 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
-  function toggleColorPickerContainer() {
+  function toggleColorPickerContainer(event) {
     colorPickerContainer.classList.toggle('hidden');
+    refreshElementRects();
+    if (event.detail){
+      let color = tinycolor(event.detail.color);     
+        colorToPos(color);
+        setColorValues(color);
+    }
     refreshElementRects();
   }
 
   okButton.addEventListener('click', handleOkButton);
   exitButton.addEventListener('click', handleExitButton);
-  scene.addEventListener('toggleColorPicker', toggleColorPickerContainer);
+  scene.addEventListener('toggleColorPicker', function(event) {
+    toggleColorPickerContainer(event)
+  });
 
   new ColorPicker();
-
 
 });
 

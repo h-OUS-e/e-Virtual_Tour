@@ -14,25 +14,68 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   // Widen the menu
   menu.style.width = "700px";
+  menu.style.width = "700px";
+
 
 
   // FUNCTIONS
+  // A function that gives a color that would contrast visibly
+  // on top of a given hex color code
+  function getContrastColor(hex_code) {
+    // Remove the '#' character if present
+    hex_code = hex_code.replace('#', '');
+  
+    // Convert the hex color to RGB values
+    const r = parseInt(hex_code.substring(0, 2), 16);
+    const g = parseInt(hex_code.substring(2, 4), 16);
+    const b = parseInt(hex_code.substring(4, 6), 16);
+  
+    // Calculate the brightness of the color
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  
+    // Return black or white based on the brightness
+    return brightness > 128 ? '#525252' : '#e3e3e3';
+  }
 
-  function addColorField(color_name, hex_code) {
+
+  function addColorField(color_name, hex_code, gallery_element) {
     const color_field = document.createElement('div');
     color_field.classList.add('colorField');
 
+    // Add color bar
     const color_bar = document.createElement('div');
     color_bar.classList.add('colorBar');
     color_bar.style.backgroundColor = hex_code;
     color_field.appendChild(color_bar);
 
+    // Add hex code to color bar with contrasting color
+    const color_code = document.createElement('p');
+    color_code.textContent = hex_code;
+    // Set the text color dynamically   
+    const textColor = getContrastColor(hex_code);
+    color_code.style.color = textColor;
+    color_bar.appendChild(color_code); 
+
+    // Add color description
     const colorInfo = document.createElement('div');
     colorInfo.classList.add('colorInfo');
-    colorInfo.innerHTML = `<p class="">${hex_code}</p><p class="">${color_name}</p>`;
+    colorInfo.innerHTML = `<p >${color_name}</p>`;
     color_field.appendChild(colorInfo);
 
-    project_colors_gallery.appendChild(color_field);
+    // Add event listener to color bar to show color picker when clicked
+    color_bar.addEventListener('click', function() {
+      let event = new CustomEvent('toggleColorPicker', {
+        detail: {
+          color: hex_code,
+        }
+      });
+      scene.dispatchEvent(event); 
+    });
+
+    // Add color to gallery  
+    gallery_element.appendChild(color_field);
+
+
   }
 
 
@@ -43,7 +86,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   function populateProjectColors(project_colors) {
     for (const [color_name, hex_code] of Object.entries(project_colors)) {
-      addColorField(color_name, hex_code) 
+      addColorField(color_name, hex_code, project_colors_gallery) 
     }
   }
 

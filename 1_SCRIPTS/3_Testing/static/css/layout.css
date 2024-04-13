@@ -10,6 +10,8 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
     text-align: center;
+    overflow: hidden;
+    
 }
 
 .header {
@@ -59,7 +61,8 @@
   grid-template-columns: 1fr 4fr;
   gap: 5px;
   margin: 15px;
-  align-items: flex-end;
+  /* align-items: flex-end; */
+  align-items: stretch;
 
 }
 
@@ -76,6 +79,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 5px;
   margin-bottom:30px;
+  align-items: stretch; 
 }
 
 .col41 {
@@ -113,7 +117,7 @@
 }
 
 .scrollable {
-  height: auto; /* Set the desired height for the scrollable container */
-  overflow-y: scroll;
+  min-height:0;
+  overflow-y: scroll;  
 }
   

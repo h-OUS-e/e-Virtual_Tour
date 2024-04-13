@@ -12,7 +12,6 @@ document.addEventListener('jsonLoaded', async (event) => {
   let icons = event.detail.icons;
 
   // Assuming the variable is named 'data'
-  const editMenu = document.getElementById('edit_menu_MediaplayerTypes');
   // const addTypeBtn = document.getElementById('addTypeBtn');
   const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
   let color_type = "dark";
@@ -411,7 +410,12 @@ document.addEventListener('jsonLoaded', async (event) => {
   // Event listener for the dark color input
   dark_color_input.addEventListener('click', function() {
     // Show color picker  
-    let event = new CustomEvent('toggleColorPicker');
+    let event = new CustomEvent('toggleColorPicker', {
+      detail: {
+          color: dark_color_input.style.backgroundColor,
+      }
+    });
+    
     color_type = "dark";
     scene.dispatchEvent(event); 
   });
@@ -419,7 +423,11 @@ document.addEventListener('jsonLoaded', async (event) => {
   // Event listener for the light color input
   light_color_input.addEventListener('click', function() {
     // Show color picker  
-    let event = new CustomEvent('toggleColorPicker');
+    let event = new CustomEvent('toggleColorPicker',{
+      detail: {
+        color: light_color_input.style.backgroundColor,
+      }
+    });
     color_type = "light";
     scene.dispatchEvent(event); 
   });
