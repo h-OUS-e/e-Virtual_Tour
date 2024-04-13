@@ -26,6 +26,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   const exitButton = document.getElementById('color_picker_exit_button');
 
   let currentColor = '';
+  let current_color_name = ''
   let hue = 0;
   let saturation = 1;
   let lightness = .5;
@@ -306,23 +307,24 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   function handleOkButton() {
     // Save the current color    
-    let event = new CustomEvent('colorChosen',     
+    let event = new CustomEvent('updateProjectColors',      
     {
         detail: {
-            hex_color: `#${currentColor.toHex()}`,
+          color_name: current_color_name,
+          hex_color: `#${currentColor.toHex()}`,
         },
     });
-
-    console.log("A color has been selected! ", currentColor);
     scene.dispatchEvent(event);   
 
     // Hide the color picker
     colorPickerContainer.classList.add('hidden');
+    current_color_name = "";
   }
 
   function handleExitButton() {
     // Hide the color picker without saving the color
     colorPickerContainer.classList.add('hidden');
+    current_color_name = "";
   }
 
   // Function to handle color selection from the color pickers
@@ -333,12 +335,17 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
   function toggleColorPickerContainer(event) {
+    // Show the color picker and update elements
     colorPickerContainer.classList.toggle('hidden');
     refreshElementRects();
+
+    // Get position and name of chosen color 
     if (event.detail){
       let color = tinycolor(event.detail.color);     
-        colorToPos(color);
-        setColorValues(color);
+      colorToPos(color);
+      setColorValues(color);
+      current_color_name = event.detail.color_name;
+      console.log(currentColor, current_color_name);
     }
     refreshElementRects();
   }

@@ -118,26 +118,40 @@ document.addEventListener('jsonLoaded', async (event) => {
     // CODE TO UPDATE COLORS OF OBJECTS
     scene.addEventListener('updatedProjectColors', async function(event) 
     {
-        // Get project colors from event
-        project_colors = event.detail.project_colors;
+        try {
+            console.log("1: " + JSON.stringify(project_colors));
 
-        // Update colors of all mediaplayer objects
-        document.querySelectorAll('.MediaPlayer').forEach(object => {
-            // get colors from project colors
-            const mediaplayer_type = object.getAttribute("mediaplayer_type");
-            let dark_color = project_colors[mediaplayer_type+"_dark"];
-            let light_color = project_colors[mediaplayer_type+"_light"];
+            // Get project colors from event
+            project_colors = event.detail.project_colors;
 
-            // update element colors
-            const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
-            borderEntity.setAttribute('material', 'color', dark_color);            
-            object.setAttribute('material', 'color', light_color);
-        });    
+            // Update colors of all mediaplayer objects
+            document.querySelectorAll('.MediaPlayer').forEach(object => {
+                // get colors from project colors
+                const mediaplayer_type = object.getAttribute("mediaplayer_type");
+                let dark_color = project_colors[mediaplayer_type+"_dark"];
+                let light_color = project_colors[mediaplayer_type+"_light"];
+
+            
+                // update element colors
+                const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
+            console.log("2: " + light_color, object, project_colors, mediaplayer_type+"_light");
+
+                borderEntity.setAttribute('material', 'color', dark_color);            
+                object.setAttribute('material', 'color', light_color);
+            });    
+
+        } catch (error) {
+            console.error('An error occurred while updating project colors:', error);
+            console.log("error: " + this.scehema);
+
+        }
+
     });
     
 
     // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
     scene.addEventListener('updatedMediaplayerTypeNames', async function(event) {
+
         // Get mediaplayer types from event
         mediaplayer_types = event.detail.mediaplayer_types;
     
@@ -148,6 +162,7 @@ document.addEventListener('jsonLoaded', async (event) => {
         // Update the type of all mediaplayer objects with the old name
         document.querySelectorAll('.MediaPlayer').forEach(object => {
             const mediaplayer_type = object.getAttribute("mediaplayer_type");
+
             if (mediaplayer_type === old_type_name) {
                 object.setAttribute('mediaplayer_type', new_type_name);
             }

@@ -66,6 +66,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     color_bar.addEventListener('click', function() {
       let event = new CustomEvent('toggleColorPicker', {
         detail: {
+          color_name: color_name,
           color: hex_code,
         }
       });

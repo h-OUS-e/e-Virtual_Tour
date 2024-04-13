@@ -281,14 +281,27 @@ document.addEventListener('jsonLoaded', async (event) => {
 
       // Add default color to project colors if no color chosen
       if (!(new_type_name +"_dark" in project_colors))
-      {      
-        addProjectColor(new_type_name, "dark", "#606060");
+      {  
+        let event = new CustomEvent('updateProjectColors',      
+        {
+            detail: {
+              color_name: new_type_name +"_dark",
+              hex_color: '#606060',
+            },
+        });
+        scene.dispatchEvent(event);  
       }
       if (!(new_type_name +"_light" in project_colors))
       {      
-        addProjectColor(new_type_name, "light", "#ffffff");
-      }
-      
+        let event = new CustomEvent('updateProjectColors',      
+        {
+            detail: {
+              color_name: new_type_name +"_light",
+              hex_color: '#ffffff',
+            },
+        });
+        scene.dispatchEvent(event);
+      }      
 
       // Update fields of mediaplayer types edit menu
       populateTypeSelect(mediaplayer_types);
@@ -297,44 +310,22 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
-  function updateProjectColors(selected_type, property, new_color) {
-    // Get selected color of the mediaplayer type to update
-    const selected_color = `${selected_type}_${property}`;
-    // Update project colors with new color
-    project_colors[selected_color] = new_color;  
-    // Emit project colors
-    emitProjectColors(project_colors);
-  }
-
-  function addProjectColor(new_type, property, new_color) {
-    // Get selected color of the mediaplayer type to update
-    const new_selected_color = `${new_type}_${property}`;
-    // Update project colors with new color
-    project_colors[new_selected_color] = new_color;  
-    // Emit project colors
-    emitProjectColors(project_colors);
-  }
-
-  function emitProjectColors(project_colors) {
-    let event = new CustomEvent('updatedProjectColors', 
-    {
-        detail: {
-            project_colors: project_colors,
-        },
-    });
-    scene.dispatchEvent(event);
-  }
 
   function emitMediaplayerTypesNameChange(mediaplayer_types, old_type_name, new_type_name) {
-    let event = new CustomEvent('updatedMediaplayerTypeNames', 
-    {
-        detail: {
-            mediaplayer_types: mediaplayer_types,
-            old_type_name: old_type_name,
-            new_type_name: new_type_name,
-        },
+    return new Promise((resolve) => {
+      let event = new CustomEvent('updatedMediaplayerTypeNames', 
+      {
+          detail: {
+              mediaplayer_types: mediaplayer_types,
+              old_type_name: old_type_name,
+              new_type_name: new_type_name,
+          },
+      });
+      scene.dispatchEvent(event);
+
+      // Resolve the Promise after emitting the event
+      resolve();
     });
-    scene.dispatchEvent(event);
   }
 
   function emitMediaplayerTypes(mediaplayer_types) {
@@ -356,14 +347,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     if (old_type_name !== new_type_name) {
 
-      // Add new color entries with the same color values
-      project_colors[`${new_type_name}_dark`] = project_colors[`${old_type_name}_dark`];
-      project_colors[`${new_type_name}_light`] = project_colors[`${old_type_name}_light`];
-
-      // Remove old color entries
-      delete project_colors[`${old_type_name}_dark`];
-      delete project_colors[`${old_type_name}_light`];
-    
+   
       // Add mediaplayer types object with the new name
       mediaplayer_types[new_type_name] = mediaplayer_types[old_type_name];
 
@@ -375,10 +359,25 @@ document.addEventListener('jsonLoaded', async (event) => {
       updateEditFields();
     
       // Emit project colors and mediaplayer types (order of emittion matters)
-      emitMediaplayerTypesNameChange(mediaplayer_types, old_type_name, new_type_name);
-      emitProjectColors(project_colors);
-    }
+      emitMediaplayerTypesNameChange(mediaplayer_types, old_type_name, new_type_name).then(() => {
 
+        if (mediaplayer_types && old_type_name && new_type_name) {
+
+          let event = new CustomEvent('replaceProjectColors', {
+            detail: {
+              old_color_names: [old_type_name + "_dark", `${old_type_name}_light`],
+              new_color_names: [new_type_name + "_dark", `${new_type_name}_light`],
+            },
+          });
+          document.dispatchEvent(event);
+        } else {
+          console.error('this.schema is not defined');
+
+        }
+      }).catch((error) => {
+        console.error('An error occurred:', error);
+      });
+    }       
   }
 
 
@@ -409,26 +408,38 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   // Event listener for the dark color input
   dark_color_input.addEventListener('click', function() {
+    color_type = "dark";
+
+    // Get type name, if it is new get the input value
+    let type_name;
+    if (!(typeSelect.value in mediaplayer_types)) {
+      type_name = mediaplayerType_name_input.value.trim().replace(/\s+/g, '_');
+    } else {
+      type_name = typeSelect.value;
+    }
+
     // Show color picker  
     let event = new CustomEvent('toggleColorPicker', {
       detail: {
-          color: dark_color_input.style.backgroundColor,
+        color_name: `${type_name}_${color_type}`,
+        color: dark_color_input.style.backgroundColor,
       }
     });
     
-    color_type = "dark";
     scene.dispatchEvent(event); 
   });
 
   // Event listener for the light color input
   light_color_input.addEventListener('click', function() {
+    color_type = "light";
+
     // Show color picker  
     let event = new CustomEvent('toggleColorPicker',{
       detail: {
+        color_name: `${typeSelect.value}_${color_type}`,
         color: light_color_input.style.backgroundColor,
       }
     });
-    color_type = "light";
     scene.dispatchEvent(event); 
   });
 
@@ -452,19 +463,8 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
   // Change color of mediaplayer types if color is chosen
-  scene.addEventListener('colorChosen', function(event) {
-    const color = event.detail.hex_color;
-    const selected_type = typeSelect.value;
-
-    // Add color to project colors if it don't exist already
-    if (!(selected_type in mediaplayer_types)) {
-      const new_type_name = mediaplayerType_name_input.value.trim().replace(/\s+/g, '_');
-      addProjectColor(new_type_name, color_type, color);
-    }
-    else {
-      // Updates project colors and mediaplayer types colors
-      updateProjectColors(selected_type, color_type, color);
-    }
+  scene.addEventListener('updatedProjectColors', function(event) {
+    project_colors = event.detail.project_colors;
 
     // Update the colors of the input edit fields
     updateEditFields();
