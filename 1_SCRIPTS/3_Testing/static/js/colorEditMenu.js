@@ -86,10 +86,15 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
   function populateProjectColors(project_colors) {
+    // Clear gallery
+    project_colors_gallery.innerHTML = "";
+
+    // Update with new colors
     for (const [color_name, hex_code] of Object.entries(project_colors)) {
       addColorField(color_name, hex_code, project_colors_gallery) 
     }
   }
+  
 
   
   function populateColorPalette() {
@@ -124,10 +129,15 @@ document.addEventListener('jsonLoaded', async (event) => {
   // EVENT LISTENERS
   
   // Listen to project color change
+  scene.addEventListener("updatedProjectColors", function(event) {
+    project_colors = event.detail.project_colors;
+    console.log("project_colors", project_colors);
+    populateProjectColors(project_colors);
+  });
   // Listen to color palette change
   // Listen to exit button
-  // Listen to click to close menu
   exit_btn.addEventListener('click', closeMenu);
+  // Listen to click to close menu
   // Listen
 
 });

@@ -265,6 +265,7 @@ document.addEventListener('jsonLoaded', async (event) => {
         }
 
         // Hide general non-object menu and inactivate button if outside is clicked
+        // CHANGE IS BECOMING BUGGY
         if (related_menu && !related_menu.contains(event.target)) {
             related_menu.classList.add('hidden');
             related_menu_button.classList.remove('active');
