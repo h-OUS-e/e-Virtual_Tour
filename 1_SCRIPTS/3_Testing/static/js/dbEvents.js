@@ -470,7 +470,19 @@ export async function fetchIcons() {
 
 
 
-
-
+//storage functions
+  
+// how to use
+//   downloadImage('path/to/your/image.jpg').then(url => {
+//     console.log(url)
+//   }).catch(console.error)
+export async function downloadImage(imagePath, bucket) {
+    const { data, error } = await supabase.storage.from(bucket).download(imagePath)
+    if (error) {
+      throw error
+    }
+  
+    return URL.createObjectURL(data)
+  }
 
 

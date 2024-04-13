@@ -109,3 +109,9 @@ function setUpUppy (token, storage_bucket, project_uid) {
 
 document.getElementById('icons-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('icons_img'));
 document.getElementById('scenes-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('scenes_img'));
+
+
+// how to use
+  downloadImage('path/to/your/image.jpg').then(url => {
+    console.log(url)
+  }).catch(console.error)
