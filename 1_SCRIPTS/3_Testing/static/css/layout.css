@@ -11,13 +11,16 @@
 }
 
 .header {
-  position: relative;
-  padding: 20px;
+  padding-bottom: 30px;
+  padding-top: 10px;
+}
+
+.title {
+  padding-bottom: 15px;
 }
 
 
 /* FLEX LAYOUTS */
-
 .flexRow {
     display: flex;
     flex-direction: row;
@@ -100,6 +103,7 @@
 
 .centerItems {
   align-items: center;
+  text-align: center;
 }
 
 /* ADD TO CLASS IN HTML TO INITIALLY HIDE ITEMS */

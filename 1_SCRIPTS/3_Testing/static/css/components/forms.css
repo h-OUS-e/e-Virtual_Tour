@@ -15,7 +15,7 @@
     background-color: #111; /* Sidebar background color */
     box-shadow: 0 2px 5px rgba(224, 203, 203, 0.2);
     border-radius: 5px;
-    padding:10px;
+    padding:20px;
     
 
 }
@@ -78,7 +78,6 @@
 
 .menuTopBar {
   width: auto;
-  margin-bottom: 30px;  
   max-height: 500px;
   cursor: move;
 }
@@ -154,96 +153,96 @@ border-radius: 3px; /* Optional: rounded corners for the input */
 }
 
   
-  .dropdown {
-    padding: 1px;
-    display: block;
-    position: absolute;
-    top: 20%;
-    left: 80%;
-    background-color: #f9f9f9;
-    width: 80px;
-    box-shadow: 20px 20px 20px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
+.dropdown {
+  padding: 1px;
+  display: block;
+  position: absolute;
+  top: 20%;
+  left: 80%;
+  background-color: #f9f9f9;
+  width: 80px;
+  box-shadow: 20px 20px 20px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 
-  }
-  
-  .dropdown a {
-    font-size: 14px;
+}
 
-    color: black;
-    padding: 7px;
-    display: block;
-    cursor: pointer;
-  }
-  
-  
-  .dropdown a:hover {
-    background-color: #f1f1f1;
-  }
+.dropdown a {
+  font-size: 14px;
+
+  color: black;
+  padding: 7px;
+  display: block;
+  cursor: pointer;
+}
 
 
+.dropdown a:hover {
+  background-color: #f1f1f1;
+}
 
-  .uploadImageMenu {
-    z-index: 5;
-    min-height: 300px;;
-  }
 
-  .image_upload_wrapper {
-    width: 250px;
-    margin:auto;
-  }
-  
-  .uploadImageContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 200px;
-    height: 200px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.3s;
-  }
-  
-  .uploadImageContainer:hover {
-    border-color: #888;
-  }
-  
-  .uploadImageContainer span {
-    font-size: 16px;
-    color: #888;
-    margin:auto;
-    margin-bottom: 10px auto;   
-    cursor: pointer;
-  }
 
-  .emojiSelector {
-    font-size: 16px;
-    margin-bottom: 10px;
-    width: 100%;
-    align-items: center;
-  }  
+.uploadImageMenu {
+  z-index: 5;
+  min-height: 300px;;
+}
 
-  .uploadedImage {
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
+.image_upload_wrapper {
+  width: 250px;
+  margin:auto;
+}
 
-    max-width: none;
-    max-height: none;
-    object-fit: cover;
-    cursor: pointer;
+.uploadImageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
 
-  }
+.uploadImageContainer:hover {
+  border-color: #888;
+}
 
-  .textInput {
-    padding-bottom:5px;
-    width: 100%;
-    margin:auto;
-    border-radius: 4px;
-  }
+.uploadImageContainer span {
+  font-size: 16px;
+  color: #888;
+  margin:auto;
+  margin-bottom: 10px auto;   
+  cursor: pointer;
+}
+
+.emojiSelector {
+  font-size: 16px;
+  margin-bottom: 10px;
+  width: 100%;
+  align-items: center;
+}  
+
+.uploadedImage {
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  cursor: pointer;
+
+}
+
+.textInput {
+  padding-bottom:5px;
+  width: 100%;
+  margin:auto;
+  border-radius: 4px;
+}
 
 
 
