@@ -33,7 +33,7 @@ function setBucketToIconsAndReinitializeUppy (bucket) {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
       console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project)
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project,'#drag-drop-area')
 
     } else { console.log('no session found')}
 
@@ -47,8 +47,7 @@ function setBucketToIconsAndReinitializeUppy (bucket) {
 
 
 
-
-function setUpUppy (token, storage_bucket, project_uid) {
+function setUpUppy (token, storage_bucket, project_uid, target_div) {
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
   if (uppy) {
@@ -59,7 +58,7 @@ function setUpUppy (token, storage_bucket, project_uid) {
     .use(Dashboard, {
       inline: true,
       limit: 10,
-      target: '#drag-drop-area',
+      target: target_div,
       showProgressDetails: true,
     })
     .use(Tus, {

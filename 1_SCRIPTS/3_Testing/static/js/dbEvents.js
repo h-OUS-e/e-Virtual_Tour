@@ -19,7 +19,7 @@ export async function supabaseGetSession() {
   
   
 
-class Supabase_Table_Events {
+class Supabase_Table_Events { //WIP
     constructor(table_name) {
         this.table_name = table_name;
     }
@@ -184,41 +184,7 @@ export async function insertProjects(dataArray) {
     }
 }
 
-export async function updatetProjects(dataArray) {
-    // project fields:
-        // project_uid uuid not null default uuid_generate_v4 (),
-        // project_name character varying(255) null,
-        // profile_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // is_published boolean null default true,
-        // constraint projects_pkey primary key (project_uid),
-        // constraint projects_profile_uid_fkey foreign key (profile_uid) references profiles (profile_uid)
 
-    //input: dataArray = [ {project_uid: 'some id',
-    //                      project_name: 'new project name', 
-    //                      
-    //output: 
-    try {
-        const { data, error } = await supabase
-            .from('projects')
-            .update(dataArray) 
-            .select();
-
-        if (error) {
-            console.error('insert error:', error);
-            return { success: false, error };
-        }
-
-        console.log('insert successful, data:', data);
-        return { success: true, data };
-    } catch (error) {
-        console.error('Exception during insert:', error);
-        return { success: false, error };
-    }
-}
 
 
 
@@ -387,6 +353,58 @@ export async function insertMedia(dataArray) {
     }
 }
 
+export async function deleteMedia(scene_uid) {
+    // media fields:
+        // media_uid uuid not null default uuid_generate_v4 (),
+        // x double precision null,
+        // y double precision null,
+        // z double precision null,
+        // rotation double precision null,
+        // title character varying(255) null,
+        // type_uid uuid null,
+        // scene_img_uid uuid null,
+        // project_uid uuid null,
+        // date_created timestamp with time zone null,
+        // last_update timestamp with time zone null,
+        // update_uid uuid null,
+        // date_deleted timestamp with time zone null,
+        // media_name_id character varying null,
+        // rotation_x real null,
+        // rotation_y real null,
+        // rotation_z real null,
+        // type_name character varying null,
+        // icon_name character varying null,
+        // scene_name_id character varying null,
+        // position text null,
+        // constraint media_pkey primary key (media_uid),
+        // constraint media_project_uid_fkey foreign key (project_uid) references projects (project_uid)
+
+    //input: dproject_uid: the uid of the scene who's data you want to delete
+    //output: 
+
+    try {
+        const { data, error } = await supabase
+            .from('media')
+            .delete() 
+            .eq('media_on_scene_uid', scene_uid);
+
+        if (error) {
+            console.error('insert error:', error);
+            return { success: false, error };
+        }
+
+        console.log('delete successful, data:', data);
+        return { success: true, data };
+    } catch (error) {
+        console.error('Exception during delete:', error);
+        return { success: false, error };
+    }
+}
+
+
+
+
+
 export async function insertTransitionNodes(dataArray) {
     // transition_nodes fields:
         // node_uid uuid not null default uuid_generate_v4 (),
@@ -426,6 +444,67 @@ export async function insertTransitionNodes(dataArray) {
         console.error('Exception during insert:', error);
         return { success: false, error };
     }
+}
+
+export async function deleteTransitionNodes(scene_uid) {
+    // transition_nodes fields:
+        // node_uid uuid not null default uuid_generate_v4 (),
+        // x double precision null,
+        // y double precision null,
+        // z double precision null,
+        // rotation double precision null,
+        // transition_img_uid uuid null,
+        // scene_img_uid uuid null,
+        // project_uid uuid null,
+        // date_created timestamp with time zone null,
+        // last_update timestamp with time zone null,
+        // update_uid uuid null,
+        // date_deleted timestamp with time zone null,
+        // node_name_id character varying null,
+        // transition_img_name character varying null,
+        // scene_img_name character varying null,
+        // constraint transition_nodes_pkey primary key (node_uid),
+        // constraint public_transition_nodes_project_uid_fkey foreign key (project_uid) references projects (project_uid) on update cascade on delete cascade
+
+    //input: scene_uid: the uid of the scene who's data you want to delete
+    try {
+        const { data, error } = await supabase
+            .from('Transition_nodes')
+            .delete()
+            .eq('transition_nodes_on_scene_uid',scene_uid)
+
+        if (error) {
+            console.error('delete error:', error);
+            return { success: false, error };
+        }
+
+        console.log('delete successful, data:', data);
+        return { success: true, data };
+    } catch (error) {
+        console.error('Exception during insert:', error);
+        return { success: false, error };
+    }
+}
+
+
+export async function insertColor(color){
+    try{
+        const{data, error} = await supabase
+        .from('colors')
+        .insert(color)
+        .select();
+    if(error) {
+        console.log('insert error: ', error);
+        return { success: false, error};
+    }
+    console.log('insert successful: ', data);
+    return{success: true, data};
+
+    } catch(error) {
+        console.error('exception during insert: ', error)
+        
+    }
+
 }
 
 
@@ -472,24 +551,50 @@ export async function fetchIcons() {
 
 //storage functions
 
-export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_img_div) {
+export async function fetchStoragePublicUrl(project_uid, img_uid, bucket, target_img_div) {
     // input:
         // bucket: supabase storage container name icons_img, scenes_img
-        // project_uid, img_uid: make up the file_path: the targeted storage item's path (project_id/img_id/img_name)
-        //target_img_div: where the img div should show in the html
-    const file_path = `${project_uid}/${img_uid}`;
+        // project_uid, img_uid: the targeted storage item's path (project_id/img_id/img_name)
+        // target_img_div: where the img div should show in the HTML
+    const basePath = `${project_uid}`;
+    const file_path = img_uid ? `${basePath}/${img_uid}` : basePath;  
+
     try {
-      const { data, error } = await supabase.storage.from(bucket).getPublicUrl(file_path);
-      if (error) {
-        throw error;
-      }
-      const imgElement = document.getElementById(target_img_div);
-      imgElement.src = data.publicUrl;
-      console.log(data.publicUrl);
+        const container = document.getElementById(target_img_div);
+
+        if (img_uid) {
+            // Fetch specific image
+            const { data, error } = await supabase.storage.from(bucket).getPublicUrl(file_path);
+            if (error) throw error;
+            console.log(data.publicUrl);
+        } else {
+            // List all images in the project
+            const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(basePath);
+            if (listError) throw listError;
+            for (let file of fileList) {
+                const { data: urlData, error: urlError } = await supabase.storage.from(bucket).getPublicUrl(`${basePath}/${file.name}`);
+                if (urlError) {
+                    console.error('Error fetching URL for file:', file.name, urlError);
+                    continue;
+                }
+                else { // do whatever with the file list 
+                console.log(data);
+                };
+
+                // const imgElement = document.createElement('img');
+                // imgElement.src = urlData.publicUrl;
+                // imgElement.alt = file.name;
+                // container.appendChild(imgElement);
+
+                // Optional: log the public URL
+                console.log(urlData.publicUrl);
+            }
+        }
     } catch (err) {
-      console.error('Failed to fetch public URL:', err.message);
+        console.error('Failed to fetch public URL:', err.message);
     }
-  }
+}
+
   
   
 
