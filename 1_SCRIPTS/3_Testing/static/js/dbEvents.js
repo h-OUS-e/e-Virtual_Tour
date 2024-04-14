@@ -265,7 +265,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
         let { data, error } = await supabase
         .from('view_project_data')
         .select('*')
-        .eq('project_uid', project_uid);
+        .eq('scene_project_uid', project_uid);
 
         if (error) {
         console.error('Error fetching project data:', error);
