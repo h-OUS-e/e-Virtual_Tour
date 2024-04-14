@@ -6,7 +6,7 @@ import {
   Dashboard,
   Tus,
 } from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
-const { v4: uuidv4 } = require('uuid'); // Import UUID library
+
 
 
 //docs
@@ -19,20 +19,21 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID library
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-
+// make sure to set this variable before uplaoding!!!!
 const chosen_project = localStorage.getItem('clickedProject');
-const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'
-const STORAGE_BUCKET = 'icons_img' 
-const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`
-let BEARER_TOKEN 
+let uppy;
 
-// get session token from supabse and then start uppy instance
-let session_data_promise = supabaseGetSession();
-session_data_promise.then(data => {
+
+
+
+function setBucketToIconsAndReinitializeUppy (bucket) {
+  console.log('uploading to ', bucket);
+  let session_data_promise = supabaseGetSession();
+  session_data_promise.then(data => {
     if (data && data.session.access_token) {
-      BEARER_TOKEN = data.session.access_token;
+      let BEARER_TOKEN = data.session.access_token;
       console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN, STORAGE_BUCKET, chosen_project)
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project,'#drag-drop-area')
 
     } else { console.log('no session found')}
 
@@ -40,38 +41,52 @@ session_data_promise.then(data => {
   .catch(error => {
     console.error("Error in getSession: ", error);
   });
+};
 
 
 
 
 
-function setUpUppy (token, storage_bucket, folder) {
-  const uppy = new Uppy()
+function setUpUppy (token, storage_bucket, project_uid, target_div) {
+  const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
+  const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
+  if (uppy) {
+    uppy.close();  // Close the previous instance if it exists
+  }
+
+  uppy = new Uppy()
     .use(Dashboard, {
       inline: true,
       limit: 10,
-      target: '#drag-drop-area',
+      target: target_div,
       showProgressDetails: true,
     })
     .use(Tus, {
       endpoint: supabaseStorageURL,
       headers: {
-        authorization: `Bearer ${BEARER_TOKEN}`,
+        authorization: `Bearer ${token}`,
       },
       uploadDataDuringCreation: true,
       chunkSize: 6 * 1024 * 1024,
-      allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
+      allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl', 'metadata'],
       onError: function (error) {
         console.log('Failed because: ' + error)
       },
     })
 
   uppy.on('file-added', (file) => {
-    const fileUUID = uuidv4();
+    const fileUUID = uuid.v4();
     const supabaseMetadata = {
-      bucketName: STORAGE_BUCKET,
-      objectName: `${folder}/${fileUUID}/${file.name}`,
+      bucketName: storage_bucket,
+      objectName: `${project_uid}/${fileUUID}/${file.name}`,
       contentType: file.type,
+      metadata: { 
+        img_project_uid: project_uid,
+        file_name: file.name,
+        storage_bucket: storage_bucket,
+        img_id: fileUUID
+      }
+
     }
 
     file.meta = {
@@ -86,3 +101,13 @@ function setUpUppy (token, storage_bucket, folder) {
     console.log('Upload complete! We’ve uploaded these files:', result.successful)
   })
 }
+
+
+
+
+
+document.getElementById('icons-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('icons_img'));
+document.getElementById('scenes-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('scenes_img'));
+
+
+// how to use

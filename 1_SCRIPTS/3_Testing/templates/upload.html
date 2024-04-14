@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>uploader</title>
+    
     <link href="https://releases.transloadit.com/uppy/v3.23.0/uppy.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
     <script src="https://releases.transloadit.com/uppy/v3.23.0/uppy.min.js"></script>
 
     <script type = 'module' src = '../static/js/dbClient.js'></script>
@@ -12,12 +14,12 @@
     <!-- The bundle consists of most Uppy plugins, so this method is not recommended for production, as your users will have to download all plugins when you are likely using only a few.    It can be useful to speed up your development environment, so don't hesitate to use it to get you started. -->
     
     <!-- 2. Initialize -->
-    <div id="drag-drop-area"></div>
-
-
 
 </head>
 <body>
+    <button id='icons-button'>icons</button>
+    <button id='scenes-button'>Scenes</button>
+    <div id="drag-drop-area"></div>
     
 </body>
 </html>

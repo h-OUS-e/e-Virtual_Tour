@@ -1,5 +1,5 @@
 import { supabase } from "./dbClient.js";
-import {fetchProjects, fetchAllProjectData} from './dbEvents.js'
+import {fetchProjects, fetchAllProjectData,fetchStoragePublicUrl} from './dbEvents.js'
 import { fetchIcons } from "./dbEvents.js";
 
 
