@@ -1,8 +1,8 @@
 
 
 document.addEventListener('jsonLoaded', async (event) => {
-
-  const menus = document.querySelectorAll('.menu');
+  const moveable_classes = '.menu, .color-picker-panel'
+  const menus = document.querySelectorAll(moveable_classes);
 
   let isDragging = false;
   let startX;
@@ -23,7 +23,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     isDragging = true;
     startX = event.clientX;
     startY = event.clientY;
-    selectedMenu = event.target.closest('.menu');
+    selectedMenu = event.target.closest(moveable_classes);
     startLeft = selectedMenu.offsetLeft;
     startTop = selectedMenu.offsetTop;
   

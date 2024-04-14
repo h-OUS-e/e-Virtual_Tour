@@ -395,6 +395,10 @@
 
         <!-- A code for a color picker -->
         <div id="color_picker" class="color-picker-panel hidden">
+            <div class="menuTopBar flexRow">
+                <h3 class="header">COLORS</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
             <!-- Typical Color Swatches and eye dropper -->
             <div class="panel-row">
                 <div id="project_colors" class="swatches default-swatches"></div>
@@ -443,13 +447,12 @@
             <div class="panel-row">
               <h4 class="panel-header">Temp Swatches</h4>
               <div id="user-swatches" class="swatches custom-swatches"></div>
-              <button id="add-swatch" class="button add-swatch">
-                <span id="color-indicator" class="color-indicator"></span><span>Add to Swatches</span>
-              </button>
+                <button id="add-swatch" class="button add-swatch">
+                    <span id="color-indicator" class="color-indicator"></span><span>Add to Swatches</span>
+                </button>
+                <button id="color_picker_ok_button" class="btn okBtn ">EDIT</button>
             </div>
             <div class="flexRow">
-                  <button id="color_picker_ok_button" class="btn okBtn ">OK</button>
-                  <button id="color_picker_exit_button" class="btn exitBtn">X</button>
             </div>
         </div>         
 

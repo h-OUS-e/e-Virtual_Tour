@@ -22,8 +22,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   const hueCursor = document.getElementById('hue-cursor'); 
   let hueRect = hueCanvas.getBoundingClientRect();
 
-  const okButton = document.getElementById('color_picker_ok_button');
-  const exitButton = document.getElementById('color_picker_exit_button');
+
 
   let currentColor = '';
   let current_color_name = ''
@@ -40,6 +39,9 @@ document.addEventListener('jsonLoaded', async (event) => {
   const hex = document.getElementById('hex'); 
 
   const colorPickerContainer = document.getElementById('color_picker');
+  const exitButton = colorPickerContainer.querySelector('.exitBtn');
+  const okButton = document.getElementById('color_picker_ok_button');
+
 
 
   function ColorPicker(){
