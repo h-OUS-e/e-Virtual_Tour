@@ -413,6 +413,20 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
+  // Delete icons from mediaplayer_types that don't exist in the icons list
+  function checkIconsInMediaplayerTypes(icons, mediaplayer_types) {
+    for (let type in mediaplayer_types) {
+      for (let index in mediaplayer_types[type].icon) {
+        let iconName = mediaplayer_types[type].icon[index];
+        if (!icons.hasOwnProperty(iconName)) {
+          // Remove the icon from mediaplayer_types if it doesn't exist in the icons object
+          delete mediaplayer_types[type].icon[index];
+        }
+      }
+    }
+  }
+
+
 
   // Event listener for the dark color input
   dark_color_input.addEventListener('click', function() {
@@ -461,13 +475,26 @@ document.addEventListener('jsonLoaded', async (event) => {
   edit_MediaplayerType_name_btn.addEventListener('click', updateMediaplayerTypeName);
   typeSelect.addEventListener('change', updateEditFields);
   document.addEventListener('click', closeIconDropdown);
-  // saveBtn.addEventListener('click', saveEditedType);
   exit_btn.addEventListener('click', closeMenu);
 
   // Update icon dropdown menu when icons variable change
   document.addEventListener('updatedIcons', function(event) {
     icons = event.detail.icons;
     populateIconDropdown(icons);
+    // Remove icons from mediaplayer types if they don't exist
+    checkIconsInMediaplayerTypes(icons, mediaplayer_types);
+    // Update menu
+    updateEditFields();
+
+  });
+  document.addEventListener('updatedMediaplayerTypeNames', function(event) {
+    icons = event.detail.icons;
+    populateIconDropdown(icons);
+    // Remove icons from mediaplayer types if they don't exist
+    checkIconsInMediaplayerTypes(icons, mediaplayer_types);
+    // Update menu
+    updateEditFields();
+
   });
 
 
