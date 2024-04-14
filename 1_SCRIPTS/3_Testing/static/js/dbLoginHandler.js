@@ -9,7 +9,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   })
   
 
-const projects_directory_path = '/1_SCRIPTS/3_Testing/templates/projects.html' //maybe we should save all those paths somewhere else?
+const projects_directory_path = '../templates/projects.html' //maybe we should save all those paths somewhere else?
 
 // Handle the login form submission
 document.getElementById('login-form').addEventListener('submit', async function(event) {

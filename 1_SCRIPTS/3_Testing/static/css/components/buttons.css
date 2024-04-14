@@ -66,8 +66,6 @@
         opacity: 0;
     }
 }
-
-
   
 
 /* ADDITIONAL BUTTON TYPES */
@@ -86,7 +84,6 @@
   position: relative;
   vertical-align: middle;
   overflow: hidden;
-  align-self: flex-end;    
 }
 
 .okBtn {
