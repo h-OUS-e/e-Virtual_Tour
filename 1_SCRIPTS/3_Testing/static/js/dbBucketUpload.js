@@ -112,6 +112,3 @@ document.getElementById('scenes-button').addEventListener('click', () => setBuck
 
 
 // how to use
-  downloadImage('path/to/your/image.jpg').then(url => {
-    console.log(url)
-  }).catch(console.error)

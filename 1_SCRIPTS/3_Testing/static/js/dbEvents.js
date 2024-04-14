@@ -471,18 +471,26 @@ export async function fetchIcons() {
 
 
 //storage functions
-  
-// how to use
-//   downloadImage('path/to/your/image.jpg').then(url => {
-//     console.log(url)
-//   }).catch(console.error)
-export async function downloadImage(imagePath, bucket) {
-    const { data, error } = await supabase.storage.from(bucket).download(imagePath)
-    if (error) {
-      throw error
+
+export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_img_div) {
+    // input:
+        // bucket: supabase storage container name icons_img, scenes_img
+        // project_uid, img_uid: make up the file_path: the targeted storage item's path (project_id/img_id/img_name)
+        //target_img_div: where the img div should show in the html
+    const file_path = `${project_uid}/${img_uid}`;
+    try {
+      const { data, error } = await supabase.storage.from(bucket).getPublicUrl(file_path);
+      if (error) {
+        throw error;
+      }
+      const imgElement = document.getElementById(target_img_div);
+      imgElement.src = data.publicUrl;
+      console.log(data.publicUrl);
+    } catch (err) {
+      console.error('Failed to fetch public URL:', err.message);
     }
-  
-    return URL.createObjectURL(data)
   }
+  
+  
 
 
