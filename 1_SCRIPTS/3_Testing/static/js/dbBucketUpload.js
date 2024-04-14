@@ -1,11 +1,11 @@
 
-import { supabase } from "./dbClient.js";
-import { supabaseGetSession } from "./dbEvents.js";
 import {
-  Uppy,
   Dashboard,
   Tus,
-} from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs'
+  Uppy,
+} from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs';
+import { supabase } from "./dbClient.js";
+import { supabaseGetSession } from "./dbEvents.js";
 
 
 
@@ -46,7 +46,6 @@ function setBucketToIconsAndReinitializeUppy (bucket) {
 
 
 
-
 function setUpUppy (token, storage_bucket, project_uid, target_div) {
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
@@ -76,10 +75,36 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   uppy.on('file-added', (file) => {
     const fileUUID = uuid.v4();
+    console.log('file event', file, storage_bucket);
     const supabaseMetadata = {
       bucketName: storage_bucket,
       objectName: `${project_uid}/${fileUUID}/${file.name}`,
       contentType: file.type,
+      metadata: { 
+        img_project_uid: project_uid,
+        file_name: file.name,
+        storage_bucket: storage_bucket,
+        img_id: fileUUID
+      }
+
+    }
+
+    file.meta = {
+      ...file.meta,
+      ...supabaseMetadata,
+    }
+
+    console.log('file added', file)
+  })
+
+
+  uppy.on('imageUploaded', (file) => {
+    const fileUUID = uuid.v4();
+    console.log('file event', file);
+    const supabaseMetadata = {
+      bucketName: storage_bucket,
+      objectName: `${project_uid}/${fileUUID}/${file.detail.image_name}`,
+      contentType: file.detail.type,
       metadata: { 
         img_project_uid: project_uid,
         file_name: file.name,
@@ -108,6 +133,5 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 document.getElementById('icons-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('icons_img'));
 document.getElementById('scenes-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('scenes_img'));
-
 
 // how to use
