@@ -2,22 +2,21 @@
 /* EDIT MENU */
 .menu {
     position: absolute;
+    display:flex;
+    flex-direction: column;
+    overflow:hidden;
     z-index: 1000;
     
     /* SIZING */
     width: 300px;
-    max-height: 500px;
-    
-    /* DISPLAY */
-    overflow: hidden;
-
-    display: block;
+    max-height: 500px; 
 
     /* STYLING */
     background-color: #111; /* Sidebar background color */
     box-shadow: 0 2px 5px rgba(224, 203, 203, 0.2);
     border-radius: 5px;
     padding:10px;
+
 }
   
 .menu ul {
@@ -81,7 +80,6 @@
   width: auto;
   margin-bottom: 30px;  
   max-height: 500px;
-
   cursor: move;
 }
 
@@ -132,7 +130,7 @@ border-radius: 3px; /* Optional: rounded corners for the input */
 
   
   .dropdown {
-    padding: px;
+    padding: 1px;
     display: block;
     position: absolute;
     top: 20%;

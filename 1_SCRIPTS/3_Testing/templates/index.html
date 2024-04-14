@@ -136,7 +136,11 @@
           
         <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
 
-            <h3 class="header">Edit Mediaplayer Types</h3>
+            <div class="menuTopBar flexRow">
+                <h3 class="header">MEDIAPLAYER TYPE EDITOR</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+
             <select id="edit_menu_MediaplayerTypes_select" title="Select Mediaplayer type">
             <!-- Options will be populated dynamically -->
             </select>
@@ -176,16 +180,18 @@
                 </div> 
                 <button id="edit_menu_MediaplayerTypes_add_type_button" class="btn hidden">Add New Type</button>  
             </div>            
-            <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button>
         </div>
 
 
         <div  id="edit_menu_icons" class="menu widerMenu hidden">
-            <h3 class="header">Edit Icons</h3>   
-            <div class="container scrollable">
-                <!-- <p>icons: </p> -->
+            <div class="container ">
+                <div class="menuTopBar flexRow">
+                    <h3 class="header">ICON EDITOR</h3>   
+                    <button class="btn exitBtn">X</button> 
+                </div>
+
                 <div class="grid2Column col41">
-                    <div id="em_icon_gallery" class="grid3Column"></div>    
+                    <div id="em_icon_gallery" class="grid3Column scrollable" style="height:200px; padding:10px"></div>    
                     <div > 
                         <button id="em_icon_addIcon_btn" class="btn addBtn" >+</button>  
                         <p class="gridItem">Add New Icon</p>
@@ -193,13 +199,10 @@
                     </div>    
                 </div>                
             </div>            
-            <!-- <button id="edit_menu_MediaplayerTypes_save_button" class="btn">Save</button> -->            
         </div>
 
 
         <div  id="edit_menu_colors" class="menu widerMenu hidden">
-            <div class="container">
-
                 <div class="menuTopBar flexRow">
                     <h3 class="header">COLOR EDITOR</h3>   
                     <button class="btn exitBtn">X</button> 
@@ -210,15 +213,14 @@
                     <h4 class="header">Color Palette</h4>   
                 </div>
 
-                <div class="grid2Column col21">
-                    <div id="em_project_colors_gallery" class="grid2Column scrollable" style="height:300px; padding:30px">
+                <div class="grid2Column col21 scrollable">
+                    <div id="em_project_colors_gallery" class="grid2Column scrollable" >
                         <!-- To populate color projects -->
                     </div> 
-                    <div id="em_color_palette_gallery" class="scrollable" style="height:300px; padding:30px">
+                    <div id="em_color_palette_gallery" class="scrollable">
                          <!-- To populate color palettes -->
                     </div> 
                 </div>
-            </div>    
         </div>
         
 

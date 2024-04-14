@@ -6,8 +6,11 @@ document.addEventListener('jsonLoaded', async (event) => {
   const icons = event.detail.icons;
 
   // Get elements
+  const menu = document.getElementById('edit_menu_icons');
   const icon_gallery = document.getElementById('em_icon_gallery');
   const add_btn = document.getElementById('em_icon_addIcon_btn');
+  const exit_btn = menu.querySelector('.exitBtn');
+
 
 
   // A function to populate the container with all icons and their names
@@ -185,10 +188,11 @@ document.addEventListener('jsonLoaded', async (event) => {
     });
     document.dispatchEvent(event);
   }
-
-  function test() {
-    console.log("WORKS");
+  
+  function closeMenu() {
+    menu.classList.add("hidden");
   }
+
 
   // Event listeners
   add_btn.addEventListener('click', emitUploadImage);
@@ -197,5 +201,6 @@ document.addEventListener('jsonLoaded', async (event) => {
     const icon_URL = event.detail.img_URL;
     addNewIcon(icon_name, icon_URL, icon_gallery);
   });
+  exit_btn.addEventListener('click', closeMenu);
 
 });

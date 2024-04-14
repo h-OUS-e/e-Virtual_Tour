@@ -12,7 +12,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   let icons = event.detail.icons;
 
   // Assuming the variable is named 'data'
-  // const addTypeBtn = document.getElementById('addTypeBtn');
+  const menu = document.getElementById('edit_menu_MediaplayerTypes');
   const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
   let color_type = "dark";
   const icon_fields = document.getElementById('edit_menu_MediaplayerTypes_icons');
@@ -20,6 +20,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   const saveBtn = document.getElementById('edit_menu_MediaplayerTypes_save_button');
   const addType_btn = document.getElementById('edit_menu_MediaplayerTypes_add_type_button');  
   const iconDropdown = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
+  const exit_btn = menu.querySelector('.exitBtn');
 
   // Get the name input element
   const mediaplayerType_name_input = document.getElementById('edit_menu_MediaplayerTypes_name_input');
@@ -101,7 +102,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     let dropdown_menu = document.getElementById('edit_menu_MediaplayerTypes_iconDropdown');
     if (!event.target.matches('.addBtn') && !event.target.matches('.dropdown-content a')) {
       dropdown_menu.classList.add('hidden');
-      saveEditedType();
+      updateMediaplayerTypeIcons();
     }
   }
 
@@ -380,16 +381,23 @@ document.addEventListener('jsonLoaded', async (event) => {
     }       
   }
 
+  function closeMenu() {
+    menu.classList.add("hidden");
+  }
+
 
   // Save the edited type data
-  function saveEditedType() {
+  function updateMediaplayerTypeIcons() {
 
     const selected_type = typeSelect.value;
     if (selected_type in mediaplayer_types) {
       mediaplayer_types[selected_type].icon = {};
+
+      // Get all icons in the icon gallery
       const icon_images = icon_fields.querySelectorAll('img');
       const icon_names = icon_fields.querySelectorAll('p');
       
+      // Add the added icons to the selected mediaplayer type
       for (let i = 0; i < icon_images.length; i++) {
         const icon_name = icon_names[i].textContent.trim();
         const icon_url = icon_images[i].src;
@@ -399,9 +407,9 @@ document.addEventListener('jsonLoaded', async (event) => {
         if (icon_name !== '' && icon_url !== '' &&  !icon_name_exists) {
           mediaplayer_types[selected_type].icon[i] = icon_name;
         }
-
       }  
-    }
+      emitMediaplayerTypes(mediaplayer_types);
+    }    
   }
 
 
@@ -453,7 +461,8 @@ document.addEventListener('jsonLoaded', async (event) => {
   edit_MediaplayerType_name_btn.addEventListener('click', updateMediaplayerTypeName);
   typeSelect.addEventListener('change', updateEditFields);
   document.addEventListener('click', closeIconDropdown);
-  saveBtn.addEventListener('click', saveEditedType);
+  // saveBtn.addEventListener('click', saveEditedType);
+  exit_btn.addEventListener('click', closeMenu);
 
   // Update icon dropdown menu when icons variable change
   document.addEventListener('updatedIcons', function(event) {

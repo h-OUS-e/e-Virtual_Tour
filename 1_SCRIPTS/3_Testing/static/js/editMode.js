@@ -154,8 +154,6 @@ document.addEventListener('jsonLoaded', async (event) => {
             related_menu_button = this;
             // Remove active class from all buttons
             document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            related_menu_button.classList.add('active');
             // show the related menu
             related_menu.classList.remove('hidden');
 
@@ -266,10 +264,10 @@ document.addEventListener('jsonLoaded', async (event) => {
 
         // Hide general non-object menu and inactivate button if outside is clicked
         // CHANGE IS BECOMING BUGGY
-        if (related_menu && !related_menu.contains(event.target)) {
-            related_menu.classList.add('hidden');
-            related_menu_button.classList.remove('active');
-        }        
+        // if (related_menu && !related_menu.contains(event.target)) {
+        //     related_menu.classList.add('hidden');
+        //     related_menu_button.classList.remove('active');
+        // }        
 
     }, true); // Using capture phase to catch the event early
 
@@ -874,7 +872,6 @@ function populateOptionsDropdown(options_JSON, dropdown_input_id) {
 function onDropdownMenuSelectionOfMediaPlayerType(options_JSON, selected_dropdown_input_id, dependent_dropdown_input_id) {
     const selected_input = selected_dropdown_input_id.value;
     const selected_icons = options_JSON[selected_input]?.icon || {}; // Safely access the icons for the selected type
-    console.log("TEST", selected_icons, options_JSON[selected_input].icon, options_JSON[selected_input], JSON.parse(JSON.stringify(options_JSON)));
     // const dependent_options = Object.keys(icons).reduce((acc, key) => ({
     //     ...acc,
     //     [key]: key.replace(/_/g, ' ') // Replace underscores with spaces for better readability

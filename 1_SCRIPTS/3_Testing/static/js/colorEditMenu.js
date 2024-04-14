@@ -10,7 +10,6 @@ document.addEventListener('jsonLoaded', async (event) => {
   const project_colors_gallery = document.getElementById('em_project_colors_gallery');
   const color_palette_gallery = document.getElementById('em_color_palette_gallery');
   const exit_btn = menu.querySelector('.exitBtn');
-  console.log("TEST", menu);
 
   // Widen the menu
   menu.style.width = "700px";
@@ -57,10 +56,10 @@ document.addEventListener('jsonLoaded', async (event) => {
     color_bar.appendChild(color_code); 
 
     // Add color description
-    const colorInfo = document.createElement('div');
-    colorInfo.classList.add('colorInfo');
-    colorInfo.innerHTML = `<p >${color_name}</p>`;
-    color_field.appendChild(colorInfo);
+    const colorInfo = document.createElement('p');
+    colorInfo.innerHTML = `${color_name}`;
+    colorInfo.style.color = textColor;
+    color_bar.appendChild(colorInfo);
 
     // Add event listener to color bar to show color picker when clicked
     color_bar.addEventListener('click', function() {
@@ -129,9 +128,9 @@ document.addEventListener('jsonLoaded', async (event) => {
   // EVENT LISTENERS
   
   // Listen to project color change
-  scene.addEventListener("updatedProjectColors", function(event) {
+  scene.addEventListener("updatedProjectColors", function(event) 
+  {
     project_colors = event.detail.project_colors;
-    console.log("project_colors", project_colors);
     populateProjectColors(project_colors);
   });
   // Listen to color palette change

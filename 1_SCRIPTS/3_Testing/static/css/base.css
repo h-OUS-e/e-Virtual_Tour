@@ -48,7 +48,6 @@
 
 body {
     margin: 0;
-    overflow: hidden;
     font-family: 'CircularStd', Helvetica;
     font-size: clamp(1rem, 1.5vw, 1.5rem); /* Adjust as needed */
     cursor: auto; 

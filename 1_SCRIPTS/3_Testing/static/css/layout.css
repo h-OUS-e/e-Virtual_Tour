@@ -5,20 +5,16 @@
 .container {
     position: relative;
     padding: 8px;
-    /* background: #fffcfc81; */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
     text-align: center;
-    overflow: hidden;
-    
 }
 
 .header {
   position: relative;
   padding: 20px;
-  z-index: 100;
-  
+  z-index: 100;  
 }
 
 
@@ -63,6 +59,7 @@
   margin: 15px;
   /* align-items: flex-end; */
   align-items: stretch;
+  height: 100%;
 
 }
 
@@ -77,8 +74,7 @@
 .grid2Column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  margin-bottom:30px;
+  gap: 10px;
   align-items: stretch; 
 }
 
@@ -117,7 +113,11 @@
 }
 
 .scrollable {
-  min-height:0;
-  overflow-y: scroll;  
+  overflow-y: auto; 
 }
   
+.placeholder{
+  height:500px;
+  background-color: #5a4999;
+  border: 5px solid #eee;
+}
