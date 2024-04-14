@@ -16,6 +16,7 @@
     box-shadow: 0 2px 5px rgba(224, 203, 203, 0.2);
     border-radius: 5px;
     padding:10px;
+    
 
 }
   
@@ -109,22 +110,47 @@ border-radius: 3px; /* Optional: rounded corners for the input */
     border-radius: 3px;
 }
 
-
-
-
 .dashboardMenu {  
+    /* STYLING */    
+    position: relative;
+    display:flex;
+    flex-direction: column;
+    overflow:hidden;
+    z-index: 4;
+    
     /* SIZING */
+    width: 300px;
     height: 100%;    
+
+
+    /* STYLING */
+    background-color: #111; /* Sidebar background color */
+    border-radius: 0px;
+    padding:10px;
+    padding-top: 30px;
     /* LAYOUT */  
     position: relative;
-    left: 0px;
 
     /* MARGINS AND PADDINGS */
     margin-bottom: auto;    
-    padding-top: 60px; /* Some padding at the top */
+    transition: 0.3s;
+    align-items: left;
+}
 
-    /* STYLING */
-    border-radius: 0px;
+.dashboardMenu a {   
+  /* LAYOUT */ 
+
+  /* MARGINS AND PADDINGS */
+  padding: 10px 10px;
+
+  /* STYLING */
+  color: white;
+  text-decoration: none;
+  font-size: 25px;
+}
+
+.dashboardMenu a:hover {
+  color: var(--popup_color);
 }
 
   

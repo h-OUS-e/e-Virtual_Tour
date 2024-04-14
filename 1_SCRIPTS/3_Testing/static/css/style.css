@@ -322,6 +322,7 @@ opacity: 1; /* Fully visible */
 #editmode_bar {
   position: absolute;
   top: 5px;
+  z-index: 3;
 }
 
 

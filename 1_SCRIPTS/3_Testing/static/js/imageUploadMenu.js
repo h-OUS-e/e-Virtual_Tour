@@ -7,7 +7,7 @@ const upload_container = document.getElementById('image_upload_container');
 const header_element = document.getElementById('image_upload_header');
 const emoji_select = document.getElementById('image_upload_emoji_selector');
 const upload_btn = document.getElementById('image_upload_btn'); 
-const exit_btn = document.getElementById('image_upload_exit_btn'); 
+const exit_btn = upload_menu.querySelector('.exitBtn');
 const name_input = document.getElementById('name_input'); 
 
 let uploadButtonListener = null;

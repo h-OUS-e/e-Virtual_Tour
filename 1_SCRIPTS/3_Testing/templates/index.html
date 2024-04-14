@@ -96,8 +96,8 @@
             </div>
         </div>
 
-        <div id="menu_container" class="menu dashboardMenu hidden">
-            <div id="menu_content" class="menu">
+        <div id="menu_container" class="dashboardMenu hidden">
+            <div id="menu_content" class="flexColumn">
                 <a href="#home">Home</a>
                 <a href="#about">About</a>
                 <a href="#services">Services</a>
@@ -226,14 +226,12 @@
 
         <!-- A menu that pops up to upload an image -->
         <div id="image_upload_menu" class="menu widerMenu uploadImageMenu hidden">  
-            <div class="">
-                <div class="grid2Column col41">   
-                    <h3 id="image_upload_header"> Upload Image</h3>  
-                    <button id="image_upload_exit_btn" class="btn exitBtn">X</button> 
-                </div> 
+            <div class="menuTopBar flexRow">
+                <h3 id="image_upload_header" class="header">UPLOADER</h3>   
+                <button class="btn exitBtn">X</button> 
             </div>
 
-            <div class="flexColumn image_upload_wrapper">  
+            <div class="flexColumn image_upload_wrapper centerItems">  
                 <div id="image_upload_container"> 
                     <!-- Image placeholder, with option to upload or choose from existing emojis-->
                     <input id="image_upload_placeholder" accept="image/*" type="file" class="hidden"> 

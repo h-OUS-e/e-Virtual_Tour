@@ -46,7 +46,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;    
-    align-items: center;
 }
 
 /* GRID LAYOUTS */
@@ -97,6 +96,10 @@
   color: #8a8a8a;
   /* background-color: #f7f7f7; */
   border-bottom: 1px solid #eee;
+}
+
+.centerItems {
+  align-items: center;
 }
 
 /* ADD TO CLASS IN HTML TO INITIALLY HIDE ITEMS */
