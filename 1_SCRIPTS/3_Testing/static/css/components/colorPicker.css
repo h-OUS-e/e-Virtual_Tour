@@ -29,7 +29,7 @@ position:absolute;
 top:50%;
 left:50%;
 transform:translate(-20%,-50%);
-z-index:20000;
+z-index:5;
 }
 .panel-row {
   position: relative;
@@ -79,7 +79,7 @@ background:#ccc;
 box-sizing:border-box;
 position:absolute;
 pointer-events:none;
-z-index:2;
+z-index:5;
 border:2px solid var(--color-swatch-border);
 transition: all .2s ease;
 }
@@ -255,7 +255,7 @@ background:#ccc;
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 10;
+  z-index: 5;
 }
 
 
