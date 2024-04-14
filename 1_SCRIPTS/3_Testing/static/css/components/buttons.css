@@ -76,17 +76,17 @@
   margin: 10px;
   width: 50px;
   height:50px;
-    font-size: 30px;
-    color: #8a8a8a;
-    background-color: #49434375;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    position: relative;
-    vertical-align: middle;
-    overflow: hidden;
-    
+  font-size: 30px;
+  color: #8a8a8a;
+  background-color: #49434375;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  position: relative;
+  vertical-align: middle;
+  overflow: hidden;
+  align-self: flex-end;    
 }
 
 .okBtn {

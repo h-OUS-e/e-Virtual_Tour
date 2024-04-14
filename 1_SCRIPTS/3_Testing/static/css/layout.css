@@ -51,6 +51,10 @@
     gap: 10px;    
 }
 
+.flexBottom {  
+  align-self: flex-end;
+}
+
 /* GRID LAYOUTS */
 .grid {
   display: grid;
