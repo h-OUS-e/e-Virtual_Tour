@@ -8,8 +8,10 @@ const sidebar_width = sidebar_styles.getPropertyValue('--sidebar_width').trim();
 document.addEventListener('jsonLoaded', async () => {
     
     // Getting mediabar elements
+    
+    const sidebar = document.getElementById('sidebar');
+
     const mediabar_item_container = document.querySelector('[id=sidebar-item-grid]');
-    console.log("TEST",mediabar_item_container);
 
     // Defining new mediabar items and posting them based on popup contents
     popupContent.forEach(item => {
@@ -60,6 +62,11 @@ document.addEventListener('jsonLoaded', async () => {
     });
 
 
+    // Disabling zoom when zooming on menu
+  if (sidebar) {
+    sidebar.addEventListener('mouseenter', window.disableZoom);
+    sidebar.addEventListener('mouseleave', window.enableZoom);
+  }
 
 });
 

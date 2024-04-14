@@ -203,4 +203,15 @@ document.addEventListener('jsonLoaded', async (event) => {
   });
   exit_btn.addEventListener('click', closeMenu);
 
+
+  // Disabling zoom when zooming on menu
+  if (menu) {
+    menu.addEventListener('mouseenter', window.disableZoom);
+
+    menu.addEventListener('mouseleave', function (event) 
+    {   
+        window.enableZoom();
+    });
+  }
+
 });

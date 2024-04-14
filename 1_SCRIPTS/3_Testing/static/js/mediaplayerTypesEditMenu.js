@@ -505,4 +505,11 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Update the colors of the input edit fields
     updateEditFields();
   });
+
+
+  // Disabling zoom when zooming on menu
+  if (menu) {
+    menu.addEventListener('mouseenter', window.disableZoom);
+    menu.addEventListener('mouseleave', window.enableZoom);
+  }
 });

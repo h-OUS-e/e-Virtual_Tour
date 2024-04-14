@@ -137,6 +137,11 @@ document.addEventListener('jsonLoaded', async (event) => {
   // Listen to exit button
   exit_btn.addEventListener('click', closeMenu);
   // Listen to click to close menu
-  // Listen
+
+  // Disabling zoom when zooming on menu
+  if (menu) {
+    menu.addEventListener('mouseenter', window.disableZoom);
+    menu.addEventListener('mouseleave', window.enableZoom);
+  }
 
 });
