@@ -104,7 +104,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     const supabaseMetadata = {
       bucketName: storage_bucket,
       objectName: `${project_uid}/${fileUUID}/${file.name}`,
-      contentType: file.detail.type,
+      contentType: file.type,
       metadata: { 
         img_project_uid: project_uid,
         file_name: file.name,
