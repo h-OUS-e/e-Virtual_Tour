@@ -1,11 +1,13 @@
 import { supabase } from "./dbClient.js";
-import {fetchProjects, fetchAllProjectData,fetchStoragePublicUrl} from './dbEvents.js'
-import { fetchIcons } from "./dbEvents.js";
+import { fetchAllProjectData, fetchIcons, fetchProjects, fetchStoragePublicUrl } from './dbEvents.js';
 
 
 
 
 const upload_button = document.getElementById('uploadButton');
+const index_button = document.getElementById('indexButton');
+
+
 let selected_project_data;
 const profile_stored = JSON.parse(localStorage.getItem('userProfile'));
 const profile_uid = profile_stored[0].profile_uid;
@@ -101,4 +103,6 @@ function retreiveUserDatafromLocalStorage(){
 function updateParagraph(html_element, text) {
     document.getElementById(html_element).textContent = text;
 };
+
+
 

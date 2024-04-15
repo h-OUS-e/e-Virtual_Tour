@@ -6,6 +6,18 @@
     <title>Document</title>
 </head>
 <body>
+    <button id="indexButton" >Go to Index</button>
+    <script>
+        function redirectToProjectsDirectory(path) {
+            window.location.href = path;
+        };
+    
+        document.getElementById('indexButton').addEventListener('click', function() {
+            redirectToProjectsDirectory('index.html');
+        });
+    </script>
+    
+
     <h1>PROJECTS</h1>
     <h3 id='ClickedProjectHeader'> Chosen Project </h3>
     <p id="ClickedProject"></p>
@@ -20,7 +32,6 @@
     </table>
     <button id="uploadButton" disabled>Upload</button>
     <script>
-
         function redirectToProjectsDirectory(path) {
             window.location.href = path;
         };
