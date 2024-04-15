@@ -40,6 +40,7 @@ async function buildTable(data, html_element) {
 
                 try {
                     let result = await fetchAllProjectData(clicked_project);
+                    console.log(result)
                     return result
                 } catch (error) {
                     console.error(`Error in fetching data for table ${table}: ${error}`);
