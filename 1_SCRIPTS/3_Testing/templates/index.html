@@ -34,7 +34,9 @@
         </script>
     <!-- SCRIPTS -->   
     <script type="module" src="../static/js/dbEvents.js" ></script>
-    <script type="module" src="../static/js/auth_handler.js"></script>
+    <script type="module" src="../static/js/dbBucketUploadTest.js" ></script>
+
+    <!-- <script type="module" src="../static/js/auth_handler.js"></script> -->
     <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
@@ -65,7 +67,7 @@
     
 
     <!-- A screen container to store all screen elements on the front -->
-    <div id="'screen_container" class="screen">        
+    <div id="'screen_container" class="screen">    
 
         <!-- A dashboard at the bottom that reveals the minimap and other items-->
         <div id="dashboard-container">
@@ -85,6 +87,8 @@
                 <!-- a button to toggle edit mode -->
                 <button id="editModeToggle">Toggle Edit Mode</button>
 
+                <!-- TESTING UPLOAD, DELETE AFTER  -->
+                <button id="uploadTest" >Test Upload</button>
 
                 <!-- other utilities -->
                 <button id="fullscreen_button" class="dashboard-item">
@@ -95,6 +99,9 @@
                 </button>
             </div>
         </div>
+
+        <div id="drag-drop-area" class="menu"></div>
+
 
         <div id="menu_container" class="dashboardMenu hidden">
             <div id="menu_content" class="flexColumn">

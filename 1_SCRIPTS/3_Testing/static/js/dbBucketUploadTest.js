@@ -18,7 +18,7 @@ import { supabaseGetSession } from "./dbEvents.js";
 //https://www.restack.io/docs/supabase-knowledge-supabase-storage-metadata
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
-
+document.addEventListener('jsonLoaded', async (event) => {
 // make sure to set this variable before uplaoding!!!!
 const chosen_project = localStorage.getItem('clickedProject');
 let uppy;
@@ -27,7 +27,7 @@ let uppy;
 
 
 function setBucketToIconsAndReinitializeUppy (bucket) {
-  console.log('uploading to ', bucket);
+  console.log('uploading to', bucket);
   let session_data_promise = supabaseGetSession();
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
@@ -104,7 +104,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     const supabaseMetadata = {
       bucketName: storage_bucket,
       objectName: `${project_uid}/${fileUUID}/${file.name}`,
-      contentType: file.detail.type,
+      contentType: file.type,
       metadata: { 
         img_project_uid: project_uid,
         file_name: file.name,
@@ -130,8 +130,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 
 
-
-document.getElementById('icons-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('icons_img'));
-document.getElementById('scenes-button').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('scenes_img'));
-
+document.getElementById('uploadTest').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('scenes_img'));
+});
 // how to use
