@@ -98,7 +98,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   })
 
 
-  uppy.on('imageUploaded', (file) => {
+  uppy.on('image-uploaded', (file) => {
     const fileUUID = uuid.v4();
     console.log('file event', file);
     const supabaseMetadata = {
