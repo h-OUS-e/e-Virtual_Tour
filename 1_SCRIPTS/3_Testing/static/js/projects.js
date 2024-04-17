@@ -101,3 +101,4 @@ function updateParagraph(html_element, text) {
     document.getElementById(html_element).textContent = text;
 };
 
+fetchStoragePublicUrl(  "64e0232e-41c7-4450-a30f-89d82e782ff1", "d94e9853-ef8d-4ea3-996d-3a9a73b023d9",'icons_img' )

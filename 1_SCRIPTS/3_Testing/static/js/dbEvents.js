@@ -263,7 +263,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
     // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
     try {
         let { data, error } = await supabase
-        .from('view_project_data')
+        .from('scenes_with_json')
         .select('*')
         .eq('scene_project_uid', project_uid);
 
@@ -551,51 +551,57 @@ export async function fetchIcons() {
 
 //storage functions
 
-export async function fetchStoragePublicUrl(project_uid, img_uid, bucket, target_img_div) {
+export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_img_div_id = null ) {
     // input:
         // bucket: supabase storage container name icons_img, scenes_img
         // project_uid, img_uid: the targeted storage item's path (project_id/img_id/img_name)
-        // target_img_div: where the img div should show in the HTML
-    const basePath = `${project_uid}`;
-    const file_path = img_uid ? `${basePath}/${img_uid}` : basePath;  
-
-    try {
-        const container = document.getElementById(target_img_div);
-
-        if (img_uid) {
-            // Fetch specific image
-            const { data, error } = await supabase.storage.from(bucket).getPublicUrl(file_path);
-            if (error) throw error;
-            console.log(data.publicUrl);
-        } else {
-            // List all images in the project
-            const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(basePath);
-            if (listError) throw listError;
-            for (let file of fileList) {
-                const { data: urlData, error: urlError } = await supabase.storage.from(bucket).getPublicUrl(`${basePath}/${file.name}`);
-                if (urlError) {
-                    console.error('Error fetching URL for file:', file.name, urlError);
-                    continue;
-                }
-                else { // do whatever with the file list 
-                console.log(data);
-                };
-
-                // const imgElement = document.createElement('img');
-                // imgElement.src = urlData.publicUrl;
-                // imgElement.alt = file.name;
-                // container.appendChild(imgElement);
-
-                // Optional: log the public URL
-                console.log(urlData.publicUrl);
+        // target_img_div_id: the ID of where the img div should show in the HTML
+        function setImageUrl(target_img_div_id, url) {
+            const imageElement = document.getElementById(target_img_div_id);
+            if (imageElement) {
+                imageElement.src = url;
+            } else {
+                console.error('Image element not found');
             }
         }
-    } catch (err) {
-        console.error('Failed to fetch public URL:', err.message);
+        
+    const directoryPath= `${project_uid}/${img_uid}`;
+
+
+    try {
+        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath);
+        if (listError) {
+            throw new Error(listError.message);
+        }
+
+        if (!fileList || fileList.length === 0) {
+            console.log(fileList)
+            throw new Error('No files found in the specified directory.');
+        }
+
+        const firstFile = fileList[0];
+        const firstFilePath = `${directoryPath}/${firstFile.name}`;
+
+        const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath);
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (data && data.publicUrl) {
+            console.log('Public URL of the first file:', data.publicUrl);
+            if (!target_img_div_id == null) { setImageUrl(target_img_div_id, data.publicUrl)};
+        } else {
+            throw new Error('Public URL is not available for the first file.');
+        }        
+
+    } catch (error) {
+        console.error('Failed to fetch public URL:', error.message);
     }
+
+    
 }
 
-  
+
   
 
 
