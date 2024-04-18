@@ -76,8 +76,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     target: target_div,
     showProgressDetails: true,
     note: 'Images only, up to 10 MB',
-    height: '250px',
-    width: '250px',
+    height: '400px',
+    width: '300px',
     proudlyDisplayPoweredByUppy: false,
     hideUploadButton:true, // Using custom upload button instead
     theme: "dark",  
@@ -105,12 +105,19 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     target: Dashboard,
     quality: 0.8,
     cropperOptions: {
-      viewMode: 1,
+      viewMode: 0,
       background: false,
-      autoCropArea: 1,
+      autoCropArea: .95,
       responsive: true,
+
+
+   
+
+      // aspectRatio: 1, // use this to force a square crop on start
+      
     },
   });
+
 
   uppy.use(ThumbnailGenerator, {
     id: "ThumbnailGenerator",

@@ -5,9 +5,9 @@
 }
 
 .uppy-DashboardContent-bar {
-  background-color: #0db4ce13;
-  order: 2;
-  display: None;
+  /* background-color: #0db4ce13; */
+  order: 0;
+  /* display: block; */
 }
 
 
@@ -26,6 +26,8 @@
   max-height: 170px;
   width: 150px;
   display: block;
+
+  
 }
 
 .uppy-Dashboard-Item-previewInnerWrap {
@@ -37,6 +39,8 @@
   height: 100%;
   width: 100%;
   object-fit: contain;
+  background-color: #0f161f;
+  
 }
 
 
@@ -45,9 +49,55 @@
 }
 
 
-.uppy-DashboardContent-bar {
+.uppy-DashboardContent-panelBody {
+  height: 100%;
+}
+
+
+.uppy-ImageCropper-controls button {
+  height: 25px;
+  width: 35px;
+}
+
+.cropper-drag-box {
+}
+
+.cropper-crop-box {
+  /* max-width: 100% !important; */
+  /* max-height: 150px !important; */
+
 
 }
+
+.cropper-canvas  {
+  /* This rule is very important, please don't ignore this */
+  /* max-width: 100% !important; */
+  /* max-height: 150px !important; */
+
+}
+
+.cropper-container img {
+  /* display: block; */
+
+  /* This rule is very important, please don't ignore this */
+  /* max-width: 100% !important; */
+  /* max-height: 100% !important; */
+  /* object-fit: contain; */
+  
+
+}
+
+.cropper-container  {
+  /* display: block; */
+
+  /* This rule is very important, please don't ignore this */
+  max-width: 100% !important;
+  max-height: 300px !important;
+  /* object-fit: contain; */
+
+
+}
+
 
 
 
