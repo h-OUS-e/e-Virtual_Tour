@@ -57,6 +57,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     .use(Dashboard, {
       inline: true,
       limit: 10,
+      maxNumberOfFiles: 1,
       target: target_div,
       showProgressDetails: true,
     })

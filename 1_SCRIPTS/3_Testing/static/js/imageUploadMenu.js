@@ -38,13 +38,13 @@ function toggleUploadMenu(event_type, header, existing_image_names) {
   });
 
   // Handle file input change event
-  upload_container.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      img_URL = URL.createObjectURL(file);
-      updateImageUploadContainer(img_URL);
-    }
-  });
+  // upload_container.addEventListener('change', function(event) {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     img_URL = URL.createObjectURL(file);
+  //     updateImageUploadContainer(img_URL);
+  //   }
+  // });
 
   // Handle emoji select change event
   emoji_select.addEventListener('change', function(event) {
@@ -74,7 +74,7 @@ function closeMenu() {
   // Hide menu
   upload_menu.classList.add('hidden');
   // Reset menu
-  resetImageUploadContainer();
+  // resetImageUploadContainer();
   // Remove event listener
   exit_btn.removeEventListener('click', exitButtonListener);
   upload_btn.removeEventListener('click', uploadButtonListener);
@@ -127,7 +127,6 @@ function updateImageUploadContainer(imageURL) {
 
   // Add uploaded image to label
   const uploaded_image = document.createElement('img');
-  uploaded_image.src = imageURL;
 
   uploaded_image.src = imageURL;
   uploaded_image.classList.add('uploadedImage');  
@@ -151,7 +150,6 @@ function resetImageUploadContainer() {
   upload_container.innerHTML = '';
   name_input.value = "";
   name_input.placeholder = "Enter name";
-
   header_element.textContent = 'Upload Image';
 
   // Create label for image placeholder
@@ -178,7 +176,7 @@ function resetImageUploadContainer() {
   }  
 
 function emitImageUploaded(event_type, img_URL, image_name) {
-  const event_name = `imageUploaded${event_type}`
+  const event_name = `imageUploaded${event_type}`;
   const event = new CustomEvent(event_name, 
   {
     detail: {
