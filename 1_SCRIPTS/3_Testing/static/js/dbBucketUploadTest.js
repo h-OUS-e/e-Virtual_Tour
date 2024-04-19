@@ -20,11 +20,16 @@ import { supabaseGetSession } from "./dbEvents.js";
 //https://www.restack.io/docs/supabase-knowledge-supabase-storage-metadata
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
+
 document.addEventListener('jsonLoaded', async (event) => {
 // make sure to set this variable before uplaoding!!!!
 const chosen_project = localStorage.getItem('clickedProject');
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
+
+const uppyEvent_icon = 'icons_img';
+const uppyEvent_scene = 'scenes_img';
+
 
 
 
@@ -50,8 +55,21 @@ function setBucketToIconsAndReinitializeUppy (bucket, target_div) {
 
 
 function setUpUppy (token, storage_bucket, project_uid, target_div) {
+  // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
+
+
+  // Define some constants based on storage bucket
+  let cropper_aspect_ratio = NaN;
+  let squate_ratio = false;
+  if (storage_bucket == uppyEvent_icon) { 
+    cropper_aspect_ratio = 1;
+    squate_ratio = true;
+  }
+
+
+  // Close uppy if it was open
   if (uppy) {
     uppy.close();  // Close the previous instance if it exists
   }
@@ -76,7 +94,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     target: target_div,
     showProgressDetails: true,
     note: 'Images only, up to 10 MB',
-    height: '400px',
+    height: '300px',
     width: '300px',
     proudlyDisplayPoweredByUppy: false,
     hideUploadButton:true, // Using custom upload button instead
@@ -103,19 +121,18 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // A function that allows user to edit the image
   uppy.use(ImageEditor, {
     target: Dashboard,
-    quality: 0.8,
+    quality: 0.7,
     cropperOptions: {
-      viewMode: 0,
+      viewMode: 1,
       background: false,
-      autoCropArea: .95,
+      autoCropArea: 1,
       responsive: true,
-
-
-   
-
-      // aspectRatio: 1, // use this to force a square crop on start
-      
+      aspectRatio: cropper_aspect_ratio, // use this to force a square crop on start      
     },
+    actions: {
+      cropWidescreen: squate_ratio,
+      cropWidescreenVertical: squate_ratio,
+    }
   });
 
 

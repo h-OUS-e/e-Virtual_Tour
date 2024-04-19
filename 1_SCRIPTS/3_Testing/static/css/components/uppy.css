@@ -1,3 +1,5 @@
+
+/* CUSTOMIZING DASHBOARD TO FIT IN A SMALL CONTAINER */
 .uppy-container {
 }
 
@@ -5,11 +7,8 @@
 }
 
 .uppy-DashboardContent-bar {
-  /* background-color: #0db4ce13; */
   order: 0;
-  /* display: block; */
 }
-
 
 .uppy-Dashboard-files {
   overflow-y: hidden;
@@ -26,31 +25,30 @@
   max-height: 170px;
   width: 150px;
   display: block;
-
-  
 }
 
 .uppy-Dashboard-Item-previewInnerWrap {
   margin-top:10px;
 }
 
-
 .uppy-Dashboard-Item-preview img.uppy-Dashboard-Item-previewImg {
   height: 100%;
   width: 100%;
   object-fit: contain;
   background-color: #0f161f;
-  
 }
-
 
 .uppy-Dashboard-Item-fileInfoAndButtons {
   height: 40px;
 }
 
 
-.uppy-DashboardContent-panelBody {
-  height: 100%;
+/* CUSTOMIZING DASHBOARD TO FIT IN THE SAME SMALL CONTAINER AS THE DASHBOARD */
+
+
+
+.uppy-ImageCropper-container {
+  max-height: 180px;
 }
 
 
@@ -58,46 +56,6 @@
   height: 25px;
   width: 35px;
 }
-
-.cropper-drag-box {
-}
-
-.cropper-crop-box {
-  /* max-width: 100% !important; */
-  /* max-height: 150px !important; */
-
-
-}
-
-.cropper-canvas  {
-  /* This rule is very important, please don't ignore this */
-  /* max-width: 100% !important; */
-  /* max-height: 150px !important; */
-
-}
-
-.cropper-container img {
-  /* display: block; */
-
-  /* This rule is very important, please don't ignore this */
-  /* max-width: 100% !important; */
-  /* max-height: 100% !important; */
-  /* object-fit: contain; */
-  
-
-}
-
-.cropper-container  {
-  /* display: block; */
-
-  /* This rule is very important, please don't ignore this */
-  max-width: 100% !important;
-  max-height: 300px !important;
-  /* object-fit: contain; */
-
-
-}
-
 
 
 
