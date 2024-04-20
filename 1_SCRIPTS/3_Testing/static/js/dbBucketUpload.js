@@ -99,29 +99,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   })
 
 
-  uppy.on('imageUploaded', (file) => {
-    const fileUUID = uuid.v4();
-    console.log('file event', file);
-    const supabaseMetadata = {
-      bucketName: storage_bucket,
-      objectName: `${project_uid}/${fileUUID}/${file.name}`,
-      contentType: file.type,
-      metadata: { 
-        img_project_uid: project_uid,
-        file_name: file.name,
-        storage_bucket: storage_bucket,
-        img_id: fileUUID
-      }
 
-    }
-
-    file.meta = {
-      ...file.meta,
-      ...supabaseMetadata,
-    }
-
-    console.log('file added', file)
-  })
 
   uppy.on('complete', (result) => {
     console.log('Upload complete! We’ve uploaded these files:', result.successful)

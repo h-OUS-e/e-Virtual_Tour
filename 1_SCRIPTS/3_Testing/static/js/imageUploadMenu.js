@@ -12,15 +12,18 @@ const name_input = document.getElementById('name_input');
 
 let uploadButtonListener = null;
 let exitButtonListener = null;
+let existing_image_names = "";
+
 
 
 // A function to show upload icon image menu
 function toggleUploadMenu(storage_bucket, header, existing_image_names) {
 
   let img_URL = ""; 
+  name_input.value = ""; // Reset text input on toggling
   
   // Show upload memu
-  upload_menu.classList.toggle('hidden');  
+  upload_menu.classList.toggle('hidden'); 
   
   // Add new header
   header_element.textContent = header;
@@ -92,8 +95,7 @@ function handleUpload(existing_image_names) {
 
   } else {
     // closeMenu() ;   
-    // emitImageUploaded(storage_bucket, img_URL, image_name);   
-    emitImageUploadChecked();
+    emitImageUploadChecked(image_name);
   }  
 }
 
@@ -171,17 +173,27 @@ function emitImageUploaded(storage_bucket, img_URL, image_name) {
   document.dispatchEvent(event);
 }
 
-function emitImageUploadChecked() {
+function emitImageUploadChecked(image_name) {
   const event_name = 'imageUploadChecked';
+  const event = new CustomEvent(event_name,
+  {
+    detail: {
+        image_name: image_name,
+    }
+  });
+  document.dispatchEvent(event);
+}
+
+function emitClosingImageMenu() {
+  const event_name = 'closingUploadMenu';
   const event = new CustomEvent(event_name);
   document.dispatchEvent(event);
 }
 
-
 document.addEventListener('uploadImage', async function(event) {
   const storage_bucket = event.detail.storage_bucket;
   const header = event.detail.header;
-  const existing_image_names = event.detail.existing_image_names;
+  existing_image_names = event.detail.existing_image_names;
   toggleUploadMenu(storage_bucket, header, existing_image_names);
 });
 
@@ -190,21 +202,26 @@ document.addEventListener('uploadImage', async function(event) {
 document.addEventListener('imageAddedToUppy', function(event) {
   // Get variables
   let image_name = event.detail.image_name;
+  // Add image name to text input
+  name_input.value = image_name;
 
   // Show upload button
   upload_btn.classList.remove('hidden');
 
   // Handle upload button clicked
-  uploadButtonListener = () => handleUpload( existing_image_names);
+  uploadButtonListener = () => handleUpload(existing_image_names);
   upload_btn.addEventListener('click', uploadButtonListener);
 });
 
 
 // Handle exit button clicked
-exitButtonListener = () => closeMenu();
+exitButtonListener = function() {
+  emitClosingImageMenu();
+  closeMenu();
+}
 exit_btn.addEventListener('click', exitButtonListener);
 
-document.addEventListener("imageUploaded")  function(event) {
+document.addEventListener("imageUploaded",  function(event) {
 });
 
 });

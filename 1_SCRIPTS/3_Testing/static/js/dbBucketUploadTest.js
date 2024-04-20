@@ -32,16 +32,13 @@ const storage_bucket_scene = 'scenes_img';
 
 
 
-
-
-function ReinitializeUppySession(bucket, target_div, existing_image_names) {
-  console.log('uploading to', bucket);
+function ReinitializeUppySession(bucket, target_div) {
   let session_data_promise = supabaseGetSession();
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
-      console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, existing_image_names)
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div);
+      console.log(bucket);
 
     } else { console.log('no session found')}
 
@@ -54,7 +51,7 @@ function ReinitializeUppySession(bucket, target_div, existing_image_names) {
 
 
 
-function setUpUppy (token, storage_bucket, project_uid, target_div, existing_image_names) {
+function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
@@ -70,6 +67,10 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, existing_ima
 
   let thumbnail_URL = "";
   let image_name = "";
+  let image_type = "";
+  let image_extension = ""
+  let uppy_file;
+  let fileUUID;
 
 
   // Close uppy if it was open
@@ -148,36 +149,60 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, existing_ima
 
 
   // Updating file metadata when image is added to dashboard, and showing upload button  
-  uppy.on('file-added', (file) => {
-    const fileUUID = uuid.v4();
+  uppy.on('file-added', (file) => {    
+    // Get the image details from file
+    image_name = file.name.slice(0, file.name.lastIndexOf('.'));
+    image_type = file.type;
+    image_extension = file.extension;
+
+    // Create supabase meta data and insert into uppy meta data
+    const file_name = `${image_name}.${image_extension}`;
+    fileUUID = uuid.v4();
     const supabaseMetadata = {
       bucketName: storage_bucket,
-      objectName: `${project_uid}/${fileUUID}/${file.name}`,
-      contentType: file.type,
+      objectName: `${project_uid}/${fileUUID}/${file_name}`,
+      contentType: image_type,
       metadata: { 
         img_project_uid: project_uid,
-        file_name: file.name,
+        file_name: file_name,
         storage_bucket: storage_bucket,
         img_id: fileUUID
-      }    }
-
+      }
+    }
     file.meta = {
       ...file.meta,
       ...supabaseMetadata,
     }
+    
+    // Define the file as uppy file to user later when uploading
+    uppy_file = file;
 
-    // // Show upload button when file is added
-    // upload_btn.classList.remove('hidden');
-    // // Add listener to upload button
-    // upload_btn.addEventListener('click', () => uppyUploadFunction(uppy)); 
-    image_name = file.name;
-    emitImageAdded(image_name);
-
-    // Once image is checked against local storage, upload uppy image
-    document.addEventListener('imageUploadChecked', async function(event) {
-      uppyUploadFunction(uppy);
-    });    
+    // Emit that image was added to check image in image menu
+    emitImageAdded(image_name);    
   });
+
+  // Once image is checked against local storage, adjust supabase meta data & upload uppy image
+  document.addEventListener('imageUploadChecked', async function(event) {
+    // Get image name from menu input
+    image_name = event.detail.image_name;
+
+    // Edit filename in metadata in case new image name is input
+    const file_name = `${image_name}.${image_extension}`;
+    uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
+    uppy_file.meta.metadata.file_name = file_name;
+    // uppy_file.meta.name = file_name;
+    // uppy_file.name = file_name;
+    // const new_data = new File([uppy_file.data], file_name, { type: image_type });
+
+    // uppy_ = file_name;
+    // console.log("TEST",uppy_file.data);
+
+    // uppy_file.data = new_data;
+    // console.log("TEST",uppy_file.data);
+    
+    // Upload image
+    uppyUploadFunction(uppy, uppy_file);
+  });    
 
   uppy.on("thumbnail:generated", (file, preview) => {
     thumbnail_URL = preview;
@@ -185,28 +210,32 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, existing_ima
 
 
   uppy.on('file-removed', (file) => {
-    // Hide upload button when file is added
-    // upload_btn.classList.add('hidden');
-    // upload_btn.removeEventListener('click', () => uppyUploadFunction(uppy)); 
+
     emitImageRemoved();
     image_name = "";
+    image_type = "";
+    image_extension = "";
     thumbnail_URL = "";
+    fileUUID = "";
   });
 
 
   uppy.on('complete', (result) => {
     console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name)
     // Hide upload button when file is added
-    // upload_btn.classList.add('hidden');
-    // upload_btn.removeEventListener('click', () => handleUpload(uppy, storage_bucket, img_URL, existing_image_names));     
     emitImageUploaded(storage_bucket, thumbnail_URL, image_name)
+  });
+
+  // Close uppy dashboard if image upload menu is closed
+  document.addEventListener('closingUploadMenu', function() {
+    uppy.close();
   });
 
 }
 
 
-function uppyUploadFunction(uppy, event) {
-  uppy.upload().then((result) => {
+function uppyUploadFunction(uppy, file) {
+  uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   
     if (result.failed.length > 0) {
@@ -265,17 +294,8 @@ function getThumbnail(file, preview) {
   // thumbnailContainer.appendChild(img);
 }
 
-document.addEventListener('uploadImage', async function(event) {
-  const storage_bucket = event.detail.storage_bucket;
-  const existing_image_names = event.detail.existing_image_names;
 
-  // Settingup uppy
-  if (storage_bucket == storage_bucket_icon) {
-    ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', existing_image_names);
-  }
-});
+document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession("icons_img", '#uppy_placeholder'));
 
-
-// document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession('icons_img', '#uppy_placeholder'));
 });
 // how to use
