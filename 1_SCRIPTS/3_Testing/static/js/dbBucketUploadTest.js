@@ -22,6 +22,9 @@ import { supabaseGetSession } from "./dbEvents.js";
 
 
 document.addEventListener('jsonLoaded', async (event) => {
+
+ /////////////////////// GLOBAL VARIABLES //////////////////////
+
 // make sure to set this variable before uplaoding!!!!
 const chosen_project = localStorage.getItem('clickedProject');
 const upload_btn = document.getElementById("uppy_upload_btn");
@@ -30,6 +33,9 @@ let uppy;
 const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
 
+
+
+ /////////////////////// FUNCTIONS //////////////////////
 
 
 function ReinitializeUppySession(bucket, target_div) {
@@ -50,7 +56,7 @@ function ReinitializeUppySession(bucket, target_div) {
 
 
 
-
+// One big function that defines how to setup uppy dashboard, image editor and what to do when images are added
 function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; // SHOULD THIS BE CONSTANT?
@@ -82,6 +88,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     uppy.close();  // Close the previous instance if it exists
   }
 
+
   // Define uppy
   uppy = new Uppy({
       target: target_div,
@@ -91,7 +98,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       proudlyDisplayPoweredByUppy: false,
       restrictions: {
         allowedFileTypes: ['image/*'],
-        maxNumberOfFiles: 5,
+        maxNumberOfFiles: max_number_of_files,
         maxFileSize: 10000000,// 10MB
       },
   });
@@ -111,7 +118,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     autoOpen: auto_open_cropper, // auto open cropper
 
   });
-
 
   // A function to send the data to Supabase
   uppy.use(Tus, {
@@ -145,6 +151,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       cropWidescreenVertical: !squate_ratio,
     }
   });
+
 
   // Updating file metadata when image is added to dashboard, and showing upload button  
   uppy.on('file-added', (file) => {    
@@ -197,6 +204,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     document.removeEventListener('imageUploadChecked', handler);
   });    
 
+
+  // Get image url to show in icon editor
   uppy.on("thumbnail:generated", (file, preview) => {
     thumbnail_URL = preview;
   });
@@ -217,10 +226,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
-
-      // Remove event listeners
-      // document.removeEventListener('addCustomImageToUppy', addCustomImage);
-
     }
   });
 
@@ -261,7 +266,6 @@ function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_nam
   });
 }
 
-
 async function addCustomImage(event) {
   // Emoties the dashboard and removes all images
   uppy.cancelAll();
@@ -293,9 +297,12 @@ async function addCustomImage(event) {
 
 
 
+
+ /////////////////////// EMIT FUNCTIONS //////////////////////
 function emitImageUploaded(storage_bucket, img_URL, image_name) {
+
+  // Emit specefic event of image uploaded and bucket type
   const event_name = `imageUploaded_${storage_bucket}`;
-  console.log(img_URL);
   const event = new CustomEvent(event_name, 
   {
     detail: {
@@ -306,6 +313,7 @@ function emitImageUploaded(storage_bucket, img_URL, image_name) {
 });
   document.dispatchEvent(event);
 
+  // Emit general event of image uploaded
   const general_event = new CustomEvent("imageUploaded")
   document.dispatchEvent(general_event);
 }
@@ -322,17 +330,20 @@ function emitImageAdded(image_name) {
   document.dispatchEvent(event);
 }
 
+
 function emitImageRemoved() {
   const event_name = `imageRemovedFromUppy`;
   const event = new CustomEvent(event_name);
   document.dispatchEvent(event);
 }
 
+
 function emitEditingImage() {
   const event_name = `editingUppyImage`;
   const event = new CustomEvent(event_name);
   document.dispatchEvent(event);
 }
+
 
 function emitFinishedEditingImage() {
   const event_name = `finishedEditingUppyImage`;
@@ -341,19 +352,14 @@ function emitFinishedEditingImage() {
 }
 
 
-function getThumbnail(file, preview) {
-  // const thumbnailContainer = document.getElementById("image_upload_placeholder");
-  // console.log("TEST", file, preview);
-  // const img = document.createElement("img");
-  // img.src = preview;
-  // img.classList.add('uploadedImage'); 
-  // thumbnailContainer.appendChild(img);
-}
+
+ /////////////////////// EVENT LISTNERS //////////////////////
 
 // Listen to custom images added if any
 document.addEventListener('addCustomImageToUppy', addCustomImage);
 
-document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession("icons_img", '#uppy_placeholder'));
+// Listen to different upload buttons to figure out the bucket for supabase
+document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder'));
 
 });
 // how to use
