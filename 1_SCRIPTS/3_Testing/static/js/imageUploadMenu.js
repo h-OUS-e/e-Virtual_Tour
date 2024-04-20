@@ -14,6 +14,19 @@ let uploadButtonListener = null;
 let exitButtonListener = null;
 let existing_image_names = "";
 
+const emojiMap = {
+  '😀': 'grinning',
+  '😃': 'smiley',
+  '😄': 'smile',
+  '😁': 'grin',
+  '😆': 'laughing',
+  '😅': 'sweat_smile',
+  '😂': 'joy',
+  '🤣': 'rolling_on_the_floor_laughing',
+  '😊': 'blush',
+  '😇': 'innocent',
+};
+
 
 
 // A function to show upload icon image menu
@@ -32,8 +45,7 @@ function toggleUploadMenu(storage_bucket, header, existing_image_names) {
   emoji_select.innerHTML = '';
 
   // Add emoji options dynamically
-  const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇'];
-  emojis.forEach(emoji => {
+  Object.entries(emojiMap).forEach(([emoji, name]) => {
     const option = document.createElement('option');
     option.value = emoji;
     option.textContent = emoji;
@@ -55,7 +67,11 @@ function toggleUploadMenu(storage_bucket, header, existing_image_names) {
     if (selectedEmoji) {
       const emojiCode = selectedEmoji.codePointAt(0).toString(16);
       img_URL = `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${emojiCode}.png`;
-      updateImageUploadContainer(img_URL);
+      // updateImageUploadContainer(img_URL);
+      console.log("selected: ", `${emojiMap[selectedEmoji]}_${event.target.value}`);
+
+      // Emit emoji image and name
+      emitAddCustomImageToUppy(img_URL, `${event.target.value}_${emojiMap[selectedEmoji]}`);
     }
   });
   
@@ -64,13 +80,17 @@ function toggleUploadMenu(storage_bucket, header, existing_image_names) {
 
 
 function closeMenu() {
-  // Hide menu
+  // Hide menu and upload button
   upload_menu.classList.add('hidden');
+  upload_btn.classList.add('hidden');
+
   // Reset menu
   // resetImageUploadContainer();
   // Remove event listener
-  exit_btn.removeEventListener('click', exitButtonListener);
   upload_btn.removeEventListener('click', uploadButtonListener);
+
+  emitClosingImageMenu();
+
 }
 
 
@@ -160,18 +180,6 @@ function resetImageUploadContainer() {
   upload_container.appendChild(label);
   }  
 
-function emitImageUploaded(storage_bucket, img_URL, image_name) {
-  const event_name = `imageUploaded${storage_bucket}`;
-  const event = new CustomEvent(event_name, 
-  {
-    detail: {
-        img_URL: img_URL,
-        image_name: image_name,
-    },
-});
-
-  document.dispatchEvent(event);
-}
 
 function emitImageUploadChecked(image_name) {
   const event_name = 'imageUploadChecked';
@@ -179,6 +187,18 @@ function emitImageUploadChecked(image_name) {
   {
     detail: {
         image_name: image_name,
+    }
+  });
+  document.dispatchEvent(event);
+}
+
+function emitAddCustomImageToUppy(img_URL, img_name) {
+  const event_name = 'addCustomImageToUppy';
+  const event = new CustomEvent(event_name,
+  {
+    detail: {
+        image_name: img_name,
+        image_URL: img_URL,
     }
   });
   document.dispatchEvent(event);
@@ -216,12 +236,29 @@ document.addEventListener('imageAddedToUppy', function(event) {
 
 // Handle exit button clicked
 exitButtonListener = function() {
-  emitClosingImageMenu();
   closeMenu();
 }
+
 exit_btn.addEventListener('click', exitButtonListener);
 
+document.addEventListener('editingUppyImage', function(event) {
+  upload_btn.classList.add('hidden');
+});
+
+document.addEventListener('finishedEditingUppyImage', function(event) {
+  upload_btn.classList.remove('hidden');
+});
+
+// Close menu when image is uploaded
 document.addEventListener("imageUploaded",  function(event) {
+  // Close upload menu
+  closeMenu();
+  // Show upload success message, maybe no important
+  swal({
+    text: "Image uploaded successfully!",
+    icon: "success",
+    timer: 1000,
+  });
 });
 
 });

@@ -1,11 +1,5 @@
 
 /* CUSTOMIZING DASHBOARD TO FIT IN A SMALL CONTAINER */
-.uppy-container {
-}
-
-.uppy-Dashboard {
-}
-
 .uppy-DashboardContent-bar {
   order: 0;
 }
@@ -14,16 +8,16 @@
   overflow-y: hidden;
 }
 
-
 .uppy-Dashboard-filesInner {
   width: 100%;
   padding: 10px;
 }
 
 .uppy-Dashboard-Item-preview {
-  margin-top:10px;
-  max-height: 170px;
-  width: 150px;
+  margin-top:0px;
+  max-height: 200px;
+  height: auto !important;
+  width: 150px !important;
   display: block;
 }
 

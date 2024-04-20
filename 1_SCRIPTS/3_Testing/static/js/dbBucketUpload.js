@@ -98,11 +98,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     console.log('file added', file)
   })
 
-
-
-
   uppy.on('complete', (result) => {
-    console.log('Upload complete! We’ve uploaded these files:', result.successful)
+    console.log('Upload complete! We’ve uploaded these files:', result.successful);
   })
 }
 

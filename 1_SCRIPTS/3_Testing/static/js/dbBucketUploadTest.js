@@ -5,7 +5,7 @@ import {
   ThumbnailGenerator,
   Tus,
   Uppy
-} from 'https://releases.transloadit.com/uppy/v3.6.1/uppy.min.mjs';
+} from "https://releases.transloadit.com/uppy/v3.24.3/uppy.min.mjs";
 import { supabase } from "./dbClient.js";
 import { supabaseGetSession } from "./dbEvents.js";
 
@@ -53,16 +53,21 @@ function ReinitializeUppySession(bucket, target_div) {
 
 function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Get supabase constants
-  const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
+  const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; // SHOULD THIS BE CONSTANT?
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
-
 
   // Define some constants based on storage bucket
   let cropper_aspect_ratio = NaN;
   let squate_ratio = false;
+  let auto_open_cropper = null;
+  let max_number_of_files = 10;
+
+  // Setting dashboard variables if bucket is icons_img
   if (storage_bucket == storage_bucket_icon) { 
     cropper_aspect_ratio = 1;
+    max_number_of_files = 1
     squate_ratio = true;
+    auto_open_cropper = "imageEditor";
   }
 
   let thumbnail_URL = "";
@@ -72,12 +77,12 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   let uppy_file;
   let fileUUID;
 
-
   // Close uppy if it was open
   if (uppy) {
     uppy.close();  // Close the previous instance if it exists
   }
 
+  // Define uppy
   uppy = new Uppy({
       target: target_div,
       inline: true,
@@ -103,6 +108,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     proudlyDisplayPoweredByUppy: false,
     hideUploadButton:true, // Using custom upload button instead
     theme: "dark",  
+    autoOpen: auto_open_cropper, // auto open cropper
+
   });
 
 
@@ -139,25 +146,16 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     }
   });
 
-  // uppy.use(ThumbnailGenerator, {
-  //   id: "ThumbnailGeneratorSmall",
-  //   thumbnailWidth: 360,
-  //   thumbnailHeight: 360,
-  //   thumbnailType: "image/png",
-  //   waitForThumbnailsBeforeUpload: true
-  // });
-
-
   // Updating file metadata when image is added to dashboard, and showing upload button  
   uppy.on('file-added', (file) => {    
     // Get the image details from file
     image_name = file.name.slice(0, file.name.lastIndexOf('.'));
     image_type = file.type;
     image_extension = file.extension;
-
-    // Create supabase meta data and insert into uppy meta data
     const file_name = `${image_name}.${image_extension}`;
     fileUUID = uuid.v4();
+
+    // Create supabase meta data and insert into uppy meta data
     const supabaseMetadata = {
       bucketName: storage_bucket,
       objectName: `${project_uid}/${fileUUID}/${file_name}`,
@@ -181,8 +179,41 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     emitImageAdded(image_name);    
   });
 
+
+  // Listen to custom images added if any
+  document.addEventListener('addCustomImageToUppy', async function handler(event) {
+    image_name = event.detail.image_name;
+    image_type = 'image/png';
+    image_extension = "png";
+    const file_name = `${image_name}.${image_extension}`;
+
+
+    let image_URL = event.detail.image_URL;
+    thumbnail_URL = image_URL;
+
+    // Fetch the image file from the URL
+    const response = await fetch(image_URL);
+    const blob = await response.blob();
+
+    // Create a new file object with the fetched image
+    const file = new File([blob], file_name, { type: image_type });
+
+    // Add the file to the Uppy Dashboard
+    uppy.addFile({
+      source: 'Emoji',
+      name: file.name,
+      type: file.type,
+      data: file,
+    });
+
+    // Remove the event listener after the upload is completed to prevent duplicate listeners
+    document.removeEventListener('addCustomImageToUppy', handler);
+
+  });
+
+
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
-  document.addEventListener('imageUploadChecked', async function(event) {
+  document.addEventListener('imageUploadChecked', async function handler(event) {
     // Get image name from menu input
     image_name = event.detail.image_name;
 
@@ -190,18 +221,12 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     const file_name = `${image_name}.${image_extension}`;
     uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
     uppy_file.meta.metadata.file_name = file_name;
-    // uppy_file.meta.name = file_name;
-    // uppy_file.name = file_name;
-    // const new_data = new File([uppy_file.data], file_name, { type: image_type });
-
-    // uppy_ = file_name;
-    // console.log("TEST",uppy_file.data);
-
-    // uppy_file.data = new_data;
-    // console.log("TEST",uppy_file.data);
     
     // Upload image
-    uppyUploadFunction(uppy, uppy_file);
+    uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
+
+    // Remove the event listener after the upload is completed to prevent duplicate listeners
+    document.removeEventListener('imageUploadChecked', handler);
   });    
 
   uppy.on("thumbnail:generated", (file, preview) => {
@@ -210,7 +235,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 
   uppy.on('file-removed', (file) => {
-
+    // Reset inputs
     emitImageRemoved();
     image_name = "";
     image_type = "";
@@ -221,20 +246,39 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 
   uppy.on('complete', (result) => {
-    console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name)
-    // Hide upload button when file is added
-    emitImageUploaded(storage_bucket, thumbnail_URL, image_name)
+    if ((result.successful).length >= 1) {
+    console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
+
+      emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
+    }
   });
 
   // Close uppy dashboard if image upload menu is closed
-  document.addEventListener('closingUploadMenu', function() {
+  document.addEventListener('closingUploadMenu', function handler() {
     uppy.close();
+    document.removeEventListener('closingUploadMenu', handler);
   });
+
+  // Disable upload button while editing image
+  uppy.on("file-editor:start", () => {
+    emitEditingImage();
+  });
+
+  // Renable upload button when editing is done or cancelled
+  uppy.on("file-editor:complete", () => {
+    emitFinishedEditingImage();
+  });
+
+  uppy.on("file-editor:cancel", () => {
+    emitFinishedEditingImage();
+  });
+
+
 
 }
 
 
-function uppyUploadFunction(uppy, file) {
+function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_name) {
   uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   
@@ -250,7 +294,7 @@ function uppyUploadFunction(uppy, file) {
 
 
 function emitImageUploaded(storage_bucket, img_URL, image_name) {
-  const event_name = `imageUploaded${storage_bucket}`;
+  const event_name = `imageUploaded_${storage_bucket}`;
   console.log(img_URL);
   const event = new CustomEvent(event_name, 
   {
@@ -280,6 +324,18 @@ function emitImageAdded(image_name) {
 
 function emitImageRemoved() {
   const event_name = `imageRemovedFromUppy`;
+  const event = new CustomEvent(event_name);
+  document.dispatchEvent(event);
+}
+
+function emitEditingImage() {
+  const event_name = `editingUppyImage`;
+  const event = new CustomEvent(event_name);
+  document.dispatchEvent(event);
+}
+
+function emitFinishedEditingImage() {
+  const event_name = `finishedEditingUppyImage`;
   const event = new CustomEvent(event_name);
   document.dispatchEvent(event);
 }
