@@ -6,7 +6,7 @@ const upload_menu= document.getElementById('image_upload_menu');
 const upload_container = document.getElementById('image_upload_container');
 const header_element = document.getElementById('image_upload_header');
 const emoji_select = document.getElementById('image_upload_emoji_selector');
-const upload_btn = document.getElementById('image_upload_btn'); 
+const upload_btn = document.getElementById('uppy_upload_btn'); 
 const exit_btn = upload_menu.querySelector('.exitBtn');
 const name_input = document.getElementById('name_input'); 
 
@@ -15,7 +15,7 @@ let exitButtonListener = null;
 
 
 // A function to show upload icon image menu
-function toggleUploadMenu(event_type, header, existing_image_names) {
+function toggleUploadMenu(storage_bucket, header, existing_image_names) {
 
   let img_URL = ""; 
   
@@ -55,17 +55,7 @@ function toggleUploadMenu(event_type, header, existing_image_names) {
       updateImageUploadContainer(img_URL);
     }
   });
-
-
-
-  // Handle upload button clicked
-  uploadButtonListener = () => handleUpload(event_type, img_URL, existing_image_names);
-  upload_btn.addEventListener('click', uploadButtonListener);
-
-
-  // Handle exit button clicked
-  exitButtonListener = () => closeMenu(event_type, img_URL);
-  exit_btn.addEventListener('click', exitButtonListener);
+  
 
 }
 
@@ -78,23 +68,15 @@ function closeMenu() {
   // Remove event listener
   exit_btn.removeEventListener('click', exitButtonListener);
   upload_btn.removeEventListener('click', uploadButtonListener);
-
 }
 
 
-function handleUpload(event_type, img_URL, existing_image_names) {
+function handleUpload(existing_image_names) {
   // get image_name
   const image_name = name_input.value.trim().replace(/\s+/g, '_');
 
   // If image is empty, add warning. Else shutdown menu
-  if (img_URL === "") {
-    swal({
-      text: "Missing an image to upload!",
-      icon: "warning",
-      dangerMode: true,
-    });
-
-  } else if (image_name === "") {
+ if (image_name === "") {
     swal({
       text: "You need to add a name to the new image",
       icon: "warning",
@@ -109,8 +91,9 @@ function handleUpload(event_type, img_URL, existing_image_names) {
     });
 
   } else {
-    closeMenu() ;   
-    emitImageUploaded(event_type, img_URL, image_name);    
+    // closeMenu() ;   
+    // emitImageUploaded(storage_bucket, img_URL, image_name);   
+    emitImageUploadChecked();
   }  
 }
 
@@ -175,8 +158,8 @@ function resetImageUploadContainer() {
   upload_container.appendChild(label);
   }  
 
-function emitImageUploaded(event_type, img_URL, image_name) {
-  const event_name = `imageUploaded${event_type}`;
+function emitImageUploaded(storage_bucket, img_URL, image_name) {
+  const event_name = `imageUploaded${storage_bucket}`;
   const event = new CustomEvent(event_name, 
   {
     detail: {
@@ -188,12 +171,40 @@ function emitImageUploaded(event_type, img_URL, image_name) {
   document.dispatchEvent(event);
 }
 
+function emitImageUploadChecked() {
+  const event_name = 'imageUploadChecked';
+  const event = new CustomEvent(event_name);
+  document.dispatchEvent(event);
+}
+
 
 document.addEventListener('uploadImage', async function(event) {
-  const event_type = event.detail.event_type;
+  const storage_bucket = event.detail.storage_bucket;
   const header = event.detail.header;
   const existing_image_names = event.detail.existing_image_names;
-  toggleUploadMenu(event_type, header, existing_image_names);
+  toggleUploadMenu(storage_bucket, header, existing_image_names);
+});
+
+
+// Handle upload if image is added to uppy dashboard
+document.addEventListener('imageAddedToUppy', function(event) {
+  // Get variables
+  let image_name = event.detail.image_name;
+
+  // Show upload button
+  upload_btn.classList.remove('hidden');
+
+  // Handle upload button clicked
+  uploadButtonListener = () => handleUpload( existing_image_names);
+  upload_btn.addEventListener('click', uploadButtonListener);
+});
+
+
+// Handle exit button clicked
+exitButtonListener = () => closeMenu();
+exit_btn.addEventListener('click', exitButtonListener);
+
+document.addEventListener("imageUploaded")  function(event) {
 });
 
 });

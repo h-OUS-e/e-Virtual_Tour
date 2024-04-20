@@ -27,21 +27,21 @@ const chosen_project = localStorage.getItem('clickedProject');
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
 
-const uppyEvent_icon = 'icons_img';
-const uppyEvent_scene = 'scenes_img';
+const storage_bucket_icon = 'icons_img';
+const storage_bucket_scene = 'scenes_img';
 
 
 
 
 
-function setBucketToIconsAndReinitializeUppy (bucket, target_div) {
+function ReinitializeUppySession(bucket, target_div, existing_image_names) {
   console.log('uploading to', bucket);
   let session_data_promise = supabaseGetSession();
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
       console.log(BEARER_TOKEN)
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div)
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, existing_image_names)
 
     } else { console.log('no session found')}
 
@@ -54,7 +54,7 @@ function setBucketToIconsAndReinitializeUppy (bucket, target_div) {
 
 
 
-function setUpUppy (token, storage_bucket, project_uid, target_div) {
+function setUpUppy (token, storage_bucket, project_uid, target_div, existing_image_names) {
   // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg';
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
@@ -63,10 +63,13 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Define some constants based on storage bucket
   let cropper_aspect_ratio = NaN;
   let squate_ratio = false;
-  if (storage_bucket == uppyEvent_icon) { 
+  if (storage_bucket == storage_bucket_icon) { 
     cropper_aspect_ratio = 1;
     squate_ratio = true;
   }
+
+  let thumbnail_URL = "";
+  let image_name = "";
 
 
   // Close uppy if it was open
@@ -130,29 +133,23 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       aspectRatio: cropper_aspect_ratio, // use this to force a square crop on start      
     },
     actions: {
-      cropWidescreen: squate_ratio,
-      cropWidescreenVertical: squate_ratio,
+      cropWidescreen: !squate_ratio,
+      cropWidescreenVertical: !squate_ratio,
     }
   });
 
-
-  uppy.use(ThumbnailGenerator, {
-    id: "ThumbnailGenerator",
-    thumbnailWidth: 100,
-    thumbnailHeight: 100,
-    thumbnailType: "image/jpeg",
-    waitForThumbnailsBeforeUpload: true
-  });
-
-  uppy.on("thumbnail:generated", (file, preview) => addThumbnail(file, preview));
+  // uppy.use(ThumbnailGenerator, {
+  //   id: "ThumbnailGeneratorSmall",
+  //   thumbnailWidth: 360,
+  //   thumbnailHeight: 360,
+  //   thumbnailType: "image/png",
+  //   waitForThumbnailsBeforeUpload: true
+  // });
 
 
   // Updating file metadata when image is added to dashboard, and showing upload button  
   uppy.on('file-added', (file) => {
     const fileUUID = uuid.v4();
-    console.log('file event', file, storage_bucket);
-    console.log('file added', file)
-
     const supabaseMetadata = {
       bucketName: storage_bucket,
       objectName: `${project_uid}/${fileUUID}/${file.name}`,
@@ -169,35 +166,46 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       ...supabaseMetadata,
     }
 
-    // Show upload button when file is added
-    upload_btn.classList.remove('hidden');
-    // Add listener to upload button
-    upload_btn.addEventListener('click', () => uppyUploadFunction(uppy, event)); 
+    // // Show upload button when file is added
+    // upload_btn.classList.remove('hidden');
+    // // Add listener to upload button
+    // upload_btn.addEventListener('click', () => uppyUploadFunction(uppy)); 
+    image_name = file.name;
+    emitImageAdded(image_name);
+
+    // Once image is checked against local storage, upload uppy image
+    document.addEventListener('imageUploadChecked', async function(event) {
+      uppyUploadFunction(uppy);
+    });    
+  });
+
+  uppy.on("thumbnail:generated", (file, preview) => {
+    thumbnail_URL = preview;
   });
 
 
   uppy.on('file-removed', (file) => {
     // Hide upload button when file is added
-    upload_btn.classList.add('hidden');
-    upload_btn.removeEventListener('click', () => uppyUploadFunction(uppy, event)); 
-
+    // upload_btn.classList.add('hidden');
+    // upload_btn.removeEventListener('click', () => uppyUploadFunction(uppy)); 
+    emitImageRemoved();
+    image_name = "";
+    thumbnail_URL = "";
   });
-
 
 
   uppy.on('complete', (result) => {
-    console.log('Upload complete! We’ve uploaded these files:', result.successful)
-
+    console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name)
     // Hide upload button when file is added
-    upload_btn.classList.add('hidden');
-    upload_btn.removeEventListener('click', () => uppyUploadFunction(uppy, event)); 
+    // upload_btn.classList.add('hidden');
+    // upload_btn.removeEventListener('click', () => handleUpload(uppy, storage_bucket, img_URL, existing_image_names));     
+    emitImageUploaded(storage_bucket, thumbnail_URL, image_name)
   });
+
 }
 
 
 function uppyUploadFunction(uppy, event) {
-  // uppy.upload();
-  console.log("uploading", event);
   uppy.upload().then((result) => {
     console.info('Successful uploads:', result.successful);
   
@@ -211,26 +219,63 @@ function uppyUploadFunction(uppy, event) {
 }
 
 
-function addThumbnail(file, preview) {
-  const thumbnailContainer = document.getElementById("image_upload_placeholder");
 
-  // const closeButton = document.createElement("button");
-  // closeButton.textContent = "X";
-  // closeButton.className = "close-thumbnail";
-  // closeButton.addEventListener("click", removeFile);
-  // closeButton.id = file.id;
-  console.log("TEST");
+function emitImageUploaded(storage_bucket, img_URL, image_name) {
+  const event_name = `imageUploaded${storage_bucket}`;
+  console.log(img_URL);
+  const event = new CustomEvent(event_name, 
+  {
+    detail: {
+        storage_bucket: storage_bucket,
+        img_URL: img_URL,
+        image_name: image_name,
+    },
+});
+  document.dispatchEvent(event);
 
-  const img = document.createElement("img");
-  img.src = preview;
-  img.classList.add('uploadedImage'); 
-
-  thumbnailContainer.appendChild(img);
-  // thumbnailContainer.appendChild(closeButton);
-  // document.querySelector(".thumbnails-holder").appendChild(thumbnailContainer);
+  const general_event = new CustomEvent("imageUploaded")
+  document.dispatchEvent(general_event);
 }
 
 
-document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => setBucketToIconsAndReinitializeUppy('icons_img', '#uppy_placeholder'));
+function emitImageAdded(image_name) {
+  const event_name = `imageAddedToUppy`;
+  const event = new CustomEvent(event_name,
+    {
+      detail: {
+          image_name: image_name,
+      },
+  });
+  document.dispatchEvent(event);
+}
+
+function emitImageRemoved() {
+  const event_name = `imageRemovedFromUppy`;
+  const event = new CustomEvent(event_name);
+  document.dispatchEvent(event);
+}
+
+
+function getThumbnail(file, preview) {
+  // const thumbnailContainer = document.getElementById("image_upload_placeholder");
+  // console.log("TEST", file, preview);
+  // const img = document.createElement("img");
+  // img.src = preview;
+  // img.classList.add('uploadedImage'); 
+  // thumbnailContainer.appendChild(img);
+}
+
+document.addEventListener('uploadImage', async function(event) {
+  const storage_bucket = event.detail.storage_bucket;
+  const existing_image_names = event.detail.existing_image_names;
+
+  // Settingup uppy
+  if (storage_bucket == storage_bucket_icon) {
+    ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', existing_image_names);
+  }
+});
+
+
+// document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession('icons_img', '#uppy_placeholder'));
 });
 // how to use
