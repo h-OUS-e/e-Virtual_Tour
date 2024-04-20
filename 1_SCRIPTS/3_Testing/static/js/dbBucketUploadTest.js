@@ -91,7 +91,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       proudlyDisplayPoweredByUppy: false,
       restrictions: {
         allowedFileTypes: ['image/*'],
-        maxNumberOfFiles: 1,
+        maxNumberOfFiles: 5,
         maxFileSize: 10000000,// 10MB
       },
   });
@@ -180,38 +180,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   });
 
 
-  // Listen to custom images added if any
-  document.addEventListener('addCustomImageToUppy', async function handler(event) {
-    image_name = event.detail.image_name;
-    image_type = 'image/png';
-    image_extension = "png";
-    const file_name = `${image_name}.${image_extension}`;
-
-
-    let image_URL = event.detail.image_URL;
-    thumbnail_URL = image_URL;
-
-    // Fetch the image file from the URL
-    const response = await fetch(image_URL);
-    const blob = await response.blob();
-
-    // Create a new file object with the fetched image
-    const file = new File([blob], file_name, { type: image_type });
-
-    // Add the file to the Uppy Dashboard
-    uppy.addFile({
-      source: 'Emoji',
-      name: file.name,
-      type: file.type,
-      data: file,
-    });
-
-    // Remove the event listener after the upload is completed to prevent duplicate listeners
-    document.removeEventListener('addCustomImageToUppy', handler);
-
-  });
-
-
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
     // Get image name from menu input
@@ -247,16 +215,21 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   uppy.on('complete', (result) => {
     if ((result.successful).length >= 1) {
-    console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
-
+      console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
+
+      // Remove event listeners
+      // document.removeEventListener('addCustomImageToUppy', addCustomImage);
+
     }
   });
 
   // Close uppy dashboard if image upload menu is closed
   document.addEventListener('closingUploadMenu', function handler() {
-    uppy.close();
+    // Remove event listeners
     document.removeEventListener('closingUploadMenu', handler);
+    // document.removeEventListener('addCustomImageToUppy', addCustomImage);
+    uppy.close();
   });
 
   // Disable upload button while editing image
@@ -272,9 +245,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   uppy.on("file-editor:cancel", () => {
     emitFinishedEditingImage();
   });
-
-
-
 }
 
 
@@ -288,6 +258,36 @@ function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_nam
         console.error(file.error);
       });
     }
+  });
+}
+
+
+async function addCustomImage(event) {
+  // Emoties the dashboard and removes all images
+  uppy.cancelAll();
+
+  // Get image name and type
+  const image_name = event.detail.image_name;
+  const image_type = event.detail.image_type;
+  const image_extension = event.detail.image_extension;
+  const file_name = `${image_name}.${image_extension}`;
+
+
+  let image_URL = event.detail.image_URL;
+  const thumbnail_URL = image_URL;
+
+  // Fetch the image file from the URL
+  const response = await fetch(image_URL);
+  const blob = await response.blob();
+
+  // Create a new file object with the fetched image
+  const file = new File([blob], file_name, { type: image_type });
+
+  // Add the file to the Uppy Dashboard
+  uppy.addFile({
+    name: file.name,
+    type: file.type,
+    data: file,
   });
 }
 
@@ -350,6 +350,8 @@ function getThumbnail(file, preview) {
   // thumbnailContainer.appendChild(img);
 }
 
+// Listen to custom images added if any
+document.addEventListener('addCustomImageToUppy', addCustomImage);
 
 document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession("icons_img", '#uppy_placeholder'));
 

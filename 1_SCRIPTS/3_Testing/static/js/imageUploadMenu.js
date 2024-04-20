@@ -61,22 +61,24 @@ function toggleUploadMenu(storage_bucket, header, existing_image_names) {
   //   }
   // });
 
-  // Handle emoji select change event
-  emoji_select.addEventListener('change', function(event) {
-    const selectedEmoji = event.target.value;
-    if (selectedEmoji) {
-      const emojiCode = selectedEmoji.codePointAt(0).toString(16);
-      img_URL = `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${emojiCode}.png`;
-      // updateImageUploadContainer(img_URL);
-      console.log("selected: ", `${emojiMap[selectedEmoji]}_${event.target.value}`);
-
-      // Emit emoji image and name
-      emitAddCustomImageToUppy(img_URL, `${event.target.value}_${emojiMap[selectedEmoji]}`);
-    }
-  });
+  
   
 
 }
+
+// Handle emoji select change event
+emoji_select.addEventListener('change', function handler(event) {
+  const selectedEmoji = event.target.value;
+  if (selectedEmoji) {
+    const emojiCode = selectedEmoji.codePointAt(0).toString(16);
+    const img_URL = `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${emojiCode}.png`;
+    // updateImageUploadContainer(img_URL);
+    console.log("selected: ", `${emojiMap[selectedEmoji]}`);
+
+    // Emit emoji image and name
+    emitAddCustomImageToUppy(img_URL, `${emojiMap[selectedEmoji]}`);
+  }
+});
 
 
 function closeMenu() {
@@ -199,6 +201,8 @@ function emitAddCustomImageToUppy(img_URL, img_name) {
     detail: {
         image_name: img_name,
         image_URL: img_URL,
+        image_type:'image/png',
+        image_extension:'png',
     }
   });
   document.dispatchEvent(event);
@@ -241,12 +245,15 @@ exitButtonListener = function() {
 
 exit_btn.addEventListener('click', exitButtonListener);
 
+// Hide upload and emoji selector when editing the image
 document.addEventListener('editingUppyImage', function(event) {
   upload_btn.classList.add('hidden');
+  emoji_select.classList.add('hidden');
 });
 
 document.addEventListener('finishedEditingUppyImage', function(event) {
   upload_btn.classList.remove('hidden');
+  emoji_select.classList.remove('hidden');
 });
 
 // Close menu when image is uploaded

@@ -5,7 +5,7 @@
 }
 
 .uppy-Dashboard-files {
-  overflow-y: hidden;
+  /* overflow-y: auto; */
 }
 
 .uppy-Dashboard-filesInner {
