@@ -7,13 +7,7 @@
     <!-- <link rel="colors" href="colorPalette.css"> -->
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-    <!-- CSS IMPORTS -->
-    <link rel="stylesheet" type="text/css" href="../static/css/base.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">    
-    <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/components/forms.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/components/buttons.css">
+    
 
     
     <!-- CDN -->
@@ -21,6 +15,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
+    <script src="https://releases.transloadit.com/uppy/v3.24.3/uppy.min.mjs"></script>
+    
+    <script src="https://releases.transloadit.com/uppy/image-editor/v2.1.0/image-editor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <link href="https://releases.transloadit.com/uppy/v3.6.1/uppy.min.css" rel="stylesheet">
 
     <!-- Sweet Alert-->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -33,11 +32,24 @@
           }
         }
         </script>
+
+    <!-- CSS IMPORTS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">    
+    <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/forms.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/buttons.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/uppy.css">
+
+
+
+
     <!-- SCRIPTS -->   
     <script type="module" src="../static/js/dbEvents.js" ></script>
-    <script type="module" src="../static/js/dbBucketUploadTest.js" ></script>
-
+    <script type="module" src="../static/js/dbBucketUpload.js" ></script>
     <!-- <script type="module" src="../static/js/auth_handler.js"></script> -->
+
     <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/mediaPlayer.js"></script>
     <script type="module" src="../static/js/transitionNodes.js"></script>
@@ -100,8 +112,6 @@
                 </button>
             </div>
         </div>
-
-        <div id="drag-drop-area" class="menu"></div>
 
 
         <div id="menu_container" class="dashboardMenu hidden">
@@ -241,13 +251,16 @@
             </div>
 
             <div class="flexColumn image_upload_wrapper centerItems">  
-                <div id="image_upload_container"> 
-                    <!-- Image placeholder, with option to upload or choose from existing emojis-->
+                <!-- Image placeholder, with option to upload or choose from existing emojis -->
+                <!-- <div id="image_upload_container"> 
                     <input id="image_upload_placeholder" accept="image/*" type="file" class="hidden"> 
                     <label for="image_upload_placeholder" class="uploadImageContainer">                              
                             <span class="centerText">UPLOAD IMAGE</span> 
-                    </label>                         
-                </div>    
+                    </label>                                  
+                </div>     -->
+                <div id="uppy_placeholder" class="uppy-container" >
+                </div>
+
                 <input id="name_input" class="textInput" type="text" placeholder="Enter name">           
                 <div class="">
                     <select id="image_upload_emoji_selector" class="emojiSelector">
@@ -255,7 +268,9 @@
                     </select>                       
                 </div>
             </div> 
-                <button id="image_upload_btn" class="btn">Upload</button>          
+                <!-- <button id="image_upload_btn" class="btn hidden">Upload</button>  -->
+                <button id="uppy_upload_btn" class="btn hidden">Upload</button>          
+
         </div> 
                    
 

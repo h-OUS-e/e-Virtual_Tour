@@ -77,7 +77,7 @@
 
 .menuTopBar {
   width: auto;
-  max-height: 500px;
+  max-height: 600px;
   cursor: move;
 }
 
@@ -183,12 +183,15 @@ border-radius: 3px; /* Optional: rounded corners for the input */
 
 .uploadImageMenu {
   z-index: 5;
-  min-height: 300px;;
+  min-height: 300px;
+  width: 400px;
 }
 
 .image_upload_wrapper {
-  width: 250px;
+  width: 100%;
   margin:auto;
+  align-items: center;
+  justify-content: center; 
 }
 
 .uploadImageContainer {
@@ -196,7 +199,7 @@ border-radius: 3px; /* Optional: rounded corners for the input */
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 200px;
+  width: 250px;
   height: 200px;
   border: 2px dashed #ccc;
   border-radius: 8px;

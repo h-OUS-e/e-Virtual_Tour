@@ -181,7 +181,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     const event = new CustomEvent('uploadImage', 
     {
         detail: {
-          event_type: "Icon",
+          storage_bucket: "icons_img",
           header: "Add a new icon",
           existing_image_names: icons,
         },
@@ -193,10 +193,9 @@ document.addEventListener('jsonLoaded', async (event) => {
     menu.classList.add("hidden");
   }
 
-
   // Event listeners
   add_btn.addEventListener('click', emitUploadImage);
-  document.addEventListener('imageUploadedIcon', async function(event) {
+  document.addEventListener('imageUploaded_icons_img', async function(event) {
     const icon_name = event.detail.image_name;
     const icon_URL = event.detail.img_URL;
     addNewIcon(icon_name, icon_URL, icon_gallery);
