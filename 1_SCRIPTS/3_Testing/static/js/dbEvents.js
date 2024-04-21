@@ -551,7 +551,7 @@ export async function fetchIcons() {
 
 //storage functions
 
-export async function fetchStoragePublicUrl(project_uid, img_uid, bucket, target_img_div) {
+export async function fetchStoragePublicUrl(project_uid, img_uid, bucket) { 
     // input:
         // bucket: supabase storage container name icons_img, scenes_img
         // project_uid, img_uid: the targeted storage item's path (project_id/img_id/img_name)
@@ -560,7 +560,6 @@ export async function fetchStoragePublicUrl(project_uid, img_uid, bucket, target
     const file_path = img_uid ? `${basePath}/${img_uid}` : basePath;  
 
     try {
-        const container = document.getElementById(target_img_div);
 
         if (img_uid) {
             // Fetch specific image
@@ -580,13 +579,6 @@ export async function fetchStoragePublicUrl(project_uid, img_uid, bucket, target
                 else { // do whatever with the file list 
                 console.log(data);
                 };
-
-                // const imgElement = document.createElement('img');
-                // imgElement.src = urlData.publicUrl;
-                // imgElement.alt = file.name;
-                // container.appendChild(imgElement);
-
-                // Optional: log the public URL
                 console.log(urlData.publicUrl);
             }
         }
