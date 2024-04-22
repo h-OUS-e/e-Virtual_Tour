@@ -19,9 +19,17 @@
     <script src="https://releases.transloadit.com/uppy/image-editor/v2.1.0/image-editor.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
     <link href="https://releases.transloadit.com/uppy/v3.6.1/uppy.min.css" rel="stylesheet">
+    
 
     <!-- Sweet Alert-->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.js"></script>
+    <!-- Tittap -->
+    <script type="module">
+        import { Editor } from 'https://esm.sh/@tiptap/core'
+        import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
+    </script>
 
     <script type="importmap">
         {
@@ -40,6 +48,9 @@
     <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/buttons.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/uppy.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/popup.css">
+
+    
 
 
 
@@ -73,6 +84,8 @@
     <script type="module" src="../static/js/makeMenusDraggable.js"></script>    
     <script type="module" src="../static/js/colorPicker.js"></script>
     <script type="module" src="../static/js/projectColorHandler.js"></script>
+    <script type="module" src="../static/js/mediaPopupTest.js"></script>
+
     
 </head>
 <body>
@@ -273,17 +286,7 @@
         </div> 
                    
 
-        <!-- Edit menu to add or edit types of mediaplayers -->
-        <!-- <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
-            <h2>Edit Menu</h2>
-            <ul>
-                <li>
-                    <label for="creation_menu_mediaplayerTypes_add"> <p>Add New Type</p></label>
-                    <input type="text" id="creation_menu_mediaplayerTypes_add" placeholder="Enter new type">
-                    <button class="btn" id="creation_menu_mediaplayerTypes_add_btn">Add Type</button>
-                </li>
-            </ul>
-        </div> -->
+
         
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
@@ -384,8 +387,40 @@
 
 
         <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->
+        <div class="popup-overlay hidden"></div>
+        
+        <div id="popup2" class="popup ">
+            <div class="menuTopBar flexRow">
+                <h3 class="header"></h3>   
+                <button class="btn exitBtn popup-exit-btn">X</button> 
+            </div>
+            <div class="popup-contianer">
+                <div class="popup-contianer-header grid2Column col21">                        
+                    <div class="popup-contianer-header-wrapper ">  
+                        <div class="popup-contianer-header-wrapperInner ">
+                            <h2 class="popup-title">Your Title Here</h2>
+                            <p class="popup-subtitle">Subtitle</p>
+                        </div>
+                    </div>
+                    <div class="popup-contianer-header-wrapper">  
+                        <div class="popup-contianer-header-wrapperInner">                        
+                            <p class="popup-description">
+                                A small description of the title.
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="popup-contianer-body">
+                    <div id="popup_body_editor" class="popup-body-editor"></div>
+                    <!-- <button class="add-block-btn">ADD</button> -->
+                </div>
+            </div>
+        </div>
+
+
+        <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->
         <div id="popup" class="popup" style="display:none;">
-            <!-- The header of the popup with a subtitle, title and a paragraph-->
+            <!-- The header of the popup with a subtitle, title and a paragraph-->            
             <div class="popup-header">
                 <div class="title-container">
                     <h1 class="popup-subtitle">Subtitle</h1>

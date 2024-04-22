@@ -196,6 +196,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     const file_name = `${image_name}.${image_extension}`;
     uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
     uppy_file.meta.metadata.file_name = file_name;
+    uppy_file.name = file_name;
+    uppy_file.meta.name = file_name;
+    // uppy_file.data.name = file_name;
+
+
     
     // Upload image
     uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);

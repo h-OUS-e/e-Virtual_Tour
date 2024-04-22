@@ -31,6 +31,22 @@
 }
 
 
+.f1{
+  flex-grow: 1;
+}
+.f2{
+  flex-grow: 2;
+}
+.f3{
+  flex-grow: 3;
+}
+.f4{
+  flex-grow: 4;
+}
+
+
+
+
 .flexRowLeft{
   display: flex;
   flex-direction: row;
@@ -84,6 +100,10 @@
 
 .col41 {
   grid-template-columns: 4fr 1fr;
+}
+
+.col31 {
+  grid-template-columns: 3fr 1fr;
 }
 
 .col21 {

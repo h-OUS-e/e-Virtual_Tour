@@ -133,7 +133,7 @@ html {
 
 
 /* Defining popup style*/
-.popup {
+/* .popup {
     position: absolute;
     top: 50%;
     left: 50%;    
@@ -151,9 +151,9 @@ html {
     border: 3px solid var(--popupLightColor);
     border-radius: 15px;
     overflow: auto;
-    z-index: 5; /* High z-index to be above other content */
+    z-index: 5; 
     color: var(--popupDarkColor);
-}
+} */
 .popup-header {
     font-family: 'CircularStd', Helvetica;
     border-radius: 10px;

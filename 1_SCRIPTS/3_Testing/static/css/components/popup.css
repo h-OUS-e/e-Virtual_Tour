@@ -1,0 +1,110 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+  -webkit-backdrop-filter: blur(5px); /* This creates the blur effect for other browsers */
+  backdrop-filter: blur(5px); /* This creates the blur effect for firefox */
+  z-index: 5; /* Ensure it's below the popup but above other content */
+}
+
+.popup {
+  position: absolute;
+  max-width: 90%;
+  max-height: 90%;
+  height: auto;
+  
+  /* Center the block */
+  top: 50%;
+  left: 50%;    
+  transform: translate(-50%, -50%);    
+  overflow: auto;
+
+  background-color: white;
+  box-shadow: 0px 5px 15px var(--popupLightColor);
+  box-sizing: border-box;
+  border: 3px solid var(--popupLightColor);
+  border-radius: 15px;
+  z-index: 6; /* High z-index to be above other content */
+  color: var(--popupDarkColor);
+  padding: 10px;
+
+
+}
+
+
+.popup-contianer {
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  box-sizing: border-box;
+
+}
+
+.popup-contianer-header {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 0px;
+  border: none;    
+}
+
+.popup-contianer-header-wrapper {
+  /* max-height: 120px; */
+}
+
+.popup-contianer-header-wrapperInner {  
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;  
+  height:100%  
+}
+
+.popup-title {
+  margin-bottom: 10px;
+}
+
+.popup-subtitle {
+}
+
+.popup-description {
+  font-style: italic;
+  padding-right: 10px;
+  font-size: 14px;
+  text-align: end;
+}
+
+
+.popup-contianer-body {
+  width: auto;
+  overflow: hidden;
+  /* min-height: 200px; */
+  /* width: 100%; */
+  border: 1px solid #ccc;
+  padding: 0px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+
+.add-block-btn {
+  margin-top: 10px;
+}
+
+.popup-exit-btn {
+  
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  color: var(--popupDarkColor);
+}
+
+.popup-canvas{
+  width: 100%;
+}
+
+.popup-header-canvas{
+  width: 100%;
+}
