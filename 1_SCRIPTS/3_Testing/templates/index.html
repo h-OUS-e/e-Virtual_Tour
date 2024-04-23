@@ -56,8 +56,6 @@
     
 
 
-
-
     <!-- SCRIPTS -->   
     <script type="module" src="../static/js/dbEvents.js" ></script>
     <script type="module" src="../static/js/dbBucketUpload.js" ></script>
@@ -414,10 +412,59 @@
                     </div>
                 </div>
                 <div class="popup-contianer-body">
-                    <div id="popup_body_editor_bar" class="flexRow">
-                        <div id="popup_body_editor_bold_btn" class="btn tiptapBtn">Bold</div>
-                        <div id="popup_body_editor_italic_btn" class="btn tiptapBtn">Italic</div>
-                        <div id="popup_body_editor_underline_btn" class="btn tiptapBtn">Underline</div>
+                    <div id="popup_body_editor_bar" class="flexRow popup-body-editor-bar ">
+                        <div id="popup_body_editor_bar_styles" class="flexRow popup-body-editor-bar-styles">
+                            <div id="popup_body_editor_h1_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H1.svg" alt="H1"> 
+                            </div>
+                            <div id="popup_body_editor_h2_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H2.svg" alt="H2"> 
+                            </div>
+                            <div id="popup_body_editor_h3_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H3.svg" alt="H3"> 
+                            </div>
+                            <div id="popup_body_editor_paragraphOrientation_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="Orientation"> 
+                            </div>
+                        </div>
+
+                        <div id="popup_body_editor_bar_marks" class="flexRow popup-body-editor-bar-marks">
+                            <div id="popup_body_editor_bold_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_bold.svg" alt="B"> 
+                            </div>
+                            <div id="popup_body_editor_italic_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_italic.svg" alt="I"> 
+                            </div>
+                            <div id="popup_body_editor_underline_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_underline.svg" alt="U">                             
+                            </div>
+                            <div id="popup_body_editor_linkText_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_link.svg" alt="link">                             
+                            </div>
+                        </div>
+
+                        
+
+                        <div id="popup_body_editor_bar_paragraphs" class="flexRow popup-body-editor-bar-paragraphs">
+                            <div id="popup_body_editor_bulletList_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/bullet_list.svg" alt="bullet"> 
+                            </div>
+                            <div id="popup_body_editor_numberedList_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/numbered_list.svg" alt="list"> 
+                            </div>
+                        </div>
+
+                        <div id="popup_body_editor_bar_url" class="flexRow popup-body-editor-bar-url">
+                            <div id="popup_body_editor_imgURL_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="IMG"> 
+                            </div>
+                            <div id="popup_body_editor_videoURL_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/video_URL.svg" alt="VID"> 
+                            </div>
+                        </div>
+
+
+                        
                     </div>
                     <div id="popup_body_editor" class="popup-body-editor"></div>
                     

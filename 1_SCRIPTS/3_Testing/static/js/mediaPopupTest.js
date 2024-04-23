@@ -2,7 +2,9 @@
 A script to control popup windows
 */
 import { Editor } from 'https://esm.sh/@tiptap/core';
+import Underline from 'https://esm.sh/@tiptap/extension-underline';
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
+
 const colors = getComputedStyle(document.documentElement);  
 
 
@@ -113,7 +115,7 @@ document.addEventListener('jsonLoaded', async (event) => {
         // Setup tiptap editor (the body editor)
         editor = new Editor({
             element: document.getElementById("popup_body_editor"),
-            extensions: [StarterKit],
+            extensions: [StarterKit, Underline],
             content: content,
 
             // Update content and activate buttons on update
@@ -180,6 +182,7 @@ document.addEventListener('jsonLoaded', async (event) => {
         buttons.bold.removeEventListener("click", toggleBold);
         buttons.italic.removeEventListener("click", toggleItalic);
         buttons.underline.removeEventListener("click", toggleUnderline);
+
         // untoggle buttons
         buttons.bold.classList.toggle("active", false);
         buttons.italic.classList.toggle("active", false);

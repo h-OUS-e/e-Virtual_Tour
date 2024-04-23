@@ -108,3 +108,17 @@
 .popup-header-canvas{
   width: 100%;
 }
+
+
+.popup-body-editor-bar {
+  padding: 4px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  justify-content: flex-start;
+  gap: px;  
+}
+
+.popup-body-editor-bar > * {
+  justify-content: flex-start;
+  gap: 3px;   
+}

@@ -1,6 +1,6 @@
 .btn {
     padding: 8px 8px;
-    margin: 0 auto;
+    margin: 0 ;
     font-size: 14px;
     color: #333;
     background-color: #fff;
@@ -120,20 +120,37 @@
 
 
 
-
-
 /* TIPTAP BUTTONS FOR EDITOR MENU */
 .tiptapBtn{
-  padding: 8px 8px;
-    margin: 0 auto;
-    font-size: 14px;
-    color: #333;
-    background-color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
+  display: flex;
+
+  width: 16px;
+  height: 16px;
+  padding: 1px;
+
+  font-size: 1px;
+  background-color: #fff;
+  border: 1px solid #00000065;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+  cursor: pointer;
+  border-radius: 2px;
+
+
+
+
 }
+
+.tiptapBtn.active {  
+  cursor: pointer;
+}
+
+
+
+.tiptapBtnImg {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;  
+}
+
