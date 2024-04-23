@@ -118,3 +118,22 @@
   color:#838383;
 }
 
+
+
+
+
+/* TIPTAP BUTTONS FOR EDITOR MENU */
+.tiptapBtn{
+  padding: 8px 8px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}

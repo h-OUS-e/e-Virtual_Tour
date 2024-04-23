@@ -154,14 +154,17 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     function toggleBold() {
       editor.chain().focus().toggleBold().run();
+      buttons.bold.classList.toggle("active", editor.isActive("bold"));
     }
 
     function toggleItalic() {
       editor.chain().focus().toggleItalic().run();
+      buttons.italic.classList.toggle("active", editor.isActive("italic"));
     }
 
     function toggleUnderline() {
       editor.chain().focus().toggleUnderline().run();
+      buttons.underline.classList.toggle("active", editor.isActive("underline"));
     }
 
 
@@ -177,6 +180,12 @@ document.addEventListener('jsonLoaded', async (event) => {
         buttons.bold.removeEventListener("click", toggleBold);
         buttons.italic.removeEventListener("click", toggleItalic);
         buttons.underline.removeEventListener("click", toggleUnderline);
+        // untoggle buttons
+        buttons.bold.classList.toggle("active", false);
+        buttons.italic.classList.toggle("active", false);
+        buttons.underline.classList.toggle("active", false);
+
+
       }
     }
 
