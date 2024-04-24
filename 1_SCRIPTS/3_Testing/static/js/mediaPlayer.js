@@ -203,7 +203,7 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, ico
             const position = mediaPlayer_item.position;
             const rotation = mediaPlayer_item.rotation;
             const mediaplayer_type_uuid = mediaPlayer_item.mediaplayer_type_uuid;
-            const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
+            const mediaplayer_type = mediaplayer_types[mediaplayer_type_uuid];
             const icon_index = mediaPlayer_item.icon_index;
             const icon_url = icons[mediaplayer_type["icon"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;
@@ -212,14 +212,15 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, ico
                 "title": title,
                 "position": position,
                 "rotation": rotation,
-                "mediaplayer_type_uuid": mediaplayer_type_uuid,
-                
+                "mediaplayer_type_uuid": mediaplayer_type_uuid,                
             }
+
             // Create mediaplayer and add to scene
             const media_player = new MediaPlayer(uniqueId, project_colors, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
             media_player.addToScene();
             
         });
+        
         document.dispatchEvent(new CustomEvent('mediaPlayersLoaded'));
     
     // // to use .then() for handling asynchronous completion, the function must return a Promise
