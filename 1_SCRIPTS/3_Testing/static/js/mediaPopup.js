@@ -53,8 +53,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     // A function to show the popup window and overlay
     function showPopup() {
         popup.style.display = 'block';
-        overlay.style.display = 'block'; // Show the overlay
-        
+        overlay.style.display = 'block'; // Show the overlay        
     }
 
     // A function to hide the popup window and the overlay
@@ -100,7 +99,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     }
 
     // showing popup when mediaPlayer is clicked or when mediabarItem is clicked
-    scene.addEventListener('mediaPlayerClicked', handleMediaClick);
+    // scene.addEventListener('mediaPlayerClicked', handleMediaClick);
     scene.addEventListener('mediabarItemDoubleClicked', handleMediaClick);
 
     // Close popup when closebutton is clicked

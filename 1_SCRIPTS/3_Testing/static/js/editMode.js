@@ -113,6 +113,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
         isEditMode = !isEditMode; // Toggle edit mode
+        emitEditMode(isEditMode); // dispatch edit mode
         this.textContent = isEditMode ? 'Exit & Save' : 'Enter Edit Mode';
         gridPlane.setAttribute('material', 'visible', isEditMode);
         gridCylinder.setAttribute('material', 'visible', isEditMode);
@@ -497,6 +498,16 @@ function emitCameraRotatedEvent() {
 
     // Dispatch event
     scene.dispatchEvent(new_event);  
+}
+
+function emitEditMode(edit_mode) {
+    var new_event = new CustomEvent('editMode',
+    {
+        detail: {
+            edit_mode: edit_mode,
+        }
+    });
+    scene.dispatchEvent(new_event);
 }
 
 

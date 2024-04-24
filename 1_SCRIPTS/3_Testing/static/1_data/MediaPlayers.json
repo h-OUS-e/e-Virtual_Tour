@@ -20,11 +20,12 @@
     {
         "id": "mp_01.1_Integrated_Artificial_Intelligence",
         "title": "Integrated_Artificial_Intelligence",
+        "description": "test",
         "position": ".0475 2.13 -9.95",
         "rotation": "0 175 0",
         "mediaplayer_type": "blue",
         "icon_index": "1",
-        "background_img_id" : "01.1"
+        "background_img_id" : "01.1"        
     }, 
 
     {

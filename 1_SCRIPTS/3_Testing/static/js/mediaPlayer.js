@@ -86,12 +86,18 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.addEventListener('mouseDoubleClicked', function(event) {
         if (event.target.classList.contains(main_class)){
 
+
             // Create an event that sends media id when double clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
             {
                 detail: {
                     id: event.target.id,
-                    mediaplayer_type: event.target.getAttribute('mediaplayer_type')}
+                    mediaplayer_type: event.target.getAttribute('mediaplayer_type'),
+                    mediaplayer_title:event.target.getAttribute('title'),
+                    mediaplayer_description:event.target.getAttribute('description'),
+                    mediaplayer_body:event.target.getAttribute('body'),
+                    mediaplayer_icon_index: event.target.getAttribute('icon_index'),                    
+                }
             });
             // Dispatch event
             scene.dispatchEvent(new_event);
@@ -106,10 +112,19 @@ document.addEventListener('jsonLoaded', async (event) => {
     {
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class))) 
         {
+    console.log("TEST2", event.target.getAttribute('description'));
+
             // Create an event that sends media id when clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
             {
-                detail: {id: event.target.id, mediaplayer_type: event.target.getAttribute('mediaplayer_type'), icon_index: event.target.getAttribute('icon_index')}
+                detail: {
+                    id: event.target.id, 
+                    mediaplayer_type: event.target.getAttribute('mediaplayer_type'),
+                    mediaplayer_title:event.target.getAttribute('title'),
+                    mediaplayer_description:event.target.getAttribute('description'),
+                    mediaplayer_body: event.target.getAttribute('body'),
+                    mediaplayer_icon_index: event.target.getAttribute('icon_index'),   
+                }
             });
             scene.dispatchEvent(new_event);
         }
