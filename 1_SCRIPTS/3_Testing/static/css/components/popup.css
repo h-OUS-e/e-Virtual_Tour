@@ -12,15 +12,18 @@
 
 .popup {
   position: absolute;
-  max-width: 90%;
+  max-width: 800px ;
   max-height: 90%;
-  height: auto;
+  
+  width: 90%;   
+  height:100%;
+
   
   /* Center the block */
   top: 50%;
   left: 50%;    
   transform: translate(-50%, -50%);    
-  overflow: auto;
+  overflow: hidden;
 
   background-color: white;
   box-shadow: 0px 5px 15px var(--popupLightColor);
@@ -36,14 +39,20 @@
 
 
 .popup-contianer {
+  display: flex;
+  flex-direction: column;;
   padding-bottom: 30px;
   padding-left: 30px;
   padding-right: 30px;
   box-sizing: border-box;
+  max-height: 100%;
+  height:100%;
 
+  
 }
 
 .popup-contianer-header {
+  position: sticky;
   margin-bottom: 20px;
   border-radius: 10px;
   padding: 0px;
@@ -55,11 +64,8 @@
 }
 
 .popup-contianer-header-wrapperInner {  
-  display: flex;
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-end;  
-  height:100%  
 }
 
 .popup-title {
@@ -78,14 +84,23 @@
 
 
 .popup-contianer-body {
-  width: auto;
   overflow: hidden;
+  display:flex;
+  flex-direction: column;
   /* min-height: 200px; */
-  /* width: 100%; */
+  max-width: 32ch;
+  min-width: 70%;
+  height:100%;  
+
+  align-self: center ; 
+  align-items: center;
+
+
   border: 1px solid #ccc;
   padding: 0px;
   padding-left: 30px;
   padding-right: 30px;
+  margin-bottom: 10px;
 }
 
 
@@ -93,32 +108,51 @@
   margin-top: 10px;
 }
 
-.popup-exit-btn {
-  
+.popup-exit-btn {  
   border: none;
   background: none;
   font-size: 1.2rem;
   color: var(--popupDarkColor);
 }
 
-.popup-canvas{
-  width: 100%;
-}
-
-.popup-header-canvas{
-  width: 100%;
-}
 
 
 .popup-body-editor-bar {
+  position: sticky;
   padding: 4px;
-  border: 1px solid #000000;
-  border-radius: 5px;
+  border-bottom: 1px solid #bebebe;
+  border-radius: 0px;
+  align-self: flex-start;
   justify-content: flex-start;
-  gap: px;  
+  align-items: flex-start;
+  gap: 13px;  
+  max-width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  
+  /* background-color: #ccc; */
+  
 }
 
 .popup-body-editor-bar > * {
   justify-content: flex-start;
-  gap: 3px;   
+  gap: 5px;   
+  flex-wrap: nowrap;  
+}
+
+.popup-body-editor {
+  margin-top: 10px;
+
+  max-width: 100%;
+  /* min-width: 10ch; */
+  width:100%;
+  min-height: 90px;
+  max-height:100%;
+  overflow: auto;
+}
+
+.popup-body-editor p {
+  max-width: 38ch;
+  min-width: 10ch;  
 }

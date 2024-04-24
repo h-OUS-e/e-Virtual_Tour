@@ -5,7 +5,7 @@ import { Editor } from 'https://esm.sh/@tiptap/core';
 import Underline from 'https://esm.sh/@tiptap/extension-underline';
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
 
-const colors = getComputedStyle(document.documentElement);  
+// const colors = getComputedStyle(document.documentElement);  
 
 
 document.addEventListener('jsonLoaded', async (event) => {
@@ -35,6 +35,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     const main_class = "#popup2";
     let json = "{\"version\":\"5.3.0\",\"objects\":[{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":75,\"top\":14,\"width\":506.85,\"height\":45.2,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"bold\",\"fontSize\":40,\"text\":\"Advanced Patient Diagnostics\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":0,\"top\":80,\"width\":68.69,\"height\":20.34,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":18,\"text\":\"SageCare\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":576,\"top\":93,\"width\":72.42,\"height\":15.82,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":14,\"text\":\"hello it is me\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"}]}";    
     const popup = document.getElementById("popup2");
+    const exit_btn = popup.querySelector('.exitBtn');
 
     let editor;
 
@@ -187,7 +188,6 @@ document.addEventListener('jsonLoaded', async (event) => {
         buttons.bold.classList.toggle("active", false);
         buttons.italic.classList.toggle("active", false);
         buttons.underline.classList.toggle("active", false);
-
 
       }
     }
