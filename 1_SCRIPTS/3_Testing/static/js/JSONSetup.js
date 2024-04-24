@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         root.style.setProperty(`--${name}`, value);
     }
 
+    // Load Mediaplayers
+    const mediaplayers = await loadJSON("MediaPlayers");
+
+    // Load Transition Nodes
+    // const transitionNodes = await loadJSON("TransitionNodes");
+
     
 
     if (mediaplayer_types) {
@@ -62,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 icons: icons,
                 project_colors: project_colors,
                 color_palette: colors,
+                mediaplayers: mediaplayers,
             }
         });
 

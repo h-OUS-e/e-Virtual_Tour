@@ -20,8 +20,10 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Getting media player types and icons from the JSON filea
     let mediaplayer_types = event.detail.mediaplayer_types;
     let icons = event.detail.icons;
+    let mediaPlayer_JSON = event.detail.mediaplayers;
+    
     // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaplayer_types, icons, project_colors);
+    await loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, icons, project_colors);
     
   
        
@@ -190,35 +192,36 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
 
-async function loadMediaPlayersFromJSON(mediaplayer_types, icons, project_colors) {
-    try {
-        const response = await fetch('../static/1_data/MediaPlayers.json'); // Adjust the path as necessary
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const mediaPlayer_JSON = await response.json();
-
+async function loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, icons, project_colors) {
+    
         // Process each object in the JSON array
         mediaPlayer_JSON.forEach(mediaPlayer_item => {
             // Get attributes
             const uniqueId = mediaPlayer_item.id;
             const title = mediaPlayer_item.title;
-            const point = mediaPlayer_item.position;
+            const description = mediaPlayer_item.description;
+            const position = mediaPlayer_item.position;
             const rotation = mediaPlayer_item.rotation;
-            const mediaplayer_type_string = mediaPlayer_item.mediaplayer_type;
+            const mediaplayer_type_uuid = mediaPlayer_item.mediaplayer_type_uuid;
             const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
             const icon_index = mediaPlayer_item.icon_index;
             const icon_url = icons[mediaplayer_type["icon"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;
+
+            const mediaplayer_content = {
+                "title": title,
+                "position": position,
+                "rotation": rotation,
+                "mediaplayer_type_uuid": mediaplayer_type_uuid,
+                
+            }
             // Create mediaplayer and add to scene
             const media_player = new MediaPlayer(uniqueId, project_colors, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
             media_player.addToScene();
             
         });
         document.dispatchEvent(new CustomEvent('mediaPlayersLoaded'));
-    } catch (error) {
-        console.error('Could not fetch transitions:', error);
-    }
+    
     // // to use .then() for handling asynchronous completion, the function must return a Promise
     // return Promise.resolve();
 }
