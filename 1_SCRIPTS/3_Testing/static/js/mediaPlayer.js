@@ -1,7 +1,6 @@
 // console.log('from media player: ' + recieved_project_data)
 
 
-
  // Get colors from CSS palette
  const colors = getComputedStyle(document.documentElement);  
  const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
@@ -18,12 +17,12 @@ document.addEventListener('jsonLoaded', async (event) => {
     let project_colors = event.detail.project_colors;
 
     // Getting media player types and icons from the JSON filea
-    let mediaplayer_types = event.detail.mediaplayer_types;
+    let types = event.detail.types;
     let icons = event.detail.icons;
     let mediaPlayer_JSON = event.detail.mediaplayers;
     
     // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, icons, project_colors);
+    await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_colors);
     
   
        
@@ -164,7 +163,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     scene.addEventListener('updatedMediaplayerTypeNames', async function(event) {
 
         // Get mediaplayer types from event
-        mediaplayer_types = event.detail.mediaplayer_types;
+        types = event.detail.types;
     
         // Get the old and new names from the event detail
         const old_type_name = event.detail.old_type_name;
@@ -183,7 +182,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
     scene.addEventListener('updatedMediaplayerTypes', async function(event) {
         // Get mediaplayer types from event
-        mediaplayer_types = event.detail.mediaplayer_types;
+        types = event.detail.types;
     
         // Update the icon if icon doesn't exist in list of the mediaplayer types anymore
     });
@@ -192,7 +191,7 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
 
-async function loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, icons, project_colors) {
+async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_colors) {
     
         // Process each object in the JSON array
         mediaPlayer_JSON.forEach(mediaPlayer_item => {
@@ -203,7 +202,7 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, mediaplayer_types, ico
             const position = mediaPlayer_item.position;
             const rotation = mediaPlayer_item.rotation;
             const mediaplayer_type_uuid = mediaPlayer_item.mediaplayer_type_uuid;
-            const mediaplayer_type = mediaplayer_types[mediaplayer_type_string];
+            const mediaplayer_type = types[mediaplayer_type_string];
             const icon_index = mediaPlayer_item.icon_index;
             const icon_url = icons[mediaplayer_type["icon"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;

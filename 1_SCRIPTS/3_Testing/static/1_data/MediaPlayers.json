@@ -1,13 +1,12 @@
-[
-    {
-        "id": "2ba5e3e6-9ce3-4f16-94ba-b60b874a699d",
+{
+    "2ba5e3e6-9ce3-4f16-94ba-b60b874a699d" :{
         "title": "Advanced_Patient_Diagnostics",
+        "description": "test",
+        "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
         "position": "9.72 2.17 2.25",
         "rotation": "0 90 0",
-        "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
         "icon_index": "0",
         "background_img_id" : "01.1",
-        "description": "test",
         "body": {
             "text": {
                 "string": "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
@@ -17,55 +16,54 @@
             }
     }, 
 
-    {
-        "id": "d3986b22-5a50-43f0-b2bc-d832f10b1b41",
+    "d3986b22-5a50-43f0-b2bc-d832f10b1b41": {
         "title": "Integrated_Artificial_Intelligence",
         "description": "test",
+        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "position": ".0475 2.13 -9.95",
         "rotation": "0 175 0",
-        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "icon_index": "1",
         "background_img_id" : "01.1"        
     }, 
 
-    {
-        "id": "deff6215-a266-4f35-9292-234281ec150e",
+    "deff6215-a266-4f35-9292-234281ec150e": {
         "title": "Superior_Revenue_Cycle_Management",
+        "description": "test",
+        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "position": "-9.37 1.56 3.37",
         "rotation": "0 -70 0",
-        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "icon_index": "0",
         "background_img_id" : "01.2"
     }, 
 
-    {
-        "id": "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5",
+    "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5": {
         "title": "SageNet_Automated_Purchasing_System",
+        "description": "test",
+        "mediaplayer_type_uuid": "bff75c73-d8e7-4898-bc31-baf2a7055b1a",
         "position": "-9.37 1.56 3.37",
         "rotation": "0 163 0",
-        "mediaplayer_type_uuid": "bff75c73-d8e7-4898-bc31-baf2a7055b1a",
         "icon_index": "0",
         "background_img_id" : "02.1"
     }, 
 
-    {
-        "id": "232cb566-ffde-4825-b6f9-b1aeff635d69",
+    "232cb566-ffde-4825-b6f9-b1aeff635d69": {
         "title": "Actionable_Business_Intelligence",
+        "description": "test",
+        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "position": "-3.82 -2.50 -7.04",
         "rotation": "0 -141 0",
-        "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
         "icon_index": "0",
         "background_img_id" : "03.1"
     }, 
 
-    {
-        "id": "391869cf-c635-43b0-ad6d-c6aaca477dc3",
+    "391869cf-c635-43b0-ad6d-c6aaca477dc3": {
         "title": "Interactive_Patient_Management",
+        "description": "test",
+        "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
         "position": "-9.31 1.71 3.56",
         "rotation": "0 -69 0",
-        "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
         "icon_index": "0",
         "background_img_id" : "03.1"
     }
 
-]
+}

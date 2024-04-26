@@ -1,6 +1,22 @@
 {
-    "diagnostic": "../static/0_resources/icons/CMYK_Green_Diagnostic_Preventative.png",
-    "emergency": "../static/0_resources/icons/CMYK_Blue_Emergency.png",
-    "whitening": "../static/0_resources/icons/CMYK_Blue_Whitening.png",
-    "patient": "../static/0_resources/icons/CMYK_PopPink_PatientFocused.png"
+    "190142d0-b65d-45b5-adca-f1b8a4ba0bd8": {
+        "name": "diagnostic",
+        "src": "../static/0_resources/icons/CMYK_Green_Diagnostic_Preventative.png",
+        "alt": ""
+    },
+    "71976965-adfa-41b1-bb6b-65f3cec288e0": {
+        "name": "emergency",
+        "src": "../static/0_resources/icons/CMYK_Blue_Emergency.png",
+        "alt": ""
+    },
+    "5c6846ef-cf1f-4972-a744-de0da42514d9": {
+        "name": "whitening",
+        "src": "../static/0_resources/icons/CMYK_Blue_Whitening.png",
+        "alt": ""
+    },
+    "1b5d45c4-478f-40b4-8b6f-164923de712a": {
+        "name": "patient",
+        "src": "../static/0_resources/icons/CMYK_PopPink_PatientFocused.png",
+        "alt": ""
+    }
 }

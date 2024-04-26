@@ -33,7 +33,7 @@ async function loadJSON(filename) {
 document.addEventListener('DOMContentLoaded', async () => {
 
     // Load mediaplayer types
-    const mediaplayer_types = await loadJSON("mediaPlayerTypes");
+    const types = await loadJSON("Types");
 
     // Load icons
     const icons = await loadJSON("Icons");
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         var new_event = new CustomEvent('jsonLoaded', 
         {
             detail: {
-                mediaplayer_types: mediaplayer_types,
+                types: types,
                 icons: icons,
                 project_colors: project_colors,
                 color_palette: colors,

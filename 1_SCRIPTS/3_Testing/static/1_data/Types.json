@@ -1,0 +1,65 @@
+{
+    "bff75c73-d8e7-4898-bc31-baf2a7055b1a": {
+        "name": "green",
+        "type": "mediaPlayer",
+        "icons": {
+            "0": "diagnostic"
+        },
+        "colors": {
+            "dark": "#2dc84d",
+            "light": "#DBFFE5"
+        }
+    },
+    "7720c93b-7b4c-4d58-99cd-294e48177bbe": {
+        "name": "blue",
+        "type": "mediaPlayer",
+        "icons": {
+            "0": "emergency",
+            "1": "whitening"
+        },
+        "colors": {
+            "dark": "#009A9F",
+            "light": "#D0F9F2"
+        }
+    },
+    "952c3425-947f-46f7-82f8-3d538df1e8e6": {
+        "name": "pink",
+        "type": "mediaPlayer",
+        "icons": {
+            "0": "patient"
+        },
+        "colors": {
+            "dark": "#FB7698",
+            "light": "#f9d5de"
+        }
+    },
+    "248964b8-0cf7-49f7-8bdf-86500221627c": {
+        "name": "transition_node",
+        "type": "transitionNode",
+        "icons": null,
+        "colors": {
+            "dark": "#2dc84d",
+            "light": "#DBFFE5"
+        }
+    },
+    "1e509749-3982-42cd-b338-8e28a3659b70": {
+        "name": "popup",
+        "type": "popup",
+        "icons": null,
+        "colors": {
+            "dark": "#2dc84d",
+            "light": "#DBFFE5"
+        }
+    },
+    "ce6e689f-979d-4e37-a64e-b32cf1f9f109": {
+        "name": "project",
+        "type": "window",
+        "icons": null,
+        "colors": {
+            "dashboard": "#2dc84d",
+            "sidebar": "#DBFFE5",
+            "button": "#DBFFE5",
+            "exit_button": "#DBFFE5"
+        }
+    }
+}
