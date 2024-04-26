@@ -1,42 +1,40 @@
-// console.log('from media player: ' + recieved_project_data)
-
-
- // Get colors from CSS palette
- const colors = getComputedStyle(document.documentElement);  
- const color_sageGreen = colors.getPropertyValue('--sageGreen').trim();
- 
- function getJSColor(color) {
-    const JS_color = colors.getPropertyValue(color).trim();
-    return JS_color;
- }
 
 
 // initialize at event, Scene and 3D objects loaded
 document.addEventListener('jsonLoaded', async (event) => {
 
+    /*******************************************************************************
+    * GLOBAL VARIABLES
+    *******************************************************************************/ 
+    // Initiate files from JSON
     let project_colors = event.detail.project_colors;
-
-    // Getting media player types and icons from the JSON filea
     let types = event.detail.types;
     let icons = event.detail.icons;
-    let mediaPlayer_JSON = event.detail.mediaplayers;
-    
-    // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_colors);
-    
-  
+    let mediaPlayer_JSON = event.detail.mediaplayers; 
        
     // Definitions   
     const scene = document.querySelector('a-scene');
-    var main_class = "MediaPlayer";
-   
+    const main_class = "MediaPlayer";   
 
-    // Setting initial colors of objects
-    const entities = document.querySelectorAll('[class=' + main_class + ']');
+
+
+
+    /*******************************************************************************
+    * RUN CODE
+    *******************************************************************************/ 
+   // loading MediaPlayers to scene from JSON file
+   await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_colors);
+
+
+
+
+    /*******************************************************************************
+    * EVENT LISTENERS
+    *******************************************************************************/ 
     
-    // Ensures that no objects are loaded before the sky is loaded
-    document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
-    });
+    // // To ensures that no objects are loaded before the sky is loaded
+    // document.querySelector('#sky').addEventListener('materialtextureloaded', function () {
+    // });
 
 
     // Changing color and scale of objects when hovering over them
@@ -48,6 +46,7 @@ document.addEventListener('jsonLoaded', async (event) => {
             event.target.setAttribute('material', 'color', color_mediaPlayer);
         }
     });
+    
 
     // Resets color an scale of objects when hovering outside them
     scene.addEventListener('hoverout', function (event) 
@@ -71,6 +70,7 @@ document.addEventListener('jsonLoaded', async (event) => {
         }
     });
 
+
     // Changing color of objects when hovering over them and unclicking
     scene.addEventListener('hoverin_mouseup', function (event) 
     {
@@ -86,8 +86,6 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Double clicking the object
     scene.addEventListener('mouseDoubleClicked', function(event) {
         if (event.target.classList.contains(main_class)){
-
-
             // Create an event that sends media id when double clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
             {
@@ -106,14 +104,11 @@ document.addEventListener('jsonLoaded', async (event) => {
     });
 
 
-
-
     // listen to mouseClicked event (it checks if click clicked on a clickable event)
     scene.addEventListener('mouseClicked', (event) => 
     {
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class))) 
         {
-    console.log("TEST2", event.target.getAttribute('description'));
 
             // Create an event that sends media id when clicked
             var new_event = new CustomEvent('mediaPlayerClicked', 
@@ -131,6 +126,12 @@ document.addEventListener('jsonLoaded', async (event) => {
         }
     });
 
+
+
+
+    /*******************************************************************************
+    * EVENT LISTENER JSON UPDATES
+    *******************************************************************************/ 
     // CODE TO UPDATE COLORS OF OBJECTS
     scene.addEventListener('updatedProjectColors', async function(event) 
     {
@@ -179,43 +180,53 @@ document.addEventListener('jsonLoaded', async (event) => {
         });
     });
 
+
     // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
-    scene.addEventListener('updatedMediaplayerTypes', async function(event) {
+    scene.addEventListener('updateTypes', async function(event) {
         // Get mediaplayer types from event
         types = event.detail.types;
     
         // Update the icon if icon doesn't exist in list of the mediaplayer types anymore
     });
-
+    
 });
 
 
 
-async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_colors) {
+/*******************************************************************************
+* FUNCTIONS
+*******************************************************************************/ 
+
+async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons) {
     
         // Process each object in the JSON array
         mediaPlayer_JSON.forEach(mediaPlayer_item => {
             // Get attributes
             const uniqueId = mediaPlayer_item.id;
+            const type_uuid = mediaPlayer_item.mediaplayer_type_uuid;
+            const mediaplayer_type = types[type_uuid];
             const title = mediaPlayer_item.title;
-            const description = mediaPlayer_item.description;
+
             const position = mediaPlayer_item.position;
-            const rotation = mediaPlayer_item.rotation;
-            const mediaplayer_type_uuid = mediaPlayer_item.mediaplayer_type_uuid;
-            const mediaplayer_type = types[mediaplayer_type_string];
+            const rotation = mediaPlayer_item.rotation;            
             const icon_index = mediaPlayer_item.icon_index;
-            const icon_url = icons[mediaplayer_type["icon"][icon_index]];
+            const icon_url = icons[mediaplayer_type["icons"][icon_index]];
             const background_img_id = mediaPlayer_item.background_img_id;
 
             const mediaplayer_content = {
+                "type_uuid": type_uuid,
                 "title": title,
                 "position": position,
                 "rotation": rotation,
-                "mediaplayer_type_uuid": mediaplayer_type_uuid,
-                
+                "mediaplayer_type_uuid": mediaplayer_type_uuid,  
+                "icon_index": icon_index,
+                "icon_url": icon_url,
+                "background_img_id": background_img_id,
+
             }
+
             // Create mediaplayer and add to scene
-            const media_player = new MediaPlayer(uniqueId, project_colors, point, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, null, rotation);
+            const media_player = new MediaPlayer(uniqueId, mediaplayer_content, mediaplayer_type);
             media_player.addToScene();
             
         });
@@ -226,23 +237,26 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, project_
 }
 
 
-
+/*******************************************************************************
+* MEDIAPLAYER CLASS
+*******************************************************************************/ 
 class MediaPlayer {    
-    constructor(id, project_colors, position, background_img_id, mediaplayer_type, mediaplayer_type_string, icon_url, icon_index, title, direction, rotation) {
+    constructor(id, mediaplayer_content, mediaplayer_type) {
+        this.name = this.constructor.name;
         this.id = id;
         this.final_id = id; // for updating id when undoing
-        this.position = position;
-        this.background_img_id = background_img_id;
-        this.name = this.constructor.name;
-        this.mediaplayer_type_string = mediaplayer_type_string;
+
+        this.position = mediaplayer_content.position;
+        this.background_img_id = mediaplayer_content.background_img_id;
+        this.mediaplayer_type_name = mediaplayer_type.name;
         this.mediaplayer_type = mediaplayer_type;
         this.icon_url = icon_url;
         this.icon_index = icon_index;
         this.title = title;
         this.direction = direction;
         this.rotation = rotation;
-        this.dark_color = project_colors[this.mediaplayer_type_string+"_dark"];
-        this.light_color = project_colors[this.mediaplayer_type_string+"_light"];
+        this.dark_color = project_colors[this.mediaplayer_type_name+"_dark"];
+        this.light_color = project_colors[this.mediaplayer_type_name+"_light"];
 
     }
 
@@ -272,7 +286,7 @@ class MediaPlayer {
 
         entity.setAttribute('position', this.position);
         entity.setAttribute('icon_index', this.icon_index);
-        entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
+        entity.setAttribute('mediaplayer_type', this.mediaplayer_type_name);
 
         // Getting rotation, if not defined, we get it from direction
         if (this.rotation !== undefined && this.rotation !== null) {
@@ -428,8 +442,8 @@ class MediaPlayer {
     updateColor(project_colors){
         const entity = document.getElementById(this.id);
         // get colors from project colors
-        this.dark_color = project_colors[this.mediaplayer_type_string+"_dark"];
-        this.light_color = project_colors[this.mediaplayer_type_string+"_light"];
+        this.dark_color = project_colors[this.mediaplayer_type_name+"_dark"];
+        this.light_color = project_colors[this.mediaplayer_type_name+"_light"];
         // update element colors
         const borderEntity = entity.getElementsByClassName('mediaplayer-border')[0];
         borderEntity.setAttribute('material', 'color', this.dark_color);            
@@ -512,7 +526,7 @@ class MediaPlayer {
             position: { ...this.position }, // Shallow copy if position is an object
             background_img_id: this.background_img_id,
             mediaplayer_type: this.mediaplayer_type,
-            mediaplayer_type_string: this.mediaplayer_type_string,
+            mediaplayer_type_name: this.mediaplayer_type_name,
             icon_index: this.icon_index,
             icon_url: this.icon_url,
             title: this.title,
@@ -551,7 +565,7 @@ class MediaPlayer {
         // Update data attributes related to background images
         entity.setAttribute('background_img_id', this.background_img_id);
         // Update attributes
-        entity.setAttribute('mediaplayer_type', this.mediaplayer_type_string);
+        entity.setAttribute('mediaplayer_type', this.mediaplayer_type_name);
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('title', this.title);
 
@@ -597,7 +611,7 @@ class MediaPlayer {
                     case 'background_img_id':
                         entity.setAttribute('background_img_id', value);                        
                         break;
-                    case 'mediaplayer_type_string':
+                    case 'mediaplayer_type_name':
                         entity.setAttribute('mediaplayer_type', value);
                         break;
                     case 'icon_index':
