@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
 
-    if (mediaplayer_types) {
+    if (types) {
         // Create an event that send
         var new_event = new CustomEvent('jsonLoaded', 
         {
