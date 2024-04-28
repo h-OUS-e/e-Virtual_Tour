@@ -14,18 +14,16 @@ const color_main = color_sageGreen;
     // let deletionHistory = [];
 
 document.addEventListener('DOMContentLoaded', async (event) => {
-    const JSON_state = await JSON_statePromise;
+    const state = await JSON_statePromise;
 
      // Get colors from CSS palette
-     let project_colors = event.detail.project_colors;
-
-     let dark_color = project_colors["transition_node_dark_color"];
-     let light_color = project_colors["transition_node_light_color"];
+     let transitionNode_type = state.getItemByProperty("types", "type", "transitionNode");
+     let dark_color = transitionNode_type.colors.dark;
+     let light_color = transitionNode_type.colors.light;
      const color_hoverInClicked = "gray";
 
-
     // Read transition nodes and load them to scene
-    await loadTransitionNodesFromJSON();   
+    await loadTransitionNodesFromJSON(state.getCategory("transition_nodes"));   
     
     // Set initial colors of transition nodes
     setTransitionNodeColor(dark_color)
@@ -153,18 +151,11 @@ function setTransitionNodeColor(color){
 
 
 
-async function loadTransitionNodesFromJSON() {
+async function loadTransitionNodesFromJSON(transitionNode_JSON) {
     try {
-        const response = await fetch('../static/1_data/TransitionNodes.json'); // Adjust the path as necessary
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const transitionNode_JSON = await response.json();
-
         // Process each object in the JSON array
-        transitionNode_JSON.forEach(transitionNode_item => {
+        transitionNode_JSON.forEach(([id, transitionNode_item]) => {
             // Get attributes
-            const id = transitionNode_item.id;
             const point = transitionNode_item.position;
             const scene_id = transitionNode_item.scene_id;
             const new_scene_id = transitionNode_item.new_scene_id;

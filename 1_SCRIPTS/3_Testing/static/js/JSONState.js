@@ -68,6 +68,20 @@ class JSONState {
     getState() {
       return this.history[this.idx];
     }
+
+    getCategory(category) {
+      const data = this.history[this.idx];
+      if (data.hasOwnProperty(category)) {
+        return data[category];
+      } else {
+        console.log(`${category} not found.`);
+        return undefined;
+      }
+    }
+  
+    getCurrentState() {
+      return this.history[this.idx];
+    }
   
     // Gets type of property
     getPropertyType(item, property) {
@@ -108,8 +122,8 @@ class JSONState {
       }
     }
   
-    // Returns first match of item that has given propert
-    getItemByProperty(category, property, value) {
+    // Returns first match of item that has given property
+    getItemIDByProperty(category, property, value) {
       if (
         this.indexes[category] &&
         this.indexes[category][property] &&
@@ -122,19 +136,27 @@ class JSONState {
         return undefined;
       }
     }
-  
-    getCategory(category) {
-      const data = this.history[this.idx];
-      if (data.hasOwnProperty(category)) {
-        return data[category];
-      } else {
-        console.log(`${category} not found.`);
-        return undefined;
-      }
+
+    getItemByProperty(category, property, value) {
+      const category_items = this.getCategory(category);
+      const id = this.getItemIDByProperty(category, property, value);
+      return category_items[id];
+
     }
   
-    getCurrentState() {
-      return this.history[this.idx];
+    
+
+    // Gets all colors in types
+    getColors() {
+      let types = this.getCategory(category);
+      // const allColors = Object.entries(types).reduce((colors, [typeId, typeData]) => {
+      //   if (typeData.colors) {
+      //     colors[typeId] = typeData.colors;
+      //   }
+      //   return colors;
+      // }, {});
+        
+      // });
     }
   
     undo() {

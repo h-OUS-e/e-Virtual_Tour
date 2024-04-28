@@ -18,11 +18,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
     const scene = document.querySelector('a-scene');
     let scenes = JSON_state.getCategory("scenes");  
-    let types = JSON_state.getCategory("types");
     const sky = document.querySelector('#sky');
 
     // Loading initial scene
-    let initial_scene_id = types[JSON_state.getItemByProperty("types", "name", "initial_scene")].scene_reference;
+    let initial_scene_id = getItemByProperty("types", "name", "initial_scene").scene_reference;
     changeScene(sky, initial_scene_id, scenes);
 
 
@@ -111,7 +110,6 @@ function loadImageAsset(asset_object) {
             resolve(existing_asset); // Asset already loaded
 
         } else {
-            console.log("TEST ASSET", asset_object, asset_object.value);
             // Asset does not exist, so create and append a new image element
             const img_element = document.createElement('img');
             img_element.classList.add('img-loading'); // Start with image fully transparent
@@ -141,7 +139,6 @@ function loadImageAsset(asset_object) {
         }
     });
 }
-
 
 
 
