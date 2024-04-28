@@ -3,12 +3,19 @@ The sky object determines the background 360 image.
 It listens for changes in transition nodes, on map or on scene
 and changes the sky background image.
 */
-document.addEventListener('DOMContentLoaded', async () => {
+
+// LOADING JSON STATE
+const JSON_state = await import('./JSONSetup.js');
+console.log(JSON_state, "loaded");
+
+
+document.addEventListener('DOMContentLoaded', async (event) => {
+ 
       
     const scene = document.querySelector('a-scene');
-    let scenes = await getSceneFromJSON();  
-    var sky = document.querySelector('#sky');
-
+    let scenes = JSON_state.getCategory("scenes");  
+    const sky = document.querySelector('#sky');
+    console.log("SCENES", scenes)
     // Loading initial scene
     let initial_background_img_id = "01.1";
     changeScene(sky, initial_background_img_id, scenes);
@@ -45,6 +52,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+/*********************************************************************
+ * FUNCTIONS
+*********************************************************************/
 
 async function getSceneFromJSON() {
     // Get the data of scenes from the JSON file and store them in a variable
