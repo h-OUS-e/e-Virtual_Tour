@@ -7,20 +7,11 @@ function generateUUID() {
   }
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
   console.log("UUID", generateUUID());
   console.log("UUID", generateUUID());
   console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-  // console.log("UUID", generateUUID());
-
-
+  console.log("UUID", generateUUID());
+  console.log("UUID", generateUUID());
 
 });
