@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const sky = document.querySelector('#sky');
 
     // Loading initial scene
-    let initial_scene_id = getItemByProperty("types", "name", "initial_scene").scene_reference;
+    let initial_scene_id = JSON_state.getItemByProperty("types", "name", "initial_scene").scene_reference;
     changeScene(sky, initial_scene_id, scenes);
 
 
