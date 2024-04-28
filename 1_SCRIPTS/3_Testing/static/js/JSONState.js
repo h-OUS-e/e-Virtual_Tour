@@ -27,7 +27,11 @@ class JSONState {
       }
     }
   
-    updateProperty(category, uuid, property, value) {
+    updateProperty(category, uuid, property, value, event_name=null) {
+      // Updates the property of the item with the given value
+      // and emits that the state has been updated. If an event_name is provided
+      // it emits the event name. If the event_name provided is "useCategory",
+      // it emits {category}Updated event. Else, it emits "stateUpdated"
       const data = this.history[this.idx];
       const new_data = {
         ...data,
@@ -47,20 +51,25 @@ class JSONState {
       if (this.history.length > this.max_history_length) {
         this.history.shift();
         this.idx--;
-      }
-  
+      }  
       this.buildIndexes();
-      this.emitStateUpdated();
+      if (event_name === "useCategory") {
+        event_name = `${category}Updated`;
+      }
+      this.emitStateUpdated(event_name);
+
     }
   
-    emitStateUpdated() {
-      const event = new CustomEvent("iconUpdated");
+    emitStateUpdated(event_name) {
+      let custom_event_name = "stateUpdated";
+      if (event_name) {
+        custom_event_name = event_name;
+      }
+      const event = new CustomEvent(custom_event_name);
       document.dispatchEvent(event);
     }
 
     emitStateConstructed() {
-      console.log("TET");
-
         const event = new CustomEvent("stateConstructed");
         document.dispatchEvent(event);
       }

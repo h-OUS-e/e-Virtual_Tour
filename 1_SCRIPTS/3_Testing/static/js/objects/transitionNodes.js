@@ -1,17 +1,14 @@
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
 const scene = document.querySelector('a-scene');
-const main_class = "TransitionNode";
-const category = "TransitionNodes";
-const mixin_glow = "transition_node_glow";
-const mixin_icon = "transition_node_icon";
 
-// Get colors from CSS palette
-const colors = getComputedStyle(document.documentElement);
-const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();
-const color_mintGreen = colors.getPropertyValue('--transition_node_light_color').trim();
-const color_hoverIn = color_mintGreen;
-const color_main = color_sageGreen;
+// GLOBAL CONSTANTS
+const MAIN_CLASS = "TransitionNode";
+const CATEGORY = "TransitionNodes";
+const MIXIN_GLOW = "transition_node_glow";
+const MIXIN_ICON = "transition_node_icon";
+
+
 
 /*********************************************************************
  * EVENT LISTENERS
@@ -25,18 +22,18 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let {project_state, object_state} = await JSON_statePromise;
 
     // Get colors from transition node type
-    let transitionNode_type = project_state.getItemByProperty("Types", "type", main_class);
+    let transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
     let dark_color = transitionNode_type.colors.dark;
     let light_color = transitionNode_type.colors.light;
     const color_hoverInClicked = "gray";
 
     // Read transition nodes and load them to scene
-    const transitionNode_JSON = object_state.getCategory(category, false);
+    const transitionNode_JSON = object_state.getCategory(CATEGORY, false);
     const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
     await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);   
     
     // Set initial colors of transition nodes
-    setTransitionNodeColor(dark_color);
+    setTransitionNodeColor(dark_color, light_color);
 
     /*********************************************************************
      * 2. UPDATE TRANSITION NODES ON CHANGES
@@ -44,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Reset colors if new transition node colors selected
     scene.addEventListener("transitionNodesColorChange", function() {
-        setTransitionNodeColor(dark_color);
+        setTransitionNodeColor(dark_color, light_color);
     });
 
     //listen to minimapClick event
@@ -71,8 +68,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Changing color of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
     {     
-        if (event.target.classList.contains(main_class)){
-            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+        if (event.target.classList.contains(MAIN_CLASS)){
+            const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', light_color);
         }
     });
@@ -80,8 +77,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Resetting color of objects when hovering out
     scene.addEventListener('hoverout', function (event) 
     {
-        if (event.target.classList.contains(main_class)){
-            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+        if (event.target.classList.contains(MAIN_CLASS)){
+            const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', dark_color);
         }
     });
@@ -90,9 +87,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Changing color of objects when hovering over them and unclicking
     scene.addEventListener('hoverin_mouseup', function (event) 
     {
-    if (event.target.classList.contains(main_class))
+    if (event.target.classList.contains(MAIN_CLASS))
         {
-            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+            const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', dark_color); 
         }
     });
@@ -101,8 +98,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Changing color of objects when hovering over them and clicking
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
-        if (event.target.classList.contains(main_class)){
-            const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
+        if (event.target.classList.contains(MAIN_CLASS)){
+            const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', color_hoverInClicked);
             console.log("TEST");
         }
@@ -114,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     {
         // "visible" is a special attribute that is boolean, unlike my made up "clickable" attribute.
         // Thus, no need for === signs to check "visible" attribute truth.
-        if ((event.target.getAttribute('visible')) && (event.target.classList.contains(main_class)))  
+        if ((event.target.getAttribute('visible')) && (event.target.classList.contains(MAIN_CLASS)))  
             {            
             // Get the id of the clicked entity            
             var clickedId = event.target.id;
@@ -136,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         light_color = project_colors["transition_node_light_color"];
 
         // Update colors of all mediaplayer objects
-        setTransitionNodeColor(dark_color)
+        setTransitionNodeColor(dark_color, light_color)
  
     });
 });
@@ -154,13 +151,13 @@ function emitTransitioning(new_scene_id){
     scene.dispatchEvent(transitioning);
 }
 
-function setTransitionNodeColor(color){
-    let transition_nodes = document.getElementsByClassName(main_class);
+function setTransitionNodeColor(dark_color, light_color){
+    let transition_nodes = document.getElementsByClassName(MAIN_CLASS);
     for (let i = 0; i < transition_nodes.length; i++) {
-        let icon = transition_nodes[i].querySelector('[mixin=' + mixin_icon + ']')
-        icon.setAttribute('material', 'color', color);
-        let glow = transition_nodes[i].querySelector('[mixin=' + mixin_glow + ']')
-        icon.setAttribute('material', 'color', color);
+        let icon = transition_nodes[i].querySelector('[mixin=' + MIXIN_ICON + ']')
+        icon.setAttribute('material', 'color', dark_color);
+        let glow = transition_nodes[i].querySelector('[mixin=' + MIXIN_GLOW + ']')
+        glow.setAttribute('material', 'color', light_color);
     }
 }
 
@@ -218,7 +215,7 @@ class TransitionNode {
 
         const entity = document.createElement('a-entity');
         entity.setAttribute('id', this.id);
-        entity.setAttribute('class', main_class);
+        entity.setAttribute('class', MAIN_CLASS);
         entity.setAttribute('clickable', 'true');
         entity.setAttribute('visible', this.scene_id === this.initial_scene_id);
         entity.setAttribute('toggle_visibility', true);
@@ -238,14 +235,14 @@ class TransitionNode {
     appendComponentsTo(entity) {
         // Add green icon
         const iconEntity = document.createElement('a-entity');
-        iconEntity.setAttribute('mixin', mixin_icon);
-        iconEntity.setAttribute('material', 'color', color_main);
+        iconEntity.setAttribute('mixin', MIXIN_ICON);
+        // iconEntity.setAttribute('material', 'color', color_main);
         entity.appendChild(iconEntity);
 
         // Add glowing effect
         const glowEntity = document.createElement('a-entity');
-        glowEntity.setAttribute('mixin', mixin_glow);
-        glowEntity.setAttribute('material', 'color', color_main);
+        glowEntity.setAttribute('mixin', MIXIN_GLOW);
+        // glowEntity.setAttribute('material', 'color', color_main);
         entity.appendChild(glowEntity);
     }
 
