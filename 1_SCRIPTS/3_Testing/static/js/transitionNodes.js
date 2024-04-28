@@ -1,29 +1,29 @@
+import { JSON_statePromise } from './JSONSetup.js';
 const scene = document.querySelector('a-scene');
-    const main_class = "TransitionNode";
-    const mixin_glow = "transition_node_glow";
-    const mixin_icon = "transition_node_icon";
-    
-    // Get colors from CSS palette
-    const colors = getComputedStyle(document.documentElement);
-    const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();
-    const color_mintGreen = colors.getPropertyValue('--transition_node_light_color').trim();
-    const color_hoverIn = color_mintGreen;
-    const color_hoverInClicked = "gray";
-    const color_main = color_sageGreen;
+const main_class = "TransitionNode";
+const mixin_glow = "transition_node_glow";
+const mixin_icon = "transition_node_icon";
+
+// Get colors from CSS palette
+const colors = getComputedStyle(document.documentElement);
+const color_sageGreen = colors.getPropertyValue('--transition_node_dark_color').trim();
+const color_mintGreen = colors.getPropertyValue('--transition_node_light_color').trim();
+const color_hoverIn = color_mintGreen;
+const color_main = color_sageGreen;
 
     // let deletionHistory = [];
 
-document.addEventListener('jsonLoaded', async (event) => {
-     // Get colors from CSS palette
-     let project_colors = event.detail.project_colors;
+document.addEventListener('DOMContentLoaded', async (event) => {
+    const state = await JSON_statePromise;
 
-     let dark_color = project_colors["transition_node_dark_color"];
-     let light_color = project_colors["transition_node_light_color"];
+     // Get colors from CSS palette
+     let transitionNode_type = state.getItemByProperty("types", "type", "transitionNode");
+     let dark_color = transitionNode_type.colors.dark;
+     let light_color = transitionNode_type.colors.light;
      const color_hoverInClicked = "gray";
 
-
     // Read transition nodes and load them to scene
-    await loadTransitionNodesFromJSON();   
+    await loadTransitionNodesFromJSON(state.getCategory("transition_nodes"));   
     
     // Set initial colors of transition nodes
     setTransitionNodeColor(dark_color)
@@ -35,17 +35,17 @@ document.addEventListener('jsonLoaded', async (event) => {
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
-        var new_background_img_id = event.detail.new_background_img_id;
+        var new_scene_id = event.detail.new_scene_id;
         // emit transitioning event
-        emitTransitioning(new_background_img_id);
+        emitTransitioning(new_scene_id);
     });
 
 
     //listen to mediabar item click event to change scenes
     scene.addEventListener('mediabarItemClicked', function(event) {
-        var new_background_img_id = event.detail.new_background_img_id;
+        var new_scene_id = event.detail.new_scene_id;
         // emit transitioning event
-        emitTransitioning(new_background_img_id);
+        emitTransitioning(new_scene_id);
     });
     
 
@@ -104,10 +104,10 @@ document.addEventListener('jsonLoaded', async (event) => {
             // Get the id of the clicked entity            
             var clickedId = event.target.id;
             var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
-            var new_background_img_id =  obj.getAttribute('new_background_img_id'); //get id of linked image
+            var new_scene_id =  obj.getAttribute('new_scene_id'); //get id of linked image
 
             // Emit the transitioning event to change the background image and minimap highlights
-            emitTransitioning(new_background_img_id) 
+            emitTransitioning(new_scene_id) 
         };
     }); 
     
@@ -130,11 +130,11 @@ document.addEventListener('jsonLoaded', async (event) => {
 // FUNCTIONS
 
 //functions: 
-function emitTransitioning(new_background_img_id){
-    // input: new_background_img_id: string
+function emitTransitioning(new_scene_id){
+    // input: new_scene_id: string
     // emit transitioning event with new background image ID
     var transitioning = new CustomEvent('transitioning', {
-        detail: { new_background_img_id: new_background_img_id}       
+        detail: { new_scene_id: new_scene_id}       
     });
     scene.dispatchEvent(transitioning);
 }
@@ -151,24 +151,17 @@ function setTransitionNodeColor(color){
 
 
 
-async function loadTransitionNodesFromJSON() {
+async function loadTransitionNodesFromJSON(transitionNode_JSON) {
     try {
-        const response = await fetch('../static/1_data/TransitionNodes.json'); // Adjust the path as necessary
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const transitionNode_JSON = await response.json();
-
         // Process each object in the JSON array
-        transitionNode_JSON.forEach(transitionNode_item => {
+        transitionNode_JSON.forEach(([id, transitionNode_item]) => {
             // Get attributes
-            const id = transitionNode_item.id;
             const point = transitionNode_item.position;
-            const background_img_id = transitionNode_item.background_img_id;
-            const new_background_img_id = transitionNode_item.new_background_img_id;
+            const scene_id = transitionNode_item.scene_id;
+            const new_scene_id = transitionNode_item.new_scene_id;
 
             // Create mediaplayer and add to scene
-            const transition_node = new TransitionNode(id, point, background_img_id, new_background_img_id)
+            const transition_node = new TransitionNode(id, point, scene_id, new_scene_id)
             transition_node.addToScene();
 
         });
@@ -182,12 +175,12 @@ async function loadTransitionNodesFromJSON() {
 
 
 class TransitionNode {    
-    constructor(id, position, background_img_id, new_background_img_id) {
+    constructor(id, position, scene_id, new_scene_id) {
         this.id = id;
         this.final_id = id;
         this.position = position;
-        this.background_img_id = background_img_id;
-        this.new_background_img_id = new_background_img_id;
+        this.scene_id = scene_id;
+        this.new_scene_id = new_scene_id;
         this.name = this.constructor.name;
     }
 
@@ -204,14 +197,14 @@ class TransitionNode {
         }
 
         const entity = document.createElement('a-entity');
-        this.id = `move_${this.background_img_id}_${this.new_background_img_id}`;
+        this.id = `move_${this.scene_id}_${this.new_scene_id}`;
         entity.setAttribute('id', this.id);
         entity.setAttribute('class', 'TransitionNode');
         entity.setAttribute('clickable', 'true');
-        entity.setAttribute('visible', this.background_img_id === '01.1');
+        entity.setAttribute('visible', this.scene_id === '01.1');
         entity.setAttribute('toggle_visibility', true);
-        entity.setAttribute('new_background_img_id', this.new_background_img_id);
-        entity.setAttribute('background_img_id', this.background_img_id);
+        entity.setAttribute('new_scene_id', this.new_scene_id);
+        entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('mixin', 'transition_node_frame');
         entity.setAttribute('position', this.position);
         entity.setAttribute('rotation', "90 0 0");
@@ -239,7 +232,7 @@ class TransitionNode {
 
 
     // // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
-    // static addToSheet(id, position, backgroundImgId, new_background_img_id) {
+    // static addToSheet(id, position, backgroundImgId, new_scene_id) {
     //     const formattedPoint = `${position.x} ${position.y} ${position.z}`;
     //     fetch('/add_geometry', {
     //         method: 'POST',
@@ -248,7 +241,7 @@ class TransitionNode {
     //             Id: id,
     //             point: formattedPoint,
     //             backgroundImgId: backgroundImgId,
-    //             new_background_img_id: new_background_img_id,
+    //             new_scene_id: new_scene_id,
     //             objectType: this.name,
     //         }),
     //     }).then(response => response.json())
@@ -263,7 +256,7 @@ class TransitionNode {
     //         Id: this.id,
     //         point: formattedPoint, // Ensure this is serialized properly if needed
     //         backgroundImgId: this.backgroundImgId,
-    //         new_background_img_id: this.new_background_img_id,
+    //         new_scene_id: this.new_scene_id,
     //         objectType: this.name,
     //     };    
     //     console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
@@ -283,7 +276,7 @@ class TransitionNode {
         const addedSuccessfully = this.addToScene();
         // if (addedSuccessfully) {
         //     console.log("Adding object to the scene.");
-        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.new_background_img_id);
+        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.new_scene_id);
         // } else {
         //     console.log("Object with the same ID already exists. Creation aborted.");
         //     return false; // Indicate that creation was not successful
@@ -444,8 +437,8 @@ class TransitionNode {
             id: this.id,
             final_id: this.final_id,
             position: { ...this.position }, // Shallow copy if position is an object
-            background_img_id: this.background_img_id,
-            new_background_img_id: this.new_background_img_id
+            scene_id: this.scene_id,
+            new_scene_id: this.new_scene_id
         };
     }
 
@@ -472,11 +465,11 @@ class TransitionNode {
         // Update the entity's position
         entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         // Update data attributes related to background images
-        entity.setAttribute('background_img_id', this.background_img_id);
-        entity.setAttribute('new_background_img_id', this.new_background_img_id);            
+        entity.setAttribute('scene_id', this.scene_id);
+        entity.setAttribute('new_scene_id', this.new_scene_id);            
         // Update visibility
-        entity.setAttribute('visible', this.background_img_id === '01.1'); // Example condition
-        // // Update id in case we update the new_background_img_id attribute
+        entity.setAttribute('visible', this.scene_id === '01.1'); // Example condition
+        // // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 
         // Loop through the updates object to apply updates
@@ -491,8 +484,8 @@ class TransitionNode {
                     this[key] = value;
 
                     //  Updating entity id if background or title has changed
-                    if (key === 'background_img_id' || key === 'new_background_img_id') {
-                        let id = `move_${this.background_img_id}_${this.new_background_img_id}`;
+                    if (key === 'scene_id' || key === 'new_scene_id') {
+                        let id = `move_${this.scene_id}_${this.new_scene_id}`;
                         // Checking if object with same id already exists
                         const existingEntity = document.getElementById(id);
                         if (existingEntity ) {
@@ -505,16 +498,16 @@ class TransitionNode {
                     }
                 }
 
-                console.log("new_background_img_id", this.new_background_img_id);
+                console.log("new_scene_id", this.new_scene_id);
 
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {
                     case 'position':
-                    case 'background_img_id':
-                        entity.setAttribute('background_img_id', value);                        
+                    case 'scene_id':
+                        entity.setAttribute('scene_id', value);                        
                         break;
-                    case 'new_background_img_id':
-                        entity.setAttribute('new_background_img_id', value);
+                    case 'new_scene_id':
+                        entity.setAttribute('new_scene_id', value);
                         break;
                     default:
                         break;

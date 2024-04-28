@@ -1,4 +1,4 @@
-
+import { JSONState } from "./JSONState.js";
 // Function to read the JSON file and extract id and path
 async function loadJSON(filename) {
     try {
@@ -16,67 +16,10 @@ async function loadJSON(filename) {
 
 
 
-// fetch('colors.json')
-//   .then(response => response.json())
-//   .then(data => {
-//     const root = document.documentElement;
-//     for (const [name, value] of Object.entries(data)) {
-//       root.style.setProperty(`--${name}`, value);
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error loading colors:', error);
-//   });
 
 
-// Loading files and emitting them to document
-document.addEventListener('DOMContentLoaded', async () => {
-
-    // Load mediaplayer types
-    const mediaplayer_types = await loadJSON("mediaPlayerTypes");
-
-    // Load icons
-    const icons = await loadJSON("Icons");
-
-    // Load color palette
-    const colors = await loadJSON("colorPalette");
-    const root = document.documentElement;
-    for (const [name, value] of Object.entries(colors)) {
-        root.style.setProperty(`--${name}`, value);
-    }
-
-    // Load project colors
-    const project_colors = await loadJSON("projectColors");
-    for (const [name, value] of Object.entries(project_colors)) {
-        root.style.setProperty(`--${name}`, value);
-    }
-
-    // Load Mediaplayers
-    const mediaplayers = await loadJSON("MediaPlayers");
-
-    // Load Transition Nodes
-    // const transitionNodes = await loadJSON("TransitionNodes");
-
-    
-
-    if (mediaplayer_types) {
-        // Create an event that send
-        var new_event = new CustomEvent('jsonLoaded', 
-        {
-            detail: {
-                mediaplayer_types: mediaplayer_types,
-                icons: icons,
-                project_colors: project_colors,
-                color_palette: colors,
-                mediaplayers: mediaplayers,
-            }
-        });
-
-        // Dispatch event
-        document.dispatchEvent(new_event);
-    }
-});
-
-
-export { loadJSON };
-
+export const JSON_statePromise = (async () => {
+    const JSON_data = await loadJSON("JSONData");
+    const JSON_state = new JSONState(JSON_data);
+    return JSON_state;
+})();
