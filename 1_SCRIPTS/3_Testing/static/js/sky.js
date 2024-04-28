@@ -5,13 +5,11 @@ and changes the sky background image.
 */
 
 // LOADING JSON STATE
-const JSON_state = await import('./JSONSetup.js');
-console.log(JSON_state, "loaded");
-
+import { JSON_statePromise } from './JSONSetup.js';
 
 document.addEventListener('DOMContentLoaded', async (event) => {
- 
-      
+    const JSON_state = await JSON_statePromise;
+     
     const scene = document.querySelector('a-scene');
     let scenes = JSON_state.getCategory("scenes");  
     const sky = document.querySelector('#sky');

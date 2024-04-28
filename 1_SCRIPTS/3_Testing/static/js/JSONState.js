@@ -1,19 +1,4 @@
 
-// Function to read the JSON file and extract id and path
-async function loadJSON(filename) {
-    try {
-        const response = await fetch(`../static/1_data/${filename}.json`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const jsonData = await response.json();
-        return jsonData; // This returns the parsed JSON data
-    } catch (error) {
-        console.error('Error fetching the JSON file:', error);
-        return null; 
-    }
-}
-
 
 class JSONState {
     constructor(data) {
@@ -22,6 +7,10 @@ class JSONState {
       this.max_history_length = 10;
       this.indexes = {};
       this.buildIndexes();
+      this.emitStateConstructed();
+
+      console.log("TET2");
+
     }
   
     buildIndexes() {
@@ -43,7 +32,7 @@ class JSONState {
   
     updateProperty(category, uuid, property, value) {
       const data = this.history[this.idx];
-      const newData = {
+      const new_data = {
         ...data,
         [category]: {
           ...data[category],
@@ -53,9 +42,9 @@ class JSONState {
           },
         },
       };
-      const updatedData = { ...this.history[this.idx], ...newData };
+      const updated_data = { ...data, ...new_data };
       this.history.splice(this.idx + 1);
-      this.history.push(updatedData);
+      this.history.push(updated_data);
       this.idx++;
   
       if (this.history.length > this.max_history_length) {
@@ -71,11 +60,19 @@ class JSONState {
       const event = new CustomEvent("iconUpdated");
       document.dispatchEvent(event);
     }
+
+    emitStateConstructed() {
+      console.log("TET");
+
+        const event = new CustomEvent("stateConstructed");
+        document.dispatchEvent(event);
+      }
   
     getState() {
       return this.history[this.idx];
     }
   
+    // Returns the first match
     getPropertyType(item, property) {
       if (item.hasOwnProperty(property)) {
         const value = item[property];

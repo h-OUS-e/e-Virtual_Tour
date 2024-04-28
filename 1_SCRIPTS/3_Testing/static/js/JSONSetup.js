@@ -16,40 +16,10 @@ async function loadJSON(filename) {
 
 
 
-const JSON_data = loadJSON("JSONData");
 
 
-
-
-// async function emitStateDefined(JSON_data) {
-//     let JSON_state = new JSONState(JSON_data);
-//     console.log("TEST", JSON_state);
-
-//     if (JSON_data) {
-//         // Create an event that send
-//         var new_event = new CustomEvent('jsonLoaded');
-
-//         // Dispatch event
-//         document.dispatchEvent(new_event);
-//     }
-
-//     return JSON_state;
-// }
-
-
-//     document.addEventListener('DOMContentLoaded', async function () {
-//         const JSON_data = await loadJSON("JSONData");
-//         JSON_state = await emitStateDefined(JSON_data);
-//         console.log("document was not ready");
-//         var new_event = new CustomEvent('jsonLoaded');
-
-//         // Dispatch event
-//         document.dispatchEvent(new_event);
-//     });
-
-
-
-
-
-export const JSON_state = new JSONState(JSON_data);
-
+export const JSON_statePromise = (async () => {
+    const JSON_data = await loadJSON("JSONData");
+    const JSON_state = new JSONState(JSON_data);
+    return JSON_state;
+})();
