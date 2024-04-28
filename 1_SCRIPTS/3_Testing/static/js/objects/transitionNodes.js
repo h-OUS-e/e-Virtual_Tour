@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     //listen to minimapClick event
     scene.addEventListener('minimapClick', function(event) {
-        var new_scene_id = event.detail.new_scene_id;
+        const new_scene_id = event.detail.new_scene_id;
         // emit transitioning event
         emitTransitioning(new_scene_id);
     });
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     //listen to mediabar item click event to change scenes
     scene.addEventListener('mediabarItemClicked', function(event) {
-        var new_scene_id = event.detail.new_scene_id;
+        const new_scene_id = event.detail.new_scene_id;
         // emit transitioning event
         emitTransitioning(new_scene_id);
     });
@@ -114,9 +114,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         if ((event.target.getAttribute('visible')) && (event.target.classList.contains(MAIN_CLASS)))  
             {            
             // Get the id of the clicked entity            
-            var clickedId = event.target.id;
-            var obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
-            var new_scene_id =  obj.getAttribute('new_scene_id'); //get id of linked image
+            const clickedId = event.target.id;
+            const obj = document.getElementById(clickedId); //obj is the clickable thing that is clicked
+            const new_scene_id =  obj.getAttribute('new_scene_id'); //get id of linked image
 
             // Emit the transitioning event to change the background image and minimap highlights
             emitTransitioning(new_scene_id) 
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 function emitTransitioning(new_scene_id){
     // input: new_scene_id: string
     // emit transitioning event with new background image ID
-    var transitioning = new CustomEvent('transitioning', {
+    const transitioning = new CustomEvent('transitioning', {
         detail: { new_scene_id: new_scene_id}       
     });
     scene.dispatchEvent(transitioning);
