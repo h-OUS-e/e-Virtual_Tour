@@ -8,9 +8,6 @@ class JSONState {
       this.indexes = {};
       this.buildIndexes();
       this.emitStateConstructed();
-
-      console.log("TET2");
-
     }
   
     buildIndexes() {
@@ -72,7 +69,7 @@ class JSONState {
       return this.history[this.idx];
     }
   
-    // Returns the first match
+    // Gets type of property
     getPropertyType(item, property) {
       if (item.hasOwnProperty(property)) {
         const value = item[property];
@@ -111,12 +108,14 @@ class JSONState {
       }
     }
   
+    // Returns first match of item that has given propert
     getItemByProperty(category, property, value) {
       if (
         this.indexes[category] &&
         this.indexes[category][property] &&
         this.indexes[category][property][value]
       ) {
+        console.log(this.indexes[category][property][value]);
         return this.indexes[category][property][value];
       } else {
         console.log(`No item found in '${category}' with '${property}' equal to '${value}'.`);

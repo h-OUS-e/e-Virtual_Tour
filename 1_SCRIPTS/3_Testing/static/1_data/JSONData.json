@@ -5,7 +5,8 @@
             "name": "initial_scene",
             "type": "scene",
             "icons": null,
-            "colors": null
+            "colors": null,
+            "scene_reference": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"
         },
 
         "bff75c73-d8e7-4898-bc31-baf2a7055b1a": {

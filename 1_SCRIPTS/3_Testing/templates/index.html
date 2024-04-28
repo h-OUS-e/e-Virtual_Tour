@@ -11,7 +11,6 @@
     <!-- CDN -->    
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>    
-scenes.length
     <!-- UPPY -->
     <link href="https://releases.transloadit.com/uppy/v3.6.1/uppy.min.css" rel="stylesheet">
     
@@ -56,17 +55,21 @@ scenes.length
 
     <!-- SCRIPTS -->   
     <script type="module" src="../static/js/JSONState.js"></script>
+    <script type="module" src="../static/js/uuidGenerator.js"></script>
 
     <script type="module" src="../static/js/dbEvents.js" ></script>
     <script type="module" src="../static/js/dbBucketUpload.js" ></script>
     <script type="module" src="../static/js/JSONSetup.js"></script>
     <script type="module" src="../static/js/sky.js"></script> 
-    <!-- <script type="module" src="../static/js/mediaPlayer.js"></script>
-    <script type="module" src="../static/js/transitionNodes.js"></script>
-    <script type="module" src="../static/js/hollowCylinder.js" ></script>
-
     <script src="../static/js/zoomControl.js"></script> 
-    <script type="module" src="../static/js/mouseInteractionEvents.js"></script> 
+
+    <script type="module" src="../static/js/transitionNodes.js"></script>
+
+
+    <!-- <script type="module" src="../static/js/mediaPlayer.js"></script> -->
+    <!-- <script type="module" src="../static/js/hollowCylinder.js" ></script> -->
+
+    <!-- <script type="module" src="../static/js/mouseInteractionEvents.js"></script> 
     <script src="../static/js/minimap.js"></script>
     <script type="module" src="../static/js/mediaPopup.js"></script>
     <script src="../static/js/popupContent.js"></script>
@@ -84,7 +87,6 @@ scenes.length
     <script type="module" src="../static/js/colorPicker.js"></script>
     <script type="module" src="../static/js/projectColorHandler.js"></script>
     <script type="module" src="../static/js/mediaPopupTest.js"></script> -->
-    <script type="module" src="../static/js/uuidGenerator.js"></script>
 
     
 </head>
@@ -638,7 +640,7 @@ scenes.length
         
 
         <!-- Loading in 360 image. -->
-        <a-sky id="sky" class="Sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0" initial_camera_rotation="0 0 0"></a-sky>
+        <a-sky id="sky" class="Sky" src="#background_img01.1" scene_id="1" rotation="0 0 0" initial_camera_rotation="0 0 0"></a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
         <a-ring 
@@ -671,72 +673,6 @@ scenes.length
         mixin="mediaplayer_frame" position="7 2 -40" rotation="0 150.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="mediaplayer_3" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
-        mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -40.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_4" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
-        mixin="mediaplayer_frame" position="7 2 -40" rotation="180 0.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_5" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
-        mixin="mediaplayer_frame" position="-12 -20 -40" rotation="0 210.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_6" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
-        mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -30.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity> -->
-
-
-        <!-- Creating some buttons to move between 360 images. -->
-        
-        <!-- <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true" 
-            background_img_id="01.1" new_background_img_id= "01.2"
-            mixin="transition_node_frame"
-            position="-9.1 -2.5 -3" rotation="90 0 0" 
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity>   -->
-        <!-- <a-entity id="move_01.1_03.1"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true"
-            background_img_id="01.1" new_background_img_id= "03.1"
-            mixin="transition_node_frame"
-            position="-9 -2.5 2.2" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
-            background_img_id="01.2" new_background_img_id= "01.1"
-            mixin="transition_node_frame"
-            position="-.1 -2.5 -9.1" rotation="90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
-            background_img_id="01.2" new_background_img_id = "02.1"
-            mixin="transition_node_frame"
-            position="-6.5 -2.5 6.5" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
-            background_img_id="01.2" new_background_img_id = "03.1"
-            mixin="transition_node_frame"
-            position="3 -2.5 -1.3" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
         </a-entity> -->
 
         <!-- <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
