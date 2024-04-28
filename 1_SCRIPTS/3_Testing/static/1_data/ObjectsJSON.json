@@ -4,7 +4,7 @@
         "2ba5e3e6-9ce3-4f16-94ba-b60b874a699d" :{
             "title": "Advanced_Patient_Diagnostics",
             "description": "test",
-            "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
+            "type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
             "position": "9.72 2.17 2.25",
             "rotation": "0 90 0",
             "icon_index": "0",
@@ -21,7 +21,7 @@
         "d3986b22-5a50-43f0-b2bc-d832f10b1b41": {
             "title": "Integrated_Artificial_Intelligence",
             "description": "test",
-            "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
             "position": ".0475 2.13 -9.95",
             "rotation": "0 175 0",
             "icon_index": "1",
@@ -31,7 +31,7 @@
         "deff6215-a266-4f35-9292-234281ec150e": {
             "title": "Superior_Revenue_Cycle_Management",
             "description": "test",
-            "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
             "position": "-9.37 1.56 3.37",
             "rotation": "0 -70 0",
             "icon_index": "0",
@@ -41,7 +41,7 @@
         "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5": {
             "title": "SageNet_Automated_Purchasing_System",
             "description": "test",
-            "mediaplayer_type_uuid": "bff75c73-d8e7-4898-bc31-baf2a7055b1a",
+            "type_uuid": "bff75c73-d8e7-4898-bc31-baf2a7055b1a",
             "position": "-9.37 1.56 3.37",
             "rotation": "0 163 0",
             "icon_index": "0",
@@ -51,7 +51,7 @@
         "232cb566-ffde-4825-b6f9-b1aeff635d69": {
             "title": "Actionable_Business_Intelligence",
             "description": "test",
-            "mediaplayer_type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
             "position": "-3.82 -2.50 -7.04",
             "rotation": "0 -141 0",
             "icon_index": "0",
@@ -61,7 +61,7 @@
         "391869cf-c635-43b0-ad6d-c6aaca477dc3": {
             "title": "Interactive_Patient_Management",
             "description": "test",
-            "mediaplayer_type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
+            "type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
             "position": "-9.31 1.71 3.56",
             "rotation": "0 -69 0",
             "icon_index": "0",

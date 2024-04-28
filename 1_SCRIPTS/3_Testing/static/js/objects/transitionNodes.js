@@ -28,12 +28,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const color_hoverInClicked = "gray";
 
     // Read transition nodes and load them to scene
-    const transitionNode_JSON = object_state.getCategory(CATEGORY, false);
+    const transitionNode_JSON = object_state.getCategory(CATEGORY);
     const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
     await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);   
     
     // Set initial colors of transition nodes
     setTransitionNodeColor(dark_color, light_color);
+
 
     /*********************************************************************
      * 2. UPDATE TRANSITION NODES ON CHANGES
