@@ -7,8 +7,8 @@
             "icons": null,
             "colors": null,
             "scene_reference": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
-            "editable": true
-
+            "editable": null,
+            "isDeleted": null
         },
 
         "bff75c73-d8e7-4898-bc31-baf2a7055b1a": {
@@ -21,7 +21,8 @@
                 "dark": "#2dc84d",
                 "light": "#DBFFE5"
             },
-            "editable": true
+            "editable": true,
+            "isDeleted": false
 
         },
         "7720c93b-7b4c-4d58-99cd-294e48177bbe": {
@@ -35,7 +36,8 @@
                 "dark": "#009A9F",
                 "light": "#D0F9F2"
             },
-            "editable": true
+            "editable": true,
+            "isDeleted": false
                         
         },
         "952c3425-947f-46f7-82f8-3d538df1e8e6": {
@@ -48,7 +50,8 @@
                 "dark": "#FB7698",
                 "light": "#f9d5de"
             },
-            "editable": true
+            "editable": true,
+            "isDeleted": false
 
         },
         "274d87d0-86d9-44e7-b9e1-fdd96c6bbaf0": {
@@ -61,7 +64,8 @@
                 "dark": "#FB7698",
                 "light": "#f9d5de"
             },
-            "editable": false
+            "editable": false,
+            "isDeleted": false
         },
         "248964b8-0cf7-49f7-8bdf-86500221627c": {
             "name": "transition_node",
@@ -70,7 +74,9 @@
             "colors": {
                 "dark": "#2dc84d",
                 "light": "#DBFFE5"
-            }
+            },
+            "editable": null,
+            "isDeleted": null
         },
         "1e509749-3982-42cd-b338-8e28a3659b70": {
             "name": "popup",
