@@ -15,11 +15,10 @@ async function loadJSON(filename) {
 }
 
 
-
-
-
 export const JSON_statePromise = (async () => {
-    const JSON_data = await loadJSON("JSONData");
-    const JSON_state = new JSONState(JSON_data);
-    return JSON_state;
+    const project_JSON = await loadJSON("ProjectJSON");
+    const project_state = new JSONState(project_JSON);
+    const object_JSON = await loadJSON("ObjectsJSON");
+    const object_state = new JSONState(object_JSON);
+    return {project_state, object_state};
 })();

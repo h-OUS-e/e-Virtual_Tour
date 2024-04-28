@@ -2,6 +2,7 @@
 import { JSON_statePromise } from '../JSONSetup.js';
 const scene = document.querySelector('a-scene');
 const main_class = "TransitionNode";
+const category = "TransitionNodes";
 const mixin_glow = "transition_node_glow";
 const mixin_icon = "transition_node_icon";
 
@@ -21,16 +22,18 @@ document.addEventListener('DOMContentLoaded', async (event) => {
      * 1. LOAD TRANSITION NODES
     *********************************************************************/
     // Load JSON state 
-    const state = await JSON_statePromise;
+    let {project_state, object_state} = await JSON_statePromise;
 
-     // Get colors from transition node type
-     let transitionNode_type = state.getItemByProperty("types", "type", main_class);
-     let dark_color = transitionNode_type.colors.dark;
-     let light_color = transitionNode_type.colors.light;
-     const color_hoverInClicked = "gray";
+    // Get colors from transition node type
+    let transitionNode_type = project_state.getItemByProperty("Types", "type", main_class);
+    let dark_color = transitionNode_type.colors.dark;
+    let light_color = transitionNode_type.colors.light;
+    const color_hoverInClicked = "gray";
 
     // Read transition nodes and load them to scene
-    await loadTransitionNodesFromJSON(state.getCategory("transition_nodes"));   
+    const transitionNode_JSON = object_state.getCategory(category, false);
+    const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
+    await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);   
     
     // Set initial colors of transition nodes
     setTransitionNodeColor(dark_color);
@@ -74,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     });
 
-
+    // Resetting color of objects when hovering out
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(main_class)){
@@ -101,6 +104,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         if (event.target.classList.contains(main_class)){
             const icon = event.target.querySelector('[mixin=' + mixin_icon + ']');   
             icon.setAttribute('material', 'color', color_hoverInClicked);
+            console.log("TEST");
         }
     });
 
@@ -151,7 +155,7 @@ function emitTransitioning(new_scene_id){
 }
 
 function setTransitionNodeColor(color){
-    let transition_nodes = document.getElementsByClassName("TransitionNode");
+    let transition_nodes = document.getElementsByClassName(main_class);
     for (let i = 0; i < transition_nodes.length; i++) {
         let icon = transition_nodes[i].querySelector('[mixin=' + mixin_icon + ']')
         icon.setAttribute('material', 'color', color);
@@ -162,17 +166,23 @@ function setTransitionNodeColor(color){
 
 
 
-async function loadTransitionNodesFromJSON(transitionNode_JSON) {
+async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id) {
     try {
-        // Process each object in the JSON array
-        transitionNode_JSON.forEach(([id, transitionNode_item]) => {
+
+        // Get an array of keys from the transitionNode_JSON object
+        const ids = Object.keys(transitionNode_JSON);
+
+        // Iterate over the keys
+        ids.forEach((id) => {
+            const transitionNode_item = transitionNode_JSON[id];
+
             // Get attributes
             const point = transitionNode_item.position;
             const scene_id = transitionNode_item.scene_id;
             const new_scene_id = transitionNode_item.new_scene_id;
 
             // Create mediaplayer and add to scene
-            const transition_node = new TransitionNode(id, point, scene_id, new_scene_id)
+            const transition_node = new TransitionNode(id, point, scene_id, new_scene_id, initial_scene_id);
             transition_node.addToScene();
 
         });
@@ -186,12 +196,13 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON) {
 
 
 class TransitionNode {    
-    constructor(id, position, scene_id, new_scene_id) {
+    constructor(id, position, scene_id, new_scene_id, initial_scene_id) {
         this.id = id;
         this.final_id = id;
         this.position = position;
         this.scene_id = scene_id;
         this.new_scene_id = new_scene_id;
+        this.initial_scene_id = initial_scene_id;
         this.name = this.constructor.name;
     }
 
@@ -202,17 +213,14 @@ class TransitionNode {
         const existingEntity = document.getElementById(this.id);
         if (existingEntity) {
             console.log(`An entity with the ID ${this.id} already exists.`);
-            // Alternatively, update the existing entity instead of ignoring the new addition
-            // existingEntity.setAttribute('position', this.position);
             return false;
         }
 
         const entity = document.createElement('a-entity');
-        this.id = `move_${this.scene_id}_${this.new_scene_id}`;
         entity.setAttribute('id', this.id);
-        entity.setAttribute('class', 'TransitionNode');
+        entity.setAttribute('class', main_class);
         entity.setAttribute('clickable', 'true');
-        entity.setAttribute('visible', this.scene_id === '01.1');
+        entity.setAttribute('visible', this.scene_id === this.initial_scene_id);
         entity.setAttribute('toggle_visibility', true);
         entity.setAttribute('new_scene_id', this.new_scene_id);
         entity.setAttribute('scene_id', this.scene_id);
@@ -241,58 +249,9 @@ class TransitionNode {
         entity.appendChild(glowEntity);
     }
 
-
-    // // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
-    // static addToSheet(id, position, backgroundImgId, new_scene_id) {
-    //     const formattedPoint = `${position.x} ${position.y} ${position.z}`;
-    //     fetch('/add_geometry', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({
-    //             Id: id,
-    //             point: formattedPoint,
-    //             backgroundImgId: backgroundImgId,
-    //             new_scene_id: new_scene_id,
-    //             objectType: this.name,
-    //         }),
-    //     }).then(response => response.json())
-    //     .then(data => console.log('Success:', data))
-    //     .catch(error => console.error('Error:', error));
-    // }
-
-    // // Method to synchronize the node's state with the backend
-    // updateSheet() {
-    //     const formattedPoint = `${this.position.x} ${this.position.y} ${this.position.z}`;
-    //     const data = {
-    //         Id: this.id,
-    //         point: formattedPoint, // Ensure this is serialized properly if needed
-    //         backgroundImgId: this.backgroundImgId,
-    //         new_scene_id: this.new_scene_id,
-    //         objectType: this.name,
-    //     };    
-    //     console.log('testing update sheet' + JSON.stringify(data) + this.backgroundImgId);    
-    //     fetch('/update_geometry', { // Assuming '/update_geometry' is your API endpoint
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify(data)
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => console.log('Update successful:', data))
-    //     .catch(error => console.error('Error updating node:', error));
-    // }
-
-
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         const addedSuccessfully = this.addToScene();
-        // if (addedSuccessfully) {
-        //     console.log("Adding object to the scene.");
-        //     TransitionNode.addToSheet(this.id, this.position, this.backgroundImgId, this.new_scene_id);
-        // } else {
-        //     console.log("Object with the same ID already exists. Creation aborted.");
-        //     return false; // Indicate that creation was not successful
-        // }
-        // return true; // Indicate successful creation
     }
 
 
@@ -300,29 +259,8 @@ class TransitionNode {
     delete() {
         const entity = document.getElementById(this.id);
         if (entity) entity.parentNode.removeChild(entity);
-        // fetch('/delete_geometry', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ Id: this.id, objectType: this.name}),
-        // }).then(response => response.json())
-        // .then(data => console.log('Delete response:', data))
-        // .catch(error => console.error('Error deleting transition node:', error));
     }
 
-
-    // // METHOD TO MOVE THE OBJECT
-    // moveTo(newPosition) {
-    //     const oldPosition = this.position;
-    //     this.position = newPosition;
-    //     this.updateScenePosition(); 
-    //     this.updateSheet();
-
-    //     // Return an action for undo/redo stack
-    //     return {
-    //         do: () => this.moveTo(newPosition),
-    //         undo: () => this.moveTo(oldPosition)
-    //     };
-    // }
 
     // METHOD TO UPDATE THE SCENE POSITION
     updateScenePosition() {
@@ -339,9 +277,9 @@ class TransitionNode {
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
+    // METHOD TO SHOW THE OBJECT MOVING WITHOUT UPDATING ACTUAL OBJECT TO AVOID STATE CHANGE
     cloneAndMoveTo(new_position) {
         const originalEntity = document.getElementById(this.id);
-        console.log("ORIGINAL", originalEntity);
         if (originalEntity) {
             // Define a consistent ID for the clone to make it identifiable
             const cloneId = this.id + '_clone';
@@ -352,7 +290,6 @@ class TransitionNode {
             // Clone the original entity
             const clone = originalEntity.cloneNode(true); // true to clone all child nodes and attributes
 
-            
             // Set the clone ID to the predefined consistent ID
             clone.id = cloneId;
             
@@ -361,12 +298,12 @@ class TransitionNode {
             clone.setAttribute('rotation', "90 0 0");
 
             console.log("clone", clone);
-
             
             // Add the clone to the scene, assuming the scene is the parent of the original entity
             originalEntity.parentNode.appendChild(clone);
         }
     }
+
 
     // Check if a clone already exists and remove it
     deleteClone(){
@@ -479,7 +416,7 @@ class TransitionNode {
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('new_scene_id', this.new_scene_id);            
         // Update visibility
-        entity.setAttribute('visible', this.scene_id === '01.1'); // Example condition
+        entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition
         // // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 

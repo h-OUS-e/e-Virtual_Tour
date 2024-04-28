@@ -14,14 +14,14 @@ import { JSON_statePromise } from '../JSONSetup.js';
 document.addEventListener('DOMContentLoaded', async (event) => {
 
     // get JSON State
-    const JSON_state = await JSON_statePromise;
+    const {project_state, object_state} = await JSON_statePromise;
     
     const scene = document.querySelector('a-scene');
-    let scenes = JSON_state.getCategory("Scenes");  
+    let scenes = object_state.getCategory("Scenes");  
     const sky = document.querySelector('#sky');
 
     // Loading initial scene
-    let initial_scene_id = JSON_state.getItemByProperty("types", "name", "initial_scene").scene_reference;
+    let initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
     changeScene(sky, initial_scene_id, scenes);
 
 

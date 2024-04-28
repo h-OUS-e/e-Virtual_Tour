@@ -69,10 +69,16 @@ class JSONState {
       return this.history[this.idx];
     }
 
-    getCategory(category) {
+    getCategory(category, array=false) {
       const data = this.history[this.idx];
       if (data.hasOwnProperty(category)) {
-        return data[category];
+        if (array) {
+          // Return the object after converting it to an array of key-value pairs
+          return Object.entries(data[category]);
+        } else {
+          return data[category];
+        }
+        
       } else {
         console.log(`${category} not found.`);
         return undefined;
@@ -112,10 +118,15 @@ class JSONState {
       }
     }
   
-    getItem(category, uuid) {
+    getItem(category, uuid, array=false) {
       const data = this.history[this.idx];
       if (data.hasOwnProperty(category) && data[category].hasOwnProperty(uuid)) {
-        return data[category][uuid];
+        if (array) {
+          // Return the object after converting it to an array of key-value pairs
+          return Object.entries(data[category][uuid]);
+        } else {
+          return data[category][uuid];
+        }
       } else {
         console.log(`${category} with UUID '${uuid}' not found.`);
         return undefined;
@@ -137,10 +148,15 @@ class JSONState {
       }
     }
 
-    getItemByProperty(category, property, value) {
+    getItemByProperty(category, property, value, array=false) {
       const category_items = this.getCategory(category);
       const id = this.getItemIDByProperty(category, property, value);
-      return category_items[id];
+      // Return the object after converting it to an array of key-value pairs
+      if (array) {
+        return Object.entries(category_items[id]);
+      } else {
+        return category_items[id];
+      }
 
     }
   
