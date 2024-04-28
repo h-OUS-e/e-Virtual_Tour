@@ -1,4 +1,5 @@
-import { JSON_statePromise } from './JSONSetup.js';
+// LOADING JSON STATE
+import { JSON_statePromise } from '../JSONSetup.js';
 const scene = document.querySelector('a-scene');
 const main_class = "TransitionNode";
 const mixin_glow = "transition_node_glow";
@@ -11,13 +12,19 @@ const color_mintGreen = colors.getPropertyValue('--transition_node_light_color')
 const color_hoverIn = color_mintGreen;
 const color_main = color_sageGreen;
 
-    // let deletionHistory = [];
-
+/*********************************************************************
+ * EVENT LISTENERS
+*********************************************************************/
 document.addEventListener('DOMContentLoaded', async (event) => {
+
+    /*********************************************************************
+     * 1. LOAD TRANSITION NODES
+    *********************************************************************/
+    // Load JSON state 
     const state = await JSON_statePromise;
 
-     // Get colors from CSS palette
-     let transitionNode_type = state.getItemByProperty("types", "type", "transitionNode");
+     // Get colors from transition node type
+     let transitionNode_type = state.getItemByProperty("types", "type", main_class);
      let dark_color = transitionNode_type.colors.dark;
      let light_color = transitionNode_type.colors.light;
      const color_hoverInClicked = "gray";
@@ -26,7 +33,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     await loadTransitionNodesFromJSON(state.getCategory("transition_nodes"));   
     
     // Set initial colors of transition nodes
-    setTransitionNodeColor(dark_color)
+    setTransitionNodeColor(dark_color);
+
+    /*********************************************************************
+     * 2. UPDATE TRANSITION NODES ON CHANGES
+    *********************************************************************/
 
     // Reset colors if new transition node colors selected
     scene.addEventListener("transitionNodesColorChange", function() {
