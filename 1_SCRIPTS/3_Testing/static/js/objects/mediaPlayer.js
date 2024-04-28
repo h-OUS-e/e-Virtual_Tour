@@ -50,9 +50,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     scene.addEventListener('hoverin', function (event) 
     {   
         if (event.target.classList.contains(MAIN_CLASS)){
-            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
-            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_dark"];
-            event.target.setAttribute('material', 'color', color_mediaPlayer);
+
+            const mediaplayer_type_id = event.target.getAttribute('type_uuid');
+            const dark_color = mediaplayer_types[mediaplayer_type_id].colors.dark; 
+            event.target.setAttribute('material', 'color', dark_color);
         }
     });
     
@@ -61,9 +62,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     scene.addEventListener('hoverout', function (event) 
     {
         if (event.target.classList.contains(MAIN_CLASS)){
-            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
-            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
-            event.target.setAttribute('material', 'color', color_mediaPlayer); // Revert color on hover out
+            const mediaplayer_type_id = event.target.getAttribute('type_uuid');
+            const light_color = mediaplayer_types[mediaplayer_type_id].colors.light; 
+            event.target.setAttribute('material', 'color', light_color); // Revert color on hover out
         }
 
     });
@@ -73,9 +74,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     scene.addEventListener('hoverin_mousedown', function (event) 
     {
         if (event.target.classList.contains(MAIN_CLASS)){
-            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
-            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
-            event.target.setAttribute('material', 'color', color_mediaPlayer);
+            const mediaplayer_type_id = event.target.getAttribute('type_uuid');
+            const light_color = mediaplayer_types[mediaplayer_type_id].colors.light; 
+            event.target.setAttribute('material', 'color', light_color);
         }
     });
 
@@ -85,9 +86,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     {
         if (event.target.classList.contains(MAIN_CLASS))
         {
-            const mediaplayer_type_name = event.target.getAttribute('mediaplayer_type');
-            const color_mediaPlayer = project_colors[mediaplayer_type_name + "_light"];
-            event.target.setAttribute('material', 'color', color_mediaPlayer); 
+            const mediaplayer_type_id = event.target.getAttribute('type_uuid');
+            const light_color = mediaplayer_types[mediaplayer_type_id].colors.light; 
+            event.target.setAttribute('material', 'color', light_color); 
         }
     });
 
@@ -145,23 +146,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     scene.addEventListener('updatedProjectColors', async function(event) 
     {
         try {
-            // Get project colors from event
-            project_colors = event.detail.project_colors;
-
-            // Update colors of all mediaplayer objects
-            document.querySelectorAll('.MediaPlayer').forEach(object => {
-                // get colors from project colors
-                const mediaplayer_type = object.getAttribute("mediaplayer_type");
-                let dark_color = project_colors[mediaplayer_type+"_dark"];
-                let light_color = project_colors[mediaplayer_type+"_light"];
-
-            
-                // update element colors
-                const borderEntity = object.getElementsByClassName('mediaplayer-border')[0];
-
-                borderEntity.setAttribute('material', 'color', dark_color);            
-                object.setAttribute('material', 'color', light_color);
-            });    
+            setMediaplayerColor(mediaplayer_types);
 
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);
@@ -327,7 +312,6 @@ class MediaPlayer {
         }
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
-        console.log("MP ADDED", this.id);
         return true;
     }
 
@@ -380,9 +364,6 @@ class MediaPlayer {
     }
 
 
-    // STATIC METHOD TO ADD OBJECT TO BACKEND DATABASE
-
-
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         this.addToScene();
@@ -394,13 +375,6 @@ class MediaPlayer {
     delete() {
         const entity = document.getElementById(this.id);
         if (entity) entity.parentNode.removeChild(entity);
-    //     fetch('/delete_geometry', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ Id: this.id, objectType: this.name}),
-    //     }).then(response => response.json())
-    //     .then(data => console.log('Delete response:', data))
-    //     .catch(error => console.error('Error deleting mediaplayer object:', error));
     }
 
 
