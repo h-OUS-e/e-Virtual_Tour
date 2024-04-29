@@ -22,8 +22,8 @@
 #mediabar-header {
   background-color: var(--background); 
   flex: 1;  
-  padding-left: 7%; 
-  padding-top: 7%;
+  padding-left: 2%; 
+  margin-top: 5%;
   border-bottom: var(--bottom-border-styles) ;
 }
 #mediabar-item-grid {
@@ -39,11 +39,54 @@
 }
 
 .mediabar-item {
+  position: relative;
+  justify-content: flex-start;
+  align-items: center;
   z-index: 3;
   background-color: var(--background); 
   border-bottom: var(--bottom-border-styles);
-  padding-left: 7%;
-  padding-top: 3%;
+  padding-left: 5%;
+  padding-top: 2%;
+}
+.mediabar-item:hover {
+  background-color: var(--highlight_color); 
+  cursor: pointer;
+}
+
+.mediabar-item:hover .mediabar-item-icon {
+  transform: scale(1.2);
+}
+
+.mediabar-item-content {
+  margin-left: 20px;
+  /* transition: transform 0.9s ease; */
+}
+
+.mediabar-item:hover .mediabar-item-content {
+  transform: translateY(10px);
+}
+
+.mediabar-item-body {
+  max-height: 0;
+  overflow: hidden;
+  /* transition: max-height 0.9s ease; */
+}
+
+.mediabar-item:hover .mediabar-item-body {
+  max-height: 100px;
+}
+
+
+
+
+.mediabar-item-icon {
+  align-self: flex-start;
+  width: 32px;
+  height: 32px;
+  border-bottom: var(--bottom-border-styles);
+  border-width: 2px;
+  border-radius: 100%;
+  transition: transform 0.3s ease;
 }
 
 #mediabar-toggler {
@@ -51,16 +94,41 @@
   flex-direction: column;
   height: 100%;
   width: var(--mediabar_width);
-  background-color: var(--default_color);;
-
+  border-right: var(--bottom-border-styles);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: var(--background);
+  transition: transform 0.3s ease;
+
+
 }
 
+#mediabar-toggler:hover {
+  background-color: var(--default_color);
+}
+#mediabar-toggler:hover #mediabar-toggler-button {
+  color: var(--background);
+  transform: scale(1.2);
+  transform: rotate(10deg);
+
+}
+
+#mediabar-toggler.open #mediabar-toggler-button {
+  transform: rotate(180deg);
+}
+
+#mediabar-toggler.open:hover #mediabar-toggler-button {
+  color: var(--background);
+  transform: scale(1.2);
+  transform: rotate(160deg);
+
+}
+
+
 #mediabar-toggler-button{
-  background-color: var(--default_color);;
+  color: var(--default_color);
   display: block;
   width: 10%;
   /* Adjust the size of the arrow by changing the border sizes */
@@ -69,5 +137,8 @@
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
   border-right: 0px;
-  z-index: 2;  
 }
+
+
+
+

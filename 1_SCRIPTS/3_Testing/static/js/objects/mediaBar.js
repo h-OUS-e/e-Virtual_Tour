@@ -66,15 +66,32 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 
         // Create the body element
         const media_element_body = document.createElement('div'); 
+        media_element_body.classList.add('mediabar-item-body');
         media_element_body.innerHTML = `
             <p>${description}</p>
         `;
+
+        // Create the icon element
+        const media_element_icon = document.createElement('img');
+        media_element_icon.src = icon_url;
+        media_element_icon.alt = 'Media Icon';
+        media_element_icon.classList.add('mediabar-item-icon');
+
+        // Append the title and description
+        const media_element_content = document.createElement('div');
+        media_element_content.classList.add('mediabar-item-content');
+        media_element_content.classList.add('flexColumn');
+        media_element_content.appendChild(media_element_title);
+        media_element_content.appendChild(media_element_body);
+
         
-        // Append the title and body to the media_element
+        // Append the items to the media_element
         const media_element = document.createElement('div');
         media_element.classList.add('mediabar-item');
-        media_element.appendChild(media_element_title);
-        media_element.appendChild(media_element_body);
+        media_element.classList.add('flexRow');
+        media_element.appendChild(media_element_icon);
+        media_element.appendChild(media_element_content);
+        
         
 
         // Change sky image when mouse is clicked and show popup
@@ -109,9 +126,11 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 }
 
     // A side toggle to hide or show the mediabar
-    document.getElementById('mediabar-toggler-button').addEventListener('click', function() {
+    document.getElementById('mediabar-toggler').addEventListener('click', function() {
 
         const mediabar_container = document.getElementById('mediabar-container');
+        const mediabarToggler = document.getElementById('mediabar-toggler');
+        mediabarToggler.classList.toggle('open');
     
         if (MEDIABAR.style.width === '0%') {            
             mediabar_container.style.width = '30%';

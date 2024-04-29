@@ -20,6 +20,7 @@
     /* CONSTANTS */
     --mediabar_width: 2vw;
     --bottom-border-styles: 1px rgb(94, 94, 94) solid;
+    --highlight_color: rgb(61, 61, 61);
 }
 
 
