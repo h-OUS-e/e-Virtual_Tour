@@ -167,6 +167,7 @@ async function changeScene(sky, new_scene_id, scenes)
         id: new_scene_id,
         ...scenes[new_scene_id]
       };
+
     console.log(scene);
     const scene_id = sky.getAttribute('scene_id');
     let camera_rig = document.getElementById('camera_rig');

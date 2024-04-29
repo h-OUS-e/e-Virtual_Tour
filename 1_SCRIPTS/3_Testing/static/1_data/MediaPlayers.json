@@ -6,7 +6,7 @@
         "position": "9.72 2.17 2.25",
         "rotation": "0 90 0",
         "icon_index": "0",
-        "background_img_id" : "01.1",
+        "scecne_id" : "01.1",
         "body": {
             "text": {
                 "string": "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
@@ -23,7 +23,7 @@
         "position": ".0475 2.13 -9.95",
         "rotation": "0 175 0",
         "icon_index": "1",
-        "background_img_id" : "01.1"        
+        "scecne_id" : "01.1"        
     }, 
 
     "deff6215-a266-4f35-9292-234281ec150e": {
@@ -33,7 +33,7 @@
         "position": "-9.37 1.56 3.37",
         "rotation": "0 -70 0",
         "icon_index": "0",
-        "background_img_id" : "01.2"
+        "scecne_id" : "01.2"
     }, 
 
     "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5": {
@@ -43,7 +43,7 @@
         "position": "-9.37 1.56 3.37",
         "rotation": "0 163 0",
         "icon_index": "0",
-        "background_img_id" : "02.1"
+        "scecne_id" : "02.1"
     }, 
 
     "232cb566-ffde-4825-b6f9-b1aeff635d69": {
@@ -53,7 +53,7 @@
         "position": "-3.82 -2.50 -7.04",
         "rotation": "0 -141 0",
         "icon_index": "0",
-        "background_img_id" : "03.1"
+        "scecne_id" : "03.1"
     }, 
 
     "391869cf-c635-43b0-ad6d-c6aaca477dc3": {
@@ -63,7 +63,7 @@
         "position": "-9.31 1.71 3.56",
         "rotation": "0 -69 0",
         "icon_index": "0",
-        "background_img_id" : "03.1"
+        "scecne_id" : "03.1"
     }
 
 }

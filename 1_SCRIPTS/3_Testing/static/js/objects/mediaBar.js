@@ -53,7 +53,7 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
         const mediaplayer_type = types[type_uuid];
         const title = mediaPlayer_item.title;
         const description = mediaPlayer_item.description;
-        const scecne_id = mediaPlayer_item.scecne_id;
+        const scene_id = mediaPlayer_item.scene_id;
         const icon_index = mediaPlayer_item.icon_index;
         const icon_url = icons[mediaplayer_type["icons"][icon_index]].src;
         
@@ -82,7 +82,7 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 
             const transitioning = new CustomEvent('mediabarItemClicked', {
                 detail: {
-                    new_scene_id: scecne_id, 
+                    new_scene_id: scene_id, 
                     id: id
                 },       
             });
@@ -92,7 +92,7 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
         media_element.addEventListener('dblclick', function(event) {
             const transitioning = new CustomEvent('mediabarItemDoubleClicked', {
                 detail: {
-                    new_scene_id: scecne_id, 
+                    new_scene_id: scene_id, 
                     id: id,  
                     mediaplayer_type: mediaplayer_type
                 }
