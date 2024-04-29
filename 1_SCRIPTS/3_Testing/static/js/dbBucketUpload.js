@@ -68,6 +68,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   let auto_open_cropper = null;
   let max_number_of_files = 10;
 
+
   // Setting dashboard variables if bucket is icons_img
   if (storage_bucket == storage_bucket_icon) { 
     cropper_aspect_ratio = 1;
@@ -82,6 +83,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   let image_extension = ""
   let uppy_file;
   let fileUUID;
+  let uppy_id;
 
   // Close uppy if it was open
   if (uppy) {
@@ -91,16 +93,17 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   // Define uppy
   uppy = new Uppy({
-      target: target_div,
-      inline: true,
-      width: '100%',
-      height: '100%',
-      proudlyDisplayPoweredByUppy: false,
-      restrictions: {
-        allowedFileTypes: ['image/*'],
-        maxNumberOfFiles: max_number_of_files,
-        maxFileSize: 10000000,// 10MB
-      },
+    debug: true,
+    target: target_div,
+    inline: true,
+    width: '100%',
+    height: '100%',
+    proudlyDisplayPoweredByUppy: false,
+    restrictions: {
+      allowedFileTypes: ['image/*'],
+      maxNumberOfFiles: max_number_of_files,
+      maxFileSize: 10000000,// 10MB
+    },
   });
 
   // The container where you drop the image
@@ -173,68 +176,120 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
     image_name = file.name.slice(0, file.name.lastIndexOf('.'));
     image_type = file.type;
-    image_extension = file.extension; // used later in imageUploadChecked event to figure out the extention
+    image_extension = file.extension;
+    fileUUID = uuid.v4();
+    uppy_id = file.id
+    emitImageAdded(image_name);  
 
 
-    // file.meta = {
-    //   ...file.meta,
-    //   ...supabaseMetadata,
-    // }
+    console.log(uppy.getState()); 
+  });
+  document.addEventListener('imageUploadChecked', async function handler(event) {
+    const image_name = event.detail.image_name;
+    const file_name = `${image_name}.${image_extension}`;
+    const supabaseMetadata = {
+        bucketName: storage_bucket,
+        objectName: `${project_uid}/${fileUUID}/${file_name}`,
+        contentType: image_type,
+    };
+    console.log(supabaseMetadata);
     
-    // Define the file as uppy file to user later when uploading
-    uppy_file = file;
+    let file = uppy.getFile(uppy_id)
+    const new_file = new File([file.data], file_name, { type: file.type, lastModified: Date()});
+    uppy.removeFile(file.id);
+    uppy.addFile({
+      name: file_name,
+      type: new_file.type,
+      data: new_file,
+      meta: supabaseMetadata
+    })
+    
+    console.log('uppy before uploas: ',uppy.getState());
 
-    // Emit that image was added to check image in image menu
-    emitImageAdded(image_name);    
+
+    uppy.upload(new_file).then((result) => {
+      console.info('Successful uploads:', result.successful);
+    
+      if (result.failed.length > 0) {
+        console.error('Errors:');
+        result.failed.forEach((file) => {
+          console.error(file.error);
+        });
+      }
+    });
+
+
+    console.log('uppy after uploas: ',uppy.getState());
+    
   });
 
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
-  document.addEventListener('imageUploadChecked', async function handler(event) {
-    // Get image name from menu input
-    image_name = event.detail.image_name;
+  // document.addEventListener('imageUploadChecked', async function handler(event) {
+  //   // Get image name from menu input
+  //   image_name = event.detail.image_name;
+  //   console.log(image_name)
+  //   const file_name = `${image_name}.${image_extension}`;
+  //   const supabaseMetadata = {
+  //     bucketName: 'icnons_img',
+  //     objectName: `${project_uid}/${fileUUID}/${file_name}`,
+  //     contentType: image_type,
+  //     metadata: { 
+  //       img_project_uid: project_uid,
+  //       file_name: file_name,
+  //       storage_bucket: storage_bucket,
+  //       img_id: fileUUID
+  //     }
+  //   }
+  //   console.log(file.meta)
+  //   console.log(supabaseMetadata);
+  //   const upload_blob = new Blob([uppy_file], {type: uppy_file.type});
+  //   const upload_file = new File([upload_blob], file_name, {type:uppy_file.type});
+  //   upload_file.meta = {
+  //     ...upload_file.meta,
+  //     ...supabaseMetadata,
+  //   }
+  //   console.log(upload_file);
+  //   uppy.getFiles().forEach(file => {
+  //     if (file.name !== file_name) {
+  //       uppy.removeFile(file.id);
+  //     }
+  //   });
     
+  //   uppy.addFile(upload_file);
 
-    // Edit filename in metadata in case new image name is input
-    const file_name = `${image_name}.${image_extension}`;
-    const fileUUID = uuid.v4();
-
-    console.log(uppy_file.data)
-    console.log([uppy_file])
-    const upload_file = new File([uppy_file], file_name, {
-      type: uppy_file.type,
-      lastModified: new Date()
-    });
-    console.log(upload_file)
-
-    if (upload_file) {
-      const supabaseMetadata = {
-        bucketName: storage_bucket,
-        objectName: `${project_uid}/${fileUUID}/${file_name}`,
-        contentType: upload_file.type,
-        metadata: { 
-          img_project_uid: project_uid,
-          file_name: file_name,
-          img_id: fileUUID
-        }
-      }
-      upload_file.meta = {
-        ...upload_file.meta,
-        ...supabaseMetadata
-      }
-      uppyUploadFunction(uppy, upload_file, storage_bucket, thumbnail_URL, image_name);
-
-    } else {console.log('upload_file did not get created');}
-
-    // uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
-    // uppy_file.meta.metadata.file_name = file_name;
+  
+  //   uppy.upload().then((result) => {
+  //     console.info('Successful uploads:', result.successful);
     
-    // Upload image
-    
+  //     if (result.failed.length > 0) {
+  //       console.error('Errors:');
+  //       result.failed.forEach((file) => {
+  //         console.error(file.error);
+  //       });
+  //     }
+  //   });
 
-    // Remove the event listener after the upload is completed to prevent duplicate listeners
-    document.removeEventListener('imageUploadChecked', handler);
-  });    
+  //   // const {data, error } = await supabase.storage
+  //   // .from('icons_img')
+  //   // .upload(`${project_uid}/${fileUUID}/${file_name}`, uppy_file, {
+  //   //   cacheControl: '3600',
+  //   //   contentType: image_type,
+  //   //   upsert: false,
+  //   //   metadata: {
+  //   //     file_name: file_name,
+  //   //     img_id: fileUUID,
+  //   //     img_project_uid: project_uid
+  //   //   }
+  //   // })
+
+
+  //   // Upload image
+  //   // uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
+
+  //   // Remove the event listener after the upload is completed to prevent duplicate listeners
+  //   document.removeEventListener('imageUploadChecked', handler);
+  // });    
 
 
   // Get image url to show in icon editor
@@ -284,6 +339,20 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   });
 }
 
+async function uploadWithoutUppy(file, storage_bucket) {
+  const {data, error } = await supabase.storage
+  .from(storage_bucket)
+  .upload(`${project_uid}/${fileUUID}/${file_name}`, file, {
+    cacheControl: '3600',
+    contentType: file.contentType,
+    upsert: false,
+    metadata: {
+      file_name: file.image_name,
+      img_id: file.file_name,
+      img_project_uid: file.img_id
+    }
+  })
+}
 
 function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_name) {
   console.log(file)
