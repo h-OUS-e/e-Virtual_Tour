@@ -6,10 +6,10 @@ import { JSON_statePromise } from '../JSONSetup.js';
 
 // GLOBAL CONSTANTS
 const MEDIABAR_styles = getComputedStyle(document.documentElement);
-const MEDIABAR_WIDTH = MEDIABAR_styles.getPropertyValue('--sidebar_width').trim();
+const MEDIABAR_WIDTH = MEDIABAR_styles.getPropertyValue('--mediabar_width').trim();
 // Getting mediabar elements    
-const MEDIABAR = document.getElementById('sidebar');
-const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=sidebar-item-grid]');
+const MEDIABAR = document.getElementById('mediabar');
+const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=mediabar-item-grid]');
 
 
 /*********************************************************************
@@ -72,7 +72,7 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
         
         // Append the title and body to the media_element
         const media_element = document.createElement('div');
-        media_element.classList.add('sidebar-item');
+        media_element.classList.add('mediabar-item');
         media_element.appendChild(media_element_title);
         media_element.appendChild(media_element_body);
         
@@ -109,17 +109,15 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 }
 
     // A side toggle to hide or show the mediabar
-    document.getElementById('sidebar-toggler-button').addEventListener('click', function() {
+    document.getElementById('mediabar-toggler-button').addEventListener('click', function() {
 
-        const mediabar_container = document.getElementById('sidebar-container');
+        const mediabar_container = document.getElementById('mediabar-container');
     
-        if (MEDIABAR.style.width === '0%') {
-            
+        if (MEDIABAR.style.width === '0%') {            
             mediabar_container.style.width = '30%';
             MEDIABAR.style.width = '100%';
         } else {
-            mediabar_container.style.width = MEDIABAR_WIDTH;
-            
+            mediabar_container.style.width = MEDIABAR_WIDTH;            
             MEDIABAR.style.width = '0%';
             
         }
