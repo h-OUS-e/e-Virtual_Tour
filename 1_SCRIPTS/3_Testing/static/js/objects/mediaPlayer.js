@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
-    // Get colors from type ?    
-    // let project_colors = event.detail.project_colors;
-    let project_colors;       
  
     // loading MediaPlayers to scene from JSON file
     const mediaPlayer_JSON = object_state.getCategory(CATEGORY);

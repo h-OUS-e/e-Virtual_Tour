@@ -60,6 +60,8 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 
         const media_element_title = document.createElement('div');              
          // Create the title element and edit color of title based on popup color
+         media_element_title.classList.add('mediabar-item-title');
+
         media_element_title.innerHTML = `
             <h4>${title}</h4>
         `;
@@ -131,13 +133,25 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
         const mediabar_container = document.getElementById('mediabar-container');
         const mediabarToggler = document.getElementById('mediabar-toggler');
         mediabarToggler.classList.toggle('open');
+        mediabar_container.classList.toggle('open');
     
         if (MEDIABAR.style.width === '0%') {            
             mediabar_container.style.width = '30%';
             MEDIABAR.style.width = '100%';
         } else {
-            mediabar_container.style.width = MEDIABAR_WIDTH;            
+            mediabar_container.style.width = '15px';            
             MEDIABAR.style.width = '0%';
             
         }
     });
+
+    // document.getElementById('mediabar-toggler').addEventListener('mouseover', function() {
+    //     const mediabar_container = document.getElementById('mediabar-container');
+    //     mediabar_container.classList.add('mediabar-container-transform');
+    // });
+
+    // document.getElementById('mediabar-toggler').addEventListener('mouseleave', function() {
+    //     const mediabar_container = document.getElementById('mediabar-container');
+    //     mediabar_container.classList.remove('mediabar-container-transform');
+    // });
+
