@@ -135,7 +135,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     },
   });
 
-  // A function that allows user to edit the image
+  // A function that allows user to edit the imagek
   uppy.use(ImageEditor, {
     target: Dashboard,
     quality: 0.7,
@@ -156,28 +156,30 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Updating file metadata when image is added to dashboard, and showing upload button  
   uppy.on('file-added', (file) => {    
     // Get the image details from file
+    
+    console.log('file event', file, storage_bucket);
+    // const supabaseMetadata = {
+    //   bucketName: storage_bucket,
+    //   objectName: `${project_uid}/${fileUUID}/${file.name}`,
+    //   contentType: file.type,
+    //   metadata: { 
+    //     img_project_uid: project_uid,
+    //     file_name: file.name,
+    //     storage_bucket: storage_bucket,
+    //     img_id: fileUUID
+    //   }
+
+    // }
+
     image_name = file.name.slice(0, file.name.lastIndexOf('.'));
     image_type = file.type;
-    image_extension = file.extension;
-    const file_name = `${image_name}.${image_extension}`;
-    fileUUID = uuid.v4();
+    image_extension = file.extension; // used later in imageUploadChecked event to figure out the extention
 
-    // Create supabase meta data and insert into uppy meta data
-    const supabaseMetadata = {
-      bucketName: storage_bucket,
-      objectName: `${project_uid}/${fileUUID}/${file_name}`,
-      contentType: image_type,
-      metadata: { 
-        img_project_uid: project_uid,
-        file_name: file_name,
-        storage_bucket: storage_bucket,
-        img_id: fileUUID
-      }
-    }
-    file.meta = {
-      ...file.meta,
-      ...supabaseMetadata,
-    }
+
+    // file.meta = {
+    //   ...file.meta,
+    //   ...supabaseMetadata,
+    // }
     
     // Define the file as uppy file to user later when uploading
     uppy_file = file;
@@ -191,14 +193,44 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   document.addEventListener('imageUploadChecked', async function handler(event) {
     // Get image name from menu input
     image_name = event.detail.image_name;
+    
 
     // Edit filename in metadata in case new image name is input
     const file_name = `${image_name}.${image_extension}`;
-    uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
-    uppy_file.meta.metadata.file_name = file_name;
+    const fileUUID = uuid.v4();
+
+    console.log(uppy_file.data)
+    console.log([uppy_file])
+    const upload_file = new File([uppy_file], file_name, {
+      type: uppy_file.type,
+      lastModified: new Date()
+    });
+    console.log(upload_file)
+
+    if (upload_file) {
+      const supabaseMetadata = {
+        bucketName: storage_bucket,
+        objectName: `${project_uid}/${fileUUID}/${file_name}`,
+        contentType: upload_file.type,
+        metadata: { 
+          img_project_uid: project_uid,
+          file_name: file_name,
+          img_id: fileUUID
+        }
+      }
+      upload_file.meta = {
+        ...upload_file.meta,
+        ...supabaseMetadata
+      }
+      uppyUploadFunction(uppy, upload_file, storage_bucket, thumbnail_URL, image_name);
+
+    } else {console.log('upload_file did not get created');}
+
+    // uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
+    // uppy_file.meta.metadata.file_name = file_name;
     
     // Upload image
-    uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
+    
 
     // Remove the event listener after the upload is completed to prevent duplicate listeners
     document.removeEventListener('imageUploadChecked', handler);
@@ -254,6 +286,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 
 function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_name) {
+  console.log(file)
+  
   uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   

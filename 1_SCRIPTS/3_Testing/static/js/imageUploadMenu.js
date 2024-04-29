@@ -71,7 +71,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   function handleUpload(existing_image_names) {
     // get image_name
     const image_name = name_input.value.trim().replace(/\s+/g, '_');
-
+    console.log(image_name)
     // If image is empty, add warning. Else shutdown menu
   if (image_name === "") {
       swal({
