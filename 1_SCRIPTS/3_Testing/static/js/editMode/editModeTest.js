@@ -11,11 +11,20 @@ const scene = document.querySelector('a-scene');
 const updateBtn = document.getElementById("uploadTest");
 const grid_plane = document.getElementById("grid_plane");
 const grid_cylinder = document.getElementById("grid_cylinder");
+// Initializing the grid Cylinder
+grid_cylinder.setAttribute('hollow-cylinder', {
+    height: 20,
+    radius: 10, 
+    thetaSegments: 32, 
+    heightSegments: 4 
+});
 
 
 // GLOBAL VARIABLES
 let isEditMode = false;
 let selected_object_class = 'None'; // Default selection
+let current_object_editMenu_id = null;
+
 
 
 /*********************************************************************
@@ -30,25 +39,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     let {project_state, object_state} = await JSON_statePromise;
 
 
-
     /*********************************************************************
      * 2. UPDATE ITEMS ON CHANGES
     *********************************************************************/
 
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
-        toggleEditMode(isEditMode, this);
+        toggleEditMode(isEditMode, this, function(isEditModeAnswer) {
+            isEditMode = isEditModeAnswer;
+    console.log("CY:LINDER: ", grid_cylinder, grid_plane);
+
+        });
+
+
     });
 
 
     // Activating or deactivating buttons in editmode bar
     objectBtnSelector('.objectClassBtn', function(object_class) {
         selected_object_class = object_class;
-        console.log('Selected object class:', selected_object_class);
-        // Perform any other actions with the selected object class
     });
     menuBtnSelector('.nonObjectClassBtn');
-    console.log(selected_object_class, "TEST");
 
 
     // Handling right click, right clicking object shows its corresponding editMenu
@@ -64,9 +75,79 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, true); // Using capture phase to catch the event early
 
 
+    // Code to add object to scene if grid is clicked in editMode
+    scene.addEventListener('mouseClickedEditMode', function (event) {   
+    });
+
+
+    // Code to select the objects you want to move around the scene
+    scene.addEventListener('ctrlShiftMouseDownIntersection', function (event) {
+    });
+    scene.addEventListener('longMouseDownIntersection', function (event) {
+    });
+
+
+    // Code to move a clone of the object around the scene or adjust scene rotation
+    scene.addEventListener('mouseMovingEditMode', function (event) {
+    });
+
+
+    // Code to register new object position after move is done and updating object state
+    scene.addEventListener('mouseup', function (event) {
+    });
+
+
+    // Undo/redo state
+    document.addEventListener('keydown', function(event) {
+        // Check for Ctrl+Z or Cmd+Z to undo object state
+        if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+
+        }
+
+        // Check for shift+Z to undo project state
+        if ((event.shiftKey || event.metaKey) && event.key === 'z') {
+
+        }
+
+        // Check for ctrl+Y or cmd+y to redo object state
+        if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+
+        }
+        // Check for shift+Y to redo project state
+        if ((event.shiftKey || event.metaKey) && event.key === 'y') {
+            
+
+        }
+
+        // prevent default browser behavior
+        if ((event.altKey)) {
+
+            event.preventDefault();
+            console.log("gege");
+
+        }
+        
+    });
+
+
+
+
+    // Code to adjust grid
+    // Adjust the plane position if shift+scroll is detected
+    // Adjust the cylinder grid scale if shift+alt++scroll is detected
+    document.addEventListener('wheel', function(event) {
+        event.preventDefault();
+
+        if (!isEditMode) return; 
+        adjustPlaneHeight(event);
+        adjustRadius(event);
+        // prevents page from scrolling down, or prevents browser executing other commands
+        passive: false; 
+    });
+
 
     /*******************************************************************************
-    * 3. JSON UPDATES
+    * 3. JSON UPDATES LISTINERS
     *******************************************************************************/ 
     
 
@@ -97,7 +178,7 @@ function emitShowMenu(menu_id) {
 /*******************************************************************************
 * FUNCTIONS
 *******************************************************************************/ 
-function toggleEditMode(isEditMode, btn) {
+function toggleEditMode(isEditMode, btn, callback) {
     isEditMode = !isEditMode; // Toggle edit mode
     emitEditMode(isEditMode); // dispatch edit mode
     btn.textContent = isEditMode ? 'Exit & Save' : 'Enter Edit Mode';
@@ -116,6 +197,8 @@ function toggleEditMode(isEditMode, btn) {
     else {
         editmode_bar.classList.add('hidden'); // Show the element
     }
+    // Invoke the callback function with the selected object class
+    callback(isEditMode);
 }
 
 
@@ -168,5 +251,110 @@ function menuBtnSelector(btn_class) {
             });
         });
     });
+
+}
+
+
+function adjustCameraRotation(event) {
+    // Update the sky's rotation based on mouse movement.
+    // Adjust these values as needed for smoother or faster rotation.
+    const rotationSpeed = 0.15;
+    const camera_rig = document.getElementById("camera_rig");
+    let rotation = camera_rig.getAttribute('rotation');
+
+    rotation.y += event.detail.dx * rotationSpeed;
+    // rotation.x -= event.detail.dy * rotationSpeed;
+
+    camera_rig.setAttribute('rotation', rotation);
+    console.log(camera_rig.getAttribute('rotation'));
+
+}
+
+// Enable/disable camera controls.
+function toggleCameraControls(enable) {
+    let camera = document.getElementById('camera');
+    camera.setAttribute('look-controls', 'enabled', enable);  
+    camera.setAttribute('custom-look-controls', `enabled: ${enable}`); 
+}
+
+
+// A function to slide the plane position up and down to place transition nodes on it
+function adjustPlaneHeight(event) {
+
+    // Only proceed if the Shift key is pressed
+    if (!event.shiftKey) return;
+    if (event.ctrlKey || event.altKey || event.metaKey ) return;
+
+    // Prevent the default scrolling behavior
+    event.preventDefault();
+
+    // Get the plane element
+    const plane = document.getElementById('grid_plane');
+    // Get the cylinder element
+    const cylinder = document.getElementById('grid_cylinder');
+    // Parse the current position
+    const currentPosition = plane.getAttribute('position');
+
+    // Adjust the Y-coordinate based on the scroll direction
+    // You can adjust the value '0.1' to control the sensitivity of the movement
+    currentPosition.y += event.deltaY > 0 ? -0.1 : 0.1;
+
+    // Update the plane's position
+    plane.setAttribute('position', currentPosition);
+    cylinder.setAttribute('position', currentPosition);   
+  }
+
+
+// A function to scale the cylinder radius
+function adjustRadius(event) {
+    // Only proceed if the Alt + shift keys are pressed
+    if (!event.altKey) return;
+    if (!event.shiftKey) return;
+
+    // Prevent the default scrolling behavior
+    event.preventDefault();
+    
+    // Get the plane element
+    const plane = document.getElementById('grid_plane');
+    // Get the cylinder element
+    const cylinder = document.getElementById('grid_cylinder');
+
+    // Parse the current radius
+    var hollowCylinderProps = cylinder.getAttribute('hollow-cylinder');
+    let currentRadius = hollowCylinderProps.radius;
+
+    const currentPosition = plane.getAttribute('position');
+    cylinder.setAttribute('position', currentPosition);
+
+    // Adjust the Y-coordinate based on the scroll direction
+    // You can adjust the value '0.1' to control the sensitivity of the movement
+    currentRadius += event.deltaY > 0 ? -0.1 : 0.1;
+        
+    // Update the cylinders's and plane's radius
+    cylinder.setAttribute('hollow-cylinder', {radius: currentRadius});
+    cylinder.setAttribute('hollow-cylinder', {height: currentRadius}); 
+
+    // Texture UV values
+    const yRepeat = currentRadius*2
+    const xRepeat = currentRadius*2
+
+    // Accessing the three.js material directly to set repeat texture 
+    const mesh = plane.getObject3D('mesh');
+    if (mesh && mesh.material && mesh.material.map) {
+        mesh.material.map.wrapS = mesh.material.map.wrapT = THREE.RepeatWrapping;
+        mesh.material.map.repeat.set(xRepeat, yRepeat);
+        mesh.material.map.needsUpdate = true;
+
+         // Adjust offset to scale from the center
+         mesh.material.map.offset.set(-xRepeat / 2 + 0.5, -yRepeat / 2 + 0.5);
+    }
+
+    const mesh_cylinder = cylinder.getObject3D('mesh');
+    if (mesh_cylinder && mesh_cylinder.material && mesh_cylinder.material.map) {
+        mesh_cylinder.material.map.wrapS = mesh_cylinder.material.map.wrapT = THREE.RepeatWrapping;
+        mesh_cylinder.material.map.repeat.set(xRepeat*3, yRepeat/2);
+        mesh_cylinder.material.map.needsUpdate = true;
+        mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
+    }
 
 }

@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     /*******************************************************************************
-    * EVENT LISTENER JSON UPDATES
+    * 3. EVENT LISTENER JSON UPDATES
     *******************************************************************************/ 
     // CODE TO UPDATE COLORS OF OBJECTS
     document.addEventListener('projectColorsUpdated', async function(event) 
