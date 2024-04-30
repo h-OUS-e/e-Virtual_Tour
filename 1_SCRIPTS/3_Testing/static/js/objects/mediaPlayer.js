@@ -151,10 +151,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         try {
             setMediaplayerColor(mediaplayer_types);
             // Calculate the time difference
-        const end_time = performance.now();
-        const timeDifference = end_time - event.detail.start_time;
-        console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time)
-        types = project_state.getCategory("Types");
+            const end_time = performance.now();
+            const timeDifference = end_time - event.detail.start_time;
+            console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time);
+            types = project_state.getCategory("Types");
 
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);

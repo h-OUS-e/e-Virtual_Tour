@@ -78,7 +78,7 @@
 
 
     
-    <!-- <script type="module" src="../static/js/hollowCylinder.js" ></script> -->
+    <script type="module" src="../static/js/objects/hollowCylinder.js" ></script>
 
     <!-- <script src="../static/js/minimap.js"></script> -->
     <!-- <script type="module" src="../static/js/objects/mediaPopup.js"></script> -->
@@ -90,10 +90,10 @@
     <!-- <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script> -->
     <!-- <script type="module" src="../static/js/iconsEditMenu.js"></script> -->
     <!-- <script type="module" src="../static/js/imageUploadMenu.js"></script> -->
-    <!-- <script type="module" src="../static/js/colorEditMenu.js"></script> -->
+    <!-- <script type="module" src="../static/js/editMode/menuColors.js"></script> -->
     <!-- <script type="module" src="../static/js/makeMenusDraggable.js"></script>     -->
-    <!-- <script type="module" src="../static/js/colorPicker.js"></script> -->
-    <!-- <script type="module" src="../static/js/projectColorHandler.js"></script> -->
+    <!-- <script type="module" src="../static/js/editMode/menuColorPicker.js"></script> -->
+    <!-- <script type="module" src="../static/js/editMode/projectColorHandler.js"></script> -->
     <!-- <script type="module" src="../static/js/objects/mediaPopupTest.js"></script> -->
 
     
@@ -652,7 +652,7 @@
 
         <!-- Loading plane and cylinder for editMode object only -->
         <a-ring 
-            id="gridPlane" 
+            id="grid_plane" 
             edit_mode="false" 
             position="0 0 0" 
             rotation="-90 0 0" 
@@ -661,7 +661,7 @@
             material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"
         ></a-ring>
         <a-entity 
-            id="gridCylinder" 
+            id="grid_cylinder" 
             edit_mode="false"  
             hollow-cylinder
             position="0 0 0" 

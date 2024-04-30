@@ -84,9 +84,6 @@ class JSONState {
       this.history.splice(this.idx + 1);
       this.history.push(updated_data);
       this.idx++;
-      for (let i = 0; i < 100; i++) {
-        console.log("TEST");
-      }
   
       if (this.history.length > this.max_history_length) {
         this.history.shift();
