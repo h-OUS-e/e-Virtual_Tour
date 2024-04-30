@@ -4,28 +4,6 @@ A script to control what shows on the scroll bar based on popup contents.
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
 
-// GLOBAL CONSTANTS
-
-// HTML REFERENCES
-const scene = document.querySelector('a-scene');
-const updateBtn = document.getElementById("uploadTest");
-const grid_plane = document.getElementById("grid_plane");
-const grid_cylinder = document.getElementById("grid_cylinder");
-// Initializing the grid Cylinder
-grid_cylinder.setAttribute('hollow-cylinder', {
-    height: 20,
-    radius: 10, 
-    thetaSegments: 32, 
-    heightSegments: 4 
-});
-
-
-// GLOBAL VARIABLES
-let isEditMode = false;
-let selected_object_class = 'None'; // Default selection
-let current_object_editMenu_id = null;
-
-
 
 /*********************************************************************
  * EVENT LISTENERS
@@ -33,25 +11,45 @@ let current_object_editMenu_id = null;
 document.addEventListener('DOMContentLoaded', async () => {
 
     /*********************************************************************
-     * 1. LOAD MEDIABAR ITEMS 
+     * 1. LOAD JSON ITEMS 
     *********************************************************************/
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
+    // HTML REFERENCES
+    const scene = document.querySelector('a-scene');
+    const grid_plane = document.getElementById("grid_plane");
+    const grid_cylinder = document.getElementById("grid_cylinder");
+
+    // GLOBAL VARIABLES
+    let isEditMode = false;
+    let selected_object_class = 'None'; // Default selection
+    let current_object_editMenu_id = null;
+
+
 
     /*********************************************************************
-     * 2. UPDATE ITEMS ON CHANGES
+     * 2. SETUP
+    *********************************************************************/
+    // Initializing the grid Cylinder
+    grid_cylinder.setAttribute('hollow-cylinder', {
+        height: 20,
+        radius: 10, 
+        thetaSegments: 32, 
+        heightSegments: 4 
+    });
+
+
+
+    /*********************************************************************
+     * 3. UPDATE ITEMS ON CHANGES
     *********************************************************************/
 
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
         toggleEditMode(isEditMode, this, function(isEditModeAnswer) {
             isEditMode = isEditModeAnswer;
-    console.log("CY:LINDER: ", grid_cylinder, grid_plane);
-
         });
-
-
     });
 
 
@@ -119,12 +117,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         }
 
-        // prevent default browser behavior
+        // prevent default browser behavior (not workign now)
         if ((event.altKey)) {
-
             event.preventDefault();
-            console.log("gege");
-
         }
         
     });
@@ -137,7 +132,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Adjust the cylinder grid scale if shift+alt++scroll is detected
     document.addEventListener('wheel', function(event) {
         event.preventDefault();
-
         if (!isEditMode) return; 
         adjustPlaneHeight(event);
         adjustRadius(event);
@@ -147,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     /*******************************************************************************
-    * 3. JSON UPDATES LISTINERS
+    * 4. JSON UPDATES LISTINERS
     *******************************************************************************/ 
     
 

@@ -1,6 +1,6 @@
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
 
   // Getting relevant information
   let project_colors = event.detail.project_colors;

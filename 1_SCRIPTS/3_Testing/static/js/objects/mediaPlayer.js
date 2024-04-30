@@ -2,7 +2,6 @@
 import { JSON_statePromise } from '../JSONSetup.js';
 
 // GLOBAL CONSTANTS
-const scene = document.querySelector('a-scene');
 const MAIN_CLASS = "MediaPlayer";  
 const CATEGORY = "MediaPlayers";
 
@@ -18,24 +17,34 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
+    // HTML REFERENCES
+    const scene = document.querySelector('a-scene');
  
-    // loading MediaPlayers to scene from JSON file
+    // JSON VARIABLES 
+    const icons = project_state.getCategory("Icons");
+    const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;   
+
     const mediaPlayer_JSON = object_state.getCategory(CATEGORY);
     let types = project_state.getCategory("Types");
     let mediaplayer_types = Object.fromEntries(
         Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
     );
-  
-   const icons = project_state.getCategory("Icons");
-   const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;   
-   await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_scene_id);
 
-   // Update mediaplayer colors
-   setMediaplayerColor(mediaplayer_types);
+    
+
+    /*********************************************************************
+     * 2. SETUP
+    *********************************************************************/
+    // loading MediaPlayers to scene from JSON file
+    await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_scene_id);
+
+    // Update mediaplayer colors
+    setMediaplayerColor(mediaplayer_types);
+
 
 
     /*********************************************************************
-     * 2. UPDATE TRANSITION NODES ON CHANGES
+     * 3. UPDATE TRANSITION NODES ON CHANGES
     *********************************************************************/
     
     // // To ensures that no objects are loaded before the sky is loaded
@@ -139,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     /*******************************************************************************
-    * 3. EVENT LISTENER JSON UPDATES
+    * 4. EVENT LISTENER JSON UPDATES
     *******************************************************************************/ 
     // CODE TO UPDATE COLORS OF OBJECTS
     document.addEventListener('projectColorsUpdated', async function(event) 

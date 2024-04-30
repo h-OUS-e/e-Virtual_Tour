@@ -4,12 +4,6 @@ A script to control what shows on the scroll bar based on popup contents.
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
 
-// GLOBAL CONSTANTS
-const MEDIABAR_styles = getComputedStyle(document.documentElement);
-const MEDIABAR_WIDTH = MEDIABAR_styles.getPropertyValue('--mediabar_width').trim();
-// Getting mediabar elements    
-const MEDIABAR = document.getElementById('mediabar');
-const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=mediabar-item-grid]');
 
 
 /*********************************************************************
@@ -23,26 +17,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
-    // Get mediaplayers to extract mediabar information
+    // JSON VARIABLES 
     let mediaplayer_JSON = object_state.getCategory('MediaPlayers');
     let types = project_state.getCategory('Types');
     let icons = project_state.getCategory('Icons');
+
+    // HTML REFERENCES  
+    const MEDIABAR = document.getElementById('mediabar');
+    const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=mediabar-item-grid]');
+
     
 
+    /*********************************************************************
+     * 2. SETUP
+    *********************************************************************/ 
     loadMediabarFromJSON(mediaplayer_JSON, types, icons);
 
 
+    /*********************************************************************
+     * 3. UPDATE ITEMS ON CHANGES
+    *********************************************************************/
     // Disabling zoom when zooming on menu
-  if (MEDIABAR) {
-    MEDIABAR.addEventListener('mouseenter', window.disableZoom);
-    MEDIABAR.addEventListener('mouseleave', window.enableZoom);
-  }
+    if (MEDIABAR) {
+        MEDIABAR.addEventListener('mouseenter', window.disableZoom);
+        MEDIABAR.addEventListener('mouseleave', window.enableZoom);
+    }
 
 });
 
 async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
     // Get an array of keys from the transitionNode_JSON object
     const ids = Object.keys(mediaplayer_JSON);
+
+    const MEDIABAR = document.getElementById('mediabar');
+    const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=mediabar-item-grid]');
 
     // Iterate over the keys
     ids.forEach((id) => {

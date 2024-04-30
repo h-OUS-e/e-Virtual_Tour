@@ -1,6 +1,6 @@
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
   const moveable_classes = '.menu, .color-picker-panel'
   const menus = document.querySelectorAll(moveable_classes);
 

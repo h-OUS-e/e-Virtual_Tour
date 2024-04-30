@@ -1,6 +1,5 @@
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
-const scene = document.querySelector('a-scene');
 
 // GLOBAL CONSTANTS
 const MAIN_CLASS = "TransitionNode";
@@ -21,23 +20,33 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
-    // Get colors from transition node type
+    // JSON VARIABLES 
     let transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
+    const transitionNode_JSON = object_state.getCategory(CATEGORY);
+    const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
+
+    // HTML REFERENCES
+    const scene = document.querySelector('a-scene');
+
+    // Get colors from transition node type    
     let dark_color = transitionNode_type.colors.dark;
     let light_color = transitionNode_type.colors.light;
     const color_hoverInClicked = "gray";
 
-    // Read transition nodes and load them to scene
-    const transitionNode_JSON = object_state.getCategory(CATEGORY);
-    const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
-    await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);   
     
+    
+
+    /*********************************************************************
+     * 2. SETUP
+    *********************************************************************/
+   // Read transition nodes and load them to scene
+    await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);       
     // Set initial colors of transition nodes
     setTransitionNodeColor(dark_color, light_color);
 
 
     /*********************************************************************
-     * 2. UPDATE TRANSITION NODES ON CHANGES
+     * 3. UPDATE TRANSITION NODES ON CHANGES
     *********************************************************************/
 
     // Reset colors if new transition node colors selected
@@ -123,6 +132,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             emitTransitioning(new_scene_id) 
         };
     }); 
+
+    /*******************************************************************************
+    * 4. EVENT LISTENER JSON UPDATES
+    *******************************************************************************/ 
     
     
     // CODE TO UPDATE COLORS OF OBJECTS
