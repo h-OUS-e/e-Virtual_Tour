@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
  
     // loading MediaPlayers to scene from JSON file
     const mediaPlayer_JSON = object_state.getCategory(CATEGORY);
-    const types = project_state.getCategory("Types");
-    const mediaplayer_types = Object.fromEntries(
+    let types = project_state.getCategory("Types");
+    let mediaplayer_types = Object.fromEntries(
         Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
     );
   
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // });
 
 
+
     // Changing color and scale of objects when hovering over them
     scene.addEventListener('hoverin', function (event) 
     {   
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             const mediaplayer_type_id = event.target.getAttribute('type_uuid');
             const dark_color = mediaplayer_types[mediaplayer_type_id].colors.dark; 
             event.target.setAttribute('material', 'color', dark_color);
+
         }
     });
     
@@ -140,10 +142,19 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     * EVENT LISTENER JSON UPDATES
     *******************************************************************************/ 
     // CODE TO UPDATE COLORS OF OBJECTS
-    scene.addEventListener('updatedProjectColors', async function(event) 
+    document.addEventListener('projectColorsUpdated', async function(event) 
     {
+        
+        mediaplayer_types = Object.fromEntries(
+            Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
+        );
         try {
             setMediaplayerColor(mediaplayer_types);
+            // Calculate the time difference
+        const end_time = performance.now();
+        const timeDifference = end_time - event.detail.start_time;
+        console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time)
+        types = project_state.getCategory("Types");
 
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);

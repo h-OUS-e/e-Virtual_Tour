@@ -57,16 +57,62 @@ class JSONState {
         event_name = `${category}Updated`;
       }
       this.emitStateUpdated(event_name);
+    }
+
+    updateInnerProperty(category, uuid, property, innerProperty, value, event_name=null) {
+      // Updates the property of the item with the given value
+      // and emits that the state has been updated. If an event_name is provided
+      // it emits the event name. If the event_name provided is "useCategory",
+      // it emits {category}Updated event. Else, it emits "stateUpdated"
+      const start_time = performance.now();
+      const data = this.history[this.idx];
+      const new_data = {
+        ...data,
+        [category]: {
+          ...data[category],
+          [uuid]: {
+            ...data[category][uuid],
+            [property]: {
+              ...data[category][uuid][property],
+              [innerProperty]: value,
+            }
+          },
+        },
+      };
+
+      const updated_data = { ...data, ...new_data };
+      this.history.splice(this.idx + 1);
+      this.history.push(updated_data);
+      this.idx++;
+      for (let i = 0; i < 100; i++) {
+        console.log("TEST");
+      }
+  
+      if (this.history.length > this.max_history_length) {
+        this.history.shift();
+        this.idx--;
+      }  
+      this.buildIndexes();
+      if (event_name === "useCategory") {
+        event_name = `${category}Updated`;
+      }
+      this.emitStateUpdated(event_name, start_time);
 
     }
+
   
-    emitStateUpdated(event_name) {
+    emitStateUpdated(event_name, start_time) {
       let custom_event_name = "stateUpdated";
       if (event_name) {
         custom_event_name = event_name;
       }
-      const event = new CustomEvent(custom_event_name);
+      const event = new CustomEvent(custom_event_name, {
+        detail: {
+          start_time: start_time,
+        }
+      });
       document.dispatchEvent(event);
+      console.log("Emitted event:", custom_event_name);
     }
 
     emitStateConstructed() {
