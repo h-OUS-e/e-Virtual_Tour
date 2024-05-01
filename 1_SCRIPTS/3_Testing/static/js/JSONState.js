@@ -215,7 +215,7 @@ class JSONState {
 
     // Gets all colors in types, this is a very customized function that can break
     // if not used with a JSON that has types; { id:{ colors: {name: hex, name2:hex}}}
-    getColors() {
+    getColors(make_list=false) {
       let data = this.getCategory("Types");
       // const allColors = Object.entries(types).reduce((colors, [typeId, typeData]) => {
       //   if (typeData.colors) {
@@ -226,23 +226,49 @@ class JSONState {
         
       // });
       let color_dict = {};
-
-      Object.entries(data).forEach(([key, value]) => {
-        if (value.colors) {
-          const prefix = value.name;
-          Object.entries(value.colors).forEach(([color_key, hex_code]) => {
-            const color_uuid = uuidv4();
-            const color_name = `${prefix}_${color_key}`;
-            color_dict[color_uuid] = {
-              reference_uuid: key,
-              name: color_name,
-              hex_code: hex_code
-            };
-          });
-        }
-      });
-
       
+
+      if (make_list) {
+
+        color_dict = {
+          names: [],
+          hex_codes: [],
+          reference_uuids: []
+        };
+      
+        Object.entries(data).forEach(([key, value]) => {
+          if (value.colors) {
+            const prefix = value.name;
+            Object.entries(value.colors).forEach(([color_key, hex_code]) => {
+              const color_uuid = uuidv4();
+              const color_name = `${prefix}_${color_key}`;
+              color_dict.names.push(color_name);
+              color_dict.hex_codes.push(hex_code);
+              color_dict.reference_uuids.push(key);
+            });
+          }
+        });
+          
+      } else {
+            color_dict = {};
+
+            Object.entries(data).forEach(([key, value]) => {
+              if (value.colors) {
+                const prefix = value.name;
+                Object.entries(value.colors).forEach(([color_key, hex_code]) => {
+                  const color_uuid = uuidv4();
+                  const color_name = `${prefix}_${color_key}`;
+                  color_dict[color_uuid] = {
+                    reference_uuid: key,
+                    name: color_name,
+                    hex_code: hex_code
+                  };
+                });
+              }
+            });
+      }
+          
+
 
       return color_dict;
     }
@@ -270,6 +296,6 @@ class JSONState {
 
 
   
-export { JSONState };
+  export { JSONState };
 
 
