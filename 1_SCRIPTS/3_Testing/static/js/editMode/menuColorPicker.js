@@ -367,8 +367,6 @@ class ColorPicker {
   }
 
   startGetSpectrumColor(e) {
-    i++;
-    console.log("TEST", i);
     this.getSpectrumColor(e);
     spectrumCursor.classList.add('dragging');
     window.addEventListener('mousemove', this.getSpectrumColor(e));
@@ -400,8 +398,6 @@ class ColorPicker {
   };
 
   endGetSpectrumColor(e){
-    i++;
-    console.log("TEST2", i);
     spectrumCursor.classList.remove('dragging');
     window.removeEventListener('mousemove', this.getSpectrumColor(e));
     window.removeEventListener('mousedown', this.getSpectrumColor(e));
