@@ -217,6 +217,7 @@ class ColorPicker {
     this.addProjectColors();
     this.createShadeSpectrum("#000000", true);
     this.createHueSpectrum();
+    this.i = 1;
 
   }
 
@@ -310,7 +311,7 @@ class ColorPicker {
     hueGradient.addColorStop(1.00, "hsl(360,100%,50%)");
     ctx.fillStyle = hueGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // canvas.addEventListener('mousedown', this.startGetHueColor.bind(this));
+    canvas.addEventListener('mousedown', this.startGetHueColor.bind(this));
   }
 
 
@@ -367,10 +368,16 @@ class ColorPicker {
   }
 
   startGetSpectrumColor(e) {
+    this.i++;
+    console.log("adding", this.i);
     this.getSpectrumColor(e);
     spectrumCursor.classList.add('dragging');
-    window.addEventListener('mousemove', this.getSpectrumColor(e));
-    window.addEventListener('mouseup', this.endGetSpectrumColor(e));
+    // Store the event handlers to be able to remove them later
+    this.handleMouseMove = this.getSpectrumColor.bind(this);
+    this.handleMouseUp = this.endGetSpectrumColor.bind(this);
+  
+    window.addEventListener('mousemove', this.handleMouseMove);
+    window.addEventListener('mouseup', this.handleMouseUp);
   }
 
   getSpectrumColor(e) {
@@ -398,19 +405,28 @@ class ColorPicker {
   };
 
   endGetSpectrumColor(e){
-    spectrumCursor.classList.remove('dragging');
-    window.removeEventListener('mousemove', this.getSpectrumColor(e));
-    window.removeEventListener('mousedown', this.getSpectrumColor(e));
-  // window.removeEventListener('mouseup', this.endGetSpectrumColor(e));
+    this.i++;
 
+    console.log("removing", this.i);
+
+    spectrumCursor.classList.remove('dragging');
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mousedown', this.getSpectrumColor(e));
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  // window.removeEventListener('mouseup', this.endGetSpectrumColor(e));
     
   };
 
   startGetHueColor(e) {
     this.getHueColor(e);
     hueCursor.classList.add('dragging');
-    window.addEventListener('mousemove', this.getHueColor.bind(this));
-    window.addEventListener('mouseup', this.endGetHueColor.bind(this));
+
+    // Store the event handlers to be able to remove them later
+    this.handleMouseMoveHue = this.getHueColor.bind(this);
+    this.handleMouseUpHue = this.endGetHueColor.bind(this);
+
+    window.addEventListener('mousemove', this.handleMouseMoveHue);
+    window.addEventListener('mouseup', this.handleMouseUpHue);
   };
 
   getHueColor(e){
@@ -430,8 +446,8 @@ class ColorPicker {
 
   endGetHueColor(e){
       hueCursor.classList.remove('dragging');
-      window.removeEventListener('mousemove', this.getHueColor.bind(this));
-      // window.removeEventListener('mouseup', this.endGetHueColor.bind(this));
+      window.removeEventListener('mousemove', this.handleMouseMoveHue);
+      window.removeEventListener('mouseup', this.handleMouseUpHue);
       spectrumCanvas.removeEventListener('mousedown', this.startGetHueColor.bind(this));
   };
 };

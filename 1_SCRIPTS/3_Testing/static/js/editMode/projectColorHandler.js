@@ -5,7 +5,7 @@ function getColorNamesAndValues(colors) {
   return [colorNames, colorValues];
 }
 
-document.addEventListener('jsonLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   // Get project colors
