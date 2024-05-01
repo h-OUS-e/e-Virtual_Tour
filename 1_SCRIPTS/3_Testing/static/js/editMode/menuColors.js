@@ -1,23 +1,82 @@
+/*
+The edit menu of all project colors.
+*/
+
+// LOADING JSON STATE
+import { JSON_statePromise } from '../JSONSetup.js';
+
+// GLOBAL CONSTANTS & EVENT NAMES
+const PROJECT_COLOR_UPDATED_EVENT = "projectColorUpdated";
+
+
 
 
 document.addEventListener('DOMContentLoaded', async (event) => {
+  /*********************************************************************
+   * 1. LOAD JSON ITEMS 
+  *********************************************************************/
+  // Load JSON state 
+  let {project_state, object_state} = await JSON_statePromise;  
 
-  // Getting relevant information
-  let project_colors = event.detail.project_colors;
+  // JSON VARIABLES 
+  let types = project_state.getCategory("Types");
+  let project_colors = project_state.getColors();
+  
 
-  // Get elements
+  // HTML REFERENCES
   const menu = document.getElementById('edit_menu_colors');
   const project_colors_gallery = document.getElementById('em_project_colors_gallery');
   const color_palette_gallery = document.getElementById('em_color_palette_gallery');
   const exit_btn = menu.querySelector('.exitBtn');
 
+ 
+
+  /*********************************************************************
+   * 2. SETUP
+  *********************************************************************/
   // Widen the menu
   menu.style.width = "700px";
   menu.style.width = "700px";
 
+  populateProjectColors(project_colors);
 
 
-  // FUNCTIONS
+
+  /*********************************************************************
+   * 3. UPDATE ITEMS ON CHANGES
+  *********************************************************************/
+
+  
+  // Listen to color palette change
+  // Listen to exit button
+  exit_btn.addEventListener('click', closeMenu);
+  // Listen to click to close menu
+
+  // Disabling zoom when zooming on menu
+  if (menu) {
+    menu.addEventListener('mouseenter', window.disableZoom);
+    menu.addEventListener('mouseleave', window.enableZoom);
+  }
+
+
+
+  /*******************************************************************************
+    * 4. EVENT LISTENER JSON UPDATES
+  *******************************************************************************/ 
+
+  // Listen to project color change
+  scene.addEventListener(PROJECT_COLOR_UPDATED_EVENT, function(event) 
+  {
+    project_colors = event.detail.project_colors;
+    populateProjectColors(project_colors);
+  });
+
+
+
+  /*******************************************************************************
+  * 5. FUNCTIONS
+  *******************************************************************************/ 
+
   // A function that gives a color that would contrast visibly
   // on top of a given hex color code
   function getContrastColor(hex_code) {
@@ -63,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Add event listener to color bar to show color picker when clicked
     color_bar.addEventListener('click', function() {
-      let event = new CustomEvent('toggleColorPicker', {
+      let event = new CustomEvent('showColorPicker', {
         detail: {
           color_name: color_name,
           color: hex_code,
@@ -75,13 +134,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // Add color to gallery  
     gallery_element.appendChild(color_field);
 
-
   }
 
-
-  function addParagraphField() {
-    
-  }
 
 
   function populateProjectColors(project_colors) {
@@ -89,29 +143,15 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     project_colors_gallery.innerHTML = "";
 
     // Update with new colors
-    for (const [color_name, hex_code] of Object.entries(project_colors)) {
-      addColorField(color_name, hex_code, project_colors_gallery) 
+    for (const [type_uuid, color_info] of Object.entries(project_colors)) {
+      const {color_name, hex_code } = color_info;
+      addColorField(color_info.name, color_info.hex_code, project_colors_gallery) 
     }
   }
   
 
-  
-  function populateColorPalette() {
-
-  }
-
 
   function emitProjectColors() {  
-
-  }
-
-
-  function emitColorPalette() {  
-     
-  }
-
-
-  function emitColorPaletteChange() {
 
   }
 
@@ -121,27 +161,29 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   }
 
 
-  // INITIATE MENU
-  populateProjectColors(project_colors);
-
-
-  // EVENT LISTENERS
-  
-  // Listen to project color change
-  scene.addEventListener("updatedProjectColors", function(event) 
-  {
-    project_colors = event.detail.project_colors;
-    populateProjectColors(project_colors);
-  });
-  // Listen to color palette change
-  // Listen to exit button
-  exit_btn.addEventListener('click', closeMenu);
-  // Listen to click to close menu
-
-  // Disabling zoom when zooming on menu
-  if (menu) {
-    menu.addEventListener('mouseenter', window.disableZoom);
-    menu.addEventListener('mouseleave', window.enableZoom);
-  }
 
 });
+
+
+function extractColors(data, callback) {
+
+  let color_dict = {};
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value.colors) {
+      const prefix = value.name;
+      Object.entries(value.colors).forEach(([color_key, hex_code]) => {
+        const color_uuid = uuidv4();
+        const color_name = `${prefix}_${color_key}`;
+        color_dict[color_uuid] = {
+          reference_uuid: key,
+          name: color_name,
+          hex_code: hex_code
+        };
+      });
+    }
+  });
+
+
+  callback(color_dict);
+}

@@ -125,7 +125,7 @@ function loadImageAsset(asset_object) {
             img_element.classList.add('img-loading');
 
             img_element.onload = () => {
-                console.log(`New asset for scene_id: ${asset_object.scene_id} loaded successfully.`);
+                // console.log(`New asset for scene_id: ${asset_object.scene_id} loaded successfully.`);
                 assets.appendChild(img_element);
                 resolve(img_element);
             };
@@ -168,7 +168,6 @@ async function changeScene(sky, new_scene_id, scenes)
         ...scenes[new_scene_id]
       };
 
-    console.log(scene);
     const scene_id = sky.getAttribute('scene_id');
     let camera_rig = document.getElementById('camera_rig');
    
@@ -179,9 +178,7 @@ async function changeScene(sky, new_scene_id, scenes)
         sky.setAttribute('src', '#scene_img_' + new_scene_id); 
         sky.setAttribute('scene_id', new_scene_id);
         sky.setAttribute('rotation', existing_asset.getAttribute('rotation')); 
-        camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));
-
-        console.log('Moved to new scene!', sky.getAttribute('src'));
+        camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));        // console.log('Moved to new scene!', sky.getAttribute('src'));
 
         // Hide the objects in old background
         var selector = '[scene_id="' + scene_id + '"]'; //background image is the image clicked from, type moved

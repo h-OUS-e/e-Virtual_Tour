@@ -47,9 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Activate or deactivate edit mode if button is clicked
     document.getElementById('editModeToggle').addEventListener('click', function () {
-        toggleEditMode(isEditMode, this, function(isEditModeAnswer) {
-            isEditMode = isEditModeAnswer;
-        });
+        isEditMode = toggleEditMode(isEditMode, this);
     });
 
 
@@ -172,7 +170,7 @@ function emitShowMenu(menu_id) {
 /*******************************************************************************
 * FUNCTIONS
 *******************************************************************************/ 
-function toggleEditMode(isEditMode, btn, callback) {
+function toggleEditMode(isEditMode, btn) {
     isEditMode = !isEditMode; // Toggle edit mode
     emitEditMode(isEditMode); // dispatch edit mode
     btn.textContent = isEditMode ? 'Exit & Save' : 'Enter Edit Mode';
@@ -192,11 +190,11 @@ function toggleEditMode(isEditMode, btn, callback) {
         editmode_bar.classList.add('hidden'); // Show the element
     }
     // Invoke the callback function with the selected object class
-    callback(isEditMode);
+    return isEditMode;
 }
 
 
-function objectBtnSelector(btn_class, callback) {
+function objectBtnSelector(btn_class) {
     document.querySelectorAll(btn_class).forEach(button => {
         // Activating/deactivating object class buttons
         button.addEventListener('click', function() {
@@ -206,7 +204,7 @@ function objectBtnSelector(btn_class, callback) {
             // Add active class to clicked button
             this.classList.add('active');
             // Invoke the callback function with the selected object class
-            callback(selected_object_class);
+            return selected_object_class;
         });
     });
 }

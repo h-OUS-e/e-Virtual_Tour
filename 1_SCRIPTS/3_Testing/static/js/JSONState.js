@@ -192,7 +192,6 @@ class JSONState {
         this.indexes[category][property] &&
         this.indexes[category][property][value]
       ) {
-        console.log(this.indexes[category][property][value]);
         return this.indexes[category][property][value];
       } else {
         console.log(`No item found in '${category}' with '${property}' equal to '${value}'.`);
@@ -214,9 +213,10 @@ class JSONState {
   
     
 
-    // Gets all colors in types
+    // Gets all colors in types, this is a very customized function that can break
+    // if not used with a JSON that has types; { id:{ colors: {name: hex, name2:hex}}}
     getColors() {
-      let types = this.getCategory(category);
+      let data = this.getCategory("Types");
       // const allColors = Object.entries(types).reduce((colors, [typeId, typeData]) => {
       //   if (typeData.colors) {
       //     colors[typeId] = typeData.colors;
@@ -225,6 +225,26 @@ class JSONState {
       // }, {});
         
       // });
+      let color_dict = {};
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (value.colors) {
+          const prefix = value.name;
+          Object.entries(value.colors).forEach(([color_key, hex_code]) => {
+            const color_uuid = uuidv4();
+            const color_name = `${prefix}_${color_key}`;
+            color_dict[color_uuid] = {
+              reference_uuid: key,
+              name: color_name,
+              hex_code: hex_code
+            };
+          });
+        }
+      });
+
+      
+
+      return color_dict;
     }
   
     undo() {

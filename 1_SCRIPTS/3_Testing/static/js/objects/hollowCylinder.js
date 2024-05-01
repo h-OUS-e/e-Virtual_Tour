@@ -6,8 +6,8 @@ AFRAME.registerComponent('hollow-cylinder', {
       heightSegments: {type: 'number', default: 4}
     },
     init: function() {
-      console.log("Hollow-cylinder component initialized.");
-      console.log("Initial Data:", this.data);
+      // console.log("Hollow-cylinder component initialized.");
+      // console.log("Initial Data:", this.data);
       this.createGeometry();
     },
     update: function() {

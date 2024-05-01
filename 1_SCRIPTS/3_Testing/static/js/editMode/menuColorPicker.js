@@ -1,9 +1,23 @@
 //https://github.com/bgrins/TinyColor
 import tinycolor from "https://esm.sh/tinycolor2";
 
+// LOADING JSON STATE
+import { JSON_statePromise } from '../JSONSetup.js';
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+
+document.addEventListener('DOMContentLoaded', async (event) => {
+  /*********************************************************************
+   * 1. LOAD JSON ITEMS 
+  *********************************************************************/
+  // Load JSON state 
+  let {project_state, object_state} = await JSON_statePromise;  
+
+  // JSON VARIABLES 
+  let project_colors = project_state.getColors();
+
+
+  // HTML REFERENCES
   const addSwatch = document.getElementById('add-swatch');
   const modeToggle = document.getElementById('mode-toggle');
   const swatches = document.getElementById('color_palette');
@@ -21,8 +35,6 @@ document.addEventListener('jsonLoaded', async (event) => {
   const hueCtx = hueCanvas.getContext('2d');
   const hueCursor = document.getElementById('hue-cursor'); 
   let hueRect = hueCanvas.getBoundingClientRect();
-
-
 
   let currentColor = '';
   let current_color_name = ''
@@ -44,28 +56,90 @@ document.addEventListener('jsonLoaded', async (event) => {
 
 
 
-  function ColorPicker(){
-    this.addDefaultSwatches();
-    this.addProjectColors();
-    createShadeSpectrum();
-    createHueSpectrum();
-  };
+  /*********************************************************************
+   * 2. SETUP
+  *********************************************************************/
 
-  
-
-  function getColorNamesAndValues(colors) {
-    const colorNames = Object.keys(colors);
-    const colorValues = Object.values(colors);
-    return [colorNames, colorValues];
-  }
-
-  let [project_color_names, project_color_values] = getColorNamesAndValues(event.detail.project_colors);
-  let [default_swatches_names, default_swatches_values] = getColorNamesAndValues(event.detail.color_palette);
+  let [project_color_names, project_color_values] = getColorNamesAndValues(project_colors);
+  let [default_swatches_names, default_swatches_values] = getColorNamesAndValues(color_palette);
   ColorPicker.prototype.defaultSwatches = default_swatches_values;
   ColorPicker.prototype.default_swatches_names = default_swatches_names;
   ColorPicker.prototype.project_colors = project_color_values;
   ColorPicker.prototype.project_color_names = project_color_names;
 
+
+
+
+
+  /*********************************************************************
+   * 3. UPDATE ITEMS ON CHANGES
+  *********************************************************************/
+
+  red.addEventListener('change', function(){
+    let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
+    colorToPos(color);
+  });
+
+  green.addEventListener('change', function(){
+      let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
+      colorToPos(color);
+  });
+
+  blue.addEventListener('change', function(){
+      let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
+      colorToPos(color);
+  });
+
+  addSwatch.addEventListener('click', function(){  
+    createSwatch(userSwatches, currentColor);
+  });
+
+  modeToggle.addEventListener('click', function(){
+    if(rgbFields.classList.contains('active') ? rgbFields.classList.remove('active') : rgbFields.classList.add('active'));
+    if(hexField.classList.contains('active') ? hexField.classList.remove('active') : hexField.classList.add('active'));
+  });
+
+  window.addEventListener('resize', function(){
+    refreshElementRects();
+  });
+
+  scene.addEventListener('updatedProjectColors', function(event){
+    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(project_colors);
+    ColorPicker.prototype.project_colors = project_color_values;
+    ColorPicker.prototype.updateProjectColors(project_color_values_updated, project_color_names_updated);
+    refreshElementRects();
+  });
+
+  okButton.addEventListener('click', handleOkButton);
+  exitButton.addEventListener('click', handleExitButton);
+  scene.addEventListener('toggleColorPicker', function(event) {
+    toggleColorPickerContainer(event, false)
+  });
+  scene.addEventListener('showColorPicker', function(event) {
+    toggleColorPickerContainer(event, true)
+  });
+
+
+
+
+  /*******************************************************************************
+    * 4. EVENT LISTENER JSON UPDATES
+  *******************************************************************************/ 
+  scene.addEventListener('updateProjectColors', function(event){
+    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(project_colors);
+    ColorPicker.prototype.project_colors = project_color_values;
+    ColorPicker.prototype.updateProjectColors(project_color_values_updated, project_color_names_updated);
+    refreshElementRects();
+  }); 
+  
+
+  
+
+  
+
+  /*******************************************************************************
+  * 5. FUNCTIONS
+  *******************************************************************************/ 
 
   function createSwatch(target, color, name){
     const swatch = document.createElement('button');
@@ -104,6 +178,27 @@ document.addEventListener('jsonLoaded', async (event) => {
     this.project_color_names = new_color_names;
     // Refresh the swatches
     this.addProjectColors();
+  }
+
+
+  
+
+  function ColorPicker(){
+    this.addDefaultSwatches();
+    this.addProjectColors();
+    createShadeSpectrum();
+    createHueSpectrum();
+  };
+
+  new ColorPicker();
+
+
+  
+
+  function getColorNamesAndValues(colors) {
+    const colorNames = Object.keys(colors);
+    const colorValues = Object.values(colors);
+    return [colorNames, colorValues];
   }
 
   function refreshElementRects(){
@@ -270,40 +365,7 @@ document.addEventListener('jsonLoaded', async (event) => {
   };
 
 
-  red.addEventListener('change', function(){
-      let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
-      colorToPos(color);
-  });
-
-  green.addEventListener('change', function(){
-      let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
-      colorToPos(color);
-  });
-
-  blue.addEventListener('change', function(){
-      let color = tinycolor('rgb ' + red.value + ' ' + green.value + ' ' + blue.value );
-      colorToPos(color);
-  });
-
-  addSwatch.addEventListener('click', function(){  
-    createSwatch(userSwatches, currentColor);
-  });
-
-  modeToggle.addEventListener('click', function(){
-    if(rgbFields.classList.contains('active') ? rgbFields.classList.remove('active') : rgbFields.classList.add('active'));
-    if(hexField.classList.contains('active') ? hexField.classList.remove('active') : hexField.classList.add('active'));
-  });
-
-  window.addEventListener('resize', function(){
-    refreshElementRects();
-  });
-
-  scene.addEventListener('updatedProjectColors', function(event){
-    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(event.detail.project_colors);
-    ColorPicker.prototype.project_colors = project_color_values;
-    ColorPicker.prototype.updateProjectColors(project_color_values_updated, project_color_names_updated);
-    refreshElementRects();
-  });
+  
 
 
 
@@ -336,9 +398,13 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
-  function toggleColorPickerContainer(event) {
+  function toggleColorPickerContainer(event, force_show=false) {
     // Show the color picker and update elements
-    colorPickerContainer.classList.toggle('hidden');
+    if (force_show) {
+    colorPickerContainer.classList.remove('hidden');
+    } else {
+      colorPickerContainer.classList.toggle('hidden');
+    }
     refreshElementRects();
 
     // Get position and name of chosen color 
@@ -352,13 +418,8 @@ document.addEventListener('jsonLoaded', async (event) => {
     refreshElementRects();
   }
 
-  okButton.addEventListener('click', handleOkButton);
-  exitButton.addEventListener('click', handleExitButton);
-  scene.addEventListener('toggleColorPicker', function(event) {
-    toggleColorPickerContainer(event)
-  });
+  
 
-  new ColorPicker();
 
 });
 
