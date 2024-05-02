@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let {project_state, object_state} = await JSON_statePromise;
 
     // JSON VARIABLES 
-    let transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
+    let transitionNode_type = project_state.getItemByProperty("Types", "class", MAIN_CLASS);
     const transitionNode_JSON = object_state.getCategory(CATEGORY);
     const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
 
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     {
         try {
             // Get project colors from event
-            transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
+            transitionNode_type = project_state.getItemByProperty("Types", "class", MAIN_CLASS);
 
             // Get colors from transition node type    
             dark_color = transitionNode_type.colors.dark;
@@ -159,7 +159,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 });
 
 
-// FUNCTIONS
+/*******************************************************************************
+* 5. FUNCTIONS
+*******************************************************************************/ 
 
 //functions: 
 function emitTransitioning(new_scene_id){
@@ -194,12 +196,19 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id
             const transitionNode_item = transitionNode_JSON[id];
 
             // Get attributes
-            const point = transitionNode_item.position;
+            const position = transitionNode_item.position;
             const scene_id = transitionNode_item.scene_id;
             const new_scene_id = transitionNode_item.new_scene_id;
 
+            let transitionNode_content = {
+                position: position,
+                scene_id: scene_id,
+                new_scene_id: new_scene_id,
+                initial_scene_id: initial_scene_id,
+            }
+
             // Create mediaplayer and add to scene
-            const transition_node = new TransitionNode(id, point, scene_id, new_scene_id, initial_scene_id);
+            const transition_node = new TransitionNode(id, transitionNode_content);
             transition_node.addToScene();
 
         });
@@ -213,13 +222,13 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id
 
 
 class TransitionNode {    
-    constructor(id, position, scene_id, new_scene_id, initial_scene_id) {
+    constructor(id, content) {
         this.id = id;
         this.final_id = id;
-        this.position = position;
-        this.scene_id = scene_id;
-        this.new_scene_id = new_scene_id;
-        this.initial_scene_id = initial_scene_id;
+        this.position = content.position;
+        this.scene_id = content.scene_id;
+        this.new_scene_id = content.new_scene_id;
+        this.initial_scene_id = content.initial_scene_id;
         this.name = this.constructor.name;
     }
 
@@ -283,6 +292,10 @@ class TransitionNode {
     updateScenePosition() {
         this.deleteClone();
         const entity = document.getElementById(this.id);
+
+        // unGhost original entity if was ghosted
+        entity.setAttribute('class', this.name);
+
         if (entity) {
             entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
         }
@@ -290,7 +303,7 @@ class TransitionNode {
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     moveTo(new_position) {        
-        this.position = new_position;
+        this.position = new_position;        
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
@@ -313,9 +326,10 @@ class TransitionNode {
             // Set the new position for the clone
             clone.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
             clone.setAttribute('rotation', "90 0 0");
-
-            console.log("clone", clone);
             
+            // Ghost original entity
+            originalEntity.setAttribute('class', 'hidden');
+
             // Add the clone to the scene, assuming the scene is the parent of the original entity
             originalEntity.parentNode.appendChild(clone);
         }

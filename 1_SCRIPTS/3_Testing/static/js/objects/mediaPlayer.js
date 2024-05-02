@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const mediaPlayer_JSON = object_state.getCategory(CATEGORY);
     let types = project_state.getCategory("Types");
     let mediaplayer_types = Object.fromEntries(
-        Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
+        Object.entries(types).filter(([key, value]) => value.class === "MediaPlayer")
     );
 
     
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             // console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time);
             types = project_state.getCategory("Types");
             mediaplayer_types = Object.fromEntries(
-                Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
+                Object.entries(types).filter(([key, value]) => value.class === "MediaPlayer")
             );
             setMediaplayerColor(mediaplayer_types);
 

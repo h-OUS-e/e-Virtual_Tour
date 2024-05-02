@@ -3,6 +3,9 @@ A script to control what shows on the scroll bar based on popup contents.
 */
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
+import { MediaPlayer } from '../objects/mediaPlayer.js';
+import { TransitionNode, emitTransitioning } from '../objects/transitionNodes.js';
+
 
 
 /*********************************************************************
@@ -16,15 +19,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load JSON state 
     let {project_state, object_state} = await JSON_statePromise;
 
+    const editable_object_classes =  project_state.getUniquePropertiesByCondition("Types", "class", "editable", true);
+
     // HTML REFERENCES
     const scene = document.querySelector('a-scene');
     const grid_plane = document.getElementById("grid_plane");
     const grid_cylinder = document.getElementById("grid_cylinder");
 
-    // GLOBAL VARIABLES
+    // VARIABLES
     let isEditMode = false;
     let selected_object_class = 'None'; // Default selection
+    let selected_object = null;
+
     let current_object_editMenu_id = null;
+    let isDragging = false;
+    let new_position = { x: 0, y: 0, z:0};
+    let new_direction = null;
+
+    const action_manager = new ActionManager();
+
 
 
 
@@ -39,6 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         heightSegments: 4 
     });
 
+    // Initiates editmode on start
+    isEditMode = toggleEditMode(isEditMode, document.getElementById('editModeToggle'));
 
 
     /*********************************************************************
@@ -77,19 +92,77 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     // Code to select the objects you want to move around the scene
+    // Checks if ctlr + shift + left mouse are pressed while on object
     scene.addEventListener('ctrlShiftMouseDownIntersection', function (event) {
+        if (!isEditMode) return;  
+
+        isDragging = true;
+        const selected_object_content = getCustomAttributes(document.getElementById(event.detail.id));
+
+        if (event.detail.class === 'TransitionNode') {
+            selected_object = new TransitionNode(event.detail.id, selected_object_content);
+        }
+
+
+
+
     });
+
     scene.addEventListener('longMouseDownIntersection', function (event) {
     });
 
 
     // Code to move a clone of the object around the scene or adjust scene rotation
     scene.addEventListener('mouseMovingEditMode', function (event) {
+
+        // Only move editable objects
+        if (selected_object) {
+
+            // Update startPosition for the next move event
+            new_position.x = event.detail.intersection_pt.x;
+            new_position.y = event.detail.intersection_pt.y;
+            new_position.z = event.detail.intersection_pt.z;
+            new_direction = event.detail.direction;
+            
+            
+            // Move a clone of the object for smooth transitioning
+            // Has to be a clone to be able to undo move to original position
+            selected_object.cloneAndMoveTo(new_position, new_direction); 
+
+            // Update direction if changed
+        }
     });
 
 
     // Code to register new object position after move is done and updating object state
     scene.addEventListener('mouseup', function (event) {
+        if (event.button === 0) { // Left mouse button
+            if (isDragging && selected_object) {
+                // Record the move action only once upon the correct conditions
+                // const createAction = object.getAction('moveTo', startPosition, startDirection);
+                // undo_redo_manager.doAction(createAction);
+
+
+                const action = selected_object.getAction('moveTo', new_position, new_direction);
+                action_manager.doAction(action);
+                console.log("Moved");
+
+            }
+
+            // Reset variables
+            toggleCameraControls(true); // Reanable camera controls if disabled
+            isDragging = false;
+            selected_object = null;
+            new_direction = null;
+            new_position = { x: 0, y: 0, z:0};
+
+
+            // if (rotating) {
+            //     emitCameraRotatedEvent();
+            //     rotating = false;
+            // }
+        }
+
     });
 
 
@@ -141,6 +214,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     /*******************************************************************************
     * 4. JSON UPDATES LISTINERS
     *******************************************************************************/ 
+
+
+
+
+    /*******************************************************************************
+    * 5. IN-SCOPE FUNCTIONS
+    *******************************************************************************/
+    function handleObjectMovement(object_class) {
+
+
+    }
     
 
 });
@@ -349,4 +433,60 @@ function adjustRadius(event) {
         mesh_cylinder.material.map.offset.set(-xRepeat*3 / 2 + 0.5, -yRepeat/2 / 2 + 0.5);
     }
 
+}
+
+
+function getCustomAttributes(element) {
+    const customAttributes = {};
+  
+    for (let i = 0; i < element.attributes.length; i++) {
+      const attribute = element.attributes[i];
+      const attributeName = attribute.name;
+      const attributeValue = attribute.value;
+  
+      // Check if the attribute is a custom attribute (not a standard HTML attribute)
+      if (!attributeName.startsWith('data-') && !['id', 'class', 'style'].includes(attributeName)) {
+        customAttributes[attributeName] = attributeValue;
+      }
+    }
+  
+    return customAttributes;
+  }
+
+
+
+class ActionManager {
+    constructor() {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
+
+    // Execute an action and add it to the undo stack
+    doAction(action) {
+        const success = action.do(); // Execute the "do" part of the action
+        
+        // Only push the action to the undo stack if it was successful
+        if (success !== false) { // Assuming false explicitly indicates failure
+            this.undoStack.push(action);
+            this.redoStack = []; // Clear the redo stack whenever a new action is performed
+        }
+    }
+
+    // Undo the last action
+    undo() {
+        if (this.undoStack.length > 0) {
+            const action = this.undoStack.pop(); // Remove the last action from the undo stack
+            action.undo(); // Execute the "undo" part of the action
+            this.redoStack.push(action); // Push the action to the redo stack for potential redoing
+        }
+    }
+
+    // Redo the last undone action
+    redo() {
+        if (this.redoStack.length > 0) {
+            const action = this.redoStack.pop(); // Remove the last action from the redo stack
+            action.redo(); // Re-execute the "do" part of the action
+            this.undoStack.push(action); // Push the action back to the undo stack
+        }
+    }
 }

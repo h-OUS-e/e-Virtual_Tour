@@ -270,11 +270,20 @@ class JSONState {
                 });
               }
             });
-      }
-          
-
-
+      }          
       return color_dict;
+    }
+
+
+    getUniquePropertiesByCondition(category, property_to_get, property_to_check, property_value) {
+      const filteredObjects = Object.values(this.getCategory(category))
+        .filter(obj => obj[property_to_check] === property_value)
+        .map(obj => obj[property_to_get]);
+    
+        console.log("TEST", filteredObjects)
+      const uniqueProperties = [...new Set(filteredObjects)];
+    
+      return uniqueProperties;
     }
   
     undo() {

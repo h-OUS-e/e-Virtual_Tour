@@ -3,7 +3,7 @@
     {
         "e8eb810c-427f-4db2-83ca-8d9e16da4e7a": {
             "name": "initial_scene",
-            "type": "Scene",
+            "class": "Scene",
             "icons": null,
             "colors": null,
             "scene_reference": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
@@ -13,7 +13,7 @@
 
         "bff75c73-d8e7-4898-bc31-baf2a7055b1a": {
             "name": "green",
-            "type": "MediaPlayer",
+            "class": "MediaPlayer",
             "icons": {
                 "0": "190142d0-b65d-45b5-adca-f1b8a4ba0bd8"
             },
@@ -27,7 +27,7 @@
         },
         "7720c93b-7b4c-4d58-99cd-294e48177bbe": {
             "name": "blue",
-            "type": "MediaPlayer",
+            "class": "MediaPlayer",
             "icons": {
                 "0": "71976965-adfa-41b1-bb6b-65f3cec288e0",
                 "1": "5c6846ef-cf1f-4972-a744-de0da42514d9"
@@ -42,7 +42,7 @@
         },
         "952c3425-947f-46f7-82f8-3d538df1e8e6": {
             "name": "pink",
-            "type": "MediaPlayer",
+            "class": "MediaPlayer",
             "icons": {
                 "0": "1b5d45c4-478f-40b4-8b6f-164923de712a"
             },
@@ -56,7 +56,7 @@
         },
         "274d87d0-86d9-44e7-b9e1-fdd96c6bbaf0": {
             "name": "missing",
-            "type": "MediaPlayer",
+            "class": "MediaPlayer",
             "icons": {
                 "0": "50eb1d5e-21be-4885-b338-671ced0c5aef"
             },
@@ -69,18 +69,18 @@
         },
         "248964b8-0cf7-49f7-8bdf-86500221627c": {
             "name": "transition_node",
-            "type": "TransitionNode",
+            "class": "TransitionNode",
             "icons": null,
             "colors": {
                 "dark": "#2dc84d",
                 "light": "#FB7698"
             },
-            "editable": null,
+            "editable": true,
             "isDeleted": null
         },
         "1e509749-3982-42cd-b338-8e28a3659b70": {
             "name": "popup",
-            "type": "Popup",
+            "class": "Popup",
             "icons": null,
             "colors": {
                 "dark": "#2dc84d",
@@ -89,14 +89,19 @@
         },
         "ce6e689f-979d-4e37-a64e-b32cf1f9f109": {
             "name": "project",
-            "type": "Window",
+            "class": "Window",
             "icons": null,
             "colors": {
                 "dashboard": "#2dc84d",
                 "sidebar": "#DBFFE5",
                 "button": "#DBFFE5",
                 "exit_button": "#DBFFE5"
-            }
+            },
+            "editable": false,
+            "isDeleted": null
+
+
+            
         }
     },
     "Icons": 
