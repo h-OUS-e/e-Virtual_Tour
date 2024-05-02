@@ -216,7 +216,8 @@ class JSONState {
     // Gets all colors in types, this is a very customized function that can break
     // if not used with a JSON that has types; { id:{ colors: {name: hex, name2:hex}}}
     getColors(make_list=false) {
-      let data = this.getCategory("Types");
+      let category = "Types";
+      let data = this.getCategory(category);
       // const allColors = Object.entries(types).reduce((colors, [typeId, typeData]) => {
       //   if (typeData.colors) {
       //     colors[typeId] = typeData.colors;
@@ -259,7 +260,10 @@ class JSONState {
                   const color_uuid = uuidv4();
                   const color_name = `${prefix}_${color_key}`;
                   color_dict[color_uuid] = {
+                    category: category,
                     reference_uuid: key,
+                    property_name: 'colors',
+                    inner_property_name: color_key,
                     name: color_name,
                     hex_code: hex_code
                   };

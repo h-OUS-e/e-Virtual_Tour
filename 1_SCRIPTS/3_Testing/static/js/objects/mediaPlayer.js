@@ -151,19 +151,21 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     * 4. EVENT LISTENER JSON UPDATES
     *******************************************************************************/ 
     // CODE TO UPDATE COLORS OF OBJECTS
-    document.addEventListener('projectColorsUpdated', async function(event) 
+    document.addEventListener('updateColor', async function() 
     {
         
-        mediaplayer_types = Object.fromEntries(
-            Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
-        );
+        
         try {
-            setMediaplayerColor(mediaplayer_types);
             // Calculate the time difference
-            const end_time = performance.now();
-            const timeDifference = end_time - event.detail.start_time;
-            console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time);
+            // const end_time = performance.now();
+            // const timeDifference = end_time - event.detail.start_time;
+            // console.log("TIME DIFFERENCE:", timeDifference, end_time, event.detail.start_time);
             types = project_state.getCategory("Types");
+            mediaplayer_types = Object.fromEntries(
+                Object.entries(types).filter(([key, value]) => value.type === "MediaPlayer")
+            );
+            setMediaplayerColor(mediaplayer_types);
+
 
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);

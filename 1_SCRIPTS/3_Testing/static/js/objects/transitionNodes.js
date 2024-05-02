@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         if (event.target.classList.contains(MAIN_CLASS)){
             const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', color_hoverInClicked);
-            console.log("TEST");
         }
     });
 
@@ -139,15 +138,22 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
     
     // CODE TO UPDATE COLORS OF OBJECTS
-    scene.addEventListener('updatedProjectColors', function(event) 
+    document.addEventListener('updateColor', function() 
     {
-        // Get project colors from event
-        project_colors = event.detail.project_colors;
-        dark_color = project_colors["transition_node_dark_color"];
-        light_color = project_colors["transition_node_light_color"];
+        try {
+            // Get project colors from event
+            transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
 
-        // Update colors of all mediaplayer objects
-        setTransitionNodeColor(dark_color, light_color)
+            // Get colors from transition node type    
+            dark_color = transitionNode_type.colors.dark;
+            light_color = transitionNode_type.colors.light;
+
+            // Update colors of all mediaplayer objects
+            setTransitionNodeColor(dark_color, light_color);
+        } catch (error) {
+            console.error('An error occurred while updating project colors:', error);
+        }
+
  
     });
 });

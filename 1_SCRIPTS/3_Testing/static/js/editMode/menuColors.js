@@ -5,10 +5,6 @@ The edit menu of all project colors.
 // LOADING JSON STATE
 import { JSON_statePromise } from '../JSONSetup.js';
 
-// GLOBAL CONSTANTS & EVENT NAMES
-const PROJECT_COLOR_UPDATED_EVENT = "projectColorUpdated";
-
-
 
 
 document.addEventListener('DOMContentLoaded', async (event) => {
@@ -45,12 +41,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
-
   
-  // Listen to color palette change
   // Listen to exit button
   exit_btn.addEventListener('click', closeMenu);
-  // Listen to click to close menu
 
   // Disabling zoom when zooming on menu
   if (menu) {
@@ -65,9 +58,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   *******************************************************************************/ 
 
   // Listen to project color change
-  scene.addEventListener(PROJECT_COLOR_UPDATED_EVENT, function(event) 
+  document.addEventListener("updateColor", function(event) 
   {
-    project_colors = event.detail.project_colors;
+    project_colors = project_state.getColors();
+
     populateProjectColors(project_colors);
   });
 
@@ -96,7 +90,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   }
 
 
-  function addColorField(color_name, hex_code, gallery_element) {
+  function addColorField(color_info, gallery_element) {
+    let hex_code = color_info.hex_code;
+    let color_name = color_info.name;
     const color_field = document.createElement('div');
     color_field.classList.add('colorField');
 
@@ -124,6 +120,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     color_bar.addEventListener('click', function() {
       let event = new CustomEvent('showColorPicker', {
         detail: {
+          category: color_info.category,
+          reference_uuid: color_info.reference_uuid,
+          property_name: color_info.property_name,
+          inner_property_name: color_info.inner_property_name,
           color_name: color_name,
           color: hex_code,
         }
@@ -144,8 +144,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Update with new colors
     for (const [type_uuid, color_info] of Object.entries(project_colors)) {
-      const {color_name, hex_code } = color_info;
-      addColorField(color_info.name, color_info.hex_code, project_colors_gallery) 
+      addColorField(color_info, project_colors_gallery) 
     }
   }
   
@@ -165,25 +164,3 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 });
 
 
-function extractColors(data, callback) {
-
-  let color_dict = {};
-
-  Object.entries(data).forEach(([key, value]) => {
-    if (value.colors) {
-      const prefix = value.name;
-      Object.entries(value.colors).forEach(([color_key, hex_code]) => {
-        const color_uuid = uuidv4();
-        const color_name = `${prefix}_${color_key}`;
-        color_dict[color_uuid] = {
-          reference_uuid: key,
-          name: color_name,
-          hex_code: hex_code
-        };
-      });
-    }
-  });
-
-
-  callback(color_dict);
-}

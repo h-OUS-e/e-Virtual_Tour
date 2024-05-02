@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   // JSON VARIABLES 
   let project_colors = project_state.getColors(true);
+  let current_color_info = null;
   console.log("progect colors: ", project_colors['names'], project_colors['hex_codes']);
 
 
@@ -87,8 +88,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   *******************************************************************************/ 
   scene.addEventListener('updateProjectColors', function(event){
     project_colors = project_state.getColors(true);
-    color_picker.project_colors = project_colors['hex_codes'];
-    color_picker.updateProjectColors(project_color_values_updated, project_color_names_updated);
+    color_picker.updateProjectColors(project_colors['hex_codes'], project_colors['names']);
     color_picker.refreshElementRects();
   }); 
   
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   * 5. FUNCTIONS
   *******************************************************************************/ 
 
-  
 
   function getColorNamesAndValues(colors) {
     const colorNames = Object.keys(colors);
@@ -107,21 +106,17 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     return [colorNames, colorValues];
   }
 
-  
-
-
 
 
   function handleOkButton() {
-    // Save the current color    
-    let event = new CustomEvent('updateProjectColors',      
-    {
-        detail: {
-          color_name: current_color_name,
-          hex_color: `#${currentColor.toHex()}`,
-        },
-    });
-    scene.dispatchEvent(event);   
+    // Update color where used
+    project_state.updateInnerProperty(
+      current_color_info['category'], 
+      current_color_info.reference_uuid, 
+      current_color_info.property_name, 
+      current_color_info.inner_property_name, 
+      `#${currentColor.toHex()}`, // new color value
+      "updateColor"); // event name
 
     // Hide the color picker
     colorPickerContainer.classList.add('hidden');
@@ -156,7 +151,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       color_picker.colorToPos(color);
       color_picker.setColorValues(color);
       current_color_name = event.detail.color_name;
-      console.log(currentColor, current_color_name);
+      current_color_info = event.detail;
+
     }
     color_picker.refreshElementRects();
   }
@@ -171,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const modeToggle = document.getElementById('mode-toggle');
   const swatches = document.getElementById('color_palette');
   const project_colors_swatches = document.getElementById('project_colors');
-  let i = 1;
+
 
   const colorIndicator = document.getElementById('color-indicator');
   const userSwatches = document.getElementById('user-swatches');
