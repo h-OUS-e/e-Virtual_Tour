@@ -140,6 +140,7 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
 
         const mediabar_container = document.getElementById('mediabar-container');
         const mediabarToggler = document.getElementById('mediabar-toggler');
+        const MEDIABAR = document.getElementById('mediabar');
         mediabarToggler.classList.toggle('open');
         mediabar_container.classList.toggle('open');
     

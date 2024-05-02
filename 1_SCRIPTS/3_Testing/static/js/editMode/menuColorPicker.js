@@ -16,11 +16,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   // JSON VARIABLES 
   let project_colors = project_state.getColors(true);
   let current_color_info = null;
-  console.log("progect colors: ", project_colors['names'], project_colors['hex_codes']);
 
-
-
-
+  // HTML REFERENCES
   const colorPickerContainer = document.getElementById('color_picker');
   const exitButton = colorPickerContainer.querySelector('.exitBtn');
   const okButton = document.getElementById('color_picker_ok_button');

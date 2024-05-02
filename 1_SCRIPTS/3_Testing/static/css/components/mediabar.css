@@ -121,7 +121,7 @@
 }
 
 #mediabar-toggler:hover {
-  background-color: var(--default_color);
+  background-color: var(--popup_color);
 }
 #mediabar-toggler:hover #mediabar-toggler-button {
   color: var(--background);
@@ -137,7 +137,7 @@
 #mediabar-toggler.open:hover #mediabar-toggler-button {
   color: var(--background);
   transform: scale(1.2);
-  transform: rotate(160deg);
+  transform: rotate(170deg);
 }
 
 
@@ -146,7 +146,7 @@
   display: block;
   width: 10%;
   /* Adjust the size of the arrow by changing the border sizes */
-  transition: transform 0.15s ;
+  transition: transform 0.5s ;
   border-left: 8px solid ; /* Arrow color */
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
