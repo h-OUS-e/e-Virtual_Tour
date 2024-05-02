@@ -223,11 +223,11 @@ function menuBtnSelector(btn_class) {
             
             // Add active class to clicked button
             this.classList.add('active');
-
         });
 
         // Add event listener to remove btn selection on menu exit
         document.addEventListener('menuClosed', function(event) {
+            console.log("TEST", event);
             const menu_id = event.detail.menu_id;
 
             if (!menu_id) {
@@ -236,9 +236,9 @@ function menuBtnSelector(btn_class) {
             }
 
             document.querySelectorAll(btn_class).forEach(button => {
-                const related_menu_id = this.getAttribute('related_menu_id');
+                const related_menu_id = button.getAttribute('related_menu_id');
                 if (related_menu_id === menu_id) {
-                    this.classList.remove('active');
+                    button.classList.remove('active');
                 }
             });
         });

@@ -156,7 +156,19 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   function closeMenu() {
+    // Hide Menu
     menu.classList.add("hidden");
+
+    // deactivate related editmode bar button
+    const new_event = new CustomEvent('menuClosed', {
+      detail: {
+        menu_id: menu.id,
+      }
+    });
+
+    document.dispatchEvent(new_event);
+
+
   }
 
 

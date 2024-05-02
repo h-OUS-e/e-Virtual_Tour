@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // HTML REFERENCES  
     const MEDIABAR = document.getElementById('mediabar');
-    const MEDIABAR_ITEM_CONTAINER = MEDIABAR.querySelector('[id=mediabar-item-grid]');
 
     
 
