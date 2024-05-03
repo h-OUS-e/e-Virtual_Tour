@@ -196,12 +196,16 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id
             const transitionNode_item = transitionNode_JSON[id];
 
             // Get attributes
-            const position = transitionNode_item.position;
+            const pos_x = transitionNode_item.pos_x;
+            const pos_y = transitionNode_item.pos_y;
+            const pos_z = transitionNode_item.pos_z;
             const scene_id = transitionNode_item.scene_id;
             const new_scene_id = transitionNode_item.new_scene_id;
 
             let transitionNode_content = {
-                position: position,
+                pos_x: pos_x,
+                pos_y: pos_y,
+                pos_z: pos_z,
                 scene_id: scene_id,
                 new_scene_id: new_scene_id,
                 initial_scene_id: initial_scene_id,
@@ -226,6 +230,9 @@ class TransitionNode {
         this.id = id;
         this.final_id = id;
         this.position = content.position;
+        this.pos_x = content.pos_x;
+        this.pos_y = content.pos_y;
+        this.pos_z = content.pos_z;
         this.scene_id = content.scene_id;
         this.new_scene_id = content.new_scene_id;
         this.initial_scene_id = content.initial_scene_id;
@@ -251,7 +258,7 @@ class TransitionNode {
         entity.setAttribute('new_scene_id', this.new_scene_id);
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('mixin', 'transition_node_frame');
-        entity.setAttribute('position', this.position);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         entity.setAttribute('rotation', "90 0 0");
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
@@ -289,7 +296,7 @@ class TransitionNode {
 
 
     // METHOD TO UPDATE THE SCENE POSITION
-    updateScenePosition(new_position) {
+    updateScenePosition() {
         this.deleteClone();
         const entity = document.getElementById(this.id);
 
@@ -297,14 +304,16 @@ class TransitionNode {
         entity.setAttribute('class', this.name);
 
         if (entity) {
-            entity.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
+            entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         }
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     moveTo(new_position) {        
-        this.position = `${this.position.x} ${this.position.y} ${this.position.z}`;        
-        this.updateScenePosition(new_position); // Reflect changes in the scene
+        this.pos_x = new_position.x;
+        this.pos_y = new_position.y;
+        this.pos_z = new_position.z;
+        this.updateScenePosition(); // Reflect changes in the scene
     }
 
     // METHOD TO SHOW THE OBJECT MOVING WITHOUT UPDATING ACTUAL OBJECT TO AVOID STATE CHANGE
@@ -415,7 +424,9 @@ class TransitionNode {
         return {
             id: this.id,
             final_id: this.final_id,
-            position: this.position, // Shallow copy if position is an object
+            pos_x: this.pos_x, 
+            pos_y: this.pos_y, 
+            pos_z: this.pos_z, 
             scene_id: this.scene_id,
             new_scene_id: this.new_scene_id
         };
@@ -443,7 +454,7 @@ class TransitionNode {
         }
 
         // Update the entity's position
-        entity.setAttribute('position', this.position);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         
         // Update data attributes related to background images
         entity.setAttribute('scene_id', this.scene_id);
@@ -469,8 +480,6 @@ class TransitionNode {
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {
                     case 'position':
-                        entity.setAttribute('position', value);
-
                     case 'scene_id':
                         entity.setAttribute('scene_id', value);                        
                         break;

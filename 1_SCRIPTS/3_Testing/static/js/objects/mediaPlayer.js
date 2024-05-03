@@ -265,16 +265,24 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
         // Get attributes
         const type_uuid = mediaPlayer_item.type_uuid;
         const title = mediaPlayer_item.title;
-        const position = mediaPlayer_item.position;
-        const rotation = mediaPlayer_item.rotation;
+        const pos_x = mediaPlayer_item.pos_x;
+        const pos_y = mediaPlayer_item.pos_y;
+        const pos_z = mediaPlayer_item.pos_z;
+        const rot_x = mediaPlayer_item.rot_x;
+        const rot_y = mediaPlayer_item.rot_y;
+        const rot_z = mediaPlayer_item.rot_z;
         const icon_index = mediaPlayer_item.icon_index;
         const scene_id = mediaPlayer_item.scene_id;
 
         const mediaplayer_content = {
             "type_uuid": type_uuid,
             "title": title,
-            "position": position,
-            "rotation": rotation,
+            "pos_x": pos_x,
+            "pos_y": pos_y,
+            "pos_z": pos_z,
+            "rot_x": rot_x,
+            "rot_y": rot_y,
+            "rot_z": rot_z,
             "icon_index": icon_index,
             "scene_id": scene_id,
             "initial_scene_id":initial_scene_id,
@@ -297,19 +305,22 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
 * MEDIAPLAYER CLASS
 *******************************************************************************/ 
 class MediaPlayer {    
-    constructor(id, mediaplayer_content) {
+    constructor(id, content) {
         this.name = this.constructor.name;
         this.id = id;
         this.final_id = id; // for updating id when undoing
-        this.initial_scene_id = mediaplayer_content.initial_scene_id;
-
-        this.position = mediaplayer_content.position;
-        this.scene_id = mediaplayer_content.scene_id; 
-        this.type_uuid = mediaplayer_content.type_uuid;
-        this.icon_index = mediaplayer_content.icon_index;
-        this.title = mediaplayer_content.title;
-        this.direction = mediaplayer_content.direction;
-        this.rotation = mediaplayer_content.rotation;
+        this.initial_scene_id = content.initial_scene_id;
+        this.pos_x = content.pos_x;
+        this.pos_y = content.pos_y;
+        this.pos_z = content.pos_z;
+        this.rot_x = content.rot_x;
+        this.rot_y = content.rot_y;
+        this.rot_z = content.rot_z;
+        this.scene_id = content.scene_id; 
+        this.type_uuid = content.type_uuid;
+        this.icon_index = content.icon_index;
+        this.title = content.title;
+        this.direction = null;
 
     }
 
@@ -332,13 +343,13 @@ class MediaPlayer {
         entity.setAttribute('toggle_visibility', true);
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('mixin', 'mediaplayer_frame');
-        entity.setAttribute('position', this.position);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('type_uuid', this.type_uuid);
 
         // Getting rotation, if not defined, we get it from direction
-        if (this.rotation !== undefined && this.rotation !== null) {
-            entity.setAttribute('rotation', this.rotation); // should be dynamic instead?
+        if (this.rot_x !== undefined && this.rot_x !== null) {
+            entity.setAttribute('rotation', `${this.rot_x} ${this.rot_y} ${this.rot_z}`); // should be dynamic instead?
         }
         else {
             entity.setAttribute('rotation', this.getRotationFromDirection()); // should be dynamic instead?
@@ -418,17 +429,19 @@ class MediaPlayer {
         this.deleteClone();
         const entity = document.getElementById(this.id);
         if (entity) {
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
-            entity.setAttribute('rotation', this.rotation); // should be dynamic instead?
+            entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
+            entity.setAttribute('rotation', `${this.rot_x} ${this.rot_y} ${this.rot_z}`); // should be dynamic instead?
         }
     }
 
     // METHOD TO MOVE THE OBJECT
     moveTo(new_position, new_direction) {
-        this.position = new_position;
+        this.pos_x = new_position.x;
+        this.pos_y = new_position.y;
+        this.pos_z = new_position.z;
         // dynamically update rotation to reflect the normal of camera at which object is positioned
         this.direction = new_direction;
-        this.rotation = this.getRotationFromDirection();
+        this.rot_x, this.rot_y, this.rot_z = this.getRotationFromDirection();
         this.updateScenePosition(); // Reflect changes in the scene
     }
 
@@ -545,12 +558,16 @@ class MediaPlayer {
         return {
             id: this.id,
             final_id: this.final_id,
-            position: { ...this.position }, // Shallow copy if position is an object
+            pos_x: this.pos_x, 
+            pos_y: this.pos_y, 
+            pos_z: this.pos_z,
+            rot_x: this.pos_x, 
+            rot_y: this.pos_y, 
+            rot_z: this.pos_z, 
             scene_id: this.scene_id,
             type_uuid: this.type_uuid,
             icon_index: this.icon_index,
             title: this.title,
-            rotation: this.rotation,
             direction: {...this.direction},
         };
     }
@@ -578,8 +595,8 @@ class MediaPlayer {
         }
 
         // Update the entity's position and rotation
-        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
-        entity.setAttribute('rotation', `${this.rotation.x} ${this.rotation.y} ${this.rotation.z}`);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
+        entity.setAttribute('rotation', `${this.rot_x} ${this.rot_y} ${this.rot_z}`);
         // Update data attributes related to background images
         entity.setAttribute('scene_id', this.scene_id);
         // Update attributes
@@ -622,8 +639,8 @@ class MediaPlayer {
                 switch (key) {
                     case 'position':
                     case 'rotation':
-                        // Assuming position and rotation are objects with x, y, z
-                        entity.setAttribute(key, `${value.x} ${value.y} ${value.z}`);
+                        // // Assuming position and rotation are objects with x, y, z
+                        // entity.setAttribute(key, `${value.x} ${value.y} ${value.z}`);
                         break;
                     case 'scene_id':
                         entity.setAttribute('scene_id', value);                        
