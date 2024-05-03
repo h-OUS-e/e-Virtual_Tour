@@ -211,9 +211,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let object = new TransitionNode(state.item_uuid, object_content);
                 object.applyState(state.final_state);
             }
-
-
         }
+        
         // Check for shift+Y to redo project state
         if ((event.shiftKey || event.metaKey) && event.key === 'y') {
             
