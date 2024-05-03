@@ -3,6 +3,7 @@
 class JSONState {
     constructor(data) {
       this.history = [data];
+      this.edit_history = [];
       this.idx = 0;
       this.max_history_length = 10;
       this.indexes = {};
@@ -28,35 +29,66 @@ class JSONState {
     }
   
     updateProperty(category, uuid, property, value, event_name=null) {
-      // Updates the property of the item with the given value
+      // Updates the property of the item with the given value by creating a deep copy,
       // and emits that the state has been updated. If an event_name is provided
       // it emits the event name. If the event_name provided is "useCategory",
       // it emits {category}Updated event. Else, it emits "stateUpdated"
+
+      // Get the current state data
       const data = this.history[this.idx];
-      const new_data = {
-        ...data,
-        [category]: {
-          ...data[category],
-          [uuid]: {
-            ...data[category][uuid],
-            [property]: value,
+
+      // Check if the category, uuid, and property exist in the current state
+      if (data[category] && data[category][uuid] && data[category][uuid].hasOwnProperty(property)) {
+        // Create a new data object with the updated property value
+        const new_data = {
+          ...data,
+          [category]: {
+            ...data[category],
+            [uuid]: {
+              ...data[category][uuid],
+              [property]: value,
+              isEdited: true, // Mark the property as edited
+            },
           },
-        },
-      };
-      const updated_data = { ...data, ...new_data };
-      this.history.splice(this.idx + 1);
-      this.history.push(updated_data);
-      this.idx++;
-  
-      if (this.history.length > this.max_history_length) {
-        this.history.shift();
-        this.idx--;
-      }  
-      this.buildIndexes();
-      if (event_name === "useCategory") {
-        event_name = `${category}Updated`;
+        };
+
+        // Merge the current state with the new data object
+        const updated_data = { ...data, ...new_data };
+
+        // Remove any future states from the history
+        this.history.splice(this.idx + 1);
+
+        // Add the updated state to the history
+        this.history.push(updated_data);
+
+        // Add the edited object UUID to the editedObjectsHistory
+        this.edit_history.splice(this.idx + 1);
+        this.edit_history.push(uuid);
+        console.log(this.edit_history);
+
+        // Increment the current index
+        this.idx++;
+    
+        // Limit the history length to max_history_length
+        if (this.history.length > this.max_history_length) {
+          this.history.shift();
+          this.idx--;
+        }  
+
+        // Rebuild the indexes
+        this.buildIndexes();
+
+        // Determine the event name based on the provided event_name or category
+        if (event_name === "useCategory") {
+          event_name = `${category}Updated`;
+        }
+        
+        // Emit the state updated event
+        this.emitStateUpdated(event_name);
+
+      } else { 
+        console.log("Property or Category or uuid does not exists");
       }
-      this.emitStateUpdated(event_name);
     }
 
     updateInnerProperty(category, uuid, property, innerProperty, value, event_name=null) {
@@ -286,11 +318,11 @@ class JSONState {
       return uniqueProperties;
     }
   
-    undo() {
+    undo(event_name=null) {
       if (this.idx > 0) {
         this.idx--;
         this.buildIndexes();
-        this.emitStateUpdated();
+        this.emitStateUpdated(event_name);
       } else {
         console.log("Nothing to undo");
       }

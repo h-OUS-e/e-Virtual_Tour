@@ -138,14 +138,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.addEventListener('mouseup', function (event) {
         if (event.button === 0) { // Left mouse button
             if (isDragging && selected_object) {
-                // Record the move action only once upon the correct conditions
-                // const createAction = object.getAction('moveTo', startPosition, startDirection);
-                // undo_redo_manager.doAction(createAction);
-
 
                 const action = selected_object.getAction('moveTo', new_position, new_direction);
-                action_manager.doAction(action);
-                console.log("Moved");
+                let action_success = action_manager.doAction(action);
+                
+                // Update JSON if action is done
+                if (action_success) {
+                    // Update position
+                    let new_position_string = `${new_position.x.toFixed(3)} ${new_position.y.toFixed(3)} ${new_position.z.toFixed(3)}`;
+                    object_state.updateProperty(selected_object.name +"s", selected_object.id, "position", new_position_string);
+
+                    // Update rotation if valid
+                    let new_direction_string = `${new_direction.x.toFixed(3)} ${new_direction.y.toFixed(3)} ${new_direction.z.toFixed(3)}`;
+                    object_state.updateProperty(selected_object.name +"s", selected_object.id, "rotation", new_direction_string);
+                }
 
             }
 
@@ -170,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z to undo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+            object_state.undo();
 
         }
 
@@ -180,6 +187,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Check for ctrl+Y or cmd+y to redo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+            object_state.redo();
+
 
         }
         // Check for shift+Y to redo project state
@@ -470,6 +479,8 @@ class ActionManager {
             this.undoStack.push(action);
             this.redoStack = []; // Clear the redo stack whenever a new action is performed
         }
+
+        return success;
     }
 
     // Undo the last action

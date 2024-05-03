@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const scene = document.querySelector('a-scene');
  
     // JSON VARIABLES 
-    const icons = project_state.getCategory("Icons");
+    let icons = project_state.getCategory("Icons");
     const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;   
 
-    const mediaPlayer_JSON = object_state.getCategory(CATEGORY);
+    let mediaPlayer_JSON = object_state.getCategory(CATEGORY);
     let types = project_state.getCategory("Types");
     let mediaplayer_types = Object.fromEntries(
         Object.entries(types).filter(([key, value]) => value.class === "MediaPlayer")
@@ -36,10 +36,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
      * 2. SETUP
     *********************************************************************/
     // loading MediaPlayers to scene from JSON file
-    await loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_scene_id);
+    await loadMediaPlayersFromJSON(mediaPlayer_JSON,  initial_scene_id);
 
-    // Update mediaplayer colors
+    // Update mediaplayer colors and icons
     setMediaplayerColor(mediaplayer_types);
+    setMediaplayerIcon(mediaPlayer_JSON, icons, mediaplayer_types);
 
 
 
@@ -197,9 +198,16 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // CODE TO UPDATE MEDIAPLAYER TYPE NAMES
     scene.addEventListener('updateTypes', async function(event) {
         // Get mediaplayer types from event
-        types = event.detail.types;
+        types = project_state.getCategory("Types");
+        mediaplayer_types = Object.fromEntries(
+            Object.entries(types).filter(([key, value]) => value.class === "MediaPlayer")
+        );
+        icons = project_state.getCategory("Icons");
+        mediaPlayer_JSON = object_state.getCategory(CATEGORY);
+        
     
         // Update the icon if icon doesn't exist in list of the mediaplayer types anymore
+        setMediaplayerIcon(mediaPlayer_JSON, icons, mediaplayer_types);
     });
     
 });
@@ -225,11 +233,27 @@ function setMediaplayerColor(mediaplayer_types){
 
         // let icon = mediaplayers[i].querySelector('[mixin=' + MIXIN_ICON + ']')
         // icon.setAttribute('material', 'color', dark_color);
-
     }
 }
 
-async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_scene_id) {
+function setMediaplayerIcon(mediaPlayer_JSON, icons, mediaplayer_types) {
+    // Get the icon and border entities inside the media player entity and update their attributes
+    const ids = Object.keys(mediaPlayer_JSON);
+
+    ids.forEach((id) => {
+        const mediaPlayer_item = mediaPlayer_JSON[id];
+        const type_uuid = mediaPlayer_item.type_uuid;
+        const mediaplayer_type = mediaplayer_types[type_uuid];
+        const icon_url = icons[mediaplayer_type["icons"][mediaPlayer_item.icon_index]].src;
+        const entity = document.getElementById(id);
+        console.log(mediaPlayer_item.title, icon_url, mediaPlayer_item.scene_id);
+
+        const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+        iconEntity.setAttribute('material', 'src', icon_url);
+    });
+}
+
+async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
     
     // Get an array of keys from the transitionNode_JSON object
     const ids = Object.keys(mediaPlayer_JSON);
@@ -240,16 +264,11 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_
         const mediaPlayer_item = mediaPlayer_JSON[id];
 
         // Get attributes
-        const uniqueId = mediaPlayer_item.id;
         const type_uuid = mediaPlayer_item.type_uuid;
-        const mediaplayer_type = types[type_uuid];
-
         const title = mediaPlayer_item.title;
-
         const position = mediaPlayer_item.position;
         const rotation = mediaPlayer_item.rotation;
         const icon_index = mediaPlayer_item.icon_index;
-        const icon_url = icons[mediaplayer_type["icons"][icon_index]].src;
         const scene_id = mediaPlayer_item.scene_id;
 
         const mediaplayer_content = {
@@ -258,13 +277,12 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, types, icons, initial_
             "position": position,
             "rotation": rotation,
             "icon_index": icon_index,
-            "icon_url": icon_url,
             "scene_id": scene_id,
             "initial_scene_id":initial_scene_id,
         }
 
         // Create mediaplayer and add to scene
-        const media_player = new MediaPlayer(uniqueId, mediaplayer_content);
+        const media_player = new MediaPlayer(id, mediaplayer_content);
         media_player.addToScene();
         
     });
@@ -289,7 +307,6 @@ class MediaPlayer {
         this.position = mediaplayer_content.position;
         this.scene_id = mediaplayer_content.scene_id; 
         this.type_uuid = mediaplayer_content.type_uuid;
-        this.icon_url = mediaplayer_content.icon_url;
         this.icon_index = mediaplayer_content.icon_index;
         this.title = mediaplayer_content.title;
         this.direction = mediaplayer_content.direction;
@@ -308,7 +325,6 @@ class MediaPlayer {
         }
 
         const entity = document.createElement('a-entity');
-        this.id = `mp_${this.scene_id}_${this.title}`;
         entity.setAttribute('id', this.id);
         entity.setAttribute('title', this.title);
         entity.setAttribute('class', MAIN_CLASS);
@@ -371,7 +387,7 @@ class MediaPlayer {
         // Get the icon and border entities inside the media player entity and update their attributes
         const iconEntity = document.createElement('a-entity'); 
         iconEntity.setAttribute('mixin', 'mediaplayer_icon');
-        iconEntity.setAttribute('material', 'src', this.icon_url);
+        // iconEntity.setAttribute('material', 'src', this.icon_url);
         iconEntity.setAttribute('class', 'mediaplayer-icon');
         entity.appendChild(iconEntity);
 
@@ -534,7 +550,6 @@ class MediaPlayer {
             scene_id: this.scene_id,
             type_uuid: this.type_uuid,
             icon_index: this.icon_index,
-            icon_url: this.icon_url,
             title: this.title,
             rotation: this.rotation,
             direction: {...this.direction},
@@ -576,8 +591,7 @@ class MediaPlayer {
         // this.id = `mp_${this.scene_id}_${this.title}`;
         entity.setAttribute('id', this.id);
 
-        // Get the icon and border entities inside the media player entity and update their attributes
-        const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+        
 
 
 
@@ -590,19 +604,19 @@ class MediaPlayer {
                 if (this.hasOwnProperty(key)) {
                     this[key] = value;
 
-                    //  Updating entity id if background or title has changed
-                    if (key === 'scene_id' || key === 'title') {
-                        let id = `mp_${this.scene_id}_${this.title}`;
-                        // Checking if object with same id already exists
-                        const existingEntity = document.getElementById(id);
-                        if (existingEntity ) {
-                            console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
-                            return false;
-                        }
-                        this.id = id
-                        this.final_id = this.id;                    
-                        entity.setAttribute('id', this.id);
-                    }
+                    // //  Updating entity id if background or title has changed
+                    // if (key === 'scene_id' || key === 'title') {
+                    //     let id = `mp_${this.scene_id}_${this.title}`;
+                    //     // Checking if object with same id already exists
+                    //     const existingEntity = document.getElementById(id);
+                    //     if (existingEntity ) {
+                    //         console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
+                    //         return false;
+                    //     }
+                    //     this.id = id
+                    //     this.final_id = this.id;                    
+                    //     entity.setAttribute('id', this.id);
+                    // }
                 }
 
                 // Special handling for certain keys or direct update for the entity's attributes
@@ -621,9 +635,6 @@ class MediaPlayer {
                     case 'icon_index':
                         entity.setAttribute('icon_index', value);                    
                         break;
-                    case 'icon_url':
-                        console.log("icon url", value);
-                        break;
                     case 'title':
                         entity.setAttribute('title', value);
                         break;
@@ -640,7 +651,6 @@ class MediaPlayer {
             }
         }
                            
-        iconEntity.setAttribute('material', 'src', this.icon_url);
 
         // Update visibility
         entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition

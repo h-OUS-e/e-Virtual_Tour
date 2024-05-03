@@ -14,8 +14,10 @@
                     "string": "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
                     "style": "h2",
                     "size": "14px"
-                    }
                 }
+            },
+            "isDeleted": false,
+            "isEdited": false
         }, 
     
         "d3986b22-5a50-43f0-b2bc-d832f10b1b41": {
@@ -25,7 +27,9 @@
             "position": ".0475 2.13 -9.95",
             "rotation": "0 175 0",
             "icon_index": "1",
-            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"        
+            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"  ,
+            "isDeleted": false,
+            "isEdited": false      
         }, 
     
         "deff6215-a266-4f35-9292-234281ec150e": {
@@ -35,7 +39,9 @@
             "position": "-9.37 1.56 3.37",
             "rotation": "0 -70 0",
             "icon_index": "0",
-            "scene_id" : "ac516a09-ac33-4990-8bad-7ab6df7eab46"
+            "scene_id" : "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false
         }, 
     
         "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5": {
@@ -45,7 +51,9 @@
             "position": "-9.37 1.56 3.37",
             "rotation": "0 163 0",
             "icon_index": "0",
-            "scene_id" : "054d8e0f-e2b8-41d5-8def-21ee55f5091c"
+            "scene_id" : "054d8e0f-e2b8-41d5-8def-21ee55f5091c",
+            "isDeleted": false,
+            "isEdited": false
         }, 
     
         "232cb566-ffde-4825-b6f9-b1aeff635d69": {
@@ -55,7 +63,9 @@
             "position": "-3.82 -2.50 -7.04",
             "rotation": "0 -141 0",
             "icon_index": "0",
-            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c"
+            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false
         }, 
     
         "391869cf-c635-43b0-ad6d-c6aaca477dc3": {
@@ -65,7 +75,9 @@
             "position": "-9.31 1.71 3.56",
             "rotation": "0 -69 0",
             "icon_index": "0",
-            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c"
+            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false
         }
     },
     "TransitionNodes":
@@ -73,27 +85,37 @@
         "21542464-8648-411c-bfa5-fa922fecfc49": {
             "position": "-6.5 -2.5 6.5",
             "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
-            "new_scene_id": "054d8e0f-e2b8-41d5-8def-21ee55f5091c"
+            "new_scene_id": "054d8e0f-e2b8-41d5-8def-21ee55f5091c",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "6e4df64c-08f6-4f69-88ef-b180bf910488": {
-            "position": "-9 -2.5 2.2",
+            "pos_x": "-9 -2.5 2.2",
             "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
-            "new_scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c"
+            "new_scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "35c18c4c-b3db-4034-a552-067efb20be20": {
             "position": "-9.1 -2.5 -3",
             "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
-            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46"
+            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "609fcfd9-a30b-4f73-a36f-55f9710f04c3": {
             "position": "-1.0682452242730494 -1.9000000000000026 -6.8224148721058935",
             "scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
-            "new_scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"
+            "new_scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "974f8137-e2cf-4a87-a914-8b7b767fba05": {
             "position": "1.42823171432526 -3.2000000000000024 -3.3633829836267104",
             "scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
-            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46"
+            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false
         }
     },
     "Scenes":
@@ -102,25 +124,33 @@
             "name" : "01.1",
             "rotation": "0 0 0",
             "initial_camera_rotation": "0 45 0",
-            "path": "../static/0_resources/img1.1_lobby.jpeg"        
+            "path": "../static/0_resources/img1.1_lobby.jpeg",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "ac516a09-ac33-4990-8bad-7ab6df7eab46":{
             "name" : "01.2",
             "rotation": "0 0 0",
             "initial_camera_rotation": "0 0 0",
-            "path": "../static/0_resources/img1.2_lobby.jpeg"        
+            "path": "../static/0_resources/img1.2_lobby.jpeg",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "054d8e0f-e2b8-41d5-8def-21ee55f5091c":{
             "name" : "02.1",
             "rotation": "0 0 0",
             "initial_camera_rotation": "0 0 0",
-            "path": "../static/0_resources/img2_dentalRoom1.jpeg"
+            "path": "../static/0_resources/img2_dentalRoom1.jpeg",
+            "isDeleted": false,
+            "isEdited": false
         }, 
         "b5b28744-a93b-4cbb-990a-90fa6b60dd6c": {
             "name" : "03.1",
             "rotation": "0 0 0",
             "initial_camera_rotation": "0 0 0",
-            "path": "../static/0_resources/img3_dentalRoom2.jpeg"
+            "path": "../static/0_resources/img3_dentalRoom2.jpeg",
+            "isDeleted": false,
+            "isEdited": false
         }      
 
     }
