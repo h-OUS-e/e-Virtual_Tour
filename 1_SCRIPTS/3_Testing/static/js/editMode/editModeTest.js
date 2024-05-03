@@ -143,13 +143,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Update JSON if action is done
                 if (action_success) {
+                    const JSON_updates = [
+                        {property: "pos_x", value: new_position.x.toFixed(3)},
+                        {property: "pos_y", value: new_position.y.toFixed(3)},
+                        {property: "pos_z", value: new_position.z.toFixed(3)},
+                        {property: "rot_x", value: new_position.x.toFixed(3)},
+                        {property: "rot_y", value: new_position.y.toFixed(3)},
+                        {property: "rot_z", value: new_position.z.toFixed(3)},
+                    ]
+                    object_state.updateProperties(JSON_updates,`${selected_object.name +"s"}`, selected_object.id, null, "edit");
                     // Update position
-                    let new_position_string = `${new_position.x.toFixed(3)} ${new_position.y.toFixed(3)} ${new_position.z.toFixed(3)}`;
-                    object_state.updateProperty(selected_object.name +"s", selected_object.id, "position", new_position_string);
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_x", new_position.x.toFixed(3));
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_y", new_position.y.toFixed(3));
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_z", new_position.z.toFixed(3));
 
-                    // Update rotation if valid
-                    let new_direction_string = `${new_direction.x.toFixed(3)} ${new_direction.y.toFixed(3)} ${new_direction.z.toFixed(3)}`;
-                    object_state.updateProperty(selected_object.name +"s", selected_object.id, "rotation", new_direction_string);
+                    // // Update rotation if valid
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_x",  new_position.x.toFixed(3));
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_y",  new_position.y.toFixed(3));
+                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_z",  new_position.z.toFixed(3));
 
                 }
 

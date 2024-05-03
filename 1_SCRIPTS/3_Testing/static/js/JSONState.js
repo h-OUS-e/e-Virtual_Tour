@@ -27,71 +27,81 @@ class JSONState {
         }
       }
     }
-  
-    updateProperty(category, uuid, property, value, event_name=null, action="edit") {
-      // Updates the property of the item with the given value by creating a deep copy,
-      // and emits that the state has been updated. If an event_name is provided
-      // it emits the event name. If the event_name provided is "useCategory",
-      // it emits {category}Updated event. Else, it emits "stateUpdated"
 
+    updateProperties(updates, category, uuid, event_name = null, action="edit") {
       // Get the current state data
       const data = this.history[this.idx];
-
-      // Check if the category, uuid, and property exist in the current state
-      if (data[category] && data[category][uuid] && data[category][uuid].hasOwnProperty(property)) {
-        // Create a new data object with the updated property value
-        const new_data = {
-          ...data,
-          [category]: {
-            ...data[category],
-            [uuid]: {
-              ...data[category][uuid],
-              [property]: value,
-              isEdited: true, // Mark the property as edited
-            },
-          },
-        };
-
-        // Merge the current state with the new data object
-        const updated_data = { ...data, ...new_data };
-
-        // Remove any future states from the history
-        this.history.splice(this.idx + 1);
-
-        // Add the updated state to the history
-        this.history.push(updated_data);
-
-        // Update Edit History
-        this.edit_history.splice(this.idx);
-        this.edit_history.push({
-          category: category,
-          item_uuid: uuid,
-          action: action,
-          previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
-        });
-
-        // Increment the current index
-        this.idx++;
     
-        // Limit the history length to max_history_length
-        if (this.history.length > this.max_history_length) {
-          this.history.shift();
-          this.idx--;
-        }  
-
-        // Rebuild the indexes
-        this.buildIndexes();
-
-        // Determine the event name based on the provided event_name or category
-        if (event_name === "useCategory") {
-          event_name = `${category}Updated`;
-        }
+      // Create a new data object to store the updated state
+      let new_data = { ...data };
         
-        // Emit the state updated event
-        this.emitStateUpdated(event_name);
+      // Iterate over the updates array
+      for (const update of updates) {
+        const { property, value } = update;
+        new_data = this.getDataWithNewProperty(new_data, category, uuid, property, value);  
+      }
 
-      } else { 
-        console.log("Property or Category or uuid does not exists");
+      // Merge the current state with the new data object
+      const updated_data = { ...data, ...new_data };
+
+      // Remove any future states from the history
+      this.history.splice(this.idx + 1);
+      // Add the updated state to the history
+      this.history.push(updated_data);
+    
+ 
+      // Remove any future states from the history
+      this.edit_history.splice(this.idx);
+      // Add the updated state to the history
+      this.edit_history.push({
+        category: category,
+        item_uuid: uuid,
+        action: action,
+        previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
+      });
+    
+      // Emit the state updated event
+      this.emitStateUpdated(event_name);    
+
+      // Increment the current index
+      this.idx++;
+    
+      // Limit the history length to max_history_length
+      if (this.history.length > this.max_history_length) {
+        this.history.shift();
+        this.idx--;
+      }  
+
+      // Rebuild the indexes
+      this.buildIndexes();
+     
+      // Emit the state updated event
+      this.emitStateUpdated(event_name);
+    }
+  
+    
+
+    getDataWithNewProperty(new_data, category, uuid, property, value) {
+      // Check if the category, uuid, and property exist in the current state
+      if (
+        new_data[category] &&
+        new_data[category][uuid] &&
+        new_data[category][uuid].hasOwnProperty(property)
+      ) {
+        // Update the property value in the new_data object
+        new_data[category] = {
+          ...new_data[category],
+          [uuid]: {
+            ...new_data[category][uuid],
+            [property]: value,
+            isEdited: true, // Mark the property as edited
+          },
+        };        
+
+        return new_data ;
+      } else {
+        console.log("Property or Category or uuid does not exist");
+        return new_data ;
       }
     }
 
@@ -333,6 +343,8 @@ class JSONState {
     }
   
     undo(event_name=null) {
+      console.log("TEST", this.edit_history);
+
       if (this.idx > 0) {
         // Get edited state 
         // console.log("TEST", this.idx, this.edit_history)
@@ -343,7 +355,6 @@ class JSONState {
         // Get the edited objects from the previous state
         this.emitStateUpdated(event_name);
         const previous_state = this.edit_history[this.idx];
-
 
         return previous_state;
       } else {
