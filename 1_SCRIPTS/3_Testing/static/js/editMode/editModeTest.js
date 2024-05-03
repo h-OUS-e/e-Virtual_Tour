@@ -95,11 +95,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Checks if ctlr + shift + left mouse are pressed while on object
     scene.addEventListener('ctrlShiftMouseDownIntersection', function (event) {
         if (!isEditMode) return;  
-
         isDragging = true;
-        const selected_object_content = getCustomAttributes(document.getElementById(event.detail.id));
 
         if (event.detail.class === 'TransitionNode') {
+            const selected_object_content = getCustomAttributes(document.getElementById(event.detail.id));
             selected_object = new TransitionNode(event.detail.id, selected_object_content);
         }
 
@@ -151,6 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Update rotation if valid
                     let new_direction_string = `${new_direction.x.toFixed(3)} ${new_direction.y.toFixed(3)} ${new_direction.z.toFixed(3)}`;
                     object_state.updateProperty(selected_object.name +"s", selected_object.id, "rotation", new_direction_string);
+
                 }
 
             }
@@ -176,7 +176,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z to undo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-            object_state.undo();
+            let previous_state = object_state.undo();
+            if (previous_state.action === "edit") {
+                const object_entity = document.getElementById(previous_state.item_uuid);
+                const object_content = getCustomAttributes(object_entity);
+                let object = new TransitionNode(previous_state.item_uuid, object_content);
+                object.applyState(previous_state.previous_state);
+
+            }
 
         }
 

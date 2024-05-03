@@ -90,7 +90,7 @@
             "isEdited": false
         }, 
         "6e4df64c-08f6-4f69-88ef-b180bf910488": {
-            "pos_x": "-9 -2.5 2.2",
+            "position": "-9 -2.5 2.2",
             "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
             "new_scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
             "isDeleted": false,

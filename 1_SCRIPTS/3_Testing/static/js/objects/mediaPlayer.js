@@ -246,7 +246,6 @@ function setMediaplayerIcon(mediaPlayer_JSON, icons, mediaplayer_types) {
         const mediaplayer_type = mediaplayer_types[type_uuid];
         const icon_url = icons[mediaplayer_type["icons"][mediaPlayer_item.icon_index]].src;
         const entity = document.getElementById(id);
-        console.log(mediaPlayer_item.title, icon_url, mediaPlayer_item.scene_id);
 
         const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
         iconEntity.setAttribute('material', 'src', icon_url);

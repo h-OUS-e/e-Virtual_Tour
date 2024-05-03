@@ -28,7 +28,7 @@ class JSONState {
       }
     }
   
-    updateProperty(category, uuid, property, value, event_name=null) {
+    updateProperty(category, uuid, property, value, event_name=null, action="edit") {
       // Updates the property of the item with the given value by creating a deep copy,
       // and emits that the state has been updated. If an event_name is provided
       // it emits the event name. If the event_name provided is "useCategory",
@@ -61,10 +61,14 @@ class JSONState {
         // Add the updated state to the history
         this.history.push(updated_data);
 
-        // Add the edited object UUID to the editedObjectsHistory
-        this.edit_history.splice(this.idx + 1);
-        this.edit_history.push(uuid);
-        console.log(this.edit_history);
+        // Update Edit History
+        this.edit_history.splice(this.idx);
+        this.edit_history.push({
+          category: category,
+          item_uuid: uuid,
+          action: action,
+          previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
+        });
 
         // Increment the current index
         this.idx++;
@@ -91,7 +95,7 @@ class JSONState {
       }
     }
 
-    updateInnerProperty(category, uuid, property, innerProperty, value, event_name=null) {
+    updateInnerProperty(category, uuid, property, innerProperty, value, event_name=null, action="edit") {
       // Updates the property of the item with the given value
       // and emits that the state has been updated. If an event_name is provided
       // it emits the event name. If the event_name provided is "useCategory",
@@ -115,6 +119,16 @@ class JSONState {
       const updated_data = { ...data, ...new_data };
       this.history.splice(this.idx + 1);
       this.history.push(updated_data);
+
+      // Update edit history
+      this.edit_history.splice(this.idx);
+      this.edit_history.push({
+        category: category,
+        item_uuid: uuid,
+        action: action,
+        previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item with the item uuid
+      });
+
       this.idx++;
   
       if (this.history.length > this.max_history_length) {
@@ -320,9 +334,18 @@ class JSONState {
   
     undo(event_name=null) {
       if (this.idx > 0) {
+        // Get edited state 
+        // console.log("TEST", this.idx, this.edit_history)
+        // Decrement the current index
         this.idx--;
+        // Rebuild the indexes based on the previous state
         this.buildIndexes();
+        // Get the edited objects from the previous state
         this.emitStateUpdated(event_name);
+        const previous_state = this.edit_history[this.idx];
+
+
+        return previous_state;
       } else {
         console.log("Nothing to undo");
       }

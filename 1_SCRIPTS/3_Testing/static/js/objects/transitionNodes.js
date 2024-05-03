@@ -289,7 +289,7 @@ class TransitionNode {
 
 
     // METHOD TO UPDATE THE SCENE POSITION
-    updateScenePosition() {
+    updateScenePosition(new_position) {
         this.deleteClone();
         const entity = document.getElementById(this.id);
 
@@ -297,14 +297,14 @@ class TransitionNode {
         entity.setAttribute('class', this.name);
 
         if (entity) {
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+            entity.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
         }
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     moveTo(new_position) {        
-        this.position = new_position;        
-        this.updateScenePosition(); // Reflect changes in the scene
+        this.position = `${this.position.x} ${this.position.y} ${this.position.z}`;        
+        this.updateScenePosition(new_position); // Reflect changes in the scene
     }
 
     // METHOD TO SHOW THE OBJECT MOVING WITHOUT UPDATING ACTUAL OBJECT TO AVOID STATE CHANGE
@@ -415,7 +415,7 @@ class TransitionNode {
         return {
             id: this.id,
             final_id: this.final_id,
-            position: { ...this.position }, // Shallow copy if position is an object
+            position: this.position, // Shallow copy if position is an object
             scene_id: this.scene_id,
             new_scene_id: this.new_scene_id
         };
@@ -423,6 +423,7 @@ class TransitionNode {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
+
          // Apply the state to the object
          Object.assign(this, state);
          this.id = state.id
@@ -442,12 +443,13 @@ class TransitionNode {
         }
 
         // Update the entity's position
-        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+        entity.setAttribute('position', this.position);
+        
         // Update data attributes related to background images
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('new_scene_id', this.new_scene_id);            
         // Update visibility
-        entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition
+        // entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition
         // // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 
@@ -459,29 +461,16 @@ class TransitionNode {
                 // Update the object's properties
 
                 if (this.hasOwnProperty(key)) {
-                    // console.log("key: ", key, "value: ", value);
+                    console.log("key: ", key, "value: ", value);
                     this[key] = value;
-
-                    //  Updating entity id if background or title has changed
-                    if (key === 'scene_id' || key === 'new_scene_id') {
-                        let id = `move_${this.scene_id}_${this.new_scene_id}`;
-                        // Checking if object with same id already exists
-                        const existingEntity = document.getElementById(id);
-                        if (existingEntity ) {
-                            console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
-                            return false;
-                        }
-                        this.id = id
-                        this.final_id = this.id;                    
-                        entity.setAttribute('id', this.id);
-                    }
                 }
 
-                console.log("new_scene_id", this.new_scene_id);
 
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {
                     case 'position':
+                        entity.setAttribute('position', value);
+
                     case 'scene_id':
                         entity.setAttribute('scene_id', value);                        
                         break;
