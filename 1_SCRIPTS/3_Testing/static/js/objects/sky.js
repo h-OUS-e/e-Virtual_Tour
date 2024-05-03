@@ -117,8 +117,8 @@ function loadImageAsset(asset_object) {
             img_element.setAttribute('src', asset_object.path);
             img_element.setAttribute('alt', 'image of the scene');
             img_element.setAttribute('scene_id', asset_object.id);
-            img_element.setAttribute('rotation', asset_object.rotation);
-            img_element.setAttribute('initial_camera_rotation', asset_object.initial_camera_rotation);
+            img_element.setAttribute('rotation', `${asset_object.rot_x} ${asset_object.rot_x} ${asset_object.rot_z}`);
+            img_element.setAttribute('initial_camera_rotation',  `${asset_object.cam_rot_x} ${asset_object.cam_rot_y} ${asset_object.cam_rot_z}`);
 
 
             // Apply the initial loading class for transparency
@@ -133,7 +133,7 @@ function loadImageAsset(asset_object) {
             img_element.onerror = () => {
                 // Handle loading errors
                 console.error(`Failed to load asset with scene_id: ${asset_object.scene_id}.`);
-                reject(`Failed to load asset with scene_id: ${assetObject.scene_id}.`);
+                reject(`Failed to load asset with scene_id: ${asset_object.scene_id}.`);
 
             };
         }
