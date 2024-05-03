@@ -187,13 +187,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', function(event) {
         // Check for Ctrl+Z or Cmd+Z to undo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-            let previous_state = object_state.undo();
-            if (previous_state.action === "edit") {
-                const object_entity = document.getElementById(previous_state.item_uuid);
+            let state = object_state.undo();
+            if (state.action === "edit") {
+                const object_entity = document.getElementById(state.item_uuid);
                 const object_content = getCustomAttributes(object_entity);
-                let object = new TransitionNode(previous_state.item_uuid, object_content);
-                object.applyState(previous_state.previous_state);
-
+                let object = new TransitionNode(state.item_uuid, object_content);
+                object.applyState(state.previous_state);
             }
 
         }
@@ -205,7 +204,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Check for ctrl+Y or cmd+y to redo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
-            object_state.redo();
+            let state = object_state.redo();
+            if (state.action === "edit") {
+                const object_entity = document.getElementById(state.item_uuid);
+                const object_content = getCustomAttributes(object_entity);
+                let object = new TransitionNode(state.item_uuid, object_content);
+                object.applyState(state.final_state);
+            }
 
 
         }

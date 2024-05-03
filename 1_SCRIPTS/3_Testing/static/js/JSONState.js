@@ -58,7 +58,11 @@ class JSONState {
         item_uuid: uuid,
         action: action,
         previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
+        final_state: { id: uuid, ...updated_data[category][uuid] }, // Store the final state of the item, with the item uuid
+
       });
+
+      console.log(this.edit_history[-1], this.edit_history);
     
       // Emit the state updated event
       this.emitStateUpdated(event_name);    
@@ -130,14 +134,14 @@ class JSONState {
       this.history.splice(this.idx + 1);
       this.history.push(updated_data);
 
-      // Update edit history
-      this.edit_history.splice(this.idx);
-      this.edit_history.push({
-        category: category,
-        item_uuid: uuid,
-        action: action,
-        previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item with the item uuid
-      });
+      // // Update edit history
+      // this.edit_history.splice(this.idx);
+      // this.edit_history.push({
+      //   category: category,
+      //   item_uuid: uuid,
+      //   action: action,
+      //   previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item with the item uuid
+      // });
 
       this.idx++;
   
@@ -343,30 +347,29 @@ class JSONState {
     }
   
     undo(event_name=null) {
-      console.log("TEST", this.edit_history);
 
       if (this.idx > 0) {
-        // Get edited state 
         // console.log("TEST", this.idx, this.edit_history)
         // Decrement the current index
         this.idx--;
-        // Rebuild the indexes based on the previous state
         this.buildIndexes();
-        // Get the edited objects from the previous state
         this.emitStateUpdated(event_name);
         const previous_state = this.edit_history[this.idx];
-
         return previous_state;
       } else {
         console.log("Nothing to undo");
       }
     }
   
-    redo() {
+    redo(event_name=null) {
+      console.log("TEST", this.edit_history);
+
       if (this.idx < this.history.length - 1) {
+        const final_state = this.edit_history[this.idx];
         this.idx++;
         this.buildIndexes();
-        this.emitStateUpdated();
+        this.emitStateUpdated(event_name);
+        return final_state;
       } else {
         console.log("Nothing to redo");
       }
