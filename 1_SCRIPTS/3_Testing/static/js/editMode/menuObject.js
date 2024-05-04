@@ -126,7 +126,7 @@ class ObjectMenu {
     }
   }
 
-  addMenuItem(label, input_type, input_id, JSON_data=null, default_value=null) {
+  addMenuItem(label, input_type, input_id, JSON_data=null, default_value=null, filter=null) {
 
     // Creates a row in the menu with a label and an input
     const list_item = document.createElement('li');
@@ -142,11 +142,22 @@ class ObjectMenu {
     // Create input element
     let input_element;
 
+    // Handle dropdown
     if (input_type === 'select') {
       input_element = document.createElement('select');
-      this.populateJSONDropdown(input_element, JSON_data, "name", default_value);
-    } else 
-    {
+
+      if (filter) {
+        JSON_data = Object.fromEntries(
+          Object.entries(JSON_data).filter(([key, value]) => value.class === filter)
+        );
+      }
+
+      this.populateJSONDropdown(input_element, JSON_data, "name", default_value);   
+      
+    } 
+
+    // Handle other input types
+    else {
       input_element = document.createElement('input');
       input_element.setAttribute('type', input_type);
         if (default_value) {
@@ -162,6 +173,9 @@ class ObjectMenu {
     list_item.appendChild(input_element);
     
     this.menu_list.appendChild(list_item);
+
+    // Returning input element in case we want to attach an event listener to it
+    return input_element
 
   }
 
@@ -195,8 +209,8 @@ class ObjectMenu {
     let scene_id = null
     let new_scene_id = null;
     let title = null;
-    let icon_index = null;
-    let type = null;
+    let icon_id = null;
+    let type_id = null;
 
     if (menu_type === "edit") {
 
@@ -211,12 +225,11 @@ class ObjectMenu {
       scene_id = objectJSON[selected_object_id]['scene_id'];
       new_scene_id = objectJSON[selected_object_id]['new_scene_id'];
       title = objectJSON[selected_object_id]['title'];
-      icon_index = objectJSON[selected_object_id]['icon_index'];
-      type = objectJSON[selected_object_id]['type_uuid'];
-
+      icon_id = objectJSON[selected_object_id]['icon_uuid'];
+      type_id = objectJSON[selected_object_id]['type_uuid'];
     }
 
-    console.log(scene_id, new_scene_id, title, icon_index, type );
+    console.log(scene_id, new_scene_id, title, icon_id, type_id );
 
     // POPULATE SHARED OPTIONS
 
@@ -237,9 +250,38 @@ class ObjectMenu {
     }
     if (this.object_class === "MediaPlayer" && menu_type === "edit") {
       this.addMenuItem("Title ", "text", "title_input", this.scenes, title);
+      // Add type menu
+      const type_input_element = this.addMenuItem("Type ", "select", "type_input", this.types, type_id, this.object_class);
+
+      // Filter the icons based on the selected type's icons array      
+      let filtered_icons = this.filterIcons(type_id);
+      // Add Icon Selector and make it dependant on type menu
+      const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons);
+      // Listen to changes in the types menu and update icon dropdown accordingly
+      type_input_element.addEventListener('change', (e) => {
+        type_id = e.target.value;
+        filtered_icons = this.filterIcons(type_id);
+        this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
+      });
 
       
     }
+
+  }
+
+
+  filterData(object, filter_key, data_to_filter) {
+    const filtered_data = Object.fromEntries(
+      Object.entries(data_to_filter).filter(([key, value]) => object[filter_key].includes(key))
+    );
+    return filtered_data;
+  }
+
+  filterIcons(type_uuid) {
+    const selected_object = this.types[type_uuid];
+    const filtered_icons = this.filterData(selected_object, "icons", this.icons);
+
+    return filtered_icons;
 
   }
 
@@ -252,7 +294,6 @@ class ObjectMenu {
     for (const uuid in JSON_data) {
         let option = new Option(JSON_data[uuid][attribute], uuid); // new Option(text, value)
         dropdown.add(option);
-
 
     }
 
@@ -280,7 +321,9 @@ class ObjectMenu {
     } else {
         console.warn('Default value not found in dropdown options:', default_value);
     }
-}
+  }
+
+
 }
 
 
@@ -336,20 +379,32 @@ class EditMenu extends ObjectMenu {
       }
   }
 
-  setDropdownDefaultValue(dropdown_menu_id, default_value) {
-      const dropdown = document.getElementById(dropdown_menu_id);
-      if (!dropdown) {
-          console.error('Dropdown not found:', dropdown_menu_id, Array.from(dropdown.options)[0]);
-          return;
-      }
-
-      const option_to_select = Array.from(dropdown.options).find(option => option.value === default_value);
-      if (option_to_select) {
-          dropdown.value = default_value;
-      } else {
-          console.warn('Default value not found in dropdown options:', default_value);
-      }
-  }
 }
 
 
+
+
+
+// function showCustomInputBox(dropdown) {
+//   // Check if input box already exists
+//   let existingInput = document.getElementById('custom_scene_id_input');
+//   if (!existingInput) {
+//       // Create a new input element
+//       let inputBox = document.createElement('input');
+//       inputBox.type = 'text';
+//       inputBox.id = 'custom_scene_id_input';
+//       inputBox.placeholder = 'Enter new scene ID (##.#)';
+//       inputBox.pattern = '\\d{2}\\.\\d{1}'; // Regex for ##.#
+
+//       // Insert the input box after the dropdown
+//       dropdown.parentNode.insertBefore(inputBox, dropdown.nextSibling);
+//   }
+// }
+
+
+// function hideCustomInputBox() {
+//   let existingInput = document.getElementById('custom_scene_id_input');
+//   if (existingInput) {
+//       existingInput.remove(); // Remove the input box if it exists
+//   }
+// }
