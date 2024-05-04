@@ -262,6 +262,8 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
 
         // Get attributes
         const type_uuid = mediaPlayer_item.type_uuid;
+        const icon_uuid = mediaPlayer_item.icon_uuid;
+
         const title = mediaPlayer_item.title;
         const pos_x = mediaPlayer_item.pos_x;
         const pos_y = mediaPlayer_item.pos_y;
@@ -273,6 +275,7 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
 
         const mediaplayer_content = {
             "type_uuid": type_uuid,
+            "icon_uuid": icon_uuid,
             "title": title,
             "pos_x": pos_x,
             "pos_y": pos_y,
@@ -314,6 +317,7 @@ class MediaPlayer {
         this.rot_z = content.rot_z;
         this.scene_id = content.scene_id; 
         this.type_uuid = content.type_uuid;
+        this.icon_uuid = content.icon_uuid;
         this.title = content.title;
         this.direction = null;
 
@@ -560,6 +564,7 @@ class MediaPlayer {
             rot_z: this.pos_z, 
             scene_id: this.scene_id,
             type_uuid: this.type_uuid,
+            icon_uuid: this.icon_uuid,
             title: this.title,
             direction: {...this.direction},
         };
