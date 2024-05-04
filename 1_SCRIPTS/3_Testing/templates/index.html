@@ -81,6 +81,8 @@
     <script type="module" src="../static/js/editMode/editModeTest.js"></script>
     <script type="module" src="../static/js/editMode/menuColors.js"></script>
     <script type="module" src="../static/js/editMode/menuColorPicker.js"></script>
+    <script type="module" src="../static/js/editMode/menuObject.js"></script>
+
     <!-- <script type="module" src="../static/js/editMode/projectColorHandler.js"></script> -->
 
 
@@ -299,13 +301,22 @@
         </div> 
                    
 
-
-        
+        <!-- Edit menu to delete or change values of objects in a-scene or create an object -->
+        <div id="edit_menu_object" class="menu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header">OBJECT EDITOR</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="edit_menu_object_options">
+                <!-- Add other options as needed -->
+            </ul>
+        </div>  
+                
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="edit_menu_TransitionNode" class="menu hidden">
             <ul>
-                <li class="editMenuOption menuItem">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
                 <li>
                     <label for="edit_menu_TransitionNode_toScene_id_input">Change toScene ID</label>

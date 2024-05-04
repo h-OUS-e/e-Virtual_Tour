@@ -144,17 +144,21 @@ document.addEventListener('jsonLoaded', async (event) => {
         });
     });
 
+
     // Activating/deactivating normal class buttons
     document.querySelectorAll('.nonObjectClassBtn').forEach(button => {
         // Activating/deactivating object class buttons
         button.addEventListener('click', function() {
+
             // Get related menu to the button
             const related_menu_ID = this.getAttribute('related_menu_id');
             related_menu = document.getElementById(related_menu_ID);
             console.log(related_menu_ID);
             related_menu_button = this;
+
             // Remove active class from all buttons
             document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+
             // show the related menu
             related_menu.classList.remove('hidden');
 

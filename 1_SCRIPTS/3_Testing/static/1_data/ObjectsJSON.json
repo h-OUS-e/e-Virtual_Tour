@@ -11,7 +11,7 @@
             "rot_x": "0",
             "rot_y":"90",
             "rot_z": "0",
-            "icon_index": "0",
+            "icon_uuid": "1b5d45c4-478f-40b4-8b6f-164923de712a",
             "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
             "body": {
                 "text": {
@@ -34,7 +34,7 @@
             "rot_x": "0",
             "rot_y":"175",
             "rot_z": "0",
-            "icon_index": "1",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
             "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"  ,
             "isDeleted": false,
             "isEdited": false      
@@ -50,7 +50,7 @@
             "rot_x": "0",
             "rot_y":"-70",
             "rot_z": "0",
-            "icon_index": "0",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
             "scene_id" : "ac516a09-ac33-4990-8bad-7ab6df7eab46",
             "isDeleted": false,
             "isEdited": false
@@ -66,7 +66,7 @@
             "rot_x": "0",
             "rot_y":"163",
             "rot_z": "0",
-            "icon_index": "0",
+            "icon_uuid": "190142d0-b65d-45b5-adca-f1b8a4ba0bd8",
             "scene_id" : "054d8e0f-e2b8-41d5-8def-21ee55f5091c",
             "isDeleted": false,
             "isEdited": false
@@ -82,7 +82,7 @@
             "rot_x": "0",
             "rot_y":"-141",
             "rot_z": "0",
-            "icon_index": "0",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
             "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
             "isDeleted": false,
             "isEdited": false
@@ -98,7 +98,7 @@
             "rot_x": "0",
             "rot_y":"-69",
             "rot_z": "0",
-            "icon_index": "0",
+            "icon_uuid": "1b5d45c4-478f-40b4-8b6f-164923de712a",
             "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
             "isDeleted": false,
             "isEdited": false
@@ -167,6 +167,7 @@
             "isEdited": false
         }, 
         "ac516a09-ac33-4990-8bad-7ab6df7eab46":{
+            "name" : "01.2",
             "rot_x": "0",
             "rot_y":"0",
             "rot_z": "0",

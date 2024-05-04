@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     canvas.addEventListener('contextmenu', (event) => { //https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event
         let raycaster = updateRaycaster(event, canvas, scene);
         let intersectedObject = checkIntersections(raycaster, scene);
-        console.log(event);
+        // console.log(event);
         if (intersectedObject) {
             event.preventDefault(); // Prevent the browser's context menu from appearing
             var new_event = new CustomEvent('mouseRightClicked', 

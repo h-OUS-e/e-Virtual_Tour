@@ -61,8 +61,8 @@ async function loadMediabarFromJSON(mediaplayer_JSON, types, icons) {
         const title = mediaPlayer_item.title;
         const description = mediaPlayer_item.description;
         const scene_id = mediaPlayer_item.scene_id;
-        const icon_index = mediaPlayer_item.icon_index;
-        const icon_url = icons[mediaplayer_type["icons"][icon_index]].src;
+        const icon_uuid = mediaPlayer_item.icon_uuid;
+        const icon_url = icons[icon_uuid].src;
         
 
         const media_element_title = document.createElement('div');              

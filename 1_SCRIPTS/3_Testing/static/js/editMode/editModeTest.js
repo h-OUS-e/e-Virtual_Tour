@@ -76,7 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handling right click, right clicking object shows its corresponding editMenu
     scene.addEventListener('mouseRightClicked', function (event) {
         event.preventDefault();
-        if (!isEditMode) return;   
+        if (!isEditMode) return; 
+
     });
 
 
@@ -101,11 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const selected_object_content = getCustomAttributes(document.getElementById(event.detail.id));
             selected_object = new TransitionNode(event.detail.id, selected_object_content);
         }
-
-
-
-
     });
+    
 
     scene.addEventListener('longMouseDownIntersection', function (event) {
     });
@@ -523,3 +521,5 @@ class ActionManager {
         }
     }
 }
+
+

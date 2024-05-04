@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                     mediaplayer_title:event.target.getAttribute('title'),
                     mediaplayer_description:event.target.getAttribute('description'),
                     mediaplayer_body:event.target.getAttribute('body'),
-                    mediaplayer_icon_index: event.target.getAttribute('icon_index'),                    
                 }
             });
             // Dispatch event
@@ -138,7 +137,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                     mediaplayer_title:event.target.getAttribute('title'),
                     mediaplayer_description:event.target.getAttribute('description'),
                     mediaplayer_body: event.target.getAttribute('body'),
-                    mediaplayer_icon_index: event.target.getAttribute('icon_index'),   
                 }
             });
             scene.dispatchEvent(new_event);
@@ -242,9 +240,9 @@ function setMediaplayerIcon(mediaPlayer_JSON, icons, mediaplayer_types) {
 
     ids.forEach((id) => {
         const mediaPlayer_item = mediaPlayer_JSON[id];
-        const type_uuid = mediaPlayer_item.type_uuid;
-        const mediaplayer_type = mediaplayer_types[type_uuid];
-        const icon_url = icons[mediaplayer_type["icons"][mediaPlayer_item.icon_index]].src;
+        // const type_uuid = mediaPlayer_item.type_uuid;
+        // const mediaplayer_type = mediaplayer_types[type_uuid];
+        const icon_url = icons[mediaPlayer_item.icon_uuid].src;
         const entity = document.getElementById(id);
 
         const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
@@ -271,7 +269,6 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
         const rot_x = mediaPlayer_item.rot_x;
         const rot_y = mediaPlayer_item.rot_y;
         const rot_z = mediaPlayer_item.rot_z;
-        const icon_index = mediaPlayer_item.icon_index;
         const scene_id = mediaPlayer_item.scene_id;
 
         const mediaplayer_content = {
@@ -283,7 +280,6 @@ async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
             "rot_x": rot_x,
             "rot_y": rot_y,
             "rot_z": rot_z,
-            "icon_index": icon_index,
             "scene_id": scene_id,
             "initial_scene_id":initial_scene_id,
         }
@@ -318,7 +314,6 @@ class MediaPlayer {
         this.rot_z = content.rot_z;
         this.scene_id = content.scene_id; 
         this.type_uuid = content.type_uuid;
-        this.icon_index = content.icon_index;
         this.title = content.title;
         this.direction = null;
 
@@ -344,7 +339,6 @@ class MediaPlayer {
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('mixin', 'mediaplayer_frame');
         entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
-        entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('type_uuid', this.type_uuid);
 
         // Getting rotation, if not defined, we get it from direction
@@ -566,7 +560,6 @@ class MediaPlayer {
             rot_z: this.pos_z, 
             scene_id: this.scene_id,
             type_uuid: this.type_uuid,
-            icon_index: this.icon_index,
             title: this.title,
             direction: {...this.direction},
         };
@@ -601,7 +594,6 @@ class MediaPlayer {
         entity.setAttribute('scene_id', this.scene_id);
         // Update attributes
         entity.setAttribute('type_uuid', this.type_uuid);
-        entity.setAttribute('icon_index', this.icon_index);
         entity.setAttribute('title', this.title);
 
         // this.id = `mp_${this.scene_id}_${this.title}`;
@@ -647,9 +639,6 @@ class MediaPlayer {
                         break;
                     case 'type_uuid':
                         entity.setAttribute('type_uuid', value);
-                        break;
-                    case 'icon_index':
-                        entity.setAttribute('icon_index', value);                    
                         break;
                     case 'title':
                         entity.setAttribute('title', value);
