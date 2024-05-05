@@ -91,6 +91,7 @@
   margin-bottom: 10px;
   padding: 5px 10px;
 }
+
 .exitBtn {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -101,6 +102,22 @@
   margin: 0;
   padding-right: 40px;
   padding-left: 40px;
+}
+
+.deleteBtn {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 3px 10px;
+  background-color: #660e0e;
+  color: #e2e2e2;  
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 4px;
+  border-color: #811d1d;
+}
+
+.deleteBtn:hover {
+  background-color: #992c2c;
 
 }
 

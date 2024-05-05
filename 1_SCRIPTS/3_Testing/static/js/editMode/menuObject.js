@@ -15,13 +15,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   let {project_state, object_state} = await JSON_statePromise;  
   
   // JSON VARIABLES 
-
-
-  // let project_colors = project_state.getColors();
-
-  
-
-  
+  // let project_colors = project_state.getColors();  
 
   // HTML REFERENCES
 
@@ -43,8 +37,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       event.stopImmediatePropagation(); // Prevents default right click menu from appearing
       console.log(event);
       object_menu.showEditMenu(event.detail.x, event.detail.y, event.detail.class, event.detail.id);
-
-
 
   });
     
@@ -179,6 +171,18 @@ class ObjectMenu {
 
   }
 
+  addDeleteBtn(object_uuid) {
+    const list_item = document.createElement('li');
+    const delete_btn = document.createElement('button');
+    delete_btn.setAttribute('id', this.menu_id + "delete_btn");
+    delete_btn.setAttribute('reference_object_uuid', object_uuid);
+    delete_btn.setAttribute('class', "btn");
+    delete_btn.setAttribute('class', "deleteBtn");
+    delete_btn.textContent = "Delete";
+    this.menu_list.appendChild(delete_btn);
+
+  }
+
 
   showCreateMenu(x, y, object_class) {
     this.object_class = object_class;
@@ -262,10 +266,13 @@ class ObjectMenu {
         type_id = e.target.value;
         filtered_icons = this.filterIcons(type_id);
         this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
-      });
-
-      
+      });      
     }
+
+    if (menu_type === "edit") {
+      this.addDeleteBtn();
+    }
+
 
   }
 
@@ -325,62 +332,6 @@ class ObjectMenu {
 
 
 }
-
-
-
-class CreateMenu extends ObjectMenu {
-  constructor() {
-    super();
-  }
-
-  setObjectClass(newObjectClass) {
-      this.object_class = newObjectClass;
-  }
-
-  showCreateMenu(x, y, object_class) {
-      this.object_class = object_class;
-      const menu_id = `creation_menu_${this.object_class}`;
-      this.showMenu(x, y, menu_id);
-  }
-
-}
-
-class EditMenu extends ObjectMenu {
-  constructor(types) {
-      super();
-      this.object_id = null;
-      this.types = types;
-  }
-
-  showEditMenu(x, y, selected_object_class, selected_object_id) {
-      this.object_class = selected_object_class;
-      this.object_id = selected_object_id;
-
-      const menuId = `edit_menu_${this.object_class}`;
-      this.showMenu(x, y, menuId);
-
-      if (this.object_class) {
-          const menu = document.getElementById(menuId);
-          const object_id_element = menu.getElementsByClassName('menuItem')[0];
-          object_id_element.textContent = `Object ID: ${this.object_id}`;
-
-          let entity = document.getElementById(this.object_id);
-          if (entity.getAttribute('class') === 'MediaPlayer') {
-              this.setDropdownDefaultValue('edit_menu_MediaPlayer_type_input', entity.getAttribute('mediaplayer_type'));
-              let edit_menu_MediaPlayer_type_Id = document.getElementById('edit_menu_MediaPlayer_type_input');
-              let edit_menu_MediaPlayer_iconIdx_Id = document.getElementById('edit_menu_MediaPlayer_iconIdx_input');
-              onDropdownMenuSelectionOfMediaPlayerType(this.types, edit_menu_MediaPlayer_type_Id, edit_menu_MediaPlayer_iconIdx_Id);
-              this.setDropdownDefaultValue('edit_menu_MediaPlayer_iconIdx_input', entity.getAttribute('icon_index'));
-              this.setDropdownDefaultValue('edit_menu_MediaPlayer_scene_id_input', entity.getAttribute('background_img_id'));
-          } else if (entity.getAttribute('class') === 'TransitionNode') {
-              console.log("TEST", entity.getAttribute('new_background_img_id'));
-              this.setDropdownDefaultValue('edit_menu_TransitionNode_toScene_id_input', entity.getAttribute('scene_id'));
-          }
-      }
-  }
-
-}
-
 
 
 
