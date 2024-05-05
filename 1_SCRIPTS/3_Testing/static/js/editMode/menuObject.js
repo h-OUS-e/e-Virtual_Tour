@@ -287,8 +287,7 @@ class ObjectMenu {
   }
 
 
-
-
+  // Populate menu with custom optiosn for 'create' vs 'edit' and different object classes
   populateMenu(menu_type, selected_object_id=null) {
     let objectJSON = null;
 
@@ -307,45 +306,27 @@ class ObjectMenu {
       type_uuid: Object.keys(types)[0],
     };
 
-
     if (menu_type === "edit") {
       objectJSON = this.getObjectJSON();
       default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
       this.addDeleteBtn();
     }
 
-
     if (menu_type === "create") {
       this.addCreateBtn()
     }
 
-
-
     // POPULATE SHARED OPTIONS
     this.addMenuItem("Current Scene ", "select", "scene_id_input", this.scenes, default_values.scene_id);
 
-
     // POPULATE SPECEFIC OPTIONS
-
     if (this.object_class === "TransitionNode") {
-      this.addMenuItem("New Scene ", "select", "new_scene_id_input", this.scenes, default_values.new_scene_id);
-      
+      this.addMenuItem("New Scene ", "select", "new_scene_id_input", this.scenes, default_values.new_scene_id);      
     }
+
     if (this.object_class === "MediaPlayer" ) {
       this.addMenuItem("Title ", "text", "title_input", this.scenes, default_values.title);
-      // Add type menu
-      const type_input_element = this.addMenuItem("Type ", "select", "type_input", types, default_values.type_uuid);
-
-      // Filter the icons based on the selected type's icons array      
-      let filtered_icons = this.filterIcons(default_values.type_uuid);
-      // Add Icon Selector and make it dependant on type menu
-      const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons, default_values.icon_uuid);
-      // Listen to changes in the types menu and update icon dropdown accordingly
-      type_input_element.addEventListener('change', (e) => {
-        default_values.type_uuid = e.target.value;
-        filtered_icons = this.filterIcons(default_values.type_uuid);
-        this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
-      });      
+      this.addTypeAndIconMenu(default_values, types);           
     }
   }
 
@@ -362,6 +343,23 @@ class ObjectMenu {
     const selected_object = this.types[type_uuid];
     const filtered_icons = this.filterData(selected_object, "icons", this.icons);
     return filtered_icons;
+  }
+
+  // Adds a type dropdown and an icon dropdown that listens and updates if type selection changes
+  addTypeAndIconMenu(default_values, filtered_types) {
+    // Add type menu
+    const type_input_element = this.addMenuItem("Type ", "select", "type_input", filtered_types, default_values.type_uuid);
+
+    // Filter the icons based on the selected type's icons array      
+    let filtered_icons = this.filterIcons(default_values.type_uuid);
+    // Add Icon Selector and make it dependant on type menu
+    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons, default_values.icon_uuid);
+    // Listen to changes in the types menu and update icon dropdown accordingly
+    type_input_element.addEventListener('change', (e) => {
+      default_values.type_uuid = e.target.value;
+      filtered_icons = this.filterIcons(default_values.type_uuid);
+      this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
+    }); 
   }
 
   
