@@ -66,10 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-    // Activating or deactivating buttons in editmode bar
-    objectBtnSelector('.objectClassBtn', function(object_class) {
-        selected_object_class = object_class;
-    });
+    // Activating or deactivating menu buttons in editmode bar
     menuBtnSelector('.nonObjectClassBtn');
 
 
@@ -306,21 +303,6 @@ function toggleEditMode(isEditMode, btn) {
     return isEditMode;
 }
 
-
-function objectBtnSelector(btn_class) {
-    document.querySelectorAll(btn_class).forEach(button => {
-        // Activating/deactivating object class buttons
-        button.addEventListener('click', function() {
-            const selected_object_class = this.getAttribute('data-class');
-            // Remove active class from all buttons
-            document.querySelectorAll(btn_class).forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
-            // Invoke the callback function with the selected object class
-            return selected_object_class;
-        });
-    });
-}
 
 
 function menuBtnSelector(btn_class) {

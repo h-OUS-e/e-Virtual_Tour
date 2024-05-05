@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   
   // JSON VARIABLES 
   // let project_colors = project_state.getColors();  
+  
+  let selected_object_class = null;
 
   // HTML REFERENCES
 
@@ -32,13 +34,46 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
+  // Activating or deactivating buttons in editmode bar
+  objectBtnSelector('.objectClassBtn', function(object_class) {
+    selected_object_class = object_class;
+  });
+
+
   // Handling right click, right clicking object shows its corresponding editMenu
   scene.addEventListener('mouseRightClicked', function (event) {
-      event.stopImmediatePropagation(); // Prevents default right click menu from appearing
-      console.log(event);
-      object_menu.showEditMenu(event.detail.x, event.detail.y, event.detail.class, event.detail.id);
+    // if (!isEditMode) return;     
 
+      event.stopImmediatePropagation(); // Prevents default right click menu from appearing
+      object_menu.showEditMenu(event.detail.x, event.detail.y, event.detail.class, event.detail.id);
   });
+
+
+  // Handling left click, left clicking object shows a create form to create a new object if a button is selected
+  scene.addEventListener('mouseClickedEditMode', function (event) {   
+    // if (!isEditMode) return;     
+
+    if (selected_object_class) {
+        // Show creation menu manager related to selected object class            
+        object_menu.showCreateMenu(event.detail.x, event.detail.y, selected_object_class);
+
+        // Get point and direction of the event
+        const point = event.detail.intersection_pt; 
+        const direction = event.detail.direction; 
+
+        // Create object in scene when creation meny form is submitted
+        // handleObjectCreation(point, direction, selectedObjectClass, mediaplayer_types, icons, creation_menu_manager, undo_redo_manager, project_colors); // Include direction in the call
+    }   
+    else {
+        console.log("TEST", event);
+    }
+  });
+
+
+  // Update current scene for dropdown default on scene change
+  scene.addEventListener("transitioning", function(event) {
+    object_menu.updateCurrentScene(event.detail.new_scene_id)
+  }); 
     
 
 
@@ -51,8 +86,39 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*******************************************************************************
   * 5. FUNCTIONS
   *******************************************************************************/ 
+  function objectBtnSelector(btn_class, callback) {
+    document.querySelectorAll(btn_class).forEach(button => {
+        // Activating/deactivating object class buttons
+        button.addEventListener('click', function() {
+            let selected_object_class = this.getAttribute('data-class');
+
+             // Check if the clicked button is already active
+             const isActive = this.classList.contains('active');
+
+             // Remove active class from all buttons except the clicked button
+            document.querySelectorAll(btn_class).forEach(btn => {
+              if (btn !== this) {
+                  btn.classList.remove('active');
+              }
+          });
+
+          // Toggle the active class on the clicked button based on its current state
+          if (isActive) {
+              this.classList.remove('active');
+              selected_object_class = null;
+          } else {
+              this.classList.add('active');
+          }
+          console.log(selected_object_class);
+            // Invoke the callback function with the selected object class
+          callback(selected_object_class);
+        });
+    });
+  }
 
 });
+
+
 
 
 class ObjectMenu { 
@@ -61,12 +127,15 @@ class ObjectMenu {
     this.menu_id= "edit_menu_object";
     this.menu = document.getElementById(this.menu_id);
     this.menu_list = this.menu.querySelector('ul');
+    this.menu_delete_container = this.menu.querySelector('li');
+
     this.visible = false;
     this.scenes = object_state.getCategory("Scenes");
     this.mediaplayers = object_state.getCategory("MediaPlayers");
     this.transition_nodes = object_state.getCategory("TransitionNodes");
     this.types = project_state.getCategory("Types");
     this.icons = project_state.getCategory("Icons");
+    this.current_scene = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
 
   }
 
@@ -76,6 +145,10 @@ class ObjectMenu {
     this.transition_nodes = object_state.getCategory("TransitionNodes");
     this.types = project_state.getCategory("Types");
     this.icons = project_state.getCategory("Icons");
+  }
+
+  updateCurrentScene(scene_id) {
+    this.current_scene = scene_id;
   }
 
   hideMenu() {
@@ -172,108 +245,108 @@ class ObjectMenu {
   }
 
   addDeleteBtn(object_uuid) {
-    const list_item = document.createElement('li');
     const delete_btn = document.createElement('button');
     delete_btn.setAttribute('id', this.menu_id + "delete_btn");
     delete_btn.setAttribute('reference_object_uuid', object_uuid);
     delete_btn.setAttribute('class', "btn");
     delete_btn.setAttribute('class', "deleteBtn");
     delete_btn.textContent = "Delete";
-    this.menu_list.appendChild(delete_btn);
+    this.menu_delete_container.appendChild(delete_btn);
+  }
 
+  addCreateBtn() {
+    const create_btn = document.createElement('button');
+    create_btn.setAttribute('id', this.menu_id + "create_btn");
+    create_btn.setAttribute('class', "btn");
+    create_btn.setAttribute('class', "createBtn");
+    create_btn.textContent = "Create";
+    this.menu_delete_container.appendChild(create_btn);
   }
 
 
   showCreateMenu(x, y, object_class) {
+    // Clear menu list
+    this.menu_list.innerHTML = '';
+    this.menu_delete_container.innerHTML = '';
+    // Set obejct class
     this.object_class = object_class;
+    // populate menu with options and show
+    this.populateMenu("create");
     this.showMenu(x, y);
   }
 
   showEditMenu(x, y, object_class, selected_object_id) {
     // Clear menu list
     this.menu_list.innerHTML = '';
-    console.log(this.menu_list);
-
-    // Get 
-
+    this.menu_delete_container.innerHTML = '';
+    // Set obejct class
     this.object_class = object_class;
+    // populate menu with options and show
     this.populateMenu("edit", selected_object_id);
     this.showMenu(x, y);
   }
 
 
-  
 
 
   populateMenu(menu_type, selected_object_id=null) {
-
     let objectJSON = null;
 
+
+    let types = Object.fromEntries(
+      Object.entries(this.types).filter(([key, value]) => value.class === this.object_class),
+    );
+
+
     // Define default values of inputs for edit menu
-    let scene_id = null
-    let new_scene_id = null;
-    let title = null;
-    let icon_id = null;
-    let type_id = null;
+    let default_values = {
+      scene_id: this.current_scene,
+      new_scene_id: null,
+      title: null,
+      icon_uuid: null,
+      type_uuid: Object.keys(types)[0],
+    };
+
 
     if (menu_type === "edit") {
-
-      // Get objectJSON depending on object class of selected item
-      if (this.object_class === "TransitionNode") {
-        objectJSON = this.transition_nodes;
-      } else if (this.object_class === "MediaPlayer") {
-        objectJSON = this.mediaplayers;
-      }  
-      
-      // Get default values, it will be undefined if it don't exist
-      scene_id = objectJSON[selected_object_id]['scene_id'];
-      new_scene_id = objectJSON[selected_object_id]['new_scene_id'];
-      title = objectJSON[selected_object_id]['title'];
-      icon_id = objectJSON[selected_object_id]['icon_uuid'];
-      type_id = objectJSON[selected_object_id]['type_uuid'];
-    }
-
-    console.log(scene_id, new_scene_id, title, icon_id, type_id );
-
-    // POPULATE SHARED OPTIONS
-
-    // Scene id
-    this.addMenuItem("Current Scene ", "select", "scene_id_input", this.scenes, scene_id);
-    //
-
-
-    if (this.object_class === "TransitionNode" && menu_type === "create") {
-
-    }
-    if (this.object_class === "MediaPlayer" && menu_type === "create") {
-      
-    }
-    if (this.object_class === "TransitionNode" && menu_type === "edit") {
-      this.addMenuItem("New Scene ", "select", "new_scene_id_input", this.scenes, new_scene_id);
-      
-    }
-    if (this.object_class === "MediaPlayer" && menu_type === "edit") {
-      this.addMenuItem("Title ", "text", "title_input", this.scenes, title);
-      // Add type menu
-      const type_input_element = this.addMenuItem("Type ", "select", "type_input", this.types, type_id, this.object_class);
-
-      // Filter the icons based on the selected type's icons array      
-      let filtered_icons = this.filterIcons(type_id);
-      // Add Icon Selector and make it dependant on type menu
-      const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons);
-      // Listen to changes in the types menu and update icon dropdown accordingly
-      type_input_element.addEventListener('change', (e) => {
-        type_id = e.target.value;
-        filtered_icons = this.filterIcons(type_id);
-        this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
-      });      
-    }
-
-    if (menu_type === "edit") {
+      objectJSON = this.getObjectJSON();
+      default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
       this.addDeleteBtn();
     }
 
 
+    if (menu_type === "create") {
+      this.addCreateBtn()
+    }
+
+
+
+    // POPULATE SHARED OPTIONS
+    this.addMenuItem("Current Scene ", "select", "scene_id_input", this.scenes, default_values.scene_id);
+
+
+    // POPULATE SPECEFIC OPTIONS
+
+    if (this.object_class === "TransitionNode") {
+      this.addMenuItem("New Scene ", "select", "new_scene_id_input", this.scenes, default_values.new_scene_id);
+      
+    }
+    if (this.object_class === "MediaPlayer" ) {
+      this.addMenuItem("Title ", "text", "title_input", this.scenes, default_values.title);
+      // Add type menu
+      const type_input_element = this.addMenuItem("Type ", "select", "type_input", types, default_values.type_uuid);
+
+      // Filter the icons based on the selected type's icons array      
+      let filtered_icons = this.filterIcons(default_values.type_uuid);
+      // Add Icon Selector and make it dependant on type menu
+      const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons, default_values.icon_uuid);
+      // Listen to changes in the types menu and update icon dropdown accordingly
+      type_input_element.addEventListener('change', (e) => {
+        default_values.type_uuid = e.target.value;
+        filtered_icons = this.filterIcons(default_values.type_uuid);
+        this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
+      });      
+    }
   }
 
 
@@ -284,12 +357,40 @@ class ObjectMenu {
     return filtered_data;
   }
 
+  
   filterIcons(type_uuid) {
     const selected_object = this.types[type_uuid];
     const filtered_icons = this.filterData(selected_object, "icons", this.icons);
-
     return filtered_icons;
+  }
 
+  
+  getObjectJSON() {
+    if (this.object_class === "TransitionNode") {
+      return this.transition_nodes;
+    } else if (this.object_class === "MediaPlayer") {
+      return this.mediaplayers;
+    }
+    return null;
+  }
+
+
+  getDefaultValues(object_JSON, selected_object_id, default_values) {
+    
+    if (!object_JSON || !selected_object_id) return {};
+
+  
+    const selectedObject = object_JSON[selected_object_id];
+
+    // Getting key of default values, need to match the object_JSON properties we are tryign to get
+    for (const key of Object.keys(default_values)) {
+      if (selectedObject && selectedObject.hasOwnProperty(key)) {
+        default_values[key] = selectedObject[key];
+      } else {
+        default_values[key] = undefined;
+      }
+    }
+      return default_values;
   }
 
 
@@ -332,6 +433,7 @@ class ObjectMenu {
 
 
 }
+
 
 
 
