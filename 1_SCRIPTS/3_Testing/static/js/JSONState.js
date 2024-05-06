@@ -44,37 +44,16 @@ class JSONState {
       // Merge the current state with the new data object
       const updated_data = { ...data, ...new_data };
 
-      // Remove any future states from the history
-      this.history.splice(this.idx + 1);
-      // Add the updated state to the history
-      this.history.push(updated_data);
-    
- 
-      // Remove any future states from the history
-      this.edit_history.splice(this.idx);
-      // Add the updated state to the history
-      this.edit_history.push({
+      const state = {
         category: category,
         item_uuid: uuid,
         action: action,
         previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
         final_state: { id: uuid, ...updated_data[category][uuid] }, // Store the final state of the item, with the item uuid
+      }
 
-      });
-
-      console.log(this.edit_history[-1], this.edit_history);
-    
-      // Emit the state updated event
-      this.emitStateUpdated(event_name);    
-
-      // Increment the current index
-      this.idx++;
-    
-      // Limit the history length to max_history_length
-      if (this.history.length > this.max_history_length) {
-        this.history.shift();
-        this.idx--;
-      }  
+      // Update state for undo/redo mangagement
+      this.updateStateAndData(updated_data, state);
 
       // Rebuild the indexes
       this.buildIndexes();
@@ -82,11 +61,75 @@ class JSONState {
       // Emit the state updated event
       this.emitStateUpdated(event_name);
     }
-  
+
+
+    addNewItem(object_content, category, object_uuid, event_name = null, action = "create") {
+      // Get the current state data
+      const data = this.history[this.idx];
+    
+      // Create a new data object to store the updated state
+      let new_data = { ...data };
+    
+      // Create a new item object with the provided UUID and data
+      const new_item = { [object_uuid]: object_content };
+    
+      // Add the new item to the specified category in the new_data object
+      if (new_data[category]) {
+        new_data[category] = { ...new_data[category], ...new_item };
+      } else {
+        console.log("This category does not exist");
+      }
+
+      const state = {
+        category: category,
+        item_uuid: object_uuid,
+        action: action,
+        previous_state: null, // There is no previous state for a newly created item
+        final_state: { id: object_uuid, ...object_content }, // Store the final state of the new item, with the item uuid
+      }
+      
+      // Update state for undo/redo mangagement
+      this.updateStateAndData(new_data, state);
+    
+      // Rebuild the indexes
+      this.buildIndexes();
+    
+      // Emit the state updated event
+      this.emitStateUpdated(event_name);
+    }
+
+
+    updateStateAndData(new_data, new_state) {    
+      // Remove any future states from the history
+      this.history.splice(this.idx + 1);
+
+      // Add the updated state to the history
+      this.history.push(new_data);    
+
+      // Remove any future states from the history
+      this.edit_history.splice(this.idx);
+
+      // Add the updated state to the history
+      this.edit_history.push(new_state);
+
+      // Increment the current index
+      this.idx++;
+
+      // Limit the history length to max_history_length
+      if (this.history.length > this.max_history_length) {
+        this.history.shift();
+        this.idx--;
+      }  
+      // console.log(this.edit_history[-1], this.edit_history);
+      // console.log("DATA", this.history[this.idx]);
+
+    }
+
     
 
     getDataWithNewProperty(new_data, category, uuid, property, value) {
       // Check if the category, uuid, and property exist in the current state
+      // and makes isEdited set to true, since it is called for the updateProperties function
       if (
         new_data[category] &&
         new_data[category][uuid] &&
@@ -268,10 +311,8 @@ class JSONState {
       } else {
         return category_items[id];
       }
-
     }
-  
-    
+      
 
     // Gets all colors in types, this is a very customized function that can break
     // if not used with a JSON that has types; { id:{ colors: {name: hex, name2:hex}}}
@@ -355,6 +396,8 @@ class JSONState {
         this.buildIndexes();
         this.emitStateUpdated(event_name);
         const previous_state = this.edit_history[this.idx];
+      console.log("new", this.edit_history[this.idx]);
+
         return previous_state;
       } else {
         console.log("Nothing to undo");
@@ -362,7 +405,7 @@ class JSONState {
     }
   
     redo(event_name=null) {
-      console.log("TEST", this.edit_history);
+      console.log("new", this.edit_history[this.idx]);
 
       if (this.idx < this.history.length - 1) {
         const final_state = this.edit_history[this.idx];

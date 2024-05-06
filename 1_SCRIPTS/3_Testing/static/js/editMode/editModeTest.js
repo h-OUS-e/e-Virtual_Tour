@@ -190,6 +190,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 object.applyState(state.previous_state);
             }
 
+            else if (state.action === "create") {
+                // Delete state.item_uuid
+            }
+
+            else if (state.action === "delete") {
+                // Add state.item_uuid, remove hidden?
+            }
+
+
         }
 
         // Check for shift+Z to undo project state
