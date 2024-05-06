@@ -555,7 +555,7 @@ class ObjectMenu {
       pos_y: position.y.toFixed(3),
       pos_z: position.z.toFixed(3),
       isDeleted: false,
-      isEdited: false,
+      isEdited: true,
       isNew: true,
     
     };

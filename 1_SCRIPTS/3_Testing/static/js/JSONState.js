@@ -396,7 +396,7 @@ class JSONState {
         this.buildIndexes();
         this.emitStateUpdated(event_name);
         const previous_state = this.edit_history[this.idx];
-      console.log("new", this.edit_history[this.idx]);
+        console.log("new", this.edit_history[this.idx]);
 
         return previous_state;
       } else {
