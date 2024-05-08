@@ -8,7 +8,9 @@
             "colors": null,
             "scene_reference": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
             "editable": null,
-            "isDeleted": null
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
 
         "bff75c73-d8e7-4898-bc31-baf2a7055b1a": {
@@ -22,7 +24,9 @@
                 "light": "#DBFFE5"
             },
             "editable": true,
-            "isDeleted": false
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
 
         },
         "7720c93b-7b4c-4d58-99cd-294e48177bbe": {
@@ -37,7 +41,9 @@
                 "light": "#D0F9F2"
             },
             "editable": true,
-            "isDeleted": false
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
                         
         },
         "952c3425-947f-46f7-82f8-3d538df1e8e6": {
@@ -49,7 +55,9 @@
                 "light": "#f9d5de"
             },
             "editable": true,
-            "isDeleted": false
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
 
         },
         "274d87d0-86d9-44e7-b9e1-fdd96c6bbaf0": {
@@ -63,7 +71,9 @@
                 "light": "#f9d5de"
             },
             "editable": false,
-            "isDeleted": false
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "248964b8-0cf7-49f7-8bdf-86500221627c": {
             "name": "transition_node",
@@ -74,7 +84,9 @@
                 "light": "#FB7698"
             },
             "editable": true,
-            "isDeleted": null
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "1e509749-3982-42cd-b338-8e28a3659b70": {
             "name": "popup",
@@ -83,7 +95,11 @@
             "colors": {
                 "dark": "#2dc84d",
                 "light": "#DBFFE5"
-            }
+            },
+            "editable": false,
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "ce6e689f-979d-4e37-a64e-b32cf1f9f109": {
             "name": "project",
@@ -96,7 +112,9 @@
                 "exit_button": "#DBFFE5"
             },
             "editable": false,
-            "isDeleted": null
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
 
 
             
@@ -107,27 +125,42 @@
         "190142d0-b65d-45b5-adca-f1b8a4ba0bd8": {
             "name": "diagnostic",
             "src": "../../static/0_resources/icons/CMYK_Green_Diagnostic_Preventative.png",
-            "alt": ""
+            "alt": "",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "71976965-adfa-41b1-bb6b-65f3cec288e0": {
             "name": "emergency",
             "src": "../../static/0_resources/icons/CMYK_Blue_Emergency.png",
-            "alt": ""
+            "alt": "",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "5c6846ef-cf1f-4972-a744-de0da42514d9": {
             "name": "whitening",
             "src": "../../static/0_resources/icons/CMYK_Blue_Whitening.png",
-            "alt": ""
+            "alt": "",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "1b5d45c4-478f-40b4-8b6f-164923de712a": {
             "name": "patient",
             "src": "../../static/0_resources/icons/CMYK_PopPink_PatientFocused.png",
-            "alt": ""
+            "alt": "",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         },
         "50eb1d5e-21be-4885-b338-671ced0c5aef": {
             "name": "missing",
             "src": "../../static/0_resources/icons/missing.svg",
-            "alt": "Missing"
+            "alt": "Missing",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
         }
     }
 }

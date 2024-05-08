@@ -28,7 +28,7 @@ class JSONState {
       }
     }
 
-    updateProperties(updates, category, uuid, event_name = null, action="edit") {
+    updateProperties(updates, category, uuid, event_name = null, action="edit", update_state=true) {
       // Get the current state data
       const data = this.history[this.idx];
     
@@ -53,7 +53,9 @@ class JSONState {
       }
 
       // Update state for undo/redo mangagement
-      this.updateStateAndData(updated_data, state);
+      if (update_state) {
+        this.updateStateAndData(updated_data, state);
+      }
 
       // Rebuild the indexes
       this.buildIndexes();

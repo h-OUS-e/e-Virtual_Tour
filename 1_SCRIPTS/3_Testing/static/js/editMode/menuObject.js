@@ -281,7 +281,7 @@ class ObjectMenu {
     // Attach change event listener to the input element
     create_btn.addEventListener('click', (event) => {
       let object_content = this.getInputValues();
-      console.log("TEST2", object_content, this.object_class, this.position, this.direction);
+      // console.log("TEST2", object_content, this.object_class, this.position, this.direction);
 
       // Alert if title is empty if it is one of the values
 
@@ -470,7 +470,7 @@ class ObjectMenu {
 
 
   emitEditEvent(edited_property, edited_value, object_class) {
-    let new_event = new CustomEvent('objectEdited', 
+    let new_event = new CustomEvent('editObject', 
     {
         detail: {
             key: edited_property,
@@ -482,15 +482,15 @@ class ObjectMenu {
     scene.dispatchEvent(new_event);  
   }
 
-  emitCreateEvent(object_uuid, object_class) {
-    let new_event = new CustomEvent('objectEdited', 
+  emitCreateEvent(object_uuid, object_class, object_content) {
+    let new_event = new CustomEvent(`createObject`, 
     {
         detail: {
-            uuid: object_uuid,
+            object_uuid: object_uuid,
             object_class: object_class,
+            object_content: object_content,
         },
     });
-        console.log("emit");
     scene.dispatchEvent(new_event);  
   }
 
@@ -499,7 +499,7 @@ class ObjectMenu {
     const JSON_update = [
       {property: edited_property, value: edited_value},
     ]
-    this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id, "objectEdited", "edit");
+    this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id);
 
     // Dispatch event
     // this.emitEditEvent(edited_property, edited_value, object_class);
@@ -516,18 +516,13 @@ class ObjectMenu {
 
 
   handleObjectCreation(object_content, object_class, position, direction=null) {
-    // Break position and direction to x,y,z elements and add to object content
-    // object_content['pos_x'] = position.x.toFixed(3);
-    // object_content['pos_y'] = position.y.toFixed(3);
-    // object_content['pos_z'] = position.z.toFixed(3);
-    // object_content['rot_x'] = direction.x.toFixed(3);
-    // object_content['rot_y'] = direction.y.toFixed(3);
-    // object_content['rot_z'] = direction.z.toFixed(3);
-
+    // Make a new uuid for the newly created object
     const new_object_uuid = uuidv4();
+    const initial_scene_id = this.project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
+
 
     // Prepare content to create new object in object_state
-    const item_content = {
+    const new_object_content = {
       // Add the title and description properties only if object_class is "MediaPlayer"
       ...(object_class === "MediaPlayer"
         ? {
@@ -557,15 +552,11 @@ class ObjectMenu {
       isDeleted: false,
       isEdited: true,
       isNew: true,
-    
+      initial_scene_id: initial_scene_id,
     };
 
-    // Add new item to object_state
-    this.object_state.addNewItem(item_content, this.object_class+"s", new_object_uuid)
-
-
     // Dispatch event
-    // this.emitCreateEvent(object_uuid, object_class, object_content)
+    this.emitCreateEvent(new_object_uuid, object_class, new_object_content);
     
 
   }

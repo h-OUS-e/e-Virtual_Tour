@@ -263,6 +263,7 @@ class TransitionNode {
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
 
+
         return true; // Indicate successful addition to the scene
     }
 
@@ -285,6 +286,10 @@ class TransitionNode {
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         const addedSuccessfully = this.addToScene();
+        // Set visible to true regardless of initial scene
+        const entity = document.getElementById(this.id);
+        entity.setAttribute('visible', true);
+        return addedSuccessfully;
     }
 
 
@@ -372,21 +377,26 @@ class TransitionNode {
         }
 
         action.do = () => {
-            // Exclude 'create' from initial state capture since it doesn't exist yet
-            if (method !== 'create') {
-                action.initialState = this.captureState();
+            try {
+                // Exclude 'create' from initial state capture since it doesn't exist yet
+                if (method !== 'create') {
+                    action.initialState = this.captureState();
+                }
+                // Execute the action
+                const result = this[method](...args);
+                // Capture the final state after the action is performed
+                action.finalState = this.captureState(); // Capture the final state after action
+                // set final id of initial state as the updated id and vice versa for finalstate
+                if (method !== 'create' && method !== 'delete') {
+                    action.initialState.final_id = this.final_id;
+                    action.finalState.final_id = action.initialState.id;
+                }            
+                // Return true (success) if the method does not explicitly return a value
+                return result !== undefined ? result : true;
+            } catch (error) {
+                console.error(`Error executing action '${method}':`, error);
+                return false; // Return false to indicate failure
             }
-            // Execute the action
-            const result = this[method](...args);
-            // Capture the final state after the action is performed
-            action.finalState = this.captureState(); // Capture the final state after action
-            // set final id of initial state as the updated id and vice versa for finalstate
-            if (method !== 'create' && method !== 'delete') {
-                action.initialState.final_id = this.final_id;
-                action.finalState.final_id = action.initialState.id;
-            }            
-            // Return true (success) if the method does not explicitly return a value
-            return result !== undefined ? result : true;
         };
 
         action.undo = () => {

@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let new_position = { x: 0, y: 0, z:0};
     let new_direction = null;
 
-    const action_manager = new ActionManager();
+    // const action_manager = new ActionManager();
 
 
 
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (isDragging && selected_object) {
 
                 const action = selected_object.getAction('moveTo', new_position, new_direction);
-                let action_success = action_manager.doAction(action);
+                let action_success = action.do();
                 
                 // Update JSON if action is done
                 if (action_success) {
@@ -183,15 +183,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check for Ctrl+Z or Cmd+Z to undo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
             let state = object_state.undo();
-            if (state.action === "edit") {
+            let object_content;
+            try {
                 const object_entity = document.getElementById(state.item_uuid);
-                const object_content = getCustomAttributes(object_entity);
-                let object = new TransitionNode(state.item_uuid, object_content);
+                object_content = getCustomAttributes(object_entity);
+            } catch (e) {
+                object_content = state.previous_state
+            };
+            let object = new TransitionNode(state.item_uuid, object_content);
+
+            if (state.action === "edit") { 
+                // Update object attributes               
                 object.applyState(state.previous_state);
             }
 
             else if (state.action === "create") {
-                // Delete state.item_uuid
+                // Delete element
+                object.delete();
+                // Set isDeleted to True in object_JSON
+                object_state.updateProperties([{isDeleted: true}], state.category, state.item_uuid, null, "edit", false);
             }
 
             else if (state.action === "delete") {
@@ -209,12 +219,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check for ctrl+Y or cmd+y to redo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
             let state = object_state.redo();
-            if (state.action === "edit") {
+            let object_content;
+
+            try {
                 const object_entity = document.getElementById(state.item_uuid);
                 const object_content = getCustomAttributes(object_entity);
-                let object = new TransitionNode(state.item_uuid, object_content);
+            } catch (e) {
+                const object_content = state.final_state
+            };
+            let object = new TransitionNode(state.item_uuid, object_content);
+            
+            if (state.action === "edit") {                
                 object.applyState(state.final_state);
             }
+            else if (state.action === "create") {
+                // Delete state.item_uuid
+                // Delete element
+                object.create();
+                // Set isDeleted to True in object_JSON
+                object_state.updateProperties([{isDeleted: false}], state.category, state.item_uuid, null, "edit", false);
+
+            }
+
+            else if (state.action === "delete") {
+                // Add state.item_uuid, remove hidden?
+            }
+
         }
         
         // Check for shift+Y to redo project state
@@ -249,6 +279,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     /*******************************************************************************
     * 4. JSON UPDATES LISTINERS
     *******************************************************************************/ 
+    // Handling object creation
+    scene.addEventListener("createObject", function (event) {
+        const { object_uuid, object_class, object_content } = event.detail;
+        // Update object_state
+      console.log("ID", object_uuid);
+        switch (object_class) {
+          case "TransitionNode":
+            // Create a transition node object
+            // const object_content = object_state.getItem(object_class + "s", object_entity);
+            let object = new TransitionNode(object_uuid, object_content);
+            let created_successfully = object.create();
+
+            // If element was created successfully, add it to state
+            if (created_successfully) {
+                console.log("created_successfully", created_successfully);
+                object_state.addNewItem(object_content, object_class+"s", object_uuid)
+            }
+
+            break;
+          case "MediaPlayer":
+            // Create a mediaplayer object
+            break;
+          default:
+            console.warn(`Unsupported object class: ${object_class}`);
+        }
+      });
 
 
 
