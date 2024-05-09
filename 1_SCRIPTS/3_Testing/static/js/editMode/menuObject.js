@@ -86,6 +86,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*******************************************************************************
     * 4. EVENT LISTENER JSON UPDATES
   *******************************************************************************/ 
+  // Update object JSON
+  document.addEventListener("updateState", function(event) {
+    object_menu.updateJSON(project_state, object_state);
+  });
 
 
 
@@ -262,7 +266,6 @@ class ObjectMenu {
     // Attach change event listener to the input element
     input_element.addEventListener('change', (event) => {
       const selected_value = event.target.value;
-      // console.log("TEST2", property, selected_value);
 
       // Update the corresponding property in the object
 
@@ -293,7 +296,6 @@ class ObjectMenu {
 
     // Attach change event listener to the input element
     delete_btn.addEventListener('click', (event) => {
-      // console.log("TEST2", this.object_class, object_uuid);
       this.handleObjectDeletion(object_uuid, this.object_class);
     });
   }
@@ -309,7 +311,6 @@ class ObjectMenu {
     // Attach change event listener to the input element
     create_btn.addEventListener('click', (event) => {
       let object_content = this.getInputValues();
-      console.log("TEST", object_content);
       // Alert if title is empty if it is one of the values
 
       // Alert if another object exists that has the same new_scene_id
@@ -376,6 +377,8 @@ class ObjectMenu {
     if (menu_type === "edit") {
       objectJSON = this.getObjectJSON();
       default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
+      console.log("TEST2", objectJSON, selected_object_id, default_values);
+
       this.addDeleteBtn(selected_object_id);
 
       // ADD SHARED OPTIONS (*only in edit mode)
@@ -412,6 +415,7 @@ class ObjectMenu {
   
   filterIcons(type_uuid) {
     const selected_object = this.types[type_uuid];
+    console.log("TEST", selected_object, type_uuid);
     const filtered_icons = this.filterData(selected_object, "icons", this.icons);
     return filtered_icons;
   }

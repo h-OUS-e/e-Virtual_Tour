@@ -103,6 +103,7 @@ class JSONState {
         "object_content": object_content,
       }
       this.emitStateUpdated(event_name, content);
+      this.emitStateUpdated('updateState');      
     }
 
 
