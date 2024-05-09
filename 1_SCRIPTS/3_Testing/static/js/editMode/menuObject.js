@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   scene.addEventListener('mouseClickedEditMode', function (event) {   
     // if (!isEditMode) return;     
     if (selected_object_class) {
-      console.log(selected_object_class, "TEST");
         // Show creation menu manager related to selected object class            
         object_menu.showCreateMenu(event.detail.x, event.detail.y, event.detail.intersection_pt, event.detail.direction, selected_object_class);
 
