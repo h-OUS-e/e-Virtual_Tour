@@ -262,11 +262,11 @@ class ObjectMenu {
     delete_btn.textContent = "Delete";
     this.menu_delete_container.appendChild(delete_btn);
 
+
     // Attach change event listener to the input element
     delete_btn.addEventListener('click', (event) => {
       // console.log("TEST2", this.object_class, object_uuid);
-
-      // Update the corresponding property in the object
+      this.handleObjectDeletion(object_uuid, this.object_class);
     });
   }
 
@@ -352,7 +352,7 @@ class ObjectMenu {
     if (menu_type === "edit") {
       objectJSON = this.getObjectJSON();
       default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
-      this.addDeleteBtn();
+      this.addDeleteBtn(selected_object_id);
     }
 
     if (menu_type === "create") {
@@ -494,6 +494,17 @@ class ObjectMenu {
     scene.dispatchEvent(new_event);  
   }
 
+  emitDeleteEvent(object_uuid, object_class) {
+    let new_event = new CustomEvent(`deleteObject`, 
+    {
+        detail: {
+            object_uuid: object_uuid,
+            object_class: object_class,
+        },
+    });
+    scene.dispatchEvent(new_event);  
+  }
+
   handleObjectEdits(edited_property, edited_value, object_class, object_id) {
     // Update object state
     const JSON_update = [
@@ -503,15 +514,12 @@ class ObjectMenu {
 
     // Dispatch event
     // this.emitEditEvent(edited_property, edited_value, object_class);
-
   }
 
-  handleObjectDeletion() {
-    
-    // Update object state
 
+  handleObjectDeletion(object_uuid, object_class) {    
     // Dispatch event
-
+    this.emitDeleteEvent(object_uuid, object_class)
   }
 
 
@@ -560,10 +568,6 @@ class ObjectMenu {
     
 
   }
-
-
-
-
 }
 
 

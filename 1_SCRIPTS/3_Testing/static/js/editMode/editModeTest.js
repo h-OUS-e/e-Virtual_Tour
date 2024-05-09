@@ -6,6 +6,12 @@ import { JSON_statePromise } from '../JSONSetup.js';
 import { MediaPlayer } from '../objects/mediaPlayer.js';
 import { TransitionNode, emitTransitioning } from '../objects/transitionNodes.js';
 
+// Map object classes to their corresponding constructors
+const objectClasses = {
+    TransitionNode,
+    MediaPlayer,
+};
+
 
 
 /*********************************************************************
@@ -35,6 +41,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isDragging = false;
     let new_position = { x: 0, y: 0, z:0};
     let new_direction = null;
+
+    
 
     // const action_manager = new ActionManager();
 
@@ -147,15 +155,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         {property: "rot_z", value: new_position.z.toFixed(3)},
                     ]
                     object_state.updateProperties(JSON_updates,`${selected_object.name +"s"}`, selected_object.id, null, "edit");
-                    // Update position
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_x", new_position.x.toFixed(3));
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_y", new_position.y.toFixed(3));
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "pos_z", new_position.z.toFixed(3));
-
-                    // // Update rotation if valid
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_x",  new_position.x.toFixed(3));
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_y",  new_position.y.toFixed(3));
-                    // object_state.updateProperty(selected_object.name +"s", selected_object.id, "rot_z",  new_position.z.toFixed(3));
 
                 }
 
@@ -180,80 +179,65 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Undo/redo state
     document.addEventListener('keydown', function(event) {
+        let object_content;
+        let object_entity;
+
         // Check for Ctrl+Z or Cmd+Z to undo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-            let state = object_state.undo();
-            let object_content;
-            try {
-                const object_entity = document.getElementById(state.item_uuid);
-                object_content = getCustomAttributes(object_entity);
-            } catch (e) {
-                object_content = state.previous_state
-            };
-            let object = new TransitionNode(state.item_uuid, object_content);
-
+            const state = object_state.undo();  
+            let object_content = state.previous_state;
+            if (state.previous_state === null) {
+                object_content = state.final_state;
+            }
+            const ObjectConstructor = objectClasses[state.category.slice(0, -1)];
+            const object = new ObjectConstructor(state.item_uuid, object_content);
+            
             if (state.action === "edit") { 
                 // Update object attributes               
-                object.applyState(state.previous_state);
+                object.applyState(object_content);
             }
 
-            else if (state.action === "create") {
-                // Delete element
-                object.delete();
-                // Set isDeleted to True in object_JSON
-                object_state.updateProperties([{isDeleted: true}], state.category, state.item_uuid, null, "edit", false);
+            else if (state.action === "create") {   
+                // Delete element from scene if previous action was "create"
+                object.delete();  
             }
 
             else if (state.action === "delete") {
-                // Add state.item_uuid, remove hidden?
+                // Create element scene if previous action was "delete"
+                object.create();
             }
-
-
-        }
-
-        // Check for shift+Z to undo project state
-        if ((event.shiftKey || event.metaKey) && event.key === 'z') {
-
-        }
+        }        
 
         // Check for ctrl+Y or cmd+y to redo object state
         if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
-            let state = object_state.redo();
-            let object_content;
-
-            try {
-                const object_entity = document.getElementById(state.item_uuid);
-                const object_content = getCustomAttributes(object_entity);
-            } catch (e) {
-                const object_content = state.final_state
-            };
-            let object = new TransitionNode(state.item_uuid, object_content);
+            const state = object_state.redo();
+            const object_content = state.final_state;
+            const ObjectConstructor = objectClasses[state.category.slice(0, -1)];
+            const object = new ObjectConstructor(state.item_uuid, object_content);
             
             if (state.action === "edit") {                
-                object.applyState(state.final_state);
+                object.applyState(object_content);
             }
-            else if (state.action === "create") {
-                // Delete state.item_uuid
-                // Delete element
-                object.create();
-                // Set isDeleted to True in object_JSON
-                object_state.updateProperties([{isDeleted: false}], state.category, state.item_uuid, null, "edit", false);
 
+            else if (state.action === "create") {
+                object.create();
             }
 
             else if (state.action === "delete") {
-                // Add state.item_uuid, remove hidden?
+                object.delete();  
             }
+        }
 
+
+        // Check for shift+Z to undo project state
+        if ((event.shiftKey || event.metaKey) && event.key === 'z') {
         }
         
         // Check for shift+Y to redo project state
-        if ((event.shiftKey || event.metaKey) && event.key === 'y') {
-            
-
+        if ((event.shiftKey || event.metaKey) && event.key === 'y') {           
         }
 
-        // prevent default browser behavior (not workign now)
+        // prevent default browser behavior (not working now)
         if ((event.altKey)) {
             event.preventDefault();
         }
@@ -282,28 +266,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handling object creation
     scene.addEventListener("createObject", function (event) {
         const { object_uuid, object_class, object_content } = event.detail;
-        // Update object_state
-      console.log("ID", object_uuid);
-        switch (object_class) {
-          case "TransitionNode":
-            // Create a transition node object
-            // const object_content = object_state.getItem(object_class + "s", object_entity);
-            let object = new TransitionNode(object_uuid, object_content);
-            let created_successfully = object.create();
 
-            // If element was created successfully, add it to state
+        // Map object classes to their corresponding constructors
+        const objectClasses = {
+            TransitionNode,
+            MediaPlayer,
+        };
+
+        // Get the constructor for the object class
+        const ObjectConstructor = objectClasses[object_class];
+
+        if (ObjectConstructor) {
+
+            // Create an instance of the object using the constructor
+            const object = new ObjectConstructor(object_uuid, object_content);
+
+            // Delete the object
+            const created_successfully = object.create();
+
+            // Delete item from JSON states if deletion was successful
             if (created_successfully) {
-                console.log("created_successfully", created_successfully);
-                object_state.addNewItem(object_content, object_class+"s", object_uuid)
+                object_state.addNewItem(object_content, object_class+"s", object_uuid);
             }
-
-            break;
-          case "MediaPlayer":
-            // Create a mediaplayer object
-            break;
-          default:
+        } else {
             console.warn(`Unsupported object class: ${object_class}`);
         }
+    });
+
+
+    // Handling object deletion
+    scene.addEventListener("deleteObject", function (event) {
+        const { object_uuid, object_class } = event.detail;
+        // Check if entity exists
+        const entity = document.getElementById(object_uuid);
+        if (entity) {
+            // Delete entity
+            entity.parentNode.removeChild(entity);
+            object_state.deleteItem(object_class + "s", object_uuid);
+
+        } else {
+            console.warn(`Unsupported object class: ${object_class}`);
+        }
+        });
+
+
+      // Handling object creation
+    scene.addEventListener("editObject", function (event) {
+        
       });
 
 
@@ -387,7 +396,6 @@ function menuBtnSelector(btn_class) {
 
         // Add event listener to remove btn selection on menu exit
         document.addEventListener('menuClosed', function(event) {
-            console.log("TEST", event);
             const menu_id = event.detail.menu_id;
 
             if (!menu_id) {

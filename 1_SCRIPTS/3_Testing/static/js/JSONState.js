@@ -101,6 +101,51 @@ class JSONState {
     }
 
 
+    deleteItem(category, item_uuid) {
+      // Get the current state data
+      const data = this.history[this.idx];
+
+    
+      // Create a new data object to store the updated state
+      let new_data = { ...data };
+    
+      // Check if the category exists in the new_data object
+      if (new_data[category]) {
+        // Check if the item exists in the category
+        if (new_data[category][item_uuid]) {
+          // Create a new item object with isDeleted set to true and all other properties set to null
+          const deleted_item = Object.keys(new_data[category][item_uuid]).reduce((obj, key) => {
+            obj[key] = key === 'isDeleted' ? true : null;
+            return obj;
+          }, {});
+              
+          // Update the item in the new_data object
+          new_data[category] = { ...new_data[category], ...{deleted_item} };
+
+    
+          // Update the state and data
+          this.updateStateAndData(new_data, {
+            category: category,
+            item_uuid: item_uuid,
+            action: 'delete',
+            previous_state: { id: item_uuid, ...data[category][item_uuid] },
+            final_state: { id: item_uuid, ...deleted_item },
+          });
+    
+          // Rebuild the indexes
+          this.buildIndexes();
+    
+          // Emit the state updated event
+          this.emitStateUpdated();
+        } else {
+          console.log("Item does not exist in the category");
+        }
+      } else {
+        console.log("This category does not exist");
+      }
+    }
+
+
     updateStateAndData(new_data, new_state) {    
       // Remove any future states from the history
       this.history.splice(this.idx + 1);
@@ -383,7 +428,6 @@ class JSONState {
         .filter(obj => obj[property_to_check] === property_value)
         .map(obj => obj[property_to_get]);
     
-        console.log("TEST", filteredObjects)
       const uniqueProperties = [...new Set(filteredObjects)];
     
       return uniqueProperties;
@@ -397,10 +441,10 @@ class JSONState {
         this.idx--;
         this.buildIndexes();
         this.emitStateUpdated(event_name);
-        const previous_state = this.edit_history[this.idx];
+        const state = this.edit_history[this.idx];
         console.log("new", this.edit_history[this.idx]);
 
-        return previous_state;
+        return state;
       } else {
         console.log("Nothing to undo");
       }
@@ -410,11 +454,11 @@ class JSONState {
       console.log("new", this.edit_history[this.idx]);
 
       if (this.idx < this.history.length - 1) {
-        const final_state = this.edit_history[this.idx];
+        const state = this.edit_history[this.idx];
         this.idx++;
         this.buildIndexes();
         this.emitStateUpdated(event_name);
-        return final_state;
+        return state;
       } else {
         console.log("Nothing to redo");
       }
