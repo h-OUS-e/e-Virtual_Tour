@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   // HTML REFERENCES
 
-
  
 
   /*********************************************************************
@@ -37,6 +36,24 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   objectBtnSelector('.objectClassBtn', function(object_class) {
     selected_object_class = object_class;
   });
+
+
+  // Handling left click
+  document.addEventListener('click', function(event) {
+    if (object_menu.visible) {
+      const menu = document.getElementById(object_menu.menu_id);
+
+      // Closing menu if clicking outside of its content
+      if (!menu.contains(event.target)) {
+        object_menu.closeMenu();
+      }
+
+      // Closing menu if exit button is clicked
+      if (event.target.classList.contains('exitBtn')) {
+        object_menu.closeMenu();
+      }
+    }
+  }, true); // Using capture phase to catch the event early
 
 
   // Handling right click, right clicking object shows its corresponding editMenu
