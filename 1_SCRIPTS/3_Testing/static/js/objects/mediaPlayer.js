@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Update object visuals when an object is created
     document.addEventListener('visualizeObject', function(event) {
-        console.log("TEdsadasdasdST", event.detail);
 
         if (event.detail.category === CATEGORY) {
             const entity = document.getElementById(event.detail.object_uuid);
@@ -261,9 +260,9 @@ function setIcons(mediaPlayer_JSON, icons) {
 
 function setIcon(mediaPlayer_item, entity, icons) {
     const icon_url = icons[mediaPlayer_item.icon_uuid].src;
-    console.log(icon_url);
-    const iconEntity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
-    iconEntity.setAttribute('material', 'src', icon_url);
+    const icon_entity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
+
+    icon_entity.setAttribute('material', 'src', icon_url);
 }
 
 async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {
@@ -363,13 +362,10 @@ class MediaPlayer {
 
         // Getting rotation, if not defined, we get it from direction
         if (this.rot_x !== undefined && this.rot_x !== null) {
-            entity.setAttribute('rotation', `${this.rot_x} ${this.rot_y} ${this.rot_z}`); // should be dynamic instead?
-            console.log("TTTTEST", `${this.rot_x} ${this.rot_y} ${this.rot_z}`);
-        
+            entity.setAttribute('rotation', `${this.rot_x} ${this.rot_y} ${this.rot_z}`); // should be dynamic instead?        
         }
         else {
             entity.setAttribute('rotation', this.getRotationFromDirection()); // should be dynamic instead?
-
         }
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
@@ -384,24 +380,24 @@ class MediaPlayer {
         else { d = this.direction;
         }
         // Get the right angle to rotate the object, which is relative to the camera position
-        let originalDirection = new THREE.Vector3(0, 0, 1);
-        const crossProduct = new THREE.Vector3().crossVectors(originalDirection, d);
-        let dot = originalDirection.dot(d);        
+        const origina_direction = new THREE.Vector3(0, 0, 1);
+        const cross_product = new THREE.Vector3().crossVectors(origina_direction, d);
+        const dot = origina_direction.dot(d);        
         // Calculate the rotation in radians
-        var angleRadians = Math.acos(dot);
-        if (crossProduct.y < 0) {
-            angleRadians = -angleRadians;
+        let angle_radians = Math.acos(dot);
+        if (cross_product.y < 0) {
+            angle_radians = -angle_radians;
         }
          // Convert radians to degrees and adjust for A-Frame's rotation system
-        var angleDegrees = angleRadians * (180 / Math.PI); // +90 to align with A-Frame's coordinate system
+        var angle_degrees = angle_radians * (180 / Math.PI); // +90 to align with A-Frame's coordinate system
 
         if (negative)
         {
-            return {x: 0, y: -angleDegrees, z: 0}
+            return {x: 0, y: -angle_degrees, z: 0}
         }
         else
         {
-            return {x: 0, y: angleDegrees, z: 0}
+            return {x: 0, y: angle_degrees, z: 0}
         }
 
     }

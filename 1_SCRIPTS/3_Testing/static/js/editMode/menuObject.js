@@ -527,6 +527,9 @@ class ObjectMenu {
     const new_object_uuid = uuidv4();
     const initial_scene_id = this.project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
 
+    // Change direction to rotation
+    const rotation = this.getRotationFromDirection(false, direction)
+    
 
     // Prepare content to create new object in object_state
     const new_object_content = {
@@ -538,9 +541,9 @@ class ObjectMenu {
             body: null,
             type_uuid: object_content.type_uuid,
             icon_uuid: object_content.icon_uuid,
-            rot_x: direction.x.toFixed(3),
-            rot_y: direction.y.toFixed(3),
-            rot_z: direction.z.toFixed(3),
+            rot_x: rotation.x.toFixed(3),
+            rot_y: rotation.y.toFixed(3),
+            rot_z: rotation.z.toFixed(3),
           }
         : {}),
   
@@ -565,6 +568,31 @@ class ObjectMenu {
     // Dispatch event
     this.emitCreateEvent(new_object_uuid, object_class, new_object_content);
     
+
+  }
+
+  getRotationFromDirection(negative, direction) {
+
+    // Get the right angle to rotate the object, which is relative to the camera position
+    const origina_direction = new THREE.Vector3(0, 0, 1);
+    const cross_product = new THREE.Vector3().crossVectors(origina_direction, direction);
+    const dot = origina_direction.dot(direction);        
+    // Calculate the rotation in radians
+    let angle_radians = Math.acos(dot);
+    if (cross_product.y < 0) {
+      angle_radians = -angle_radians;
+    }
+     // Convert radians to degrees and adjust for A-Frame's rotation system
+    const angle_degrees = angle_radians * (180 / Math.PI); // +90 to align with A-Frame's coordinate system
+
+    if (negative)
+      {
+          return {x: 0, y: -angle_degrees, z: 0}
+      }
+      else
+      {
+          return {x: 0, y: angle_degrees, z: 0}
+      }
 
   }
 }
