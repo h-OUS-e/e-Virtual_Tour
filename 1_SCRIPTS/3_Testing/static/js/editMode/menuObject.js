@@ -128,6 +128,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
 
+  /*******************************************************************************
+  * 6. EXTERIOR FUNCTIONS and CLASSES
+  *******************************************************************************/ 
+
 class ObjectMenu { 
   constructor(project_state, object_state) {
     this.object_state = object_state;
@@ -216,6 +220,13 @@ class ObjectMenu {
     const list_item = document.createElement('li');
     list_item.setAttribute('class', "flexRow");
 
+    // filter JSON data if provided
+    if (filter) {
+      JSON_data = Object.fromEntries(
+        Object.entries(JSON_data).filter(([key, value]) => value.class === filter)
+      );
+    }
+
 
     // Create the label
     const label_element = document.createElement('label');
@@ -228,24 +239,24 @@ class ObjectMenu {
 
     // Handle dropdown
     if (input_type === 'select') {
-      input_element = document.createElement('select');
-
-      if (filter) {
-        JSON_data = Object.fromEntries(
-          Object.entries(JSON_data).filter(([key, value]) => value.class === filter)
-        );
-      }
+      input_element = document.createElement('select');     
 
       this.populateJSONDropdown(input_element, JSON_data, "name", default_value);   
     } 
 
     // Handle other input types
-    else {
+    else if (input_type === 'text'){
       input_element = document.createElement('input');
-      input_element.setAttribute('type', input_type);
+      input_element.setAttribute('type', 'text');
         if (default_value) {
           input_element.setAttribute('value', default_value);
         }      
+    }
+
+    else if (input_type === null && default_value) {
+      input_element = document.createElement('p');
+      input_element.textContent = JSON_data[default_value]['name'];
+
     }
 
     // Attach change event listener to the input element
@@ -349,12 +360,9 @@ class ObjectMenu {
   // Populate menu with custom optiosn for 'create' vs 'edit' and different object classes
   populateMenu(menu_type, selected_object_id=null) {
     let objectJSON = null;
-
-
     let types = Object.fromEntries(
       Object.entries(this.types).filter(([key, value]) => value.class === this.object_class),
     );
-
 
     // Define default values of inputs for edit menu
     let default_values = {
@@ -369,16 +377,20 @@ class ObjectMenu {
       objectJSON = this.getObjectJSON();
       default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
       this.addDeleteBtn(selected_object_id);
+
+      // ADD SHARED OPTIONS (*only in edit mode)
+      this.addMenuItem("Current Scene ", "select", "scene_id", this.scenes, default_values.scene_id, 'scene_id');
     }
 
     if (menu_type === "create") {
       this.addCreateBtn()
+      // ADD SHARED OPTIONS (*only in edit mode)
+      this.addMenuItem("Current Scene ", null, "scene_id", this.scenes, default_values.scene_id, 'scene_id');
     }
 
-    // POPULATE SHARED OPTIONS
-    this.addMenuItem("Current Scene ", "select", "scene_id", this.scenes, default_values.scene_id, 'scene_id');
+    
 
-    // POPULATE SPECEFIC OPTIONS
+    // ADD SPECEFIC OPTIONS
     if (this.object_class === "TransitionNode") {
       this.addMenuItem("New Scene ", "select", "new_scene_id", this.scenes, default_values.new_scene_id, 'new_scene_id');      
     }
