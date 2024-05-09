@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    // Read transition nodes and load them to scene
     await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);       
     // Set initial colors of transition nodes
-    setTransitionNodeColor(dark_color, light_color);
+    resetVisuals(dark_color, light_color);
 
 
     /*********************************************************************
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Reset colors if new transition node colors selected
     scene.addEventListener("transitionNodesColorChange", function() {
-        setTransitionNodeColor(dark_color, light_color);
+        resetVisuals(dark_color, light_color);
     });
 
     //listen to minimapClick event
@@ -149,13 +149,23 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             light_color = transitionNode_type.colors.light;
 
             // Update colors of all mediaplayer objects
-            setTransitionNodeColor(dark_color, light_color);
+            resetVisuals(dark_color, light_color);
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);
         }
-
- 
+        
     });
+
+    // Update object visuals when an object is created
+    document.addEventListener('visualizeObject', function(event) {
+        if (event.detail.category === CATEGORY) {
+            const entity = document.getElementById(event.detail.object_uuid);
+            setVisualsToEntity(entity, dark_color, light_color);
+        }
+    });
+
+    
+
 });
 
 
@@ -173,14 +183,19 @@ function emitTransitioning(new_scene_id){
     scene.dispatchEvent(transitioning);
 }
 
-function setTransitionNodeColor(dark_color, light_color){
+function resetVisuals(dark_color, light_color){
     let transition_nodes = document.getElementsByClassName(MAIN_CLASS);
     for (let i = 0; i < transition_nodes.length; i++) {
-        let icon = transition_nodes[i].querySelector('[mixin=' + MIXIN_ICON + ']')
-        icon.setAttribute('material', 'color', dark_color);
-        let glow = transition_nodes[i].querySelector('[mixin=' + MIXIN_GLOW + ']')
-        glow.setAttribute('material', 'color', light_color);
+        const entity = transition_nodes[i];
+        setVisualsToEntity(entity, dark_color, light_color);
     }
+}
+
+function setVisualsToEntity(entity, dark_color, light_color) {
+    let icon = entity.querySelector('[mixin=' + MIXIN_ICON + ']')
+        icon.setAttribute('material', 'color', dark_color);
+        let glow = entity.querySelector('[mixin=' + MIXIN_GLOW + ']')
+        glow.setAttribute('material', 'color', light_color);
 }
 
 
@@ -286,6 +301,7 @@ class TransitionNode {
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         const addedSuccessfully = this.addToScene();
+
         // Set visible to true regardless of initial scene
         const entity = document.getElementById(this.id);
         entity.setAttribute('visible', true);
@@ -305,8 +321,9 @@ class TransitionNode {
         this.deleteClone();
         const entity = document.getElementById(this.id);
 
-        // unGhost original entity if was ghosted
+        // unghost original entity if was ghosted
         entity.setAttribute('class', this.name);
+   
 
         if (entity) {
             entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
@@ -319,6 +336,8 @@ class TransitionNode {
         this.pos_y = new_position.y;
         this.pos_z = new_position.z;
         this.updateScenePosition(); // Reflect changes in the scene
+
+        return true;
     }
 
     // METHOD TO SHOW THE OBJECT MOVING WITHOUT UPDATING ACTUAL OBJECT TO AVOID STATE CHANGE
@@ -457,7 +476,7 @@ class TransitionNode {
     updateScene(updates) {
 
         // Find the corresponding entity in the A-Frame scene
-        const entity = document.getElementById(this.final_id);
+        const entity = document.getElementById(this.id);
         if (!entity) {
             console.error('Entity not found');
             return;

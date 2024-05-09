@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   scene.addEventListener('mouseClickedEditMode', function (event) {   
     // if (!isEditMode) return;     
     if (selected_object_class) {
+      console.log(selected_object_class, "TEST");
         // Show creation menu manager related to selected object class            
         object_menu.showCreateMenu(event.detail.x, event.detail.y, event.detail.intersection_pt, event.detail.direction, selected_object_class);
 
@@ -281,8 +282,7 @@ class ObjectMenu {
     // Attach change event listener to the input element
     create_btn.addEventListener('click', (event) => {
       let object_content = this.getInputValues();
-      // console.log("TEST2", object_content, this.object_class, this.position, this.direction);
-
+      console.log("TEST", object_content);
       // Alert if title is empty if it is one of the values
 
       // Alert if another object exists that has the same new_scene_id
@@ -360,15 +360,15 @@ class ObjectMenu {
     }
 
     // POPULATE SHARED OPTIONS
-    this.addMenuItem("Current Scene ", "select", "scene_id_input", this.scenes, default_values.scene_id, 'scene_id');
+    this.addMenuItem("Current Scene ", "select", "scene_id", this.scenes, default_values.scene_id, 'scene_id');
 
     // POPULATE SPECEFIC OPTIONS
     if (this.object_class === "TransitionNode") {
-      this.addMenuItem("New Scene ", "select", "new_scene_id_input", this.scenes, default_values.new_scene_id, 'new_scene_id');      
+      this.addMenuItem("New Scene ", "select", "new_scene_id", this.scenes, default_values.new_scene_id, 'new_scene_id');      
     }
 
     if (this.object_class === "MediaPlayer" ) {
-      this.addMenuItem("Title ", "text", "title_input", this.scenes, default_values.title, 'title');
+      this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title, 'title');
       this.addTypeAndIconMenu(default_values, types);           
     }
   }
@@ -391,12 +391,12 @@ class ObjectMenu {
   // Adds a type dropdown and an icon dropdown that listens and updates if type selection changes
   addTypeAndIconMenu(default_values, filtered_types) {
     // Add type menu
-    const type_input_element = this.addMenuItem("Type ", "select", "type_input", filtered_types, default_values.type_uuid, 'type_uuid');
+    const type_input_element = this.addMenuItem("Type ", "select", "type_uuid", filtered_types, default_values.type_uuid, 'type_uuid');
 
     // Filter the icons based on the selected type's icons array      
     let filtered_icons = this.filterIcons(default_values.type_uuid);
     // Add Icon Selector and make it dependant on type menu
-    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_input", filtered_icons, default_values.icon_uuid, 'icon_uuid');
+    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_uuid", filtered_icons, default_values.icon_uuid, 'icon_uuid');
     // Listen to changes in the types menu and update icon dropdown accordingly
     type_input_element.addEventListener('change', (e) => {
       default_values.type_uuid = e.target.value;

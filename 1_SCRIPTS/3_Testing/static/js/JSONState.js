@@ -97,7 +97,12 @@ class JSONState {
       this.buildIndexes();
     
       // Emit the state updated event
-      this.emitStateUpdated(event_name);
+      const content = {
+        "category": category,
+        "object_uuid": object_uuid,
+        "object_content": object_content,
+      }
+      this.emitStateUpdated(event_name, content);
     }
 
 
@@ -243,20 +248,19 @@ class JSONState {
       if (event_name === "useCategory") {
         event_name = `${category}Updated`;
       }
-      this.emitStateUpdated(event_name, start_time);
+      this.emitStateUpdated(event_name, {"start_time": start_time});
 
     }
 
   
-    emitStateUpdated(event_name, start_time) {
+    emitStateUpdated(event_name, content) {
       let custom_event_name = "stateUpdated";
+
       if (event_name) {
         custom_event_name = event_name;
       }
       const event = new CustomEvent(custom_event_name, {
-        detail: {
-          start_time: start_time,
-        }
+        detail: content
       });
       document.dispatchEvent(event);
       console.log("Emitted event:", custom_event_name);

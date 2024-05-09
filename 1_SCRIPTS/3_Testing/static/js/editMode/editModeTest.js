@@ -103,9 +103,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!isEditMode) return;  
         isDragging = true;
 
-        if (event.detail.class === 'TransitionNode') {
+        // Get the constructor for the object class
+        const ObjectConstructor = objectClasses[event.detail.class];
+
+        if (ObjectConstructor) {
+            // Create an instance of the object using the constructor
             const selected_object_content = getCustomAttributes(document.getElementById(event.detail.id));
-            selected_object = new TransitionNode(event.detail.id, selected_object_content);
+            selected_object = new ObjectConstructor(event.detail.id, selected_object_content);            
         }
     });
     
@@ -121,11 +125,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (selected_object) {
 
             // Update startPosition for the next move event
-            new_position.x = event.detail.intersection_pt.x;
-            new_position.y = event.detail.intersection_pt.y;
-            new_position.z = event.detail.intersection_pt.z;
-            new_direction = event.detail.direction;
-            
+            new_position = event.detail.intersection_pt;
+            new_direction = event.detail.direction;            
             
             // Move a clone of the object for smooth transitioning
             // Has to be a clone to be able to undo move to original position
@@ -141,23 +142,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.button === 0) { // Left mouse button
             if (isDragging && selected_object) {
 
-                const action = selected_object.getAction('moveTo', new_position, new_direction);
-                let action_success = action.do();
-                
-                // Update JSON if action is done
-                if (action_success) {
-                    const JSON_updates = [
+                const result = selected_object.moveTo(new_position, new_direction);
+                let JSON_updates;
+
+                if (selected_object.name == "TransitionNode") {
+                    JSON_updates = [
                         {property: "pos_x", value: new_position.x.toFixed(3)},
                         {property: "pos_y", value: new_position.y.toFixed(3)},
                         {property: "pos_z", value: new_position.z.toFixed(3)},
-                        {property: "rot_x", value: new_position.x.toFixed(3)},
-                        {property: "rot_y", value: new_position.y.toFixed(3)},
-                        {property: "rot_z", value: new_position.z.toFixed(3)},
-                    ]
-                    object_state.updateProperties(JSON_updates,`${selected_object.name +"s"}`, selected_object.id, null, "edit");
+                    ]                    
+                } else if (selected_object.name == "MediaPlayer") {
 
+                    const rotation = result;                
+                    if (rotation) {
+                        JSON_updates = [
+                            {property: "pos_x", value: new_position.x.toFixed(3)},
+                            {property: "pos_y", value: new_position.y.toFixed(3)},
+                            {property: "pos_z", value: new_position.z.toFixed(3)},
+                            {property: "rot_x", value: rotation.x.toFixed(3)}, // BUG SHOULD BE ROTATION
+                            {property: "rot_y", value: rotation.y.toFixed(3)},
+                            {property: "rot_z", value: rotation.z.toFixed(3)},
+                        ]
+                    }
                 }
 
+                                    // Update JSON if action is done
+
+                object_state.updateProperties(JSON_updates,`${selected_object.name +"s"}`, selected_object.id, null, "edit");
+              
             }
 
             // Reset variables
@@ -179,11 +191,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Undo/redo state
     document.addEventListener('keydown', function(event) {
-        let object_content;
-        let object_entity;
+
 
         // Check for Ctrl+Z or Cmd+Z to undo object state
-        if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
             const state = object_state.undo();  
             let object_content = state.previous_state;
             if (state.previous_state === null) {
@@ -209,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }        
 
         // Check for ctrl+Y or cmd+y to redo object state
-        if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
             const state = object_state.redo();
             const object_content = state.final_state;
             const ObjectConstructor = objectClasses[state.category.slice(0, -1)];
@@ -230,11 +241,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
         // Check for shift+Z to undo project state
-        if ((event.shiftKey || event.metaKey) && event.key === 'z') {
+        if ((event.shiftKey || event.metaKey) && event.key.toLowerCase() === 'z') {
         }
         
         // Check for shift+Y to redo project state
-        if ((event.shiftKey || event.metaKey) && event.key === 'y') {           
+        if ((event.shiftKey || event.metaKey) && event.key.toLowerCase() === 'y') {           
         }
 
         // prevent default browser behavior (not working now)
@@ -267,17 +278,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.addEventListener("createObject", function (event) {
         const { object_uuid, object_class, object_content } = event.detail;
 
-        // Map object classes to their corresponding constructors
-        const objectClasses = {
-            TransitionNode,
-            MediaPlayer,
-        };
-
         // Get the constructor for the object class
         const ObjectConstructor = objectClasses[object_class];
 
         if (ObjectConstructor) {
-
+            console.log(object_content);
             // Create an instance of the object using the constructor
             const object = new ObjectConstructor(object_uuid, object_content);
 
@@ -286,8 +291,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Delete item from JSON states if deletion was successful
             if (created_successfully) {
-                object_state.addNewItem(object_content, object_class+"s", object_uuid);
+                object_state.addNewItem(object_content, object_class+"s", object_uuid, "visualizeObject");
+            } else {
+                console.error("Object was not created successfully");
             }
+
         } else {
             console.warn(`Unsupported object class: ${object_class}`);
         }
