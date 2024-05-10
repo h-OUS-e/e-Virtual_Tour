@@ -318,8 +318,11 @@ class ObjectMenu {
 
       // Alert if another object exists that has the same new_scene_id
 
-      // Update propert
+      // Update property
       this.handleObjectCreation(object_content, this.position, this.direction);
+
+      // Close menu on creation of the new object
+      this.closeMenu();
     });
   }
 
