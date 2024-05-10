@@ -286,7 +286,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const ObjectConstructor = objectClasses[object_class];
 
         if (ObjectConstructor) {
-            console.log(object_content);
             // Create an instance of the object using the constructor
             const object = new ObjectConstructor(object_uuid, object_content);
 
