@@ -220,20 +220,12 @@ class ObjectMenu {
     }
   }
 
-  addMenuItem(label, input_type, property, JSON_data=null, default_value=null, filter=null) {
+  addMenuItem(label, input_type, property, JSON_data=null, default_value=null, callback=null) {
 
     // Creates a row in the menu with a label and an input
     const list_item = document.createElement('li');
     list_item.setAttribute('class', "flexRow");
-
-    // filter JSON data if provided
-    if (filter) {
-      JSON_data = Object.fromEntries(
-        Object.entries(JSON_data).filter(([key, value]) => value.class === filter)
-      );
-    }
-
-
+    
     // Create the label
     const label_element = document.createElement('label');
     label_element.setAttribute('for', this.menu_id + property);
@@ -266,9 +258,20 @@ class ObjectMenu {
     }
 
     // Attach change event listener to the input element to emit changes in edit menu
-    input_element.addEventListener('change', (event) => {
+    input_element.addEventListener('change', (event) => {      
       const selected_value = event.target.value;
-      this.handleObjectEdits(property, selected_value);
+      const JSON_update = [
+        {property: property, value: selected_value},
+      ];  
+
+      // Calback for dependant dropdowns
+      if (callback && typeof callback === "function") {
+        callback({selected_value: selected_value, JSON_update: JSON_update});
+      } else {
+        // Handle edits
+        this.handleObjectEdits(JSON_update);        
+      }    
+ 
     });
 
     // Set input_element properties
@@ -400,7 +403,26 @@ class ObjectMenu {
 
     if (this.object_class === "MediaPlayer" ) {
       this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title);
-      this.addTypeAndIconMenu(default_values, types);           
+      
+      // Add type dropdown 
+      this.addMenuItem("Type ", "select", "type_uuid", types, default_values.type_uuid, (data) => {
+        const selected_type = data.selected_value;
+        let JSON_update = data.JSON_update;
+
+        // Update the icon dropdown based on the selected type and additional data
+        const icon_dropdown_menu = this.updateIconDropdown(selected_type);        
+
+        // Handle JSON state edits
+        console.log("TEST", icon_dropdown_menu.value);
+        JSON_update.push({ property: "icon_uuid", value: icon_dropdown_menu.value });
+        this.handleObjectEdits(JSON_update);
+      });
+
+      // Add icon dropdown
+      let filtered_icons = this.filterIcons(default_values.type_uuid);
+      this.addMenuItem("Icon ", "select", "icon_uuid", filtered_icons, default_values.icon_uuid);
+
+         
     }
   }
 
@@ -420,20 +442,14 @@ class ObjectMenu {
   }
 
   // Adds a type dropdown and an icon dropdown that listens and updates if type selection changes
-  addTypeAndIconMenu(default_values, filtered_types) {
-    // Add type menu
-    const type_input_element = this.addMenuItem("Type ", "select", "type_uuid", filtered_types, default_values.type_uuid);
-
-    // Filter the icons based on the selected type's icons array      
-    let filtered_icons = this.filterIcons(default_values.type_uuid);
-    // Add Icon Selector and make it dependant on type menu
-    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_uuid", filtered_icons, default_values.icon_uuid);
-    // Listen to changes in the types menu and update icon dropdown accordingly
-    type_input_element.addEventListener('change', (e) => {
-      default_values.type_uuid = e.target.value;
-      filtered_icons = this.filterIcons(default_values.type_uuid);
-      this.populateJSONDropdown(icon_input_element, filtered_icons, "name");
-    }); 
+  updateIconDropdown(selected_type) {
+    const icon_dropdown_menu = this.menu_list.querySelector('#' + this.menu_id + "icon_uuid");   
+    // Filter icons
+    let filtered_icons = this.filterIcons(selected_type);      
+    // Update dropdown
+    this.populateJSONDropdown(icon_dropdown_menu, filtered_icons, "name");  
+    
+    return icon_dropdown_menu;   
   }
 
   
@@ -482,6 +498,7 @@ class ObjectMenu {
     if (default_value) {
       this.setDropdownDefaultValue(dropdown, default_value);
     }
+
   }
 
 
@@ -500,14 +517,13 @@ class ObjectMenu {
   }
 
 
-  emitEditEvent(edited_property, edited_value) {
+  emitEditEvent(JSON_update) {
     let new_event = new CustomEvent('editObject', 
     {
         detail: {
             object_uuid: this.selected_object_uuid,
             object_class: this.object_class,
-            property: edited_property,
-            value: edited_value,
+            JSON_update: JSON_update,
         },
     });
     scene.dispatchEvent(new_event);  
@@ -526,7 +542,6 @@ class ObjectMenu {
   }
 
   emitDeleteEvent() {
-    console.log("TEST", this.object_class);
 
     let new_event = new CustomEvent(`deleteObject`, 
     {
@@ -538,15 +553,9 @@ class ObjectMenu {
     scene.dispatchEvent(new_event);  
   }
 
-  handleObjectEdits(edited_property, edited_value) {
-    // Update object state
-    const JSON_update = [
-      {property: edited_property, value: edited_value},
-    ]
-    // this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id);
-
+  handleObjectEdits(JSON_update) {  
     // Dispatch event
-    this.emitEditEvent(edited_property, edited_value)
+    this.emitEditEvent(JSON_update)
   }
 
 

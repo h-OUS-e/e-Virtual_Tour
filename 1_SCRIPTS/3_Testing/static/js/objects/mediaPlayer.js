@@ -211,11 +211,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     // Update object visuals when an object is created
-    scene.addEventListener('renderCreation', function(event) {
+    scene.addEventListener('renderObject', function(event) {
 
         if (event.detail.category === CATEGORY) {
+            mediaPlayer_JSON = object_state.getCategory(CATEGORY);
+
             const entity = document.getElementById(event.detail.object_uuid);
-            renderEntity(entity, event.detail.object_content, types, icons);  
+            renderEntity(entity, mediaPlayer_JSON[event.detail.object_uuid], types, icons);  
         }
     });
     
@@ -616,6 +618,7 @@ class MediaPlayer {
         // Apply the state to the object
         Object.assign(this, state);
         this.id = state.id
+        console.log(this.id);
 
         // Ensure to update the scene representation as needed
         this.updateScene();

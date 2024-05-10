@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     });
 
     // Update object visuals when an object is created
-    scene.addEventListener('renderCreation', function(event) {
+    scene.addEventListener('renderObject', function(event) {
         if (event.detail.category === CATEGORY) {
             const entity = document.getElementById(event.detail.object_uuid);
             renderEntity(entity, dark_color, light_color);
