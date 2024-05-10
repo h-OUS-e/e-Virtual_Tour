@@ -413,7 +413,6 @@ class ObjectMenu {
         const icon_dropdown_menu = this.updateIconDropdown(selected_type);        
 
         // Handle JSON state edits
-        console.log("TEST", icon_dropdown_menu.value);
         JSON_update.push({ property: "icon_uuid", value: icon_dropdown_menu.value });
         this.handleObjectEdits(JSON_update);
       });

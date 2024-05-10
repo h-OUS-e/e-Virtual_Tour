@@ -30,16 +30,16 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     {
         // Changing image of the scene        
         const new_scene_id = event.detail.new_scene_id;
-        changeScene(sky, new_scene_id, scenes);
+        changeScene(sky, new_scene_id, scenes, event.detail.preserve_camera_rotation);
         // console.log('New background image ID transitioning:', new_scene_id, typeof new_scene_id);
         
-        
-        // reset the a-frame camera rotation 
-        let camera = document.getElementById('camera');
-        let controls = camera.components['custom-look-controls']
-        controls.pitchObject.rotation.x = 0
-        controls.yawObject.rotation.y = 0
-
+        // reset the a-frame camera rotation if not asked to be preserved
+        if (!event.detail.preserve_camera_rotation) {
+            let camera = document.getElementById('camera');
+            let controls = camera.components['custom-look-controls']
+            controls.pitchObject.rotation.x = 0
+            controls.yawObject.rotation.y = 0
+        }
     });
 
     // Adjusting initial camera rotation of scenes object
@@ -157,7 +157,7 @@ function toggleVisibility(selector, isVisible) {
 }
 
 
-async function changeScene(sky, new_scene_id, scenes)
+async function changeScene(sky, new_scene_id, scenes, preserve_camera_rotation=false) 
 {
     // change background image
     // input: scene_id: string & scene_id: string
@@ -178,7 +178,11 @@ async function changeScene(sky, new_scene_id, scenes)
         sky.setAttribute('src', '#scene_img_' + new_scene_id); 
         sky.setAttribute('scene_id', new_scene_id);
         sky.setAttribute('rotation', existing_asset.getAttribute('rotation')); 
-        camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));        // console.log('Moved to new scene!', sky.getAttribute('src'));
+
+        if (!preserve_camera_rotation){
+            console.log("preserve_camera_rotation", preserve_camera_rotation);
+            camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));        // console.log('Moved to new scene!', sky.getAttribute('src'));
+        }
 
         // Hide the objects in old background
         var selector = '[scene_id="' + scene_id + '"]'; //background image is the image clicked from, type moved

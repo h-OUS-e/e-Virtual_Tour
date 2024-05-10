@@ -336,7 +336,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Get object content
         const object_content = object_state.getItem(category, object_uuid);
-
+        const scene_id = JSON_update.find(obj => obj.property === "scene_id");
+        if (scene_id) {
+            console.log(scene_id);
+            emitTransitioning(scene_id.value, true);
+        }
         
         // Get constructor and construct object
         const ObjectConstructor = objectClasses[object_class];
@@ -356,10 +360,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     * 5. IN-SCOPE FUNCTIONS
     *******************************************************************************/
     function handleObjectMovement(object_class) {
-
-
-    }
-    
+    }   
 
 });
 
@@ -584,44 +585,5 @@ function getCustomAttributes(element) {
     return customAttributes;
   }
 
-
-
-class ActionManager {
-    constructor() {
-        this.undoStack = [];
-        this.redoStack = [];
-    }
-
-    // Execute an action and add it to the undo stack
-    doAction(action) {
-        const success = action.do(); // Execute the "do" part of the action
-        
-        // Only push the action to the undo stack if it was successful
-        if (success !== false) { // Assuming false explicitly indicates failure
-            this.undoStack.push(action);
-            this.redoStack = []; // Clear the redo stack whenever a new action is performed
-        }
-
-        return success;
-    }
-
-    // Undo the last action
-    undo() {
-        if (this.undoStack.length > 0) {
-            const action = this.undoStack.pop(); // Remove the last action from the undo stack
-            action.undo(); // Execute the "undo" part of the action
-            this.redoStack.push(action); // Push the action to the redo stack for potential redoing
-        }
-    }
-
-    // Redo the last undone action
-    redo() {
-        if (this.redoStack.length > 0) {
-            const action = this.redoStack.pop(); // Remove the last action from the redo stack
-            action.redo(); // Re-execute the "do" part of the action
-            this.undoStack.push(action); // Push the action back to the undo stack
-        }
-    }
-}
 
 

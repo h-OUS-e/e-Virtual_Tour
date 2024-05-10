@@ -618,7 +618,6 @@ class MediaPlayer {
         // Apply the state to the object
         Object.assign(this, state);
         this.id = state.id
-        console.log(this.id);
 
         // Ensure to update the scene representation as needed
         this.updateScene();

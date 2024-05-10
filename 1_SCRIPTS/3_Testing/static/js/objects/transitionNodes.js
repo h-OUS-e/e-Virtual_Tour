@@ -174,11 +174,14 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 *******************************************************************************/ 
 
 //functions: 
-function emitTransitioning(new_scene_id){
+function emitTransitioning(new_scene_id, preserve_camera_rotation=false){
     // input: new_scene_id: string
     // emit transitioning event with new background image ID
     const transitioning = new CustomEvent('transitioning', {
-        detail: { new_scene_id: new_scene_id}       
+        detail: { 
+            new_scene_id: new_scene_id,
+            preserve_camera_rotation: preserve_camera_rotation,
+        },    
     });
     scene.dispatchEvent(transitioning);
 }
@@ -489,7 +492,7 @@ class TransitionNode {
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('new_scene_id', this.new_scene_id);            
         // Update visibility
-        // entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition
+        entity.setAttribute('visible', this.scene_id === this.current_scene); // Example condition
         // // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 

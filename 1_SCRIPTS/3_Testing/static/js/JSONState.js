@@ -264,7 +264,7 @@ class JSONState {
         detail: content
       });
       document.dispatchEvent(event);
-      console.log("Emitted event:", custom_event_name);
+      // console.log("Emitted event:", custom_event_name);
     }
 
     emitStateConstructed() {
@@ -447,7 +447,7 @@ class JSONState {
         this.buildIndexes();
         this.emitStateUpdated(event_name);
         const state = this.edit_history[this.idx];
-        console.log("new", this.edit_history[this.idx]);
+        // console.log("new", this.edit_history[this.idx]);
 
         return state;
       } else {
@@ -456,7 +456,7 @@ class JSONState {
     }
   
     redo(event_name=null) {
-      console.log("new", this.edit_history[this.idx]);
+      // console.log("new", this.edit_history[this.idx]);
 
       if (this.idx < this.history.length - 1) {
         const state = this.edit_history[this.idx];
