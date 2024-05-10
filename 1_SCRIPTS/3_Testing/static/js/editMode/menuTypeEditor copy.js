@@ -1,3 +1,8 @@
+// LOADING JSON STATE
+import { JSON_statePromise } from '../JSONSetup.js';
+
+// GLOBAL CONSTANTS
+const CATEGORY = "Types";
 
 function getColorNamesAndValues(colors) {
   const colorNames = Object.keys(colors);
@@ -5,12 +10,24 @@ function getColorNamesAndValues(colors) {
   return [colorNames, colorValues];
 }
 
-document.addEventListener('jsonLoaded', async (event) => {
 
-  // Getting media player types from the JSON filea
-  let mediaplayer_types = event.detail.mediaplayer_types;
-  let icons = event.detail.icons;
 
+/*********************************************************************
+ * On DOM load
+*********************************************************************/
+document.addEventListener('DOMContentLoaded', async (event) => {
+
+  /*********************************************************************
+    * 1. LOAD JSON STATE
+  *********************************************************************/
+
+  let {project_state, object_state} = await JSON_statePromise;
+
+  // JSON VARIABLES 
+  let type_JSON = project_state.getCategory(CATEGORY);
+  let icon_JSON = project_state.getCategory("Icons");
+
+  
   // Assuming the variable is named 'data'
   const menu = document.getElementById('edit_menu_MediaplayerTypes');
   const typeSelect = document.getElementById('edit_menu_MediaplayerTypes_select');
@@ -34,6 +51,23 @@ document.addEventListener('jsonLoaded', async (event) => {
 
   // Get project colors
   let project_colors = event.detail.project_colors;
+
+
+  /*********************************************************************
+    * 2. SETUP
+  *********************************************************************/
+
+  /*********************************************************************
+   * 3. UPDATE ITEMS ON CHANGES
+  *********************************************************************/
+
+  /*******************************************************************************
+    * 4. EVENT LISTENER JSON UPDATES
+  *******************************************************************************/ 
+
+  /*******************************************************************************
+  * 5. FUNCTIONS
+  *******************************************************************************/ 
 
   // Populate the type select dropdown
   function populateTypeSelect(types) {
@@ -513,3 +547,7 @@ document.addEventListener('jsonLoaded', async (event) => {
     menu.addEventListener('mouseleave', window.enableZoom);
   }
 });
+
+  /*******************************************************************************
+  * 6. EXTERIOR FUNCTIONS and CLASSES
+  *******************************************************************************/ 
