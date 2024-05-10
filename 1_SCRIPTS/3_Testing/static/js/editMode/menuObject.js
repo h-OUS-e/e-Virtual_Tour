@@ -268,7 +268,7 @@ class ObjectMenu {
     // Attach change event listener to the input element to emit changes in edit menu
     input_element.addEventListener('change', (event) => {
       const selected_value = event.target.value;
-      this.handleObjectEdits(property, selected_value, this.object_class);
+      this.handleObjectEdits(property, selected_value);
     });
 
     // Set input_element properties
@@ -316,7 +316,7 @@ class ObjectMenu {
       // Alert if another object exists that has the same new_scene_id
 
       // Update propert
-      this.handleObjectCreation(object_content, this.object_class, this.position, this.direction);
+      this.handleObjectCreation(object_content, this.position, this.direction);
     });
   }
 
@@ -500,12 +500,12 @@ class ObjectMenu {
   }
 
 
-  emitEditEvent(edited_property, edited_value, object_class) {
+  emitEditEvent(edited_property, edited_value) {
     let new_event = new CustomEvent('editObject', 
     {
         detail: {
             object_uuid: this.selected_object_uuid,
-            object_class: object_class,
+            object_class: this.object_class,
             property: edited_property,
             value: edited_value,
         },
@@ -513,30 +513,32 @@ class ObjectMenu {
     scene.dispatchEvent(new_event);  
   }
 
-  emitCreateEvent(object_uuid, object_class, object_content) {
+  emitCreateEvent(object_uuid, object_content) {
     let new_event = new CustomEvent(`createObject`, 
     {
         detail: {
             object_uuid: object_uuid,
-            object_class: object_class,
+            object_class: this.object_class,
             object_content: object_content,
         },
     });
     scene.dispatchEvent(new_event);  
   }
 
-  emitDeleteEvent(object_class) {
+  emitDeleteEvent() {
+    console.log("TEST", this.object_class);
+
     let new_event = new CustomEvent(`deleteObject`, 
     {
         detail: {
             object_uuid: this.selected_object_uuid,
-            object_class: object_class,
+            object_class: this.object_class,
         },
     });
     scene.dispatchEvent(new_event);  
   }
 
-  handleObjectEdits(edited_property, edited_value, object_class) {
+  handleObjectEdits(edited_property, edited_value) {
     // Update object state
     const JSON_update = [
       {property: edited_property, value: edited_value},
@@ -544,17 +546,17 @@ class ObjectMenu {
     // this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id);
 
     // Dispatch event
-    this.emitEditEvent(edited_property, edited_value, object_class)
+    this.emitEditEvent(edited_property, edited_value)
   }
 
 
-  handleObjectDeletion(object_class) {    
+  handleObjectDeletion() {   
     // Dispatch event
-    this.emitDeleteEvent(this.selected_object_uuid, object_class)
+    this.emitDeleteEvent()
   }
 
 
-  handleObjectCreation(object_content, object_class, position, direction=null) {
+  handleObjectCreation(object_content, position, direction=null) {
     // Make a new uuid for the newly created object
     const new_object_uuid = uuidv4();
     const initial_scene_id = this.project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
@@ -566,7 +568,7 @@ class ObjectMenu {
     // Prepare content to create new object in object_state
     const new_object_content = {
       // Add the title and description properties only if object_class is "MediaPlayer"
-      ...(object_class === "MediaPlayer"
+      ...(this.object_class === "MediaPlayer"
         ? {
             title: object_content.title,
             description: null,
@@ -580,7 +582,7 @@ class ObjectMenu {
         : {}),
   
       // Add the title and description properties only if object_class is "TransitionNode"
-      ...(object_class === "TransitionNode"
+      ...(this.object_class === "TransitionNode"
         ? {
             new_scene_id: object_content.new_scene_id,
           }
@@ -596,10 +598,9 @@ class ObjectMenu {
       isNew: true,
       initial_scene_id: initial_scene_id,
     };
-    console.log("TEST", this.current_scene, object_content);
 
     // Dispatch event
-    this.emitCreateEvent(new_object_uuid, object_class, new_object_content);
+    this.emitCreateEvent(new_object_uuid, new_object_content);
     
 
   }

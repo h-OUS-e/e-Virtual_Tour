@@ -216,6 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             else if (state.action === "delete") {
                 // Create element scene if previous action was "delete"
                 object.create();
+                emitRenderCreation(state.item_uuid, state.category, object_content);
             }
         }        
 
@@ -294,7 +295,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (created_successfully) {
                 object_state.addNewItem(object_content, object_class+"s", object_uuid);
                 emitRenderCreation(object_uuid, object_class + "s", object_content);
-                console.log("TEST", object_content);
             } else {
                 console.error("Object was not created successfully");
             }
@@ -307,12 +307,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Handling object deletion
     scene.addEventListener("deleteObject", function (event) {
-        const { object_uuid, object_class } = event.detail;
+        const { object_uuid, object_class } = event.detail;    
+
         // Check if entity exists
         const entity = document.getElementById(object_uuid);
         if (entity) {
             // Delete entity
             entity.parentNode.removeChild(entity);
+            console.log("TEST", object_class);
             object_state.deleteItem(object_class + "s", object_uuid);
 
         } else {
