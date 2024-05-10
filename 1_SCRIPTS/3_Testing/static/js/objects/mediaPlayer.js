@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     await loadMediaPlayersFromJSON(mediaPlayer_JSON,  initial_scene_id);
 
     // Update mediaplayer colors and icons
-    setColors(mediaplayer_types);
-    setIcons(mediaPlayer_JSON, icons, mediaplayer_types);
+    renderEntities(mediaPlayer_JSON, mediaplayer_types, icons);  
+
+    
 
 
 
@@ -210,12 +211,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     // Update object visuals when an object is created
-    document.addEventListener('visualizeObject', function(event) {
+    scene.addEventListener('renderCreation', function(event) {
 
         if (event.detail.category === CATEGORY) {
             const entity = document.getElementById(event.detail.object_uuid);
-            setIcon(event.detail.object_content, entity, icons);   
-            setColor(entity, types);         
+            renderEntity(entity, event.detail.object_content, types, icons);  
         }
     });
     
@@ -234,7 +234,7 @@ function setColors(types){
         // const id = mediaplayers[i].id;
         const entity = mediaplayers[i];
         setColor(entity, types);
-            }
+    }
 }
 
 function setColor(entity, types) {
@@ -263,6 +263,22 @@ function setIcon(mediaPlayer_item, entity, icons) {
     const icon_entity = entity.getElementsByClassName('mediaplayer-icon')[0]; 
 
     icon_entity.setAttribute('material', 'src', icon_url);
+}
+
+function renderEntity(entity, mediaPlayer_item, types, icons) {
+    setIcon(mediaPlayer_item, entity, icons);
+    setColor(entity, types);
+}
+
+function renderEntities(mediaPlayer_JSON, types, icons) {
+    const ids = Object.keys(mediaPlayer_JSON);
+    ids.forEach((id) => {
+        const mediaPlayer_item = mediaPlayer_JSON[id];        
+        const entity = document.getElementById(id);
+        renderEntity(entity, mediaPlayer_item, types, icons);
+    });
+
+
 }
 
 async function loadMediaPlayersFromJSON(mediaPlayer_JSON, initial_scene_id) {

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    // Read transition nodes and load them to scene
     await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);       
     // Set initial colors of transition nodes
-    resetVisuals(dark_color, light_color);
+    renderEntities(dark_color, light_color);
 
 
     /*********************************************************************
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Reset colors if new transition node colors selected
     scene.addEventListener("transitionNodesColorChange", function() {
-        resetVisuals(dark_color, light_color);
+        renderEntities(dark_color, light_color);
     });
 
     //listen to minimapClick event
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             light_color = transitionNode_type.colors.light;
 
             // Update colors of all mediaplayer objects
-            resetVisuals(dark_color, light_color);
+            renderEntities(dark_color, light_color);
         } catch (error) {
             console.error('An error occurred while updating project colors:', error);
         }
@@ -157,10 +157,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     });
 
     // Update object visuals when an object is created
-    document.addEventListener('visualizeObject', function(event) {
+    scene.addEventListener('renderCreation', function(event) {
         if (event.detail.category === CATEGORY) {
             const entity = document.getElementById(event.detail.object_uuid);
-            setVisualsToEntity(entity, dark_color, light_color);
+            renderEntity(entity, dark_color, light_color);
         }
     });
 
@@ -183,15 +183,15 @@ function emitTransitioning(new_scene_id){
     scene.dispatchEvent(transitioning);
 }
 
-function resetVisuals(dark_color, light_color){
+function renderEntities(dark_color, light_color){
     let transition_nodes = document.getElementsByClassName(MAIN_CLASS);
     for (let i = 0; i < transition_nodes.length; i++) {
         const entity = transition_nodes[i];
-        setVisualsToEntity(entity, dark_color, light_color);
+        renderEntity(entity, dark_color, light_color);
     }
 }
 
-function setVisualsToEntity(entity, dark_color, light_color) {
+function renderEntity(entity, dark_color, light_color) {
     let icon = entity.querySelector('[mixin=' + MIXIN_ICON + ']')
         icon.setAttribute('material', 'color', dark_color);
         let glow = entity.querySelector('[mixin=' + MIXIN_GLOW + ']')

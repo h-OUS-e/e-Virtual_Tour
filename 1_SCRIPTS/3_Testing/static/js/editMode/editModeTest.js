@@ -232,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             else if (state.action === "create") {
                 object.create();
+                emitRenderCreation(state.item_uuid, state.category, object_content);
             }
 
             else if (state.action === "delete") {
@@ -291,7 +292,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Delete item from JSON states if deletion was successful
             if (created_successfully) {
-                object_state.addNewItem(object_content, object_class+"s", object_uuid, "visualizeObject");
+                object_state.addNewItem(object_content, object_class+"s", object_uuid);
+                emitRenderCreation(object_uuid, object_class + "s", object_content);
+                console.log("TEST", object_content);
             } else {
                 console.error("Object was not created successfully");
             }
@@ -320,6 +323,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Handling object creation
     scene.addEventListener("editObject", function (event) {
+        // We need item id to edit, property name and the new value
+        // We then construct object and edit it
+        // Edit state
+        console.log("TEST", event.detail);
         
       });
 
@@ -355,6 +362,20 @@ function emitEditMode(edit_mode) {
 function emitShowMenu(menu_id) {
     const new_event = new CustomEvent(`menuShow${menu_id}`);
     scene.dispatchEvent(new_event);
+}
+
+
+function emitRenderCreation(object_uuid, category, object_content) {
+    const content = {
+        "category": category,
+        "object_uuid": object_uuid,
+        "object_content": object_content,
+      }
+    const event = new CustomEvent("renderCreation", {
+        detail: content
+      });
+
+    scene.dispatchEvent(event);
 }
 
 

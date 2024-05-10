@@ -141,6 +141,7 @@ class ObjectMenu {
     this.object_state = object_state;
     this.project_state = project_state;
     this.object_class = null;
+    this.selected_object_uuid = null;
     this.menu_id= "edit_menu_object";
     this.menu = document.getElementById(this.menu_id);
     this.menu_list = this.menu.querySelector('ul');
@@ -186,6 +187,7 @@ class ObjectMenu {
     this.position = null;
     this.direction = null;
     this.object_class = null;
+    this.selected_object_uuid = null;
   }
 
   showMenu(x, y) {
@@ -218,7 +220,7 @@ class ObjectMenu {
     }
   }
 
-  addMenuItem(label, input_type, input_id, JSON_data=null, default_value=null, property=null, filter=null) {
+  addMenuItem(label, input_type, property, JSON_data=null, default_value=null, filter=null) {
 
     // Creates a row in the menu with a label and an input
     const list_item = document.createElement('li');
@@ -234,7 +236,7 @@ class ObjectMenu {
 
     // Create the label
     const label_element = document.createElement('label');
-    label_element.setAttribute('for', input_id);
+    label_element.setAttribute('for', this.menu_id + property);
     label_element.textContent = label;
     list_item.appendChild(label_element);
 
@@ -263,16 +265,14 @@ class ObjectMenu {
 
     }
 
-    // Attach change event listener to the input element
+    // Attach change event listener to the input element to emit changes in edit menu
     input_element.addEventListener('change', (event) => {
       const selected_value = event.target.value;
-
-      // Update the corresponding property in the object
-
+      this.handleObjectEdits(property, selected_value, this.object_class);
     });
 
     // Set input_element properties
-    input_element.setAttribute('id', this.menu_id + input_id);
+    input_element.setAttribute('id', this.menu_id + property);
 
     // Add input_element to list item
     list_item.appendChild(input_element);
@@ -284,10 +284,10 @@ class ObjectMenu {
 
   }
 
-  addDeleteBtn(object_uuid) {
+  addDeleteBtn() {
     const delete_btn = document.createElement('button');
     delete_btn.setAttribute('id', this.menu_id + "delete_btn");
-    delete_btn.setAttribute('reference_object_uuid', object_uuid);
+    delete_btn.setAttribute('reference_object_uuid', this.selected_object_uuid);
     delete_btn.setAttribute('class', "btn");
     delete_btn.setAttribute('class', "deleteBtn");
     delete_btn.textContent = "Delete";
@@ -296,7 +296,7 @@ class ObjectMenu {
 
     // Attach change event listener to the input element
     delete_btn.addEventListener('click', (event) => {
-      this.handleObjectDeletion(object_uuid, this.object_class);
+      this.handleObjectDeletion(this.object_class);
     });
   }
 
@@ -346,20 +346,21 @@ class ObjectMenu {
     this.showMenu(x, y);
   }
 
-  showEditMenu(x, y, object_class, selected_object_id) {
+  showEditMenu(x, y, object_class, selected_object_uuid) {
     // Clear menu list
     this.menu_list.innerHTML = '';
     this.menu_delete_container.innerHTML = '';
     // Set obejct class
     this.object_class = object_class;
+    this.selected_object_uuid = selected_object_uuid;
     // populate menu with options and show
-    this.populateMenu("edit", selected_object_id);
+    this.populateMenu("edit");
     this.showMenu(x, y);
   }
 
 
   // Populate menu with custom optiosn for 'create' vs 'edit' and different object classes
-  populateMenu(menu_type, selected_object_id=null) {
+  populateMenu(menu_type) {
     let objectJSON = null;
     let types = Object.fromEntries(
       Object.entries(this.types).filter(([key, value]) => value.class === this.object_class),
@@ -376,30 +377,29 @@ class ObjectMenu {
 
     if (menu_type === "edit") {
       objectJSON = this.getObjectJSON();
-      default_values = this.getDefaultValues(objectJSON, selected_object_id, default_values);
-      console.log("TEST2", objectJSON, selected_object_id, default_values);
+      default_values = this.getDefaultValues(objectJSON, default_values);
 
-      this.addDeleteBtn(selected_object_id);
+      this.addDeleteBtn();
 
       // ADD SHARED OPTIONS (*only in edit mode)
-      this.addMenuItem("Current Scene ", "select", "scene_id", this.scenes, default_values.scene_id, 'scene_id');
+      this.addMenuItem("Current Scene ", "select", "scene_id", this.scenes, default_values.scene_id);
     }
 
     if (menu_type === "create") {
       this.addCreateBtn()
       // ADD SHARED OPTIONS (*only in edit mode)
-      this.addMenuItem("Current Scene ", null, "scene_id", this.scenes, default_values.scene_id, 'scene_id');
+      this.addMenuItem("Current Scene ", null, "scene_id", this.scenes, default_values.scene_id);
     }
 
     
 
     // ADD SPECEFIC OPTIONS
     if (this.object_class === "TransitionNode") {
-      this.addMenuItem("New Scene ", "select", "new_scene_id", this.scenes, default_values.new_scene_id, 'new_scene_id');      
+      this.addMenuItem("New Scene ", "select", "new_scene_id", this.scenes, default_values.new_scene_id);      
     }
 
     if (this.object_class === "MediaPlayer" ) {
-      this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title, 'title');
+      this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title);
       this.addTypeAndIconMenu(default_values, types);           
     }
   }
@@ -415,7 +415,6 @@ class ObjectMenu {
   
   filterIcons(type_uuid) {
     const selected_object = this.types[type_uuid];
-    console.log("TEST", selected_object, type_uuid);
     const filtered_icons = this.filterData(selected_object, "icons", this.icons);
     return filtered_icons;
   }
@@ -423,12 +422,12 @@ class ObjectMenu {
   // Adds a type dropdown and an icon dropdown that listens and updates if type selection changes
   addTypeAndIconMenu(default_values, filtered_types) {
     // Add type menu
-    const type_input_element = this.addMenuItem("Type ", "select", "type_uuid", filtered_types, default_values.type_uuid, 'type_uuid');
+    const type_input_element = this.addMenuItem("Type ", "select", "type_uuid", filtered_types, default_values.type_uuid);
 
     // Filter the icons based on the selected type's icons array      
     let filtered_icons = this.filterIcons(default_values.type_uuid);
     // Add Icon Selector and make it dependant on type menu
-    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_uuid", filtered_icons, default_values.icon_uuid, 'icon_uuid');
+    const icon_input_element = this.addMenuItem("Icon ", "select", "icon_uuid", filtered_icons, default_values.icon_uuid);
     // Listen to changes in the types menu and update icon dropdown accordingly
     type_input_element.addEventListener('change', (e) => {
       default_values.type_uuid = e.target.value;
@@ -448,10 +447,10 @@ class ObjectMenu {
   }
 
 
-  getDefaultValues(object_JSON, selected_object_id, default_values) {    
-    if (!object_JSON || !selected_object_id) return {};
+  getDefaultValues(object_JSON, default_values) {    
+    if (!object_JSON || !this.selected_object_uuid) return {};
   
-    const selectedObject = object_JSON[selected_object_id];
+    const selectedObject = object_JSON[this.selected_object_uuid];
 
     // Getting key of default values, need to match the object_JSON properties we are tryign to get
     for (const key of Object.keys(default_values)) {
@@ -505,12 +504,12 @@ class ObjectMenu {
     let new_event = new CustomEvent('editObject', 
     {
         detail: {
-            key: edited_property,
-            value: edited_value,
+            object_uuid: this.selected_object_uuid,
             object_class: object_class,
+            property: edited_property,
+            value: edited_value,
         },
     });
-        console.log("emit");
     scene.dispatchEvent(new_event);  
   }
 
@@ -526,32 +525,32 @@ class ObjectMenu {
     scene.dispatchEvent(new_event);  
   }
 
-  emitDeleteEvent(object_uuid, object_class) {
+  emitDeleteEvent(object_class) {
     let new_event = new CustomEvent(`deleteObject`, 
     {
         detail: {
-            object_uuid: object_uuid,
+            object_uuid: this.selected_object_uuid,
             object_class: object_class,
         },
     });
     scene.dispatchEvent(new_event);  
   }
 
-  handleObjectEdits(edited_property, edited_value, object_class, object_id) {
+  handleObjectEdits(edited_property, edited_value, object_class) {
     // Update object state
     const JSON_update = [
       {property: edited_property, value: edited_value},
     ]
-    this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id);
+    // this.object_state.updateProperties(JSON_update,`${object_class +"s"}`, object_id);
 
     // Dispatch event
-    // this.emitEditEvent(edited_property, edited_value, object_class);
+    this.emitEditEvent(edited_property, edited_value, object_class)
   }
 
 
-  handleObjectDeletion(object_uuid, object_class) {    
+  handleObjectDeletion(object_class) {    
     // Dispatch event
-    this.emitDeleteEvent(object_uuid, object_class)
+    this.emitDeleteEvent(this.selected_object_uuid, object_class)
   }
 
 
@@ -583,7 +582,7 @@ class ObjectMenu {
       // Add the title and description properties only if object_class is "TransitionNode"
       ...(object_class === "TransitionNode"
         ? {
-            new_scene_id: this.new_scene_id,
+            new_scene_id: object_content.new_scene_id,
           }
         : {}),
   
@@ -597,6 +596,7 @@ class ObjectMenu {
       isNew: true,
       initial_scene_id: initial_scene_id,
     };
+    console.log("TEST", this.current_scene, object_content);
 
     // Dispatch event
     this.emitCreateEvent(new_object_uuid, object_class, new_object_content);
