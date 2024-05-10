@@ -486,14 +486,11 @@ class TransitionNode {
         }
 
         // Update the entity's position
-        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
-        
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);        
         // Update data attributes related to background images
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('new_scene_id', this.new_scene_id);            
-        // Update visibility
-        entity.setAttribute('visible', this.scene_id === this.current_scene); // Example condition
-        // // Update id in case we update the new_scene_id attribute
+        // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 
         // Loop through the updates object to apply updates

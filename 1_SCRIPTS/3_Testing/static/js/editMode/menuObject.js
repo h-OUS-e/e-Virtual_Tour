@@ -183,7 +183,6 @@ class ObjectMenu {
 
   closeMenu() {
     this.hideMenu();
-    console.trace("closeMenu");
     // reset variables
     this.position = null;
     this.direction = null;

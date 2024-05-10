@@ -642,8 +642,6 @@ class MediaPlayer {
         // Update attributes
         entity.setAttribute('type_uuid', this.type_uuid);
         entity.setAttribute('title', this.title);
-
-        // this.id = `mp_${this.scene_id}_${this.title}`;
         entity.setAttribute('id', this.id);
 
         
