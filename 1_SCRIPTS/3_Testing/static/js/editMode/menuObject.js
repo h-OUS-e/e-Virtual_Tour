@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const object_menu = new ObjectMenu(project_state, object_state);
 
 
-
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
@@ -44,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       const menu = document.getElementById(object_menu.menu_id);
 
       // Closing menu if clicking outside of its content
-      if (!menu.contains(event.target)) {
+      if (!menu.contains(event.target)  && !object_menu.isAsyncOperationInProgress) {
         object_menu.closeMenu();
       }
 
@@ -148,6 +147,7 @@ class ObjectMenu {
     this.menu_delete_container = this.menu.querySelector('li');
     this.position = null;
     this.direction = null;
+    this.isAsyncOperationInProgress = false;
 
     this.visible = false;
     this.scenes = object_state.getCategory("Scenes");
@@ -183,11 +183,13 @@ class ObjectMenu {
 
   closeMenu() {
     this.hideMenu();
+    console.trace("closeMenu");
     // reset variables
     this.position = null;
     this.direction = null;
     this.object_class = null;
     this.selected_object_uuid = null;
+    this.isAsyncOperationInProgress = false;
   }
 
   showMenu(x, y) {
@@ -220,7 +222,7 @@ class ObjectMenu {
     }
   }
 
-  addMenuItem(label, input_type, property, JSON_data=null, default_value=null, callback=null) {
+  addMenuItem(label, input_type, property, JSON_data=null, default_value=null, callback=null, required=false) {
 
     // Creates a row in the menu with a label and an input
     const list_item = document.createElement('li');
@@ -249,6 +251,9 @@ class ObjectMenu {
         if (default_value) {
           input_element.setAttribute('value', default_value);
         }      
+        if (required) {
+          input_element.setAttribute('required', 'required');
+        }
     }
 
     else if (input_type === null && default_value) {
@@ -303,7 +308,9 @@ class ObjectMenu {
     });
   }
 
-  addCreateBtn() {
+  async addCreateBtn() {
+    this.isAsyncOperationInProgress = true;
+
     const create_btn = document.createElement('button');
     create_btn.setAttribute('id', this.menu_id + "create_btn");
     create_btn.setAttribute('class', "btn");
@@ -312,19 +319,27 @@ class ObjectMenu {
     this.menu_delete_container.appendChild(create_btn);
 
     // Attach change event listener to the input element
-    create_btn.addEventListener('click', (event) => {
+    create_btn.addEventListener('click', async (event) => {
+      // Get menu input values
       let object_content = this.getInputValues();
-      // Alert if title is empty if it is one of the values
+      console.log("DIRECTION 1", this.direction);
 
-      // Alert if another object exists that has the same new_scene_id
+      // Get alert result   
+      const alert_result = await this.handleAlerts(object_content);
 
-      // Update property
-      this.handleObjectCreation(object_content, this.position, this.direction);
+      if (alert_result) {  
+        // Update property
+        this.handleObjectCreation(object_content, this.position, this.direction);
+  
+        // Close menu on creation of the new object
+        this.closeMenu();
+      }
 
-      // Close menu on creation of the new object
-      this.closeMenu();
+      this.isAsyncOperationInProgress = false;
     });
   }
+
+  
 
   getInputValues() {
     const inputElements = this.menu_list.querySelectorAll('input, select');
@@ -405,7 +420,7 @@ class ObjectMenu {
     }
 
     if (this.object_class === "MediaPlayer" ) {
-      this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title);
+      this.addMenuItem("Title ", "text", "title", this.scenes, default_values.title, null);
       
       // Add type dropdown 
       this.addMenuItem("Type ", "select", "type_uuid", types, default_values.type_uuid, (data) => {
@@ -639,6 +654,60 @@ class ObjectMenu {
           return {x: 0, y: angle_degrees, z: 0}
       }
 
+  }
+
+  async handleAlerts(object_content) {
+
+    if (this.object_class === "TransitionNode") {
+      const same_transition_exists = Object.values(this.transition_nodes).find(
+        (node) => node.scene_id === this.current_scene && node.new_scene_id === object_content.new_scene_id
+      );
+
+      if (same_transition_exists) {
+        const warning_title = "Duplicate Transition";
+        const warning_text = "A TransitionNode with the same scene transitioning already exists.";
+
+        const result = await this.softAlert(warning_title, warning_text);
+
+        if (!result) {
+          return false;   
+        } 
+
+      }
+
+    } else if (this.object_class === "MediaPlayer") {
+      if (!object_content.title || object_content.title.trim() === "") {
+        const warning_title = "Empty Title";
+        const warning_text = "The title for the MediaPlayer is empty.";
+        const result = await this.softAlert(warning_title, warning_text);   
+        if (!result) {
+          return false;   
+        } 
+      }       
+    }
+
+
+    return true;
+  }
+
+  // A soft warning with the option to continue or cancel operation
+  softAlert(warning_title, warning_text) {
+
+    return Swal.fire({
+      // icon: 'warning',
+      title: warning_title,
+      text: warning_text +' Do you want to continue?',
+      showCancelButton: true,
+      confirmButtonText: 'Continue',
+      cancelButtonText: 'Cancel',
+      heightAuto: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return true;
+      } else if (result.isDenied) {
+        return false;
+      }
+    });
   }
 }
 
