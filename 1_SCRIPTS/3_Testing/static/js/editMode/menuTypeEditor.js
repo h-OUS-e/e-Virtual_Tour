@@ -111,6 +111,8 @@ class Menu {
       menu_item = this.createInputItem(label_text, default_value, callback);
     } else if (input_type === 'editableDropdown') {
       menu_item = this.createEditableDropdownItem(label_text, options, default_value, addNewOption, callback, secondary_callback);
+    } else if (input_type === 'iconGallery') {
+      menu_item = this.createIconGallery(label_text, options, default_value, callback, secondary_callback);
     } else {
       menu_item = this.createClickableItem(label_text, default_value, callback);
     }
@@ -197,6 +199,139 @@ class Menu {
     return { menu_item, input_element };
   }
 
+  createIconGallery(label_text, icon_options, selcted_icons, callback, dropdown_callback, addNewOption=false) {
+    const menu_item = document.createElement('li');
+    menu_item.classList.add('grid2Column');
+    menu_item.classList.add('col14');
+
+    // Create the label
+    const label = document.createElement('span');
+    label.textContent = label_text;
+    menu_item.appendChild(label);
+
+    // Create icon field that has gallery of icons and add icon option
+    const icon_field = document.createElement('div');
+    icon_field.classList.add('grid2Column');
+    icon_field.classList.add('col41');
+    menu_item.appendChild(icon_field);
+
+    // Create icon gallery
+    const icon_gallery = document.createElement('div');
+    icon_gallery.classList.add('grid3Column');
+    icon_field.appendChild(icon_gallery);
+
+    // Create icon btn container that will house btn and text underneath
+    const add_icon_wrapper = document.createElement('div');
+    add_icon_wrapper.classList.add('editable-dropdown');
+
+    icon_field.appendChild(add_icon_wrapper);
+
+    // Create add icon btn
+    const add_icon_btn = document.createElement('button');
+    add_icon_btn.classList.add('btn');
+    add_icon_btn.classList.add('addBtn');
+    add_icon_btn.textContent = "+";
+    add_icon_wrapper.appendChild(add_icon_btn);
+
+    // Create add icon btn description
+    const add_icon_text = document.createElement('p');
+    add_icon_text.classList.add('gridItem');
+    add_icon_text.textContent = "Add Icon";
+    add_icon_wrapper.appendChild(add_icon_text);
+
+    // Create a container for the icon and the "X" button
+    this.populateIconGallery(icon_gallery, selcted_icons);
+    const input_element = icon_gallery;
+
+    // Create the custom dropdown menu
+    const dropdown_menu = this.createCustomDropdownItem(add_icon_wrapper, add_icon_btn);
+
+    // Populate the dropdown menu with icon options
+    this.populateCustomDropdown(dropdown_menu, null, icon_options, dropdown_callback, addNewOption);
+
+    return { menu_item, input_element };    
+  }
+
+  populateIconGallery(icon_gallery, icon_options) {
+    // Clear the icon gallery
+    icon_gallery.innerHTML = "";
+
+    // Populate it the the given icon options
+    icon_options.forEach(icon_option => {          
+      const icon = this.addIcon(icon_option.name, icon_option.src);
+      icon_gallery.appendChild(icon);
+    });  
+  }
+
+  addIcon(icon_name, icon_url) {
+    const icon = document.createElement('div');
+    icon.classList.add('flexColumn');
+
+    // Create a container for the icon and the "X" button
+    const icon_container = document.createElement('div');
+    icon_container.classList.add('flexRowTop');
+
+    // Add icon image    
+    const icon_image = document.createElement('img');
+    icon_image.src = icon_url;
+    icon_image.alt = icon_name;
+
+    // Set the width and height of the image
+    icon_image.width = 50; // Set the desired width in pixels
+    icon_image.height = 50; // Set the desired height in pixels
+    icon_container.appendChild(icon_image);
+
+    // Create the "X" button
+    const delete_button = document.createElement('button');
+    delete_button.classList.add('XBtn');
+    delete_button.textContent = 'X';
+
+    // Add event listener to the "X" button
+    delete_button.addEventListener('click', function() {
+      // Should event listener be removed?
+      icon.remove();      
+    });
+
+    icon_container.appendChild(delete_button);
+
+    // Add icon image and "X" button to icon column grid
+    icon.appendChild(icon_container);
+
+    // Add icon name 
+    const icon_name_input = document.createElement('p');
+    icon_name_input.classList.add('menuItem');
+    icon_name_input.textContent = icon_name;
+    icon.appendChild(icon_name_input);
+    
+    return icon;
+  }
+
+
+  // A labeless dropdown to be displayed and hidden when the toggle is clicked.
+  createCustomDropdownItem(dropdown_container, dropdown_toggle) {
+    // Create the custom dropdown menu
+    const dropdown_menu = document.createElement('ul');
+    dropdown_menu.classList.add('hidden');
+    dropdown_menu.classList.add('dropdown-menu');
+
+    // Toggle the dropdown menu on click
+    dropdown_toggle.addEventListener('click', () => {
+      dropdown_menu.classList.toggle('hidden');
+    });
+
+    // Append the dropdown menu to the container
+    dropdown_container.appendChild(dropdown_menu);
+
+    // Hide the dropdown menu when clicking outside
+    document.addEventListener('click', event => {
+      if (!dropdown_container.contains(event.target)) {
+        dropdown_menu.classList.add('hidden');
+      }
+    });
+    
+    return dropdown_menu;
+  }
+
 
   createEditableDropdownItem(label_text, options, default_value, addNewOption, callback, dropdown_callback) {
     const menu_item = document.createElement('li');
@@ -222,7 +357,6 @@ class Menu {
 
     // Disable Ctrl+Z CTRL+Y browser default
     input_element.addEventListener('keydown', this.disableDefaults.bind(this));
-
     dropdown_container.appendChild(input_element);
 
     // Create the dropdown toggle button
@@ -230,19 +364,11 @@ class Menu {
     dropdown_toggle.classList.add('dropdown-toggle');
     dropdown_container.appendChild(dropdown_toggle);
 
-    // Create the dropdown menu
-    const dropdown_menu = document.createElement('ul');
-    dropdown_menu.classList.add('hidden');
-    dropdown_menu.classList.add('dropdown-menu');
-
+    // Create the custom dropdown menu
+    const dropdown_menu = this.createCustomDropdownItem(dropdown_container, dropdown_toggle);
 
     // Populate the dropdown
     this.populateCustomDropdown(dropdown_menu, input_element, options, dropdown_callback, addNewOption);
-
-    // Toggle the dropdown menu on click
-    dropdown_toggle.addEventListener('click', () => {
-      dropdown_menu.classList.toggle('hidden');
-    });
 
     // List to changes in dropdown element, and apply the input callback
     input_element.addEventListener('change', function() {
@@ -254,15 +380,6 @@ class Menu {
       });
     });
 
-    // Hide the dropdown menu when clicking outside
-    document.addEventListener('click', event => {
-      if (!dropdown_container.contains(event.target)) {
-        dropdown_menu.classList.add('hidden');
-      }
-    });
-
-    // Append the dropdown menu to the container
-    dropdown_container.appendChild(dropdown_menu);
   
     // Append the dropdown container to the menu item
     menu_item.appendChild(dropdown_container);
@@ -271,6 +388,10 @@ class Menu {
   }
 
   populateDropdown(dropdown_element, options, addNewOption=false) {
+    // Clear dropdown
+    dropdown_element.innerHTML = '';
+
+    // Populate the dropdown menu with options
     options.forEach(option => {
       const option_element = document.createElement('option');
       option_element.value = option.value;
@@ -285,15 +406,20 @@ class Menu {
     }
   }
   populateCustomDropdown(dropdown_element, text_element, options, callback, addNewOption=false) {
+      // Clear dropdown
+      dropdown_element.innerHTML = '';
+
       // Populate the dropdown menu with options
       options.forEach(option => {
         const option_element = document.createElement('li');
-        option_element.textContent = option.text;
+        option_element.textContent = option.name;
         option_element.addEventListener('click', () => {
           dropdown_element.classList.add('hidden');
-          text_element.value = option.text;
-          text_element.setAttribute("embedded_value", option.value);
-          callback({name: option.text, value: option.value});
+          if (text_element) {
+            text_element.value = option.name;
+            text_element.setAttribute("embedded_value", option.value);
+          }
+          callback({name: option.name, value: option.value});
         });
         dropdown_element.appendChild(option_element);
       });
@@ -320,6 +446,7 @@ class TypeMenu extends Menu {
     this.selected_item_uuid = null;
     this.selected_dark_color_info = null;
     this.selected_light_color_info = null;
+    this.selected_icons = null;
     this.setDefaultValues();
 
     // Populate menu list it interactive options
@@ -336,7 +463,10 @@ class TypeMenu extends Menu {
     const selected_colors = this.project_state.getColorsFromItem(this.selected_item_uuid);
     this.selected_dark_color_info = selected_colors.dark;
     this.selected_light_color_info = selected_colors.light;
+  }
 
+  updateIconInfo() {
+    this.selected_icons = this.project_state.getIconsFromItem(this.selected_item_uuid);
   }
 
   setDefaultValues() {
@@ -345,6 +475,8 @@ class TypeMenu extends Menu {
     this.selected_item_uuid = Object.entries(types)[0][0];
     // Updates default colors based on selected_item_uuid
     this.updateColorInfo();
+    // Update selected icons based on selected_item_uuid
+    this.updateIconInfo();
 
     // Set defaut values
     this.default_values = {
@@ -429,6 +561,19 @@ class TypeMenu extends Menu {
           this.toggleColorPicker(this.selected_light_color_info);
         } 
       },
+      {
+        element_name: 'iconGallery',
+        label_text: 'Icons', 
+        input_type: 'iconGallery',
+        options: this.getOptionsList(this.project_state.getCategory("Icons")),
+        default_value: this.selected_icons,
+        secondary_callback: (new_icon_uuid) => {
+          this.addNewIcon(new_icon_uuid).bind(this)
+        },
+        callback: () => {                  
+          console.log("TEST");
+        }        
+      }
     ];
 
     // Running the function that adds menu items to menu
@@ -458,8 +603,7 @@ class TypeMenu extends Menu {
     this.selected_item_uuid = option.value;
 
     // Update colors of clickable boxes
-    this.updatColorFields();
-    
+    this.updatColorFields();    
 
     // Update Icon field
     this.updateIconFields();
@@ -478,11 +622,31 @@ class TypeMenu extends Menu {
 
   }
 
-  updateIconFields() {
+  updateIconFields() {   
 
+    // Update selected icons based on selected_item_uuid
+    this.updateIconInfo();
+
+    // Repopulate icon gallery with updated icon options
+    const icon_gallery = this.input_elements["iconGallery"];
+    this.populateIconGallery(icon_gallery, this.selected_icons);
+
+    // Repopulate the dropdown menu for the add icon button
+    const dropdown_menu = icon_gallery.parentNode.querySelector('.dropdown-menu');
+    this.populateCustomDropdown(dropdown_menu, null, this.getOptionsList(this.project_state.getCategory("Icons")), this.updateIconFields, false);
   }
 
-  addType() {
+  addNewIcon(new_icon_uuid) {
+    // Update project state with new icon field
+    const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
+    const icon_list = type_item.icons;
+    icon_list.push(new_icon_uuid.value);
+    this.updateProjectStateProperty(this.selected_item_uuid, "icons", icon_list);
+
+    this.updateIconFields();
+  }
+
+  addNewType() {
 
   }  
 
@@ -501,7 +665,7 @@ class TypeMenu extends Menu {
         const item = JSON_category[key];
         options.push({
           value: key,
-          text: item.name
+          name: item.name
         });
       }
     }

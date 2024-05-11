@@ -131,7 +131,7 @@
 
 }
 
-.XButton {
+.XBtn {
   position: relative;
   top: 0;
   right: 0;
@@ -141,7 +141,7 @@
   cursor: pointer;
 }
 
-.XButton:hover {
+.XBtn:hover {
   color:#838383;
 }
 

@@ -439,6 +439,16 @@ class JSONState {
       return selected_colors
     }
 
+    getIconsFromItem(item_uuid) {
+      const icons = this.getCategory("Icons");
+      const type_item = this.getItem("Types", item_uuid);
+      let selected_icons = type_item.icons.map(icon_uuid => {
+        return icons[icon_uuid];
+      });
+
+      return selected_icons;
+    }
+
 
     getUniquePropertiesByCondition(category, property_to_get, property_to_check, property_value) {
       const filteredObjects = Object.values(this.getCategory(category))
