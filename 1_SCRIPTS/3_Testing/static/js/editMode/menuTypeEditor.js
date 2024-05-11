@@ -75,6 +75,11 @@ class Menu {
     this.visible = false;
     this.menu = document.getElementById(menu_id);
     this.menu_list = this.menu.querySelector('ul');
+    this.exit_btn = this.menu.querySelector('.exitBtn');
+    this.exit_btn.addEventListener('mousedown', () => {
+      this.exit_btn.classList.add('exitBtnPressed');
+    });
+    this.exit_btn.addEventListener('click', this.hide.bind(this));
    
   } 
   
@@ -83,9 +88,10 @@ class Menu {
     this.menu.classList.remove('hidden');
   }
 
-  hide() {    
+  hide() {   
+    this.exit_btn.classList.remove('exitBtnPressed');
     this.visible = false;
-    this.menu.classList.add('hidden');
+    this.menu.classList.add('hidden');    
   }
 
   toggle() {
