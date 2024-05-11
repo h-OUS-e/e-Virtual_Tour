@@ -336,13 +336,24 @@ class TypeMenu extends Menu {
         default_value: this.default_values.type_name, 
         options: type_options,
         // Function on change in text input field
-        callback: (option) => {
-          // Update project state
-          this.updateProjectStateProperty(option.value, "name", option.name);        
-
+        callback: (option) => {      
           // Get filtered options from updated state
-          const types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
-          const type_options = this.getOptionsList(types);
+          let types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
+          let type_options = this.getOptionsList(types);
+
+          const existing_names = Object.values(types).map(item => item.name);
+          if (existing_names.includes(option.name)) {
+            // Display a warning message or handle the error
+            alert("The name already exists in the options. Please choose a different name.");
+            return; // Exit the method without updating the project state or dropdown
+          }
+          
+          // Update project state
+          this.updateProjectStateProperty(option.value, "name", option.name); 
+
+          // Get updated type options
+          types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
+          type_options = this.getOptionsList(types);
 
           // Repopulate dropdown
           const dropdown_menu = this.input_elements["selectTypeCustom"].parentNode.querySelector('.dropdown-menu');
@@ -352,6 +363,8 @@ class TypeMenu extends Menu {
             this.input_elements["selectTypeCustom"], 
             type_options, 
             custom_dropdown_callback);
+
+          
         },
         // Function on change in custom dropdown menu
         secondary_callback: custom_dropdown_callback,
@@ -387,6 +400,8 @@ class TypeMenu extends Menu {
   }
 
   updateProjectStateProperty(item_uuid, property, new_value) {
+  
+
     const JSON_updates = [{property: property, value: new_value}];
     this.project_state.updateProperties(JSON_updates, "Types",item_uuid);
   }
