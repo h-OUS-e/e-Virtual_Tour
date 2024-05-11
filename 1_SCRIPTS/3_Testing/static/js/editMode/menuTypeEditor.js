@@ -232,7 +232,7 @@ class Menu {
     // Hide the dropdown menu when clicking outside
     document.addEventListener('click', event => {
       if (!dropdown_container.contains(event.target)) {
-        dropdown_menu.classList.remove('show');
+        dropdown_menu.classList.add('hidden');
       }
     });
 
