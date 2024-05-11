@@ -240,7 +240,7 @@ class Menu {
     add_icon_wrapper.appendChild(add_icon_text);
 
     // Create a container for the icon and the "X" button
-    this.populateIconGallery(icon_gallery, selcted_icons);
+    this.populateIconGallery(icon_gallery, selcted_icons, callback);
     const input_element = icon_gallery;
 
     // Create the custom dropdown menu
@@ -252,18 +252,18 @@ class Menu {
     return { menu_item, input_element };    
   }
 
-  populateIconGallery(icon_gallery, icon_options) {
+  populateIconGallery(icon_gallery, selcted_icons, callback_on_remove) {
     // Clear the icon gallery
     icon_gallery.innerHTML = "";
 
     // Populate it the the given icon options
-    icon_options.forEach(icon_option => {          
-      const icon = this.addIcon(icon_option.name, icon_option.src);
+    selcted_icons.forEach(selcted_icon => {          
+      const icon = this.addIcon(selcted_icon.name, selcted_icon.src, selcted_icon.uuid, callback_on_remove);
       icon_gallery.appendChild(icon);
     });  
   }
 
-  addIcon(icon_name, icon_url) {
+  addIcon(icon_name, icon_url, icon_uuid, callback_on_remove) {
     const icon = document.createElement('div');
     icon.classList.add('flexColumn');
 
@@ -288,8 +288,13 @@ class Menu {
 
     // Add event listener to the "X" button
     delete_button.addEventListener('click', function() {
-      // Should event listener be removed?
-      icon.remove();      
+      // Remove html icon element from gallery
+      icon.remove(); 
+      // To update state on remove
+      if (callback_on_remove) {
+        callback_on_remove(icon_uuid);
+      }
+           
     });
 
     icon_container.appendChild(delete_button);
@@ -568,10 +573,10 @@ class TypeMenu extends Menu {
         options: this.getOptionsList(this.project_state.getCategory("Icons")),
         default_value: this.selected_icons,
         secondary_callback: (new_icon_uuid) => {
-          this.addNewIcon(new_icon_uuid).bind(this)
+          this.addNewIcon(new_icon_uuid); // Invoke addNewIcon directly
         },
-        callback: () => {                  
-          console.log("TEST");
+        callback: (icon_uuid) => {   
+          this.deleteIcon(icon_uuid);
         }        
       }
     ];
@@ -593,6 +598,7 @@ class TypeMenu extends Menu {
     });
   }
 
+
   updateProjectStateProperty(item_uuid, property, new_value) {
     const JSON_updates = [{property: property, value: new_value}];
     this.project_state.updateProperties(JSON_updates, "Types",item_uuid);
@@ -609,6 +615,7 @@ class TypeMenu extends Menu {
     this.updateIconFields();
   }
 
+
   updatColorFields() {
     this.updateColorInfo();
     const dark_color_box = this.input_elements["boxDarkColor"];
@@ -623,13 +630,12 @@ class TypeMenu extends Menu {
   }
 
   updateIconFields() {   
-
     // Update selected icons based on selected_item_uuid
     this.updateIconInfo();
 
     // Repopulate icon gallery with updated icon options
     const icon_gallery = this.input_elements["iconGallery"];
-    this.populateIconGallery(icon_gallery, this.selected_icons);
+    this.populateIconGallery(icon_gallery, this.selected_icons, null);
 
     // Repopulate the dropdown menu for the add icon button
     const dropdown_menu = icon_gallery.parentNode.querySelector('.dropdown-menu');
@@ -637,13 +643,28 @@ class TypeMenu extends Menu {
   }
 
   addNewIcon(new_icon_uuid) {
-    // Update project state with new icon field
+    // Push new icon uuid to the list of icons
     const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
     const icon_list = type_item.icons;
     icon_list.push(new_icon_uuid.value);
+    
+    // Update project state with new icon field
+    this.updateProjectStateProperty(this.selected_item_uuid, "icons", icon_list);
+    
+    // Update icon gallery to add new icon
+    this.updateIconFields();
+  }
+
+  deleteIcon(icon_uuid) {
+    // Remove icon from list of icons
+    const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
+    let icon_list = type_item.icons;
+    icon_list = icon_list.filter(item => item !== icon_uuid);
+    
+    // Update project state with new icon field
     this.updateProjectStateProperty(this.selected_item_uuid, "icons", icon_list);
 
-    this.updateIconFields();
+    // No need to repopulate icon gallery as the icon container will be removed
   }
 
   addNewType() {
