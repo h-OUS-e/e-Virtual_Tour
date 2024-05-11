@@ -134,6 +134,7 @@ class Menu {
     return { menu_item, input_element };
   }
 
+
   // Create a regular clickable menu item
   createClickableItem(label_text, box_color, callback) {
     const menu_item = document.createElement('li');
@@ -150,16 +151,12 @@ class Menu {
     clickable_box.classList.add('clickable-box');
     clickable_box.addEventListener('click', callback);
     clickable_box.style.backgroundColor = box_color.hex_code;
-
-  
-    // Create the item text inside the box
-    const item_text_element = document.createElement('span');
-    item_text_element.textContent = box_color.name;
-    clickable_box.appendChild(item_text_element);
+    clickable_box.textContent = box_color.name;
   
     menu_item.appendChild(clickable_box);
-  
-    return { menu_item, clickable_box };
+
+    const input_element = clickable_box;  
+    return { menu_item, input_element };
   }
 
 
@@ -316,7 +313,6 @@ class TypeMenu extends Menu {
     // Populate menu list it interactive options
     this.createMenuItems();
 
-
   }
 
   resetMenu() {
@@ -324,22 +320,20 @@ class TypeMenu extends Menu {
     this.createMenuItems();
   }
 
+  updateColorInfo() {
+    const selected_colors = this.project_state.getColorsFromItem(this.selected_item_uuid);
+    this.selected_dark_color_info = selected_colors.dark;
+    this.selected_light_color_info = selected_colors.light;
+  }
+
   setDefaultValues() {
     // Get filtered types as options
     const types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
     this.selected_item_uuid = Object.entries(types)[0][0];
+    // Updates default colors based on selected_item_uuid
+    this.updateColorInfo();
 
-    // Get color info related to selected item
-    const project_colors = this.project_state.getColors();
-    const selected_colors = Object.entries(project_colors).filter(([item_uuid, value]) => value.reference_uuid === this.selected_item_uuid);    
-    this.selected_dark_color_info = selected_colors
-      .find(([, colorInfo]) => colorInfo.inner_property_name === "dark")?.[1];
-
-    this.selected_light_color_info = selected_colors
-      .find(([, colorInfo]) => colorInfo.inner_property_name === "light")?.[1];
-
-    
-      // Set defaut values
+    // Set defaut values
     this.default_values = {
       type_name: {name: Object.entries(types)[0][1].name, value: Object.entries(types)[0][0]}, 
       dark_color: {name: this.selected_dark_color_info.name, value: this.selected_dark_color_info}, 
@@ -353,31 +347,7 @@ class TypeMenu extends Menu {
 
     // Get filtered types as options
     const types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
-    const type_options = this.getOptionsList(types);
-
-    // callback function for change in dropdown menu
-    const custom_dropdown_callback = (option) => {
-      // Getting current type index
-      this.selected_item_uuid = option.value;
-
-      // Update colors
-      const dark_color_box = this.input_elements["boxDarkColor"];
-      console.log("TEST", dark_color_box, this.input_elements);
-      const light_color_box = this.input_elements["boxLightColor"];
-
-      // Get color info related to selected item
-      const project_colors = this.project_state.getColors();
-      const selected_colors = Object.entries(project_colors).filter(([item_uuid, value]) => value.reference_uuid === this.selected_item_uuid);    
-      this.selected_dark_color_info = selected_colors
-        .find(([, colorInfo]) => colorInfo.inner_property_name === "dark")?.[1];
-
-      this.selected_light_color_info = selected_colors
-        .find(([, colorInfo]) => colorInfo.inner_property_name === "light")?.[1];
-
-      
-      dark_color_box.style.backgroundColor = this.selected_dark_color_info.hex_code;
-      light_color_box.style.backgroundColor = this.selected_light_color_info.hex_code;
-    }
+    const type_options = this.getOptionsList(types);    
 
     // Creating interactive menu items from a dict
     const options = [
@@ -422,10 +392,10 @@ class TypeMenu extends Menu {
             dropdown_menu, 
             this.input_elements["selectTypeCustom"], 
             type_options, 
-            custom_dropdown_callback);          
+            this.updateEditFields.bind(this));          
         },
         // Function on change in custom dropdown menu
-        secondary_callback: custom_dropdown_callback,
+        secondary_callback: this.updateEditFields.bind(this),
       },
       { 
         element_name: 'boxDarkColor',
@@ -460,6 +430,7 @@ class TypeMenu extends Menu {
         option.callback,
         option.secondary_callback
       );
+      console.log("TEST 2", option.element_name);
       if (option.element_name) {
         console.log("TEST", input_element);
         this.input_elements[option.element_name] = input_element; // Store input element reference
@@ -472,9 +443,27 @@ class TypeMenu extends Menu {
     this.project_state.updateProperties(JSON_updates, "Types",item_uuid);
   }
 
+  updateEditFields(option) {
+    // Getting current type index
+    this.selected_item_uuid = option.value;
+
+    // Update colors of clickable boxes
+    this.updateColorInfo();
+    const dark_color_box = this.input_elements["boxDarkColor"];
+    const light_color_box = this.input_elements["boxLightColor"];
+
+    dark_color_box.style.backgroundColor = this.selected_dark_color_info.hex_code;
+    dark_color_box.textContent = this.selected_dark_color_info.name;
+
+    light_color_box.style.backgroundColor = this.selected_light_color_info.hex_code;
+    light_color_box.textContent = this.selected_light_color_info.name;
+
+    // Update Icon field
+  }
+
   addType() {
 
-  }
+  }  
 
   filterCategory(JSON_category, filter) {
     let filtered_category = Object.fromEntries(

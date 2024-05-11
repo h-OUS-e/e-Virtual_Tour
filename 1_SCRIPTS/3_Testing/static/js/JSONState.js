@@ -427,6 +427,18 @@ class JSONState {
       return color_dict;
     }
 
+    getColorsFromItem(item_uuid) {
+      const project_colors = this.getColors();
+      let selected_colors = Object.entries(project_colors).filter(([_, value]) => value.reference_uuid === item_uuid);
+      selected_colors = selected_colors.reduce((color_obj, [, color_info]) => {
+        const { inner_property_name, ...rest } = color_info;
+        color_obj[inner_property_name] = rest;
+        return color_obj;
+      }, {}); 
+
+      return selected_colors
+    }
+
 
     getUniquePropertiesByCondition(category, property_to_get, property_to_check, property_value) {
       const filteredObjects = Object.values(this.getCategory(category))
