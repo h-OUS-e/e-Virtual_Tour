@@ -47,10 +47,16 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
+  document.addEventListener("updateColor", function(event) 
+  {
+    type_menu.updatColorFields();
+  });
+
 
   /*******************************************************************************
     * 4. EVENT LISTENER JSON UPDATES
   *******************************************************************************/ 
+ 
 
   /*******************************************************************************
   * 5. FUNCTIONS
@@ -324,6 +330,7 @@ class TypeMenu extends Menu {
     const selected_colors = this.project_state.getColorsFromItem(this.selected_item_uuid);
     this.selected_dark_color_info = selected_colors.dark;
     this.selected_light_color_info = selected_colors.light;
+
   }
 
   setDefaultValues() {
@@ -381,6 +388,9 @@ class TypeMenu extends Menu {
           // Update project state
           this.updateProjectStateProperty(option.value, "name", option.name); 
 
+          // Update color field names
+          this.updatColorFields();
+
           // Get updated type options
           types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
           type_options = this.getOptionsList(types);
@@ -400,21 +410,17 @@ class TypeMenu extends Menu {
       { 
         element_name: 'boxDarkColor',
         label_text: 'Dark Color', 
-        default_value: this.default_values.dark_color.value, 
-        callback: () => console.log('Option 1 clicked') 
+        default_value: this.selected_dark_color_info, 
+        callback: () => {                  
+          this.toggleColorPicker(this.selected_dark_color_info);
+        },
       },
       { 
         element_name: 'boxLightColor',
         label_text: 'Light Color', 
-        default_value: this.default_values.light_color.value,   
-        callback: () => {
-          const color_info = {
-            category: "Types",
-            reference_uuid: this.selected_item_uuid,
-            inner_property_name: 'light',
-          }
-          const color_name = 
-          toggleColorPicker(color_info, color_name, hex_code);
+        default_value: this.selected_light_color_info,   
+        callback: () => {                  
+          this.toggleColorPicker(this.selected_light_color_info);
         } 
       },
     ];
@@ -430,9 +436,7 @@ class TypeMenu extends Menu {
         option.callback,
         option.secondary_callback
       );
-      console.log("TEST 2", option.element_name);
       if (option.element_name) {
-        console.log("TEST", input_element);
         this.input_elements[option.element_name] = input_element; // Store input element reference
       }
     });
@@ -448,6 +452,14 @@ class TypeMenu extends Menu {
     this.selected_item_uuid = option.value;
 
     // Update colors of clickable boxes
+    this.updatColorFields();
+    
+
+    // Update Icon field
+    this.updateIconFields();
+  }
+
+  updatColorFields() {
     this.updateColorInfo();
     const dark_color_box = this.input_elements["boxDarkColor"];
     const light_color_box = this.input_elements["boxLightColor"];
@@ -458,7 +470,10 @@ class TypeMenu extends Menu {
     light_color_box.style.backgroundColor = this.selected_light_color_info.hex_code;
     light_color_box.textContent = this.selected_light_color_info.name;
 
-    // Update Icon field
+  }
+
+  updateIconFields() {
+
   }
 
   addType() {
@@ -526,15 +541,15 @@ class TypeMenu extends Menu {
             }, 1200);
   }
 
-  toggleColorPicker(color_info, color_name, hex_code) {
+  toggleColorPicker(color_info) {
       let event = new CustomEvent('showColorPicker', {
         detail: {
           category: color_info.category,
           reference_uuid: color_info.reference_uuid,
-          property_name: "colors",
+          property_name: color_info.property_name,
           inner_property_name: color_info.inner_property_name,
-          color_name: color_name,
-          color: hex_code,
+          color_name: color_info.name,
+          color: color_info.hex_code,
         }
       });
       scene.dispatchEvent(event); 

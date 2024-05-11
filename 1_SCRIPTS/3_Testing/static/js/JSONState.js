@@ -432,7 +432,7 @@ class JSONState {
       let selected_colors = Object.entries(project_colors).filter(([_, value]) => value.reference_uuid === item_uuid);
       selected_colors = selected_colors.reduce((color_obj, [, color_info]) => {
         const { inner_property_name, ...rest } = color_info;
-        color_obj[inner_property_name] = rest;
+        color_obj[inner_property_name] = color_info;
         return color_obj;
       }, {}); 
 
