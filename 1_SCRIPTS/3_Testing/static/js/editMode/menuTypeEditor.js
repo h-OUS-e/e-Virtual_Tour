@@ -91,6 +91,8 @@ class Menu {
       menu_item = this.createDropdownItem(label_text, options, addNewOption, callback);
     } else if (input_type === 'text') {
       menu_item = this.createInputItem(label_text, default_value, callback);
+    } else if (input_type === 'editableDropdown') {
+      menu_item = this.createEditableDropdownItem(label_text, options, addNewOption, callback);
     } else {
       menu_item = this.createClickableItem(label_text, default_value, callback);
     }
@@ -113,7 +115,7 @@ class Menu {
     // Create text input
     const input_element = document.createElement('input');
     input_element.type = 'text';
-    input_element.setAttribute('value', default_value);
+    input_element.value = default_value;
     input_element.addEventListener('change', callback);
     menu_item.appendChild(input_element);
 
@@ -162,6 +164,68 @@ class Menu {
     return { menu_item, input_element };
   }
 
+
+  createEditableDropdownItem(label_text, options, addNewOption, callback) {
+    const menu_item = document.createElement('li');
+    menu_item.classList.add('flexRow');
+  
+    // Create the label
+    const label = document.createElement('span');
+    label.textContent = label_text;
+    menu_item.appendChild(label);
+  
+    // Create the editable dropdown container
+    const dropdown_container = document.createElement('div');
+    dropdown_container.classList.add('editable-dropdown');
+  
+    // Create the text input
+    const input_element = document.createElement('input');
+    input_element.type = 'text';
+    input_element.value = options[0].text;
+    dropdown_container.appendChild(input_element);
+
+    // Create the dropdown toggle button
+    const dropdown_toggle = document.createElement('button');
+    dropdown_toggle.classList.add('dropdown-toggle');
+    dropdown_container.appendChild(dropdown_toggle);
+
+    // Create the dropdown menu
+    const dropdown_menu = document.createElement('select');
+    dropdown_menu.classList.add('dropdown-menu');
+    dropdown_menu.classList.add('hidden');
+
+
+    // Populate the dropdown
+    this.populateDropdown(dropdown_menu, options, addNewOption);
+
+    // Change text input on dropdown change
+    dropdown_menu.addEventListener('change', () => {
+      const selected_value = dropdown_menu.value;
+      const selected_option = options.find(option => option.value === selected_value);
+      if (selected_option) {
+        input_element.value = selected_option.text;
+      }  
+      dropdown_menu.value = dropdown_menu;
+      dropdown_menu.classList.add('hidden');
+    });
+
+    // Toggle the dropdown menu on click
+    dropdown_toggle.addEventListener('click', () => {
+      dropdown_menu.classList.toggle('hidden');
+    });
+
+    // List to changes in dropdown element, and apply the input callback
+    input_element.addEventListener('change', callback);
+
+    // Append the dropdown menu to the container
+    dropdown_container.appendChild(dropdown_menu);
+  
+    // Append the dropdown container to the menu item
+    menu_item.appendChild(dropdown_container);
+  
+    return { menu_item, input_element };
+  }
+
   populateDropdown(dropdown_element, options, addNewOption=false) {
     options.forEach(option => {
       const option_element = document.createElement('option');
@@ -198,15 +262,11 @@ class TypeMenu extends Menu {
       { 
         element_name: 'selectType',
         label_text: 'Select Type', 
-        input_type: 'dropdown', 
+        input_type: 'editableDropdown', 
         options: type_options,
         callback: () => {
           console.log("TEST", this.input_elements);
-          const selected_value = this.input_elements.selectType.value;
-          const selected_option = type_options.find(option => option.value === selected_value);
-          if (selected_option) {
-            this.input_elements.nameInput.value = selected_option.text;
-          }        
+                
         } 
       },
       { 
