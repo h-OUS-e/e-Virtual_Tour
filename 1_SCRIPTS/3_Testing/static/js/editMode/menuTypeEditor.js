@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
+ document.addEventListener('hellow', function() {
+  console.log("TEST");
+  console.log(project_state.getCategory(CATEGORY));
+ });
 
   /*******************************************************************************
     * 4. EVENT LISTENER JSON UPDATES
@@ -182,6 +186,8 @@ class Menu {
     const input_element = document.createElement('input');
     input_element.type = 'text';
     input_element.value = options[0].text;
+    input_element.setAttribute("item_uuid", options[0].value);
+
     dropdown_container.appendChild(input_element);
 
     // Create the dropdown toggle button
@@ -190,24 +196,13 @@ class Menu {
     dropdown_container.appendChild(dropdown_toggle);
 
     // Create the dropdown menu
-    const dropdown_menu = document.createElement('select');
-    dropdown_menu.classList.add('dropdown-menu');
+    const dropdown_menu = document.createElement('ul');
     dropdown_menu.classList.add('hidden');
+    dropdown_menu.classList.add('dropdown-menu');
 
 
     // Populate the dropdown
-    this.populateDropdown(dropdown_menu, options, addNewOption);
-
-    // Change text input on dropdown change
-    dropdown_menu.addEventListener('change', () => {
-      const selected_value = dropdown_menu.value;
-      const selected_option = options.find(option => option.value === selected_value);
-      if (selected_option) {
-        input_element.value = selected_option.text;
-      }  
-      dropdown_menu.value = dropdown_menu;
-      dropdown_menu.classList.add('hidden');
-    });
+    this.populateCustomDropdown(dropdown_menu, input_element, options, callback, addNewOption);
 
     // Toggle the dropdown menu on click
     dropdown_toggle.addEventListener('click', () => {
@@ -215,7 +210,16 @@ class Menu {
     });
 
     // List to changes in dropdown element, and apply the input callback
-    input_element.addEventListener('change', callback);
+    input_element.addEventListener('change', function() {
+      callback({name: input_element.value, item_uuid: input_element.getAttribute('item_uuid')});
+    });
+
+    // Hide the dropdown menu when clicking outside
+    document.addEventListener('click', event => {
+      if (!dropdown_container.contains(event.target)) {
+        dropdown_menu.classList.remove('show');
+      }
+    });
 
     // Append the dropdown menu to the container
     dropdown_container.appendChild(dropdown_menu);
@@ -230,7 +234,7 @@ class Menu {
     options.forEach(option => {
       const option_element = document.createElement('option');
       option_element.value = option.value;
-      option_element.textContent = option.text;
+      option_element.textConteitent = option.text;
       dropdown_element.appendChild(option_element);
     });
 
@@ -239,9 +243,25 @@ class Menu {
       const custom_option = new Option("Add New Option", "add_new");
       dropdown_element.appendChild(custom_option);
     }
-
   }
+  populateCustomDropdown(dropdown_element, text_element, options, callback, addNewOption=false) {
+      // Populate the dropdown menu with options
+      options.forEach(option => {
+        const option_element = document.createElement('li');
+        option_element.textContent = option.text;
+        option_element.addEventListener('click', () => {
+          dropdown_element.classList.add('hidden');
+          text_element.value = option.text;
+          text_element.setAttribute("item_uuid", option.value);
+
+          // callback({text: option.text, value: option.value});
+        });
+        dropdown_element.appendChild(option_element);
+      });
+    }
 }
+
+
 
 
 class TypeMenu extends Menu {
@@ -260,13 +280,12 @@ class TypeMenu extends Menu {
     // Creating interactive menu items from a dict
     const options = [
       { 
-        element_name: 'selectType',
+        element_name: 'selectTypeCustom',
         label_text: 'Select Type', 
         input_type: 'editableDropdown', 
         options: type_options,
-        callback: () => {
-          console.log("TEST", this.input_elements);
-                
+        callback: (option) => {
+          this.updateProjectState(option.item_uuid, "name", option.name);            
         } 
       },
       { 
@@ -289,6 +308,17 @@ class TypeMenu extends Menu {
         this.input_elements[option.element_name] = input_element; // Store input element reference
       }
     });
+  }
+
+  updateProjectState(item_uuid, property, new_value) {
+    const JSON_updates = [{property: property, value: new_value}];
+    this.project_state.updateProperties(JSON_updates, "Types",item_uuid);
+    const event = new CustomEvent("hellow");
+    document.dispatchEvent(event);
+  }
+
+  addType() {
+
   }
 
   filterCategory(JSON_category, filter) {
