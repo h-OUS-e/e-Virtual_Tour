@@ -111,7 +111,9 @@ class Menu {
   // Create an input menu item
   createInputItem(label_text, default_value, callback) {
     const menu_item = document.createElement('li');
-    menu_item.classList.add('flexRow');
+    menu_item.classList.add('grid2Column');
+    menu_item.classList.add('col14');
+
 
     // Create the label
     const label = document.createElement('span');
@@ -133,28 +135,40 @@ class Menu {
   }
 
   // Create a regular clickable menu item
-  createClickableItem(label_text, item_text, callback) {
+  createClickableItem(label_text, box_color, callback) {
     const menu_item = document.createElement('li');
-    menu_item.classList.add('flexRow');
+    menu_item.classList.add('grid2Column');
+    menu_item.classList.add('col14');
 
     // Create the label
     const label = document.createElement('span');
     label.textContent = label_text;
     menu_item.appendChild(label);
+  
+    // Create the clickable box
+    const clickable_box = document.createElement('div');
+    clickable_box.classList.add('clickable-box');
+    clickable_box.addEventListener('click', callback);
+    clickable_box.style.backgroundColor = box_color.hex_code;
 
-    const input_element = document.createElement('span');
-    input_element.textContent = item_text;
-    input_element.addEventListener('click', callback);   
-    menu_item.appendChild(input_element);
-
-    return { menu_item, input_element };
+  
+    // Create the item text inside the box
+    const item_text_element = document.createElement('span');
+    item_text_element.textContent = box_color.name;
+    clickable_box.appendChild(item_text_element);
+  
+    menu_item.appendChild(clickable_box);
+  
+    return { menu_item, clickable_box };
   }
 
 
   // Create a dropdown menu item
   createDropdownItem(label_text, options, default_value, addNewOption, callback) {
     const menu_item = document.createElement('li');
-    menu_item.classList.add('flexRow');
+    menu_item.classList.add('grid2Column');
+    menu_item.classList.add('col14');
+
 
     // Create the label
     const label = document.createElement('span');
@@ -177,7 +191,9 @@ class Menu {
 
   createEditableDropdownItem(label_text, options, default_value, addNewOption, callback, dropdown_callback) {
     const menu_item = document.createElement('li');
-    menu_item.classList.add('flexRow');
+    menu_item.classList.add('grid2Column');
+    menu_item.classList.add('col14');
+
   
     // Create the label
     const label = document.createElement('span');
@@ -190,13 +206,13 @@ class Menu {
   
     // Create the text input
     const input_element = document.createElement('input');
+    input_element.classList.add('text-input');
     input_element.type = 'text';
     input_element.value = default_value.name;
     input_element.setAttribute("embedded_value", default_value.value);
 
     // Disable Ctrl+Z CTRL+Y browser default
     input_element.addEventListener('keydown', this.disableDefaults.bind(this));
-
 
     dropdown_container.appendChild(input_element);
 
@@ -292,10 +308,14 @@ class TypeMenu extends Menu {
 
     // Set defaut values
     this.default_values;
+    this.selected_item_uuid = null;
+    this.selected_dark_color_info = null;
+    this.selected_light_color_info = null;
     this.setDefaultValues();
 
     // Populate menu list it interactive options
     this.createMenuItems();
+
 
   }
 
@@ -307,11 +327,23 @@ class TypeMenu extends Menu {
   setDefaultValues() {
     // Get filtered types as options
     const types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
-    // Set defaut values
+    this.selected_item_uuid = Object.entries(types)[0][0];
+
+    // Get color info related to selected item
+    const project_colors = this.project_state.getColors();
+    const selected_colors = Object.entries(project_colors).filter(([item_uuid, value]) => value.reference_uuid === this.selected_item_uuid);    
+    this.selected_dark_color_info = selected_colors
+      .find(([, colorInfo]) => colorInfo.inner_property_name === "dark")?.[1];
+
+    this.selected_light_color_info = selected_colors
+      .find(([, colorInfo]) => colorInfo.inner_property_name === "light")?.[1];
+
+    
+      // Set defaut values
     this.default_values = {
       type_name: {name: Object.entries(types)[0][1].name, value: Object.entries(types)[0][0]}, 
-      dark_color: {name: null, value: null}, 
-      light_color: {name: null, value: null}
+      dark_color: {name: this.selected_dark_color_info.name, value: this.selected_dark_color_info}, 
+      light_color: {name: this.selected_light_color_info.name, value: this.selected_light_color_info}
     };
   }
 
@@ -325,6 +357,26 @@ class TypeMenu extends Menu {
 
     // callback function for change in dropdown menu
     const custom_dropdown_callback = (option) => {
+      // Getting current type index
+      this.selected_item_uuid = option.value;
+
+      // Update colors
+      const dark_color_box = this.input_elements["boxDarkColor"];
+      console.log("TEST", dark_color_box, this.input_elements);
+      const light_color_box = this.input_elements["boxLightColor"];
+
+      // Get color info related to selected item
+      const project_colors = this.project_state.getColors();
+      const selected_colors = Object.entries(project_colors).filter(([item_uuid, value]) => value.reference_uuid === this.selected_item_uuid);    
+      this.selected_dark_color_info = selected_colors
+        .find(([, colorInfo]) => colorInfo.inner_property_name === "dark")?.[1];
+
+      this.selected_light_color_info = selected_colors
+        .find(([, colorInfo]) => colorInfo.inner_property_name === "light")?.[1];
+
+      
+      dark_color_box.style.backgroundColor = this.selected_dark_color_info.hex_code;
+      light_color_box.style.backgroundColor = this.selected_light_color_info.hex_code;
     }
 
     // Creating interactive menu items from a dict
@@ -370,24 +422,31 @@ class TypeMenu extends Menu {
             dropdown_menu, 
             this.input_elements["selectTypeCustom"], 
             type_options, 
-            custom_dropdown_callback);
-
-          
+            custom_dropdown_callback);          
         },
         // Function on change in custom dropdown menu
         secondary_callback: custom_dropdown_callback,
       },
       { 
-        element_name: 'nameInput',
-        label_text: 'Enter Name',
-        input_type: 'text', 
-        default_value: type_options[0].text, 
-        callback: () => console.log('Name input clicked') },
-      { 
-        element_name: 'selectDarkColor',
+        element_name: 'boxDarkColor',
         label_text: 'Dark Color', 
-        default_value: "TEST", 
-        callback: () => console.log('Option 1 clicked') }
+        default_value: this.default_values.dark_color.value, 
+        callback: () => console.log('Option 1 clicked') 
+      },
+      { 
+        element_name: 'boxLightColor',
+        label_text: 'Light Color', 
+        default_value: this.default_values.light_color.value,   
+        callback: () => {
+          const color_info = {
+            category: "Types",
+            reference_uuid: this.selected_item_uuid,
+            inner_property_name: 'light',
+          }
+          const color_name = 
+          toggleColorPicker(color_info, color_name, hex_code);
+        } 
+      },
     ];
 
     // Running the function that adds menu items to menu
@@ -402,14 +461,13 @@ class TypeMenu extends Menu {
         option.secondary_callback
       );
       if (option.element_name) {
+        console.log("TEST", input_element);
         this.input_elements[option.element_name] = input_element; // Store input element reference
       }
     });
   }
 
   updateProjectStateProperty(item_uuid, property, new_value) {
-  
-
     const JSON_updates = [{property: property, value: new_value}];
     this.project_state.updateProperties(JSON_updates, "Types",item_uuid);
   }
@@ -477,5 +535,19 @@ class TypeMenu extends Menu {
       document.body.removeChild(fading_alert);
       fading_alert.classList.remove("fade");
             }, 1200);
+  }
+
+  toggleColorPicker(color_info, color_name, hex_code) {
+      let event = new CustomEvent('showColorPicker', {
+        detail: {
+          category: color_info.category,
+          reference_uuid: color_info.reference_uuid,
+          property_name: "colors",
+          inner_property_name: color_info.inner_property_name,
+          color_name: color_name,
+          color: hex_code,
+        }
+      });
+      scene.dispatchEvent(event); 
   }
 }
