@@ -40,10 +40,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
- document.addEventListener('hellow', function() {
-  console.log("TEST");
-  console.log(project_state.getCategory(CATEGORY));
- });
 
   /*******************************************************************************
     * 4. EVENT LISTENER JSON UPDATES
@@ -285,7 +281,21 @@ class TypeMenu extends Menu {
         input_type: 'editableDropdown', 
         options: type_options,
         callback: (option) => {
-          this.updateProjectState(option.item_uuid, "name", option.name);            
+          // Update project state
+          this.updateProjectState(option.item_uuid, "name", option.name);   
+          
+          // Get filtered options from updated state
+          const types = this.filterCategory(this.project_state.getCategory("Types"), "MediaPlayer");
+          const type_options = this.getOptionsList(types);
+
+          // Repopulate dropdown
+          const dropdown_menu = this.input_elements["selectTypeCustom"].parentNode.querySelector('.dropdown-menu');
+          dropdown_menu.innerHTML = ''; // Clear existing options
+          this.populateCustomDropdown(
+            dropdown_menu, 
+            this.input_elements["selectTypeCustom"], 
+            type_options, 
+            this.input_elements["selectTypeCustom"].callback);
         } 
       },
       { 
