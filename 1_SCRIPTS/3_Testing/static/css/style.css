@@ -34,7 +34,7 @@ html {
 /* Defining left dashboard style */
 #dashboard-container {
     height: 100%;
-    width: var(--sidebar_width);
+    width: var(--mediabar_width);
     background-color: var(--default_color);
     z-index: 3;
     position: relative 
@@ -133,7 +133,7 @@ html {
 
 
 /* Defining popup style*/
-.popup {
+/* .popup {
     position: absolute;
     top: 50%;
     left: 50%;    
@@ -151,9 +151,9 @@ html {
     border: 3px solid var(--popupLightColor);
     border-radius: 15px;
     overflow: auto;
-    z-index: 5; /* High z-index to be above other content */
+    z-index: 5; 
     color: var(--popupDarkColor);
-}
+} */
 .popup-header {
     font-family: 'CircularStd', Helvetica;
     border-radius: 10px;
@@ -240,82 +240,6 @@ html {
   
 .img-loaded {
 opacity: 1; /* Fully visible */
-}
-
-
-
-/* sidebar styles */
-#sidebar-container {
-    height: 100%;
-    width: 30%; /* 30 when open, 3 when closd */
-    background-color: var(--background);
-    z-index: 3;
-    transition: width 0.3s ease;
-
-    /* flexbox styles https://www.youtube.com/watch?v=phWxA89Dy94 */
-    display: flex;
-    justify-content: end flex;
-}
-
-#sidebar {
-    height: 100%;
-    width: 100%;
-    transition: width 0.3s ease;
-    /* flexbox styles */
-    display: flex;
-    flex-direction: column;
-}
-#sidebar-header {
-    background-color: var(--background); 
-    flex: 1;  
-    padding-left: 7%; 
-    padding-top: 7%;
-    border-bottom: var(--bottom-border-styles) ;
-}
-#sidebar-item-grid {
-    background-color: var(--background);
-    flex: 5;
-    /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
-    display: grid;
-    grid-template-columns: 1fr;
-    z-index: 3;
-    scrollbar-gutter: 4px;
-    overflow-y: auto;
-    grid-auto-rows: 1;
-}
-
-.sidebar-item {
-    z-index: 3;
-    background-color: var(--background); 
-    border-bottom: var(--bottom-border-styles);
-    padding-left: 7%;
-    padding-top: 3%;
-}
-
-#sidebar-toggler {
-    /* flex-grow: 1; */
-    flex-direction: column;
-    height: 100%;
-    width: var(--sidebar_width);
-    background-color: var(--default_color);;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#sidebar-toggler-button{
-    background-color: var(--default_color);;
-    display: block;
-    width: 10%;
-    /* Adjust the size of the arrow by changing the border sizes */
-    transition: transform 0.15s ;
-    border-left: 8px solid ; /* Arrow color */
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 0px;
-    z-index: 2;  
 }
 
 

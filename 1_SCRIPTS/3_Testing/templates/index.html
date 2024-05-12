@@ -7,21 +7,26 @@
     <!-- <link rel="colors" href="colorPalette.css"> -->
     <link rel="fonts" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-    
-
-    
-    <!-- CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        
+    <!-- CDN -->    
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
-    <script src="https://releases.transloadit.com/uppy/v3.24.3/uppy.min.mjs"></script>
-    
-    <script src="https://releases.transloadit.com/uppy/image-editor/v2.1.0/image-editor.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>    
+    <!-- UPPY -->
     <link href="https://releases.transloadit.com/uppy/v3.6.1/uppy.min.css" rel="stylesheet">
+    
 
     <!-- Sweet Alert-->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.js"></script>
+    <!-- Tittap -->
+    <script type="importmap">
+        {
+          "imports": {
+            "https://esm.sh/v135/prosemirror-model@1.19.3/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.19.4/es2022/prosemirror-model.mjs"
+          }
+        }
+      </script>
 
     <script type="importmap">
         {
@@ -32,47 +37,76 @@
         }
         </script>
 
+    <!-- UUID -->
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuidv4.min.js"></script>
+
     <!-- CSS IMPORTS -->
     <link rel="stylesheet" type="text/css" href="../static/css/base.css">
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">    
     <link rel="stylesheet" type="text/css" href="../static/css/layout.css">
+
     <link rel="stylesheet" type="text/css" href="../static/css/components/forms.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/colorPicker.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/buttons.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/mediabar.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/popup.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/uppy.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/swal.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/alerts.css">
 
 
 
 
     <!-- SCRIPTS -->   
-    <script type="module" src="../static/js/dbEvents.js" ></script>
-    <script type="module" src="../static/js/dbBucketUpload.js" ></script>
-    <!-- <script type="module" src="../static/js/auth_handler.js"></script> -->
+    <script type="module" src="../static/js/JSONState.js"></script>
+    <!-- <script type="module" src="../static/js/uuidGenerator.js"></script> -->
+    <!-- UI -->    
+    <script src="../static/js/UI/zoomControl.js"></script> 
+    <script src="../static/js/UI/customLookControls.js"></script>
+    <script type="module" src="../static/js/UI/mouseInteractionEvents.js"></script> 
+    <script type="module" src="../static/js/UI/makeMenusDraggable.js"></script>    
 
+    <!-- Database -->    
+    <script type="module" src="../static/js/db/dbEvents.js" ></script>
+    <script type="module" src="../static/js/db/dbBucketUpload.js" ></script>
     <script type="module" src="../static/js/JSONSetup.js"></script>
-    <script type="module" src="../static/js/mediaPlayer.js"></script>
-    <script type="module" src="../static/js/transitionNodes.js"></script>
-    <script type="module" src="../static/js/hollowCylinder.js" ></script>
+    <!-- Objects -->
+    <script type="module" src="../static/js/objects/sky.js"></script> 
+    <script type="module" src="../static/js/objects/transitionNodes.js"></script>
+    <script type="module" src="../static/js/objects/mediaPlayer.js"></script>
+    <script type="module" src="../static/js/objects/mediaBar.js"></script>
+    <script type="module" src="../static/js/objects/hollowCylinder.js" ></script>
 
-    <script src="../static/js/zoomControl.js"></script> 
-    <script src="../static/js/sky.js"></script> 
-    <script type="module" src="../static/js/mouseInteractionEvents.js"></script> 
-    <script src="../static/js/minimap.js"></script>
-    <script type="module" src="../static/js/mediaPopup.js"></script>
-    <script src="../static/js/popupContent.js"></script>
-    <script src="../static/js/dashboard.js"></script>
-    <script src="../static/js/customGlow.js"></script>
-    <script src="../static/js/customLookControls.js"></script>
-    <script src="../static/js/touchInteractionEvents.js"></script>
-    <script type="module" src="../static/js/mediaBar.js"></script>
-    <script type="module" src="../static/js/editMode.js"></script>
-    <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script>
-    <script type="module" src="../static/js/iconsEditMenu.js"></script>
-    <script type="module" src="../static/js/imageUploadMenu.js"></script>
-    <script type="module" src="../static/js/colorEditMenu.js"></script>
-    <script type="module" src="../static/js/makeMenusDraggable.js"></script>    
-    <script type="module" src="../static/js/colorPicker.js"></script>
-    <script type="module" src="../static/js/projectColorHandler.js"></script>
+    <script type="module" src="../static/js/editMode/editTest.js"></script>
+    <script type="module" src="../static/js/editMode/editMode.js"></script>
+    <script type="module" src="../static/js/editMode/menuColors.js"></script>
+    <script type="module" src="../static/js/editMode/menuColorPicker.js"></script>
+    <script type="module" src="../static/js/editMode/menuObject.js"></script>
+    <script type="module" src="../static/js/editMode/menuTypeEditor.js"></script>
+    <script type="module" src="../static/js/editMode/menuIconEditor.js"></script>
+    <script type="module" src="../static/js/editMode/menuUppy.js"></script>
+
+
+
+
+    <!-- <script type="module" src="../static/js/editMode/projectColorHandler.js"></script> -->
+
+
+
+    
+
+    <!-- <script src="../static/js/minimap.js"></script> -->
+    <!-- <script type="module" src="../static/js/objects/mediaPopup.js"></script> -->
+    <!-- <script src="../static/js/popupContent.js"></script> -->
+    <!-- <script src="../static/js/dashboard.js"></script> -->
+    <!-- <script src="../static/js/customGlow.js"></script> -->
+    <!-- <script src="../static/js/touchInteractionEvents.js"></script> -->
+    <!-- <script type="module" src="../static/js/editMode/editMode.js"></script> -->
+    <!-- <script type="module" src="../static/js/mediaplayerTypesEditMenu.js"></script> -->
+    <!-- <script type="module" src="../static/js/iconsEditMenu.js"></script> -->
+    <!-- <script type="module" src="../static/js/imageUploadMenu.js"></script> -->
+    <!-- <script type="module" src="../static/js/objects/mediaPopupTest.js"></script> -->
+
     
 </head>
 <body>
@@ -101,6 +135,8 @@
 
                 <!-- TESTING UPLOAD, DELETE AFTER  -->
                 <button id="uploadTest" >Test Upload</button>
+                <button id="tester" >Test</button>
+
 
                 <!-- other utilities -->
                 <button id="fullscreen_button" class="dashboard-item">
@@ -136,10 +172,10 @@
         <!-- Selection bar to change class option in edit mode -->
         <div id="editmode_bar" class="container flexColumn hidden">
             <div id="editmode_options" class="editmode flexRow"  >
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Mediaplayer Type Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_icons">Icon Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_scenes">Edit Scenes</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_colors">Project Colors</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_type_editor">Mediaplayer Type Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_icon_editor">Icon Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_scene_editor">Edit Scenes</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_color_editor">Project Colors</button>
             </div>
 
             <div id="object_class_selection_bar" class="bar flexRow" >
@@ -149,6 +185,21 @@
                 <button class="btn objectClassBtn" data-class="LabelTag">LabelTag</button>
             </div>
         </div>
+
+
+        <div id="menu_type_editor" class="menu widerMenu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header">Type Editor</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="">
+                <!-- Add other options as needed -->
+            </ul>
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
 
           
         <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
@@ -200,6 +251,21 @@
         </div>
 
 
+        <div id="menu_icon_editor" class="menu widerMenu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header">Icon Editor</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="">
+                <!-- Add other options as needed -->
+            </ul>
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
+
+
         <div  id="edit_menu_icons" class="menu widerMenu hidden">
             <div class="container ">
                 <div class="menuTopBar flexRow">
@@ -220,7 +286,7 @@
         </div>
 
 
-        <div  id="edit_menu_colors" class="menu widerMenu hidden">
+        <div  id="menu_color_editor" class="menu widerMenu hidden">
                 <div class="menuTopBar flexRow">
                     <h3 class="header">COLOR EDITOR</h3>   
                     <button class="btn exitBtn">X</button> 
@@ -273,23 +339,25 @@
         </div> 
                    
 
-        <!-- Edit menu to add or edit types of mediaplayers -->
-        <!-- <div id="creation_menu_mediaplayerTypes" class="menu creationMenu hidden">
-            <h2>Edit Menu</h2>
-            <ul>
-                <li>
-                    <label for="creation_menu_mediaplayerTypes_add"> <p>Add New Type</p></label>
-                    <input type="text" id="creation_menu_mediaplayerTypes_add" placeholder="Enter new type">
-                    <button class="btn" id="creation_menu_mediaplayerTypes_add_btn">Add Type</button>
-                </li>
+        <!-- Edit menu to delete or change values of objects in a-scene or create an object -->
+        <div id="edit_menu_object" class="menu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header"></h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="edit_menu_object_options">
+                <!-- Add other options as needed -->
             </ul>
-        </div> -->
-        
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
+                
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="edit_menu_TransitionNode" class="menu hidden">
             <ul>
-                <li class="editMenuOption menuItem">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
                 <li>
                     <label for="edit_menu_TransitionNode_toScene_id_input">Change toScene ID</label>
@@ -367,14 +435,14 @@
 
         <!-- Minimap container, need to find a better way to generate them automatically from a spread sheet -->
 
-         <div id="sidebar-container">
-            <div id="sidebar-toggler"> 
-                <div id="sidebar-toggler-button"> 
+         <div id="mediabar-container">
+            <div id="mediabar-toggler" > 
+                <div id="mediabar-toggler-button" > 
                 </div>
             </div>
-            <div id="sidebar">
-                <div id="sidebar-header"> <h1>header</h1>  </div>
-                <div id="sidebar-item-grid"></div>
+            <div id="mediabar">
+                <div id="mediabar-header"> <h1>header</h1>  </div>
+                <div id="mediabar-item-grid"></div>
             </div>
         </div>
 
@@ -384,8 +452,92 @@
 
 
         <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->
+        <div class="popup-overlay hidden"></div>
+        
+        <div id="popup2" class="popup hidden">
+            <div class="menuTopBar flexRow">
+                <h3 class="header"></h3>   
+                <button class="btn exitBtn popup-exit-btn">X</button> 
+            </div>
+            <div class="popup-contianer">
+                <div class="popup-contianer-header grid2Column col21">                        
+                    <div class="popup-contianer-header-wrapper ">  
+                        <div class="popup-contianer-header-wrapperInner ">
+                            <h2 class="popup-title">Your Title Here</h2>
+                            <p class="popup-subtitle">Subtitle</p>
+                        </div>
+                    </div>
+                    <div class="popup-contianer-header-wrapper">  
+                        <div class="popup-contianer-header-wrapperInner">                        
+                            <p class="popup-description">
+                                A small description of the title.
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="popup-contianer-body">
+                    <div id="popup_body_editor_bar" class="flexRowLeft popup-body-editor-bar ">
+                        <div id="popup_body_editor_bar_styles" class="flexRowLeft popup-body-editor-bar-styles">
+                            <div id="popup_body_editor_h1_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H1.svg" alt="H1"> 
+                            </div>
+                            <div id="popup_body_editor_h2_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H2.svg" alt="H2"> 
+                            </div>
+                            <div id="popup_body_editor_h3_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H3.svg" alt="H3"> 
+                            </div>
+                            <div id="popup_body_editor_paragraphOrientation_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="Orientation"> 
+                            </div>
+                        </div>
+
+                        <div id="popup_body_editor_bar_marks" class="flexRowLeft popup-body-editor-bar-marks">
+                            <div id="popup_body_editor_bold_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_bold.svg" alt="B"> 
+                            </div>
+                            <div id="popup_body_editor_italic_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_italic.svg" alt="I"> 
+                            </div>
+                            <div id="popup_body_editor_underline_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_underline.svg" alt="U">                             
+                            </div>
+                            <div id="popup_body_editor_linkText_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_link.svg" alt="link">                             
+                            </div>
+                        </div>
+
+                        
+
+                        <div id="popup_body_editor_bar_paragraphs" class="flexRowLeft popup-body-editor-bar-paragraphs">
+                            <div id="popup_body_editor_bulletList_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/bullet_list.svg" alt="bullet"> 
+                            </div>
+                            <div id="popup_body_editor_numberedList_btn" class="btn tiptapBtn">
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/numbered_list.svg" alt="list"> 
+                            </div>
+                        </div>
+
+                        <div id="popup_body_editor_bar_url" class="flexRowLeft popup-body-editor-bar-url">
+                            <div id="popup_body_editor_imgURL_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="IMG"> 
+                            </div>
+                            <div id="popup_body_editor_videoURL_btn" class="btn tiptapBtn" >
+                                <img class="tiptapBtnImg" src="../static/0_resources/icons/video_URL.svg" alt="VID"> 
+                            </div>
+                        </div>                        
+                    </div>
+                    <div id="popup_body_editor" class="popup-body-editor"></div>
+                    
+                    <!-- <button class="add-block-btn">ADD</button> -->
+                </div>
+            </div>
+        </div>
+
+
+        <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->
         <div id="popup" class="popup" style="display:none;">
-            <!-- The header of the popup with a subtitle, title and a paragraph-->
+            <!-- The header of the popup with a subtitle, title and a paragraph-->            
             <div class="popup-header">
                 <div class="title-container">
                     <h1 class="popup-subtitle">Subtitle</h1>
@@ -477,7 +629,8 @@
             </div>
             <div class="flexRow">
             </div>
-        </div>         
+        </div>  
+        
 
     </div>
       
@@ -551,20 +704,21 @@
         
 
         <!-- Loading in 360 image. -->
-        <a-sky id="sky" class="Sky" src="#background_img01.1" background_img_id="01.1" rotation="0 0 0" initial_camera_rotation="0 0 0"></a-sky>
+        <a-sky id="sky" class="Sky" src="#background_img01.1" scene_id="1" rotation="0 0 0" initial_camera_rotation="0 0 0"></a-sky>
 
         <!-- Loading plane and cylinder for editMode object only -->
         <a-ring 
-            id="gridPlane" 
+            id="grid_plane" 
             edit_mode="false" 
             position="0 0 0" 
             rotation="-90 0 0" 
             radius-inner="0" 
             radius-outer="10" 
+            
             material="visible: false; src: ../static/0_resources/misc/grid_texture.png; transparent: true; repeat: 20 20;"
         ></a-ring>
         <a-entity 
-            id="gridCylinder" 
+            id="grid_cylinder" 
             edit_mode="false"  
             hollow-cylinder
             position="0 0 0" 
@@ -584,72 +738,6 @@
         mixin="mediaplayer_frame" position="7 2 -40" rotation="0 150.000 0">
             <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
             <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="mediaplayer_3" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
-        mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -40.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_4" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
-        mixin="mediaplayer_frame" position="7 2 -40" rotation="180 0.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_5" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1"
-        mixin="mediaplayer_frame" position="-12 -20 -40" rotation="0 210.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity>
-
-        <a-entity id="mediaplayer_6" visible="false" clickable="true" toggle_visibility="true" class="mediaplayer" mediaplayer_type="blue" icon_index="1" 
-        mixin="mediaplayer_frame" position="-50 2 20" rotation="0 -30.000 0">
-            <a-entity class="mediaplayer-icon" material="src:" mixin="mediaplayer_icon"></a-entity>
-            <a-entity class="mediaplayer-border" mixin="mediaplayer_border"></a-entity>
-        </a-entity> -->
-
-
-        <!-- Creating some buttons to move between 360 images. -->
-        
-        <!-- <a-entity id="move_01.1_01.2"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true" 
-            background_img_id="01.1" new_background_img_id= "01.2"
-            mixin="transition_node_frame"
-            position="-9.1 -2.5 -3" rotation="90 0 0" 
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity>   -->
-        <!-- <a-entity id="move_01.1_03.1"  class="transitionNode" clickable="true" visible="true" toggle_visibility="true"
-            background_img_id="01.1" new_background_img_id= "03.1"
-            mixin="transition_node_frame"
-            position="-9 -2.5 2.2" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_01.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"
-            background_img_id="01.2" new_background_img_id= "01.1"
-            mixin="transition_node_frame"
-            position="-.1 -2.5 -9.1" rotation="90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_02.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
-            background_img_id="01.2" new_background_img_id = "02.1"
-            mixin="transition_node_frame"
-            position="-6.5 -2.5 6.5" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
-        </a-entity> -->
-
-        <!-- <a-entity id="move_01.2_03.1"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true" 
-            background_img_id="01.2" new_background_img_id = "03.1"
-            mixin="transition_node_frame"
-            position="3 -2.5 -1.3" rotation="-90 0 0"
-            ><a-entity  mixin="transition_node_icon" ></a-entity>
-            <a-entity mixin="transition_node_glow"></a-entity>
         </a-entity> -->
 
         <!-- <a-entity id="move_02.1_01.2"  class="transitionNode" clickable="true" visible="false" toggle_visibility="true"

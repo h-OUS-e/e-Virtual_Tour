@@ -1,0 +1,222 @@
+{
+    "MediaPlayers":
+    {
+        "2ba5e3e6-9ce3-4f16-94ba-b60b874a699d" :{
+            "title": "Advanced Patient Diagnostics",
+            "description": "test just a really long test to test things as they are being tested. should be limited to za 10dfsk jfnd skjfnds kfnbes kdjhbfndsjkhfbsdkjf bjk",
+            "type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
+            "pos_x": "9.72",
+            "pos_y": "2.17",
+            "pos_z": "2.25",
+            "rot_x": "0",
+            "rot_y":"90",
+            "rot_z": "0",
+            "icon_uuid": "1b5d45c4-478f-40b4-8b6f-164923de712a",
+            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "body": {
+                "text": {
+                    "string": "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
+                    "style": "h2",
+                    "size": "14px"
+                }
+            },
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+    
+        "d3986b22-5a50-43f0-b2bc-d832f10b1b41": {
+            "title": "Integrated_Artificial_Intelligence",
+            "description": "test",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "pos_x": ".0475",
+            "pos_y": "2.13",
+            "pos_z": "-9.95",
+            "rot_x": "0",
+            "rot_y":"175",
+            "rot_z": "0",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
+            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"  ,
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false   
+        }, 
+    
+        "deff6215-a266-4f35-9292-234281ec150e": {
+            "title": "Superior_Revenue_Cycle_Management",
+            "description": "test",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "pos_x": "-9.37",
+            "pos_y": "1.56",
+            "pos_z": "3.37",
+            "rot_x": "0",
+            "rot_y":"-70",
+            "rot_z": "0",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
+            "scene_id" : "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+    
+        "cc6f62eb-ed81-4e3f-a047-0eeed9e55fc5": {
+            "title": "SageNet_Automated_Purchasing_System",
+            "description": "test",
+            "type_uuid": "bff75c73-d8e7-4898-bc31-baf2a7055b1a",
+            "pos_x": "-9.37",
+            "pos_y": "1.56",
+            "pos_z": "3.37",
+            "rot_x": "0",
+            "rot_y":"163",
+            "rot_z": "0",
+            "icon_uuid": "190142d0-b65d-45b5-adca-f1b8a4ba0bd8",
+            "scene_id" : "054d8e0f-e2b8-41d5-8def-21ee55f5091c",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+    
+        "232cb566-ffde-4825-b6f9-b1aeff635d69": {
+            "title": "Actionable_Business_Intelligence",
+            "description": "test",
+            "type_uuid": "7720c93b-7b4c-4d58-99cd-294e48177bbe",
+            "pos_x": "-3.82",
+            "pos_y": "-2.50",
+            "pos_z": "-7.04",
+            "rot_x": "0",
+            "rot_y":"-141",
+            "rot_z": "0",
+            "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
+            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+    
+        "391869cf-c635-43b0-ad6d-c6aaca477dc3": {
+            "title": "Interactive_Patient_Management",
+            "description": "test",
+            "type_uuid": "952c3425-947f-46f7-82f8-3d538df1e8e6",
+            "pos_x": "-9.31",
+            "pos_y": "1.71",
+            "pos_z": "3.56",
+            "rot_x": "0",
+            "rot_y":"-69",
+            "rot_z": "0",
+            "icon_uuid": "1b5d45c4-478f-40b4-8b6f-164923de712a",
+            "scene_id" : "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }
+    },
+    "TransitionNodes":
+    {
+        "21542464-8648-411c-bfa5-fa922fecfc49": {
+            "pos_x": "-6.5",
+            "pos_y": "-2.5",
+            "pos_z": "6.5",
+            "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "new_scene_id": "054d8e0f-e2b8-41d5-8def-21ee55f5091c",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "6e4df64c-08f6-4f69-88ef-b180bf910488": {
+            "pos_x": "-9",
+            "pos_y": "-2.5",
+            "pos_z": "2.2",
+            "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "new_scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "35c18c4c-b3db-4034-a552-067efb20be20": {
+            "pos_x": "-9.1",
+            "pos_y": "-2.6",
+            "pos_z": "-3",
+            "scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "609fcfd9-a30b-4f73-a36f-55f9710f04c3": {
+            "pos_x": "-1..6",
+            "pos_y": "-1.9",
+            "pos_z": "-6.7",
+            "scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "new_scene_id": "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "974f8137-e2cf-4a87-a914-8b7b767fba05": {
+            "pos_x": "1.37",
+            "pos_y": "3.26",
+            "pos_z": "-3.37",
+            "scene_id": "b5b28744-a93b-4cbb-990a-90fa6b60dd6c",
+            "new_scene_id": "ac516a09-ac33-4990-8bad-7ab6df7eab46",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }
+    },
+    "Scenes":
+    {
+        "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab": {
+            "name" : "01.1",
+            "rot_x": "0",
+            "rot_y":"0",
+            "rot_z": "0",
+            "cam_rot_x": "0",
+            "cam_rot_y":"45",
+            "cam_rot_z": "0",
+            "path": "../static/0_resources/img1.1_lobby.jpeg",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "ac516a09-ac33-4990-8bad-7ab6df7eab46":{
+            "name" : "01.2",
+            "rot_x": "0",
+            "rot_y":"0",
+            "rot_z": "0",
+            "cam_rot_x": "0",
+            "cam_rot_y":"0",
+            "cam_rot_z": "0",
+            "path": "../static/0_resources/img1.2_lobby.jpeg",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "054d8e0f-e2b8-41d5-8def-21ee55f5091c":{
+            "name" : "02.1",
+            "rot_x": "0",
+            "rot_y":"0",
+            "rot_z": "0",
+            "cam_rot_x": "0",
+            "cam_rot_y":"0",
+            "cam_rot_z": "0",
+            "path": "../static/0_resources/img2_dentalRoom1.jpeg",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }, 
+        "b5b28744-a93b-4cbb-990a-90fa6b60dd6c": {
+            "name" : "03.1",
+            "rot_x": "0",
+            "rot_y":"0",
+            "rot_z": "0",
+            "cam_rot_x": "0",
+            "cam_rot_y":"0",
+            "cam_rot_z": "0",
+            "path": "../static/0_resources/img3_dentalRoom2.jpeg",
+            "isDeleted": false,
+            "isEdited": false,
+            "isNew": false
+        }      
+
+    }
+}
