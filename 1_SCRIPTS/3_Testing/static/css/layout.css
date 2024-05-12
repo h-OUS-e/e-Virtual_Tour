@@ -26,7 +26,7 @@
     flex-direction: row;
     gap: 10px;
     justify-content: space-between;    
-    flex-wrap: nwrap;
+    flex-wrap: wrap;
     align-items: stretch;
 }
 
@@ -52,6 +52,10 @@
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-end; 
+  align-items: flex-end;
+  width: 100%;
+
 }
 
 .flexRowTop{
@@ -81,6 +85,20 @@
   align-items: stretch;
   height: 100%;
 
+}
+
+.grid4Column {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 30px;
+}
+
+.grid5Column {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 30px;
 }
 
 .grid3Column {

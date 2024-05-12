@@ -443,11 +443,12 @@ class JSONState {
       const icons = this.getCategory("Icons");
       const type_item = this.getItem("Types", item_uuid);
       let selected_icons = type_item.icons.map(icon_uuid => {
-        const selecte_icon = icons[icon_uuid]
-        selecte_icon['uuid'] = icon_uuid;
-        return selecte_icon;
+        const selected_icon = icons[icon_uuid]
+        selected_icon['uuid'] = icon_uuid;
+        return selected_icon;
       });
 
+      console.log("TEST", selected_icons);
       return selected_icons;
     }
 

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   
 
   // HTML REFERENCES
-  const menu = document.getElementById('edit_menu_colors');
+  const menu = document.getElementById('menu_color_editor');
   const project_colors_gallery = document.getElementById('em_project_colors_gallery');
   const color_palette_gallery = document.getElementById('em_color_palette_gallery');
   const exit_btn = menu.querySelector('.exitBtn');
@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   populateProjectColors(project_colors);
 
+  // Disabling zoom when zooming on menu
+  if (menu) {
+    menu.addEventListener('mouseenter', window.disableZoom);
+    menu.addEventListener('mouseleave', window.enableZoom);
+  }
+
 
 
   /*********************************************************************
@@ -45,11 +51,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   // Listen to exit button
   exit_btn.addEventListener('click', closeMenu);
 
-  // Disabling zoom when zooming on menu
-  if (menu) {
-    menu.addEventListener('mouseenter', window.disableZoom);
-    menu.addEventListener('mouseleave', window.enableZoom);
-  }
+  
 
 
 
