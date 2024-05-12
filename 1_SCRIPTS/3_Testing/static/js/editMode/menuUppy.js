@@ -206,7 +206,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   function emitAddCustomImageToUppy(img_URL, img_name) {
-    console.log("TEST1");
     const event_name = 'addCustomImageToUppy';
     const event = new CustomEvent(event_name,
     {
