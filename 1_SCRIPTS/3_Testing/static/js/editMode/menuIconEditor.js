@@ -68,6 +68,7 @@ class IconMenu extends Menu {
     this.default_values;
     this.selected_item_uuid = null;
     this.selected_icons = null;
+    this.existing_icon_names = [];
     this.setDefaultValues();
 
     // Populate menu list it interactive options
@@ -82,16 +83,18 @@ class IconMenu extends Menu {
 
   updateIconInfo() {
     let icons = this.project_state.getCategory(CATEGORY); 
+    this.existing_icon_names = [];
 
     // Remapping icons from {{},...,{}} to [{},...,{}]
     const selected_icons = Object.entries(icons).map((icon_info, idx) => {
 
       const selected_icon = icon_info[1];
       selected_icon['uuid'] = icon_info[0];
+      this.existing_icon_names.push(selected_icon.name)
       return selected_icon;
     });
     this.selected_icons = selected_icons;
-    console.log("TEST2", this.selected_icons);
+
 
   }
 
@@ -105,8 +108,7 @@ class IconMenu extends Menu {
     this.menu_list.innerHTML = '';
 
     const buttons_JSON = [
-      { name: 'Add Emoji', label: '+', callback: () => console.log('Button 1 clicked') },
-      { name: 'Upload', label: '^', callback: () => console.log('Button 2 clicked') },
+      { name: 'Add Icon', label: '+', callback: () => this.emitUploadImage() },
       // Add more button objects as needed
     ];
 
@@ -157,51 +159,46 @@ class IconMenu extends Menu {
     // Getting current type index
     this.selected_item_uuid = option.value;
 
-    // Update colors of clickable boxes
-    this.updatColorFields();    
-
     // Update Icon field
-    this.updateIconFields();
+    this.updateIconGallery();
   }
 
-
-  updatColorFields() {
-    this.updateColorInfo();
-    const dark_color_box = this.input_elements["boxDarkColor"];
-    const light_color_box = this.input_elements["boxLightColor"];
-
-    dark_color_box.style.backgroundColor = this.selected_dark_color_info.hex_code;
-    dark_color_box.textContent = this.selected_dark_color_info.name;
-
-    light_color_box.style.backgroundColor = this.selected_light_color_info.hex_code;
-    light_color_box.textContent = this.selected_light_color_info.name;
-
-  }
-
-  updateIconFields() {   
+ 
+  updateIconGallery() {   
     // Update selected icons based on selected_item_uuid
     this.updateIconInfo();
 
     // Repopulate icon gallery with updated icon options
     const icon_gallery = this.input_elements["iconGallery"];
     this.populateIconGallery(icon_gallery, this.selected_icons, null);
-
-    // Repopulate the dropdown menu for the add icon button
-    const dropdown_menu = icon_gallery.parentNode.querySelector('.dropdown-menu');
-    this.populateCustomDropdown(dropdown_menu, null, this.getOptionsList(this.project_state.getCategory("Icons")), this.updateIconFields, false);
+    
   }
 
-  addNewIcon(new_icon_uuid) {
-    // Push new icon uuid to the list of icons
-    const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
-    const icon_list = type_item.icons;
-    icon_list.push(new_icon_uuid.value);
+  addNewIcon(icon_name, src) {
+    // console.log("Image uploaded, adding new icon", icon_name);
+    // // Push new icon uuid to the list of icons
+    // const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
+    // const icon_list = type_item.icons;
+    // icon_list.push(new_icon_uuid.value);
     
-    // Update project state with new icon field
-    this.updateProjectStateProperty("Types", this.selected_item_uuid, "icons", icon_list, "updateIcons");
+    // // Update project state with new icon field
     
+    const new_icon_uuid = uuidv4();
+    const icon_content = {
+      name: icon_name,
+      src: src,
+      alt: icon_name,
+      isDelete: false,
+      isEdited: false,
+      isNew: true,
+    }
+    this.project_state.addNewItem(icon_content, "Icons", new_icon_uuid, "updateIcons");
+
     // Update icon gallery to add new icon
-    this.updateIconFields();
+    this.updateIconGallery();
+
+    // emit to update icons to add new icon name type dropdown
+    
   }
 
   deleteIcon(icon_uuid) {
@@ -247,57 +244,18 @@ class IconMenu extends Menu {
     }
     return options;    
   }
-
-
-  // Alert functions
-
-  // Shakes the entity left and right
-  shakeElement(entity) {
-    entity.classList.add("shake");
-
-    // Remove shake class after timeout
-    setTimeout(() => {
-      entity.classList.remove("shake");
-    }, 200);
-  }
-
-  // Creates a fading popup message above the reference entity
-  createFadingAlert(message_alert, reference_entity=null) {
-    const fading_alert = document.createElement("div");
-    fading_alert.className = "fading-alert";
-    fading_alert.textContent = message_alert;
-    fading_alert.classList.add("fade");
-
-    // Position the fading_alert above the reference entity if provided
-    if (reference_entity){
-      const reference_rect = reference_entity.getBoundingClientRect();
-      // Put message on top of input element
-      fading_alert.style.top = `${reference_rect.top - 50}px`;
-      // center message
-      fading_alert.style.left = `${reference_rect.left + reference_rect.width / 2}px`;
-    }
-
-    // Append the fading_alert to the document body
-    document.body.appendChild(fading_alert);
-
-    // Remove item and fade after timeout
-    setTimeout(() => {
-      document.body.removeChild(fading_alert);
-      fading_alert.classList.remove("fade");
-            }, 1200);
-  }
-
-  toggleColorPicker(color_info) {
-      let event = new CustomEvent('showColorPicker', {
+ 
+  // A method to toggle upload image menu
+  emitUploadImage() {
+    const event = new CustomEvent('uploadImage', 
+    {
         detail: {
-          category: color_info.category,
-          reference_uuid: color_info.reference_uuid,
-          property_name: color_info.property_name,
-          inner_property_name: color_info.inner_property_name,
-          color_name: color_info.name,
-          color: color_info.hex_code,
-        }
-      });
-      scene.dispatchEvent(event); 
+          storage_bucket: "icons_img",
+          header: "Add a new icon",
+          existing_image_names: this.existing_icon_names,
+          callback_on_upload: (icon_name, src) => this.addNewIcon(icon_name, src),
+        },
+    });
+    document.dispatchEvent(event);
   }
 }

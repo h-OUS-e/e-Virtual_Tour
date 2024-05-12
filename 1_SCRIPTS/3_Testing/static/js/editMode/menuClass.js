@@ -449,6 +449,45 @@ class Menu {
         event.preventDefault();
       }
     }
+
+
+    // Alert functions
+
+  // Shakes the entity left and right
+  shakeElement(entity) {
+    entity.classList.add("shake");
+
+    // Remove shake class after timeout
+    setTimeout(() => {
+      entity.classList.remove("shake");
+    }, 200);
+  }
+
+  // Creates a fading popup message above the reference entity
+  createFadingAlert(message_alert, reference_entity=null) {
+    const fading_alert = document.createElement("div");
+    fading_alert.className = "fading-alert";
+    fading_alert.textContent = message_alert;
+    fading_alert.classList.add("fade");
+
+    // Position the fading_alert above the reference entity if provided
+    if (reference_entity){
+      const reference_rect = reference_entity.getBoundingClientRect();
+      // Put message on top of input element
+      fading_alert.style.top = `${reference_rect.top - 50}px`;
+      // center message
+      fading_alert.style.left = `${reference_rect.left + reference_rect.width / 2}px`;
+    }
+
+    // Append the fading_alert to the document body
+    document.body.appendChild(fading_alert);
+
+    // Remove item and fade after timeout
+    setTimeout(() => {
+      document.body.removeChild(fading_alert);
+      fading_alert.classList.remove("fade");
+            }, 1200);
+  }
 }
 
 export { Menu };

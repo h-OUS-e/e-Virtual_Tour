@@ -21,7 +21,7 @@ import { supabaseGetSession } from "./dbEvents.js";
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
 
  /////////////////////// GLOBAL VARIABLES //////////////////////
 
@@ -269,6 +269,7 @@ function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_nam
 async function addCustomImage(event) {
   // Emoties the dashboard and removes all images
   uppy.cancelAll();
+  console.log("TESSSSST");
 
   // Get image name and type
   const image_name = event.detail.image_name;
