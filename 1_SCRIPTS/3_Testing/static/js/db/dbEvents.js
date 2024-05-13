@@ -263,7 +263,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
     // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
     try {
         let { data, error } = await supabase
-        .from('view_project_data')
+        .from('view_project_json_data')
         .select('*')
         .eq('project_uid', project_uid);
 
