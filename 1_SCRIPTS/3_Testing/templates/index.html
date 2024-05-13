@@ -16,7 +16,7 @@
     
 
     <!-- Sweet Alert-->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Fabric.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.js"></script>
     <!-- Tittap -->
@@ -51,10 +51,10 @@
     <link rel="stylesheet" type="text/css" href="../static/css/components/mediabar.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/popup.css">
     <link rel="stylesheet" type="text/css" href="../static/css/components/uppy.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/components/swal.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/alerts.css">
 
 
-
-    
 
 
     <!-- SCRIPTS -->   
@@ -78,9 +78,17 @@
     <script type="module" src="../static/js/objects/hollowCylinder.js" ></script>
 
     <script type="module" src="../static/js/editMode/editTest.js"></script>
-    <script type="module" src="../static/js/editMode/editModeTest.js"></script>
+    <script type="module" src="../static/js/editMode/editMode.js"></script>
     <script type="module" src="../static/js/editMode/menuColors.js"></script>
     <script type="module" src="../static/js/editMode/menuColorPicker.js"></script>
+    <script type="module" src="../static/js/editMode/menuObject.js"></script>
+    <script type="module" src="../static/js/editMode/menuTypeEditor.js"></script>
+    <script type="module" src="../static/js/editMode/menuIconEditor.js"></script>
+    <script type="module" src="../static/js/editMode/menuUppy.js"></script>
+
+
+
+
     <!-- <script type="module" src="../static/js/editMode/projectColorHandler.js"></script> -->
 
 
@@ -127,6 +135,8 @@
 
                 <!-- TESTING UPLOAD, DELETE AFTER  -->
                 <button id="uploadTest" >Test Upload</button>
+                <button id="tester" >Test</button>
+
 
                 <!-- other utilities -->
                 <button id="fullscreen_button" class="dashboard-item">
@@ -162,10 +172,10 @@
         <!-- Selection bar to change class option in edit mode -->
         <div id="editmode_bar" class="container flexColumn hidden">
             <div id="editmode_options" class="editmode flexRow"  >
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_MediaplayerTypes">Mediaplayer Type Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_icons">Icon Editor</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_scenes">Edit Scenes</button>
-                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="edit_menu_colors">Project Colors</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_type_editor">Mediaplayer Type Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_icon_editor">Icon Editor</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_scene_editor">Edit Scenes</button>
+                <button class="btn nonObjectClassBtn btnClickEffect" related_menu_id="menu_color_editor">Project Colors</button>
             </div>
 
             <div id="object_class_selection_bar" class="bar flexRow" >
@@ -175,6 +185,21 @@
                 <button class="btn objectClassBtn" data-class="LabelTag">LabelTag</button>
             </div>
         </div>
+
+
+        <div id="menu_type_editor" class="menu widerMenu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header">Type Editor</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="">
+                <!-- Add other options as needed -->
+            </ul>
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
 
           
         <div  id="edit_menu_MediaplayerTypes" class="menu widerMenu hidden">
@@ -226,6 +251,21 @@
         </div>
 
 
+        <div id="menu_icon_editor" class="menu widerMenu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header">Icon Editor</h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="">
+                <!-- Add other options as needed -->
+            </ul>
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
+
+
         <div  id="edit_menu_icons" class="menu widerMenu hidden">
             <div class="container ">
                 <div class="menuTopBar flexRow">
@@ -246,7 +286,7 @@
         </div>
 
 
-        <div  id="edit_menu_colors" class="menu widerMenu ">
+        <div  id="menu_color_editor" class="menu widerMenu hidden">
                 <div class="menuTopBar flexRow">
                     <h3 class="header">COLOR EDITOR</h3>   
                     <button class="btn exitBtn">X</button> 
@@ -299,13 +339,25 @@
         </div> 
                    
 
-
-        
+        <!-- Edit menu to delete or change values of objects in a-scene or create an object -->
+        <div id="edit_menu_object" class="menu hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header"></h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+            <ul class="edit_menu_object_options">
+                <!-- Add other options as needed -->
+            </ul>
+            <li >
+                <!-- Space for a delete or create button for object menu -->
+            </li>
+        </div>  
+                
 
         <!-- Edit menu to delete or change values of objects in a-scene -->
         <div id="edit_menu_TransitionNode" class="menu hidden">
             <ul>
-                <li class="editMenuOption menuItem">Object ID: </li>
                 <li class="editMenuOption deleteOption">Delete</li>
                 <li>
                     <label for="edit_menu_TransitionNode_toScene_id_input">Change toScene ID</label>
@@ -577,7 +629,8 @@
             </div>
             <div class="flexRow">
             </div>
-        </div>         
+        </div>  
+        
 
     </div>
       

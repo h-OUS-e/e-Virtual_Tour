@@ -21,7 +21,10 @@ import { supabaseGetSession } from "./dbEvents.js";
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-document.addEventListener('jsonLoaded', async (event) => {
+/*********************************************************************
+ * On DOM load
+*********************************************************************/
+document.addEventListener('DOMContentLoaded', async (event) => {
 
  /////////////////////// GLOBAL VARIABLES //////////////////////
 
@@ -33,13 +36,17 @@ let uppy;
 const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
 
+let callback_on_upload = null;
+
 
 
  /////////////////////// FUNCTIONS //////////////////////
 
 
-function ReinitializeUppySession(bucket, target_div) {
+function ReinitializeUppySession(bucket, target_div, event) {
   let session_data_promise = supabaseGetSession();
+  callback_on_upload = event.detail.callback_on_upload;
+
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
@@ -160,7 +167,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     image_type = file.type;
     image_extension = file.extension;
     const file_name = `${image_name}.${image_extension}`;
-    fileUUID = uuid.v4();
+    fileUUID = uuidv4();
 
     // Create supabase meta data and insert into uppy meta data
     const supabaseMetadata = {
@@ -189,6 +196,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
+
     // Get image name from menu input
     image_name = event.detail.image_name;
 
@@ -199,8 +207,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     uppy_file.name = file_name;
     uppy_file.meta.name = file_name;
     // uppy_file.data.name = file_name;
-
-
     
     // Upload image
     uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
@@ -228,9 +234,14 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
 
   uppy.on('complete', (result) => {
+
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
+
+      // Get src from server and callback with imagename and src
+    callback_on_upload(image_name, thumbnail_URL);
+
     }
   });
 
@@ -364,7 +375,7 @@ function emitFinishedEditingImage() {
 document.addEventListener('addCustomImageToUppy', addCustomImage);
 
 // Listen to different upload buttons to figure out the bucket for supabase
-document.getElementById('em_icon_addIcon_btn').addEventListener('click', () => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder'));
+document.addEventListener('uploadImage', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event));
 
 });
 // how to use

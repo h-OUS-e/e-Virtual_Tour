@@ -15,6 +15,9 @@ async function loadJSON(filename) {
 }
 
 
+// Get current colors and update css variables with curent colors
+
+
 export const JSON_statePromise = (async () => {
     const project_JSON = await loadJSON("ProjectJSON");
     const project_state = new JSONState(project_JSON);

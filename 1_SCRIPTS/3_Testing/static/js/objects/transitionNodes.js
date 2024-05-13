@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     let {project_state, object_state} = await JSON_statePromise;
 
     // JSON VARIABLES 
-    let transitionNode_type = project_state.getItemByProperty("Types", "type", MAIN_CLASS);
+    let transitionNode_type = project_state.getItemByProperty("Types", "class", MAIN_CLASS);
     const transitionNode_JSON = object_state.getCategory(CATEGORY);
     const initial_scene_id = project_state.getItemByProperty("Types", "name", "initial_scene").scene_reference;
 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    // Read transition nodes and load them to scene
     await loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id);       
     // Set initial colors of transition nodes
-    setTransitionNodeColor(dark_color, light_color);
+    renderEntities(dark_color, light_color);
 
 
     /*********************************************************************
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     // Reset colors if new transition node colors selected
     scene.addEventListener("transitionNodesColorChange", function() {
-        setTransitionNodeColor(dark_color, light_color);
+        renderEntities(dark_color, light_color);
     });
 
     //listen to minimapClick event
@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         if (event.target.classList.contains(MAIN_CLASS)){
             const icon = event.target.querySelector('[mixin=' + MIXIN_ICON + ']');   
             icon.setAttribute('material', 'color', color_hoverInClicked);
-            console.log("TEST");
         }
     });
 
@@ -139,40 +138,67 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
     
     // CODE TO UPDATE COLORS OF OBJECTS
-    scene.addEventListener('updatedProjectColors', function(event) 
+    document.addEventListener('updateColor', function() 
     {
-        // Get project colors from event
-        project_colors = event.detail.project_colors;
-        dark_color = project_colors["transition_node_dark_color"];
-        light_color = project_colors["transition_node_light_color"];
+        try {
+            // Get project colors from event
+            transitionNode_type = project_state.getItemByProperty("Types", "class", MAIN_CLASS);
 
-        // Update colors of all mediaplayer objects
-        setTransitionNodeColor(dark_color, light_color)
- 
+            // Get colors from transition node type    
+            dark_color = transitionNode_type.colors.dark;
+            light_color = transitionNode_type.colors.light;
+
+            // Update colors of all mediaplayer objects
+            renderEntities(dark_color, light_color);
+        } catch (error) {
+            console.error('An error occurred while updating project colors:', error);
+        }
+        
     });
+
+    // Update object visuals when an object is created
+    scene.addEventListener('renderObject', function(event) {
+        if (event.detail.category === CATEGORY) {
+            const entity = document.getElementById(event.detail.object_uuid);
+            renderEntity(entity, dark_color, light_color);
+        }
+    });
+
+    
+
 });
 
 
-// FUNCTIONS
+/*******************************************************************************
+* 5. FUNCTIONS
+*******************************************************************************/ 
 
 //functions: 
-function emitTransitioning(new_scene_id){
+function emitTransitioning(new_scene_id, preserve_camera_rotation=false){
     // input: new_scene_id: string
     // emit transitioning event with new background image ID
     const transitioning = new CustomEvent('transitioning', {
-        detail: { new_scene_id: new_scene_id}       
+        detail: { 
+            new_scene_id: new_scene_id,
+            preserve_camera_rotation: preserve_camera_rotation,
+        },    
     });
     scene.dispatchEvent(transitioning);
 }
 
-function setTransitionNodeColor(dark_color, light_color){
+function renderEntities(dark_color, light_color){
     let transition_nodes = document.getElementsByClassName(MAIN_CLASS);
     for (let i = 0; i < transition_nodes.length; i++) {
-        let icon = transition_nodes[i].querySelector('[mixin=' + MIXIN_ICON + ']')
-        icon.setAttribute('material', 'color', dark_color);
-        let glow = transition_nodes[i].querySelector('[mixin=' + MIXIN_GLOW + ']')
-        glow.setAttribute('material', 'color', light_color);
+        const entity = transition_nodes[i];
+        renderEntity(entity, dark_color, light_color);
     }
+}
+
+function renderEntity(entity, dark_color, light_color) {
+    let icon = entity.querySelector('[mixin=' + MIXIN_ICON + ']')
+        icon.setAttribute('material', 'color', dark_color);
+        let glow = entity.querySelector('[mixin=' + MIXIN_GLOW + ']')
+        glow.setAttribute('material', 'color', light_color);
 }
 
 
@@ -188,12 +214,23 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id
             const transitionNode_item = transitionNode_JSON[id];
 
             // Get attributes
-            const point = transitionNode_item.position;
+            const pos_x = transitionNode_item.pos_x;
+            const pos_y = transitionNode_item.pos_y;
+            const pos_z = transitionNode_item.pos_z;
             const scene_id = transitionNode_item.scene_id;
             const new_scene_id = transitionNode_item.new_scene_id;
 
+            let transitionNode_content = {
+                pos_x: pos_x,
+                pos_y: pos_y,
+                pos_z: pos_z,
+                scene_id: scene_id,
+                new_scene_id: new_scene_id,
+                initial_scene_id: initial_scene_id,
+            }
+
             // Create mediaplayer and add to scene
-            const transition_node = new TransitionNode(id, point, scene_id, new_scene_id, initial_scene_id);
+            const transition_node = new TransitionNode(id, transitionNode_content);
             transition_node.addToScene();
 
         });
@@ -207,13 +244,16 @@ async function loadTransitionNodesFromJSON(transitionNode_JSON, initial_scene_id
 
 
 class TransitionNode {    
-    constructor(id, position, scene_id, new_scene_id, initial_scene_id) {
+    constructor(id, content) {
         this.id = id;
         this.final_id = id;
-        this.position = position;
-        this.scene_id = scene_id;
-        this.new_scene_id = new_scene_id;
-        this.initial_scene_id = initial_scene_id;
+        this.position = content.position;
+        this.pos_x = content.pos_x;
+        this.pos_y = content.pos_y;
+        this.pos_z = content.pos_z;
+        this.scene_id = content.scene_id;
+        this.new_scene_id = content.new_scene_id;
+        this.initial_scene_id = content.initial_scene_id;
         this.name = this.constructor.name;
     }
 
@@ -236,10 +276,11 @@ class TransitionNode {
         entity.setAttribute('new_scene_id', this.new_scene_id);
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('mixin', 'transition_node_frame');
-        entity.setAttribute('position', this.position);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         entity.setAttribute('rotation', "90 0 0");
         this.appendComponentsTo(entity);
         document.querySelector('a-scene').appendChild(entity);
+
 
         return true; // Indicate successful addition to the scene
     }
@@ -263,6 +304,11 @@ class TransitionNode {
     // METHOD TO ADD OBJECT TO SCENE AND TO THE BACKEND DATABASE
     create() {
         const addedSuccessfully = this.addToScene();
+
+        // Set visible to true regardless of initial scene
+        const entity = document.getElementById(this.id);
+        entity.setAttribute('visible', true);
+        return addedSuccessfully;
     }
 
 
@@ -277,15 +323,24 @@ class TransitionNode {
     updateScenePosition() {
         this.deleteClone();
         const entity = document.getElementById(this.id);
+
+        // unghost original entity if was ghosted
+        entity.setAttribute('class', this.name);
+   
+
         if (entity) {
-            entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+            entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);
         }
     }
 
     // METHO TO UPDATE POSITION DIRECTLY WITHOUT BACKEND SYNC
     moveTo(new_position) {        
-        this.position = new_position;
+        this.pos_x = new_position.x;
+        this.pos_y = new_position.y;
+        this.pos_z = new_position.z;
         this.updateScenePosition(); // Reflect changes in the scene
+
+        return true;
     }
 
     // METHOD TO SHOW THE OBJECT MOVING WITHOUT UPDATING ACTUAL OBJECT TO AVOID STATE CHANGE
@@ -307,9 +362,10 @@ class TransitionNode {
             // Set the new position for the clone
             clone.setAttribute('position', `${new_position.x} ${new_position.y} ${new_position.z}`);
             clone.setAttribute('rotation', "90 0 0");
-
-            console.log("clone", clone);
             
+            // Ghost original entity
+            originalEntity.setAttribute('class', 'hidden');
+
             // Add the clone to the scene, assuming the scene is the parent of the original entity
             originalEntity.parentNode.appendChild(clone);
         }
@@ -343,21 +399,26 @@ class TransitionNode {
         }
 
         action.do = () => {
-            // Exclude 'create' from initial state capture since it doesn't exist yet
-            if (method !== 'create') {
-                action.initialState = this.captureState();
+            try {
+                // Exclude 'create' from initial state capture since it doesn't exist yet
+                if (method !== 'create') {
+                    action.initialState = this.captureState();
+                }
+                // Execute the action
+                const result = this[method](...args);
+                // Capture the final state after the action is performed
+                action.finalState = this.captureState(); // Capture the final state after action
+                // set final id of initial state as the updated id and vice versa for finalstate
+                if (method !== 'create' && method !== 'delete') {
+                    action.initialState.final_id = this.final_id;
+                    action.finalState.final_id = action.initialState.id;
+                }            
+                // Return true (success) if the method does not explicitly return a value
+                return result !== undefined ? result : true;
+            } catch (error) {
+                console.error(`Error executing action '${method}':`, error);
+                return false; // Return false to indicate failure
             }
-            // Execute the action
-            const result = this[method](...args);
-            // Capture the final state after the action is performed
-            action.finalState = this.captureState(); // Capture the final state after action
-            // set final id of initial state as the updated id and vice versa for finalstate
-            if (method !== 'create' && method !== 'delete') {
-                action.initialState.final_id = this.final_id;
-                action.finalState.final_id = action.initialState.id;
-            }            
-            // Return true (success) if the method does not explicitly return a value
-            return result !== undefined ? result : true;
         };
 
         action.undo = () => {
@@ -395,7 +456,9 @@ class TransitionNode {
         return {
             id: this.id,
             final_id: this.final_id,
-            position: { ...this.position }, // Shallow copy if position is an object
+            pos_x: this.pos_x, 
+            pos_y: this.pos_y, 
+            pos_z: this.pos_z, 
             scene_id: this.scene_id,
             new_scene_id: this.new_scene_id
         };
@@ -403,6 +466,7 @@ class TransitionNode {
 
     // A METHOD TO UPDATE THE CURRENT OBJECT WITH A GIVEN STATE OR DICTIONARY OF ATTRIBUTES
     applyState(state) {
+
          // Apply the state to the object
          Object.assign(this, state);
          this.id = state.id
@@ -415,20 +479,18 @@ class TransitionNode {
     updateScene(updates) {
 
         // Find the corresponding entity in the A-Frame scene
-        const entity = document.getElementById(this.final_id);
+        const entity = document.getElementById(this.id);
         if (!entity) {
             console.error('Entity not found');
             return;
         }
 
         // Update the entity's position
-        entity.setAttribute('position', `${this.position.x} ${this.position.y} ${this.position.z}`);
+        entity.setAttribute('position', `${this.pos_x} ${this.pos_y} ${this.pos_z}`);        
         // Update data attributes related to background images
         entity.setAttribute('scene_id', this.scene_id);
         entity.setAttribute('new_scene_id', this.new_scene_id);            
-        // Update visibility
-        entity.setAttribute('visible', this.scene_id === this.initial_scene_id); // Example condition
-        // // Update id in case we update the new_scene_id attribute
+        // Update id in case we update the new_scene_id attribute
         entity.setAttribute('id', this.id);
 
         // Loop through the updates object to apply updates
@@ -439,25 +501,10 @@ class TransitionNode {
                 // Update the object's properties
 
                 if (this.hasOwnProperty(key)) {
-                    // console.log("key: ", key, "value: ", value);
+                    console.log("key: ", key, "value: ", value);
                     this[key] = value;
-
-                    //  Updating entity id if background or title has changed
-                    if (key === 'scene_id' || key === 'new_scene_id') {
-                        let id = `move_${this.scene_id}_${this.new_scene_id}`;
-                        // Checking if object with same id already exists
-                        const existingEntity = document.getElementById(id);
-                        if (existingEntity ) {
-                            console.log(`An entity with the title and id ${id} already exists, so we won't change title.`);
-                            return false;
-                        }
-                        this.id = id
-                        this.final_id = this.id;                    
-                        entity.setAttribute('id', this.id);
-                    }
                 }
 
-                console.log("new_scene_id", this.new_scene_id);
 
                 // Special handling for certain keys or direct update for the entity's attributes
                 switch (key) {

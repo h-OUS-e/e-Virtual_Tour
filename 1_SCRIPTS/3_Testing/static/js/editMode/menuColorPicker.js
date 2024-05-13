@@ -14,11 +14,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   let {project_state, object_state} = await JSON_statePromise;  
 
   // JSON VARIABLES 
-  let project_colors = project_state.getColors();
+  let project_colors = project_state.getColors(true);
+  let current_color_info = null;
 
-
-
-
+  // HTML REFERENCES
   const colorPickerContainer = document.getElementById('color_picker');
   const exitButton = colorPickerContainer.querySelector('.exitBtn');
   const okButton = document.getElementById('color_picker_ok_button');
@@ -29,9 +28,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    * 2. SETUP
   *********************************************************************/
 
-  let [project_color_names, project_color_values] = getColorNamesAndValues(project_colors);
   let [default_swatches_names, default_swatches_values] = getColorNamesAndValues(color_palette);
-  const color_picker = new ColorPicker(project_color_names, project_color_values, default_swatches_names, default_swatches_values);
+  const color_picker = new ColorPicker(project_colors['names'], project_colors['hex_codes'], default_swatches_names, default_swatches_values);
 
 
 
@@ -67,12 +65,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     color_picker.refreshElementRects();
   });
 
-  scene.addEventListener('updatedProjectColors', function(event){
-    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(project_colors);
-    color_picker.project_colors = project_color_values;
-    color_picker.updateProjectColors(project_color_values_updated, project_color_names_updated);
-    color_picker.refreshElementRects();
-  });
+
 
   okButton.addEventListener('click', handleOkButton);
   exitButton.addEventListener('click', handleExitButton);
@@ -91,9 +84,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     * 4. EVENT LISTENER JSON UPDATES
   *******************************************************************************/ 
   scene.addEventListener('updateProjectColors', function(event){
-    const [project_color_names_updated, project_color_values_updated] = getColorNamesAndValues(project_colors);
-    color_picker.project_colors = project_color_values;
-    color_picker.updateProjectColors(project_color_values_updated, project_color_names_updated);
+    project_colors = project_state.getColors(true);
+    color_picker.updateProjectColors(project_colors['hex_codes'], project_colors['names']);
     color_picker.refreshElementRects();
   }); 
   
@@ -104,7 +96,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   * 5. FUNCTIONS
   *******************************************************************************/ 
 
-  
 
   function getColorNamesAndValues(colors) {
     const colorNames = Object.keys(colors);
@@ -112,21 +103,17 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     return [colorNames, colorValues];
   }
 
-  
-
-
 
 
   function handleOkButton() {
-    // Save the current color    
-    let event = new CustomEvent('updateProjectColors',      
-    {
-        detail: {
-          color_name: current_color_name,
-          hex_color: `#${currentColor.toHex()}`,
-        },
-    });
-    scene.dispatchEvent(event);   
+    // Update color where used
+    project_state.updateInnerProperty(
+      current_color_info['category'], 
+      current_color_info.reference_uuid, 
+      current_color_info.property_name, 
+      current_color_info.inner_property_name, 
+      `#${currentColor.toHex()}`, // new color value
+      "updateColor"); // event name
 
     // Hide the color picker
     colorPickerContainer.classList.add('hidden');
@@ -161,7 +148,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       color_picker.colorToPos(color);
       color_picker.setColorValues(color);
       current_color_name = event.detail.color_name;
-      console.log(currentColor, current_color_name);
+      current_color_info = event.detail;
+
     }
     color_picker.refreshElementRects();
   }
@@ -176,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const modeToggle = document.getElementById('mode-toggle');
   const swatches = document.getElementById('color_palette');
   const project_colors_swatches = document.getElementById('project_colors');
-  let i = 1;
+
 
   const colorIndicator = document.getElementById('color-indicator');
   const userSwatches = document.getElementById('user-swatches');
@@ -254,8 +242,8 @@ class ColorPicker {
     swatch.classList.add('swatch');
     swatch.setAttribute('title', name + "_" + color);
     swatch.style.backgroundColor = color;
-    swatch.addEventListener('click', function(){
-      let color = tinycolor(this.style.backgroundColor);     
+    swatch.addEventListener('click', () => {
+      let color = tinycolor(swatch.style.backgroundColor);     
       this.colorToPos(color);
       this.setColorValues(color);
     });
@@ -310,7 +298,7 @@ class ColorPicker {
     hueGradient.addColorStop(1.00, "hsl(360,100%,50%)");
     ctx.fillStyle = hueGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // canvas.addEventListener('mousedown', this.startGetHueColor.bind(this));
+    canvas.addEventListener('mousedown', this.startGetHueColor.bind(this));
   }
 
 
@@ -369,8 +357,12 @@ class ColorPicker {
   startGetSpectrumColor(e) {
     this.getSpectrumColor(e);
     spectrumCursor.classList.add('dragging');
-    window.addEventListener('mousemove', this.getSpectrumColor(e));
-    window.addEventListener('mouseup', this.endGetSpectrumColor(e));
+    // Store the event handlers to be able to remove them later
+    this.handleMouseMove = this.getSpectrumColor.bind(this);
+    this.handleMouseUp = this.endGetSpectrumColor.bind(this);
+  
+    window.addEventListener('mousemove', this.handleMouseMove);
+    window.addEventListener('mouseup', this.handleMouseUp);
   }
 
   getSpectrumColor(e) {
@@ -398,19 +390,25 @@ class ColorPicker {
   };
 
   endGetSpectrumColor(e){
-    spectrumCursor.classList.remove('dragging');
-    window.removeEventListener('mousemove', this.getSpectrumColor(e));
-    window.removeEventListener('mousedown', this.getSpectrumColor(e));
-  // window.removeEventListener('mouseup', this.endGetSpectrumColor(e));
 
+    spectrumCursor.classList.remove('dragging');
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mousedown', this.getSpectrumColor(e));
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  // window.removeEventListener('mouseup', this.endGetSpectrumColor(e));
     
   };
 
   startGetHueColor(e) {
     this.getHueColor(e);
     hueCursor.classList.add('dragging');
-    window.addEventListener('mousemove', this.getHueColor.bind(this));
-    window.addEventListener('mouseup', this.endGetHueColor.bind(this));
+
+    // Store the event handlers to be able to remove them later
+    this.handleMouseMoveHue = this.getHueColor.bind(this);
+    this.handleMouseUpHue = this.endGetHueColor.bind(this);
+
+    window.addEventListener('mousemove', this.handleMouseMoveHue);
+    window.addEventListener('mouseup', this.handleMouseUpHue);
   };
 
   getHueColor(e){
@@ -430,8 +428,8 @@ class ColorPicker {
 
   endGetHueColor(e){
       hueCursor.classList.remove('dragging');
-      window.removeEventListener('mousemove', this.getHueColor.bind(this));
-      // window.removeEventListener('mouseup', this.endGetHueColor.bind(this));
+      window.removeEventListener('mousemove', this.handleMouseMoveHue);
+      window.removeEventListener('mouseup', this.handleMouseUpHue);
       spectrumCanvas.removeEventListener('mousedown', this.startGetHueColor.bind(this));
   };
 };
