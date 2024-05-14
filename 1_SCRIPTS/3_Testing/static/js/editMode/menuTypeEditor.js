@@ -18,16 +18,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   let {project_state, object_state} = await JSON_statePromise;
 
-  // JSON VARIABLES 
-  let type_JSON = project_state.getCategory(CATEGORY);
-  let icon_JSON = project_state.getCategory("Icons");
-
 
   /*********************************************************************
     * 2. SETUP
   *********************************************************************/
-  // const type_menu = new Menu("menu_type_editor", "HELLO WORLD");
-  // type_menu.show(); 
   const type_menu = new TypeMenu('menu_type_editor', project_state);
   // type_menu.show(); 
 
