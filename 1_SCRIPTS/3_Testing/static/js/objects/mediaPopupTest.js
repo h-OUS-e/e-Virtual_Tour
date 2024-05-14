@@ -4,11 +4,23 @@ A script to control popup windows
 import { Editor } from 'https://esm.sh/@tiptap/core';
 import Underline from 'https://esm.sh/@tiptap/extension-underline';
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
+import { Popup } from './popupClass.js';
 
-// const colors = getComputedStyle(document.documentElement);  
 
+/*********************************************************************
+ * On DOM load
+*********************************************************************/
+document.addEventListener('DOMContentLoaded', async (event) => {
+  /*********************************************************************
+    * 1. LOAD JSON STATE
+  *********************************************************************/
 
-document.addEventListener('jsonLoaded', async (event) => {
+  /*********************************************************************
+    * 2. SETUP
+  *********************************************************************/
+  const popup_menu = new Popup('popup3');
+  // popup_menu.createPopup();
+  popup_menu.show();
 
   let body_content;
   body_content = {
@@ -32,62 +44,62 @@ document.addEventListener('jsonLoaded', async (event) => {
     // Disables the editor
   //   editor.setOptions({editable: false});
 
-  /////////////////////// GLOBAL VARIABLES //////////////////////
-  const mediaplayer_types = event.detail.mediaplayer_types;
-  const main_class = "#popup2";
-  let json = "{\"version\":\"5.3.0\",\"objects\":[{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":75,\"top\":14,\"width\":506.85,\"height\":45.2,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"bold\",\"fontSize\":40,\"text\":\"Advanced Patient Diagnostics\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":0,\"top\":80,\"width\":68.69,\"height\":20.34,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":18,\"text\":\"SageCare\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":576,\"top\":93,\"width\":72.42,\"height\":15.82,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":14,\"text\":\"hello it is me\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"}]}";    
-  const popup = document.getElementById("popup2");
-  const exit_btn = popup.querySelector('.exitBtn');
+  // /////////////////////// GLOBAL VARIABLES //////////////////////
+  // const mediaplayer_types = event.detail.mediaplayer_types;
+  // const main_class = "#popup2";
+  // let json = "{\"version\":\"5.3.0\",\"objects\":[{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":75,\"top\":14,\"width\":506.85,\"height\":45.2,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"bold\",\"fontSize\":40,\"text\":\"Advanced Patient Diagnostics\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":0,\"top\":80,\"width\":68.69,\"height\":20.34,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":18,\"text\":\"SageCare\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"},{\"type\":\"text\",\"version\":\"5.3.0\",\"originX\":\"left\",\"originY\":\"top\",\"left\":576,\"top\":93,\"width\":72.42,\"height\":15.82,\"fill\":\"rgb(0,0,0)\",\"stroke\":null,\"strokeWidth\":1,\"strokeDashArray\":null,\"strokeLineCap\":\"butt\",\"strokeDashOffset\":0,\"strokeLineJoin\":\"miter\",\"strokeUniform\":false,\"strokeMiterLimit\":4,\"scaleX\":1,\"scaleY\":1,\"angle\":0,\"flipX\":false,\"flipY\":false,\"opacity\":1,\"shadow\":null,\"visible\":true,\"backgroundColor\":\"\",\"fillRule\":\"nonzero\",\"paintFirst\":\"fill\",\"globalCompositeOperation\":\"source-over\",\"skewX\":0,\"skewY\":0,\"fontFamily\":\"Times New Roman\",\"fontWeight\":\"normal\",\"fontSize\":14,\"text\":\"hello it is me\",\"underline\":false,\"overline\":false,\"linethrough\":false,\"textAlign\":\"left\",\"fontStyle\":\"normal\",\"lineHeight\":1.16,\"textBackgroundColor\":\"\",\"charSpacing\":0,\"styles\":[],\"direction\":\"ltr\",\"path\":null,\"pathStartOffset\":0,\"pathSide\":\"left\",\"pathAlign\":\"baseline\"}]}";    
+  // const popup = document.getElementById("popup2");
+  // const exit_btn = popup.querySelector('.exitBtn');
 
-  let editor;
+  // let editor;
 
-  // Get buttons
-  const buttons = {
-      bold: document.getElementById('popup_body_editor_bold_btn'),
-      italic: document.getElementById('popup_body_editor_italic_btn'),
-      underline: document.getElementById('popup_body_editor_underline_btn')
-  };
+  // // Get buttons
+  // const buttons = {
+  //     bold: document.getElementById('popup_body_editor_bold_btn'),
+  //     italic: document.getElementById('popup_body_editor_italic_btn'),
+  //     underline: document.getElementById('popup_body_editor_underline_btn')
+  // };
 
-  const data = [
-      {
-      mp_id: "mp_01.1_Advanced_Patient_Diagnostics2",
-      mp_uuid: "dawdawdasda3342",
-      title: "Advanced Patient Diagnostics",
-      subtitle: "SageCare",
-      description: "hello it is me",
-      body: {
-          text_01: "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
-          image_01: "../static/0_resources/media_popups/diagnostics.png",
-          text_02: "Testing one ashda hello there",
-          videoUrl_01: "",
-          videoUrl_02: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
-          grid_1: {
-          row_1: { image_03: "media_popups/diagnostics.png", image_04: "media_popups/diagnostics.png" },
-          row_2: { image_05: "media_popups/diagnostics.png", image_06: "media_popups/diagnostics.png" }
-          },
-          grid_2: {
-          row_1: { image_07: "media_popups/diagnostics.png", image_08: "media_popups/diagnostics.png" },
-          row_2: { image_09: "media_popups/diagnostics.png", image_10: "media_popups/diagnostics.png" }
-          }
-      }
-      }
-  ];   
+  // const data = [
+  //     {
+  //     mp_id: "mp_01.1_Advanced_Patient_Diagnostics2",
+  //     mp_uuid: "dawdawdasda3342",
+  //     title: "Advanced Patient Diagnostics",
+  //     subtitle: "SageCare",
+  //     description: "hello it is me",
+  //     body: {
+  //         text_01: "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
+  //         image_01: "../static/0_resources/media_popups/diagnostics.png",
+  //         text_02: "Testing one ashda hello there",
+  //         videoUrl_01: "",
+  //         videoUrl_02: "https://player.vimeo.com/video/738257130?h=a37b9df869&byline=0&portrait=0",
+  //         grid_1: {
+  //         row_1: { image_03: "media_popups/diagnostics.png", image_04: "media_popups/diagnostics.png" },
+  //         row_2: { image_05: "media_popups/diagnostics.png", image_06: "media_popups/diagnostics.png" }
+  //         },
+  //         grid_2: {
+  //         row_1: { image_07: "media_popups/diagnostics.png", image_08: "media_popups/diagnostics.png" },
+  //         row_2: { image_09: "media_popups/diagnostics.png", image_10: "media_popups/diagnostics.png" }
+  //         }
+  //     }
+  //     }
+  // ];   
   
-  /////////////////////// RUN //////////////////////
-  updatPopupBody(body_content, edit_mode);
+  // /////////////////////// RUN //////////////////////
+  // updatPopupBody(body_content, edit_mode);
 
 
 
 
-  /////////////////////// EVENT LISTNERS //////////////////////
-  // Listen to MP being clicked from sidebar or object itself to show popup
-  scene.addEventListener('mediaPlayerClicked', handleMPClick);
-  scene.addEventListener('editMode', toggleEditMode);
+  // /////////////////////// EVENT LISTNERS //////////////////////
+  // // Listen to MP being clicked from sidebar or object itself to show popup
+  // scene.addEventListener('mediaPlayerClicked', handleMPClick);
+  // scene.addEventListener('editMode', toggleEditMode);
 
 
 
-  // Exit menu
-  exit_btn.addEventListener('click', closePopup);
+  // // Exit menu
+  // exit_btn.addEventListener('click', closePopup);
   
 
 
@@ -241,20 +253,8 @@ document.addEventListener('jsonLoaded', async (event) => {
   }
 
 
-
-
-
-
   /////////////////////// EMITTING FUNCTIONS //////////////////////  
   
-  
-
   /////////////////////// CANVAS SANDBOX //////////////////////   
   
-
-    
-
-
-
-
 });

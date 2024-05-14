@@ -76,6 +76,10 @@
     <script type="module" src="../static/js/objects/mediaPlayer.js"></script>
     <script type="module" src="../static/js/objects/mediaBar.js"></script>
     <script type="module" src="../static/js/objects/hollowCylinder.js" ></script>
+    <script type="module" src="../static/js/objects/mediaPopupTest.js" ></script>
+    <script type="module" src="../static/js/objects/popupClass.js"></script>
+
+
 
     <script type="module" src="../static/js/editMode/editTest.js"></script>
     <script type="module" src="../static/js/editMode/editMode.js"></script>
@@ -85,6 +89,7 @@
     <script type="module" src="../static/js/editMode/menuTypeEditor.js"></script>
     <script type="module" src="../static/js/editMode/menuIconEditor.js"></script>
     <script type="module" src="../static/js/editMode/menuUppy.js"></script>
+
 
 
 
@@ -304,6 +309,15 @@
 
         <!-- An overlay to blur the background when something pops up -->
         <div class="overlay" id="overlay"></div>
+
+
+        <div id="popup3" class="popup hidden">
+            <!-- Header -->
+            <div class="menuTopBar flexRow">
+                <h3 class="header"></h3>   
+                <button class="btn exitBtn">X</button> 
+            </div>
+        </div> 
 
 
         <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->

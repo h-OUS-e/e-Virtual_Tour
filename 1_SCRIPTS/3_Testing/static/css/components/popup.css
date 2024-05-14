@@ -122,29 +122,25 @@
   padding: 4px;
   border-bottom: 1px solid #bebebe;
   border-radius: 0px;
-  align-self: flex-start;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 13px;  
+  gap: 20px;  
   max-width: 100%;
-  width: 100%;
   top: 0;
   left: 0;
   right: 0;
-  
   /* background-color: #ccc; */
   
 }
 
 .popup-body-editor-bar > * {
   justify-content: flex-start;
-  gap: 5px;   
-  flex-wrap: nowrap;  
+  gap: 5px;  
+  width: auto;
 }
 
 .popup-body-editor {
   margin-top: 10px;
-
   max-width: 100%;
   /* min-width: 10ch; */
   width:100%;
