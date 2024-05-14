@@ -26,12 +26,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
     * 2. SETUP
   *********************************************************************/
-  // const type_menu = new Menu("menu_type_editor", "HELLO WORLD");
-  // type_menu.show(); 
   const icon_menu = new IconMenu('menu_icon_editor', project_state);
-  icon_menu.show(); 
-
-
+  
 
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
