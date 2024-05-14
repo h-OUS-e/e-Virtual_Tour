@@ -151,18 +151,6 @@ export async function fetchProjects(profile_uid) { //async api function.
 
 
 export async function insertProjects(dataArray) {
-    // project fields:
-        // project_uid uuid not null default uuid_generate_v4 (),
-        // project_name character varying(255) null,
-        // profile_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // is_published boolean null default true,
-        // constraint projects_pkey primary key (project_uid),
-        // constraint projects_profile_uid_fkey foreign key (profile_uid) references profiles (profile_uid)
-
     //input: dataArray = [ {project_name: 'new project name', is_published: bool} ]                 
     //output: 
     try {
@@ -218,19 +206,6 @@ export async function fetchProfileData(user_uid) { //async api function.
 };
 
 export async function insertProfiles(dataArray) {
-    // profiles fields:
-        // profile_uid uuid not null default uuid_generate_v4 (),
-        // id uuid null,
-        // user_name character varying(255) null,
-        // first_name character varying(255) null,
-        // last_name character varying(255) null,
-        // date_created timestamp with time zone null default current_timestamp,
-        // company_name character varying null,
-        // active_status text null default 'Active'::text,
-        // email character varying null,
-        // constraint profiles_pkey primary key (profile_uid),
-        // constraint profiles_username_key unique (user_name),
-        // constraint public_profiles_user_uid_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade
 
     //input: dataArray = [ {project_uid: 'some id', project_name: 'new project name'}, {project_uid: 'some id', is_published: bool} ]
     //output: 
@@ -263,7 +238,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
     // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
     try {
         let { data, error } = await supabase
-        .from('view_project_json_data')
+        .from('view_project_data')
         .select('*')
         .eq('project_uid', project_uid);
 
@@ -280,11 +255,6 @@ export async function fetchAllProjectData(project_uid) { //async api function.
 
 // select from media, scenes, transition_nodes tables !!!!!!!!!!!! NEEDS FIXING DO NOT USE !!!!!!!!!!!!!!!!
 export async function fetchSpecificProjectData(project_uid, table) { //async api function.
-    // input:   project_uid; profile unique identifier for each project (string)
-    //          table: what table to pull data from (string)
-                        //"media", popus and what populates them
-                        //"scenes", the background pictures
-                        //"transition_nodes", the nodes that transition from background image to background image
     // return: data; a json object containing the project information that contains project_uid in the table specified by table (JSON object)
     try {
         let { data, error } = await supabase
@@ -306,31 +276,6 @@ export async function fetchSpecificProjectData(project_uid, table) { //async api
 
 
 export async function insertMedia(dataArray) {
-    // media fields:
-        // media_uid uuid not null default uuid_generate_v4 (),
-        // x double precision null,
-        // y double precision null,
-        // z double precision null,
-        // rotation double precision null,
-        // title character varying(255) null,
-        // type_uid uuid null,
-        // scene_img_uid uuid null,
-        // project_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // media_name_id character varying null,
-        // rotation_x real null,
-        // rotation_y real null,
-        // rotation_z real null,
-        // type_name character varying null,
-        // icon_name character varying null,
-        // scene_name_id character varying null,
-        // position text null,
-        // constraint media_pkey primary key (media_uid),
-        // constraint media_project_uid_fkey foreign key (project_uid) references projects (project_uid)
-
     //input: dataArray = [ {media_uid: 'some id', project_name: 'new project name'}, {media_uid: 'some id', is_published: bool} ]
     //output: 
 
@@ -354,31 +299,6 @@ export async function insertMedia(dataArray) {
 }
 
 export async function deleteMedia(scene_uid) {
-    // media fields:
-        // media_uid uuid not null default uuid_generate_v4 (),
-        // x double precision null,
-        // y double precision null,
-        // z double precision null,
-        // rotation double precision null,
-        // title character varying(255) null,
-        // type_uid uuid null,
-        // scene_img_uid uuid null,
-        // project_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // media_name_id character varying null,
-        // rotation_x real null,
-        // rotation_y real null,
-        // rotation_z real null,
-        // type_name character varying null,
-        // icon_name character varying null,
-        // scene_name_id character varying null,
-        // position text null,
-        // constraint media_pkey primary key (media_uid),
-        // constraint media_project_uid_fkey foreign key (project_uid) references projects (project_uid)
-
     //input: dproject_uid: the uid of the scene who's data you want to delete
     //output: 
 
@@ -406,25 +326,6 @@ export async function deleteMedia(scene_uid) {
 
 
 export async function insertTransitionNodes(dataArray) {
-    // transition_nodes fields:
-        // node_uid uuid not null default uuid_generate_v4 (),
-        // x double precision null,
-        // y double precision null,
-        // z double precision null,
-        // rotation double precision null,
-        // transition_img_uid uuid null,
-        // scene_img_uid uuid null,
-        // project_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // node_name_id character varying null,
-        // transition_img_name character varying null,
-        // scene_img_name character varying null,
-        // constraint transition_nodes_pkey primary key (node_uid),
-        // constraint public_transition_nodes_project_uid_fkey foreign key (project_uid) references projects (project_uid) on update cascade on delete cascade
-
     //input: dataArray = [ {project_uid: 'some id', project_name: 'new project name'}, {project_uid: 'some id', is_published: bool} ]
     //output: 
     try {
@@ -447,24 +348,6 @@ export async function insertTransitionNodes(dataArray) {
 }
 
 export async function deleteTransitionNodes(scene_uid) {
-    // transition_nodes fields:
-        // node_uid uuid not null default uuid_generate_v4 (),
-        // x double precision null,
-        // y double precision null,
-        // z double precision null,
-        // rotation double precision null,
-        // transition_img_uid uuid null,
-        // scene_img_uid uuid null,
-        // project_uid uuid null,
-        // date_created timestamp with time zone null,
-        // last_update timestamp with time zone null,
-        // update_uid uuid null,
-        // date_deleted timestamp with time zone null,
-        // node_name_id character varying null,
-        // transition_img_name character varying null,
-        // scene_img_name character varying null,
-        // constraint transition_nodes_pkey primary key (node_uid),
-        // constraint public_transition_nodes_project_uid_fkey foreign key (project_uid) references projects (project_uid) on update cascade on delete cascade
 
     //input: scene_uid: the uid of the scene who's data you want to delete
     try {
@@ -510,14 +393,7 @@ export async function insertColor(color){
 
 
 export async function fetchIcons() {
-    //icon fields
-        // icon_id bigint generated always as identity,
-        // icon_name text null,
-        // icons_shade_id bigint null,
-        // icons_date_created timestamp with time zone null,
-        // icon_img_uid UUID,
-        // constraint icons_pkey primary key (icon_id),
-        // constraint icons_shade_id_fkey foreign key (icons_shade_id) references shades (shade_id)
+
     try {
         const { data: icons, error } = await supabase
             .from('icons')
