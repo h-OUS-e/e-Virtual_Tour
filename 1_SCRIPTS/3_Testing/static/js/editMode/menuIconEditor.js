@@ -15,12 +15,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
     * 1. LOAD JSON STATE
   *********************************************************************/
-
   let {project_state, object_state} = await JSON_statePromise;
-
-  // JSON VARIABLES 
-  let type_JSON = project_state.getCategory(CATEGORY);
-  let icon_JSON = project_state.getCategory("Icons");
 
 
   /*********************************************************************
