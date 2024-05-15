@@ -1,9 +1,7 @@
 /*
 A script to control popup windows
 */
-import { Editor } from 'https://esm.sh/@tiptap/core';
-import Underline from 'https://esm.sh/@tiptap/extension-underline';
-import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
+import { JSON_statePromise } from '../JSONSetup.js';
 import { Popup } from './popupClass.js';
 
 
@@ -14,12 +12,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
     * 1. LOAD JSON STATE
   *********************************************************************/
-
+  let {project_state, object_state} = await JSON_statePromise;
   /*********************************************************************
     * 2. SETUP
   *********************************************************************/
-  const popup_menu = new Popup('popup3');
+  const popup_menu = new MediaPopup('popup3', object_state, project_state);
   // popup_menu.createPopup();
+  // popup_menu.updateDefaultValues(title, subtitle, description, content);
   popup_menu.show();
 
   let body_content;
@@ -92,9 +91,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   // /////////////////////// EVENT LISTNERS //////////////////////
-  // // Listen to MP being clicked from sidebar or object itself to show popup
-  // scene.addEventListener('mediaPlayerClicked', handleMPClick);
-  // scene.addEventListener('editMode', toggleEditMode);
+  // Listen to MP being clicked from sidebar or object itself to show popup
+  scene.addEventListener('mediaPlayerClicked', (event) => {
+    console.log("media clicked");
+    popup_menu.handleSelection(event.detail.id);
+  });
+  scene.addEventListener('editMode', toggleEditMode);
 
 
 
@@ -206,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   function saveContent() {
       // Get json from editor
-      const json = editor.getJSON()
+      const json = editor.getJSON();
 
       // Emit content in json format to upload to server
 
@@ -258,3 +260,69 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /////////////////////// CANVAS SANDBOX //////////////////////   
   
 });
+
+
+
+
+class MediaPopup extends Popup {
+  constructor(menu_id, object_state, project_state) {
+    super(menu_id);    
+    this.object_state = object_state;
+    this.project_state = project_state;
+    this.selected_item_uuid = null;
+    this.setCallbacks(this.updateObject, this.onClose);
+  }
+
+  getPopupInfo() {
+    const mediaplayer_item = this.object_state.getItem("MediaPlayers",this.selected_item_uuid);
+    const subtitle = this.project_state.getItem("Types", mediaplayer_item.type_uuid).name;
+
+    let popup_info = {
+      title: mediaplayer_item.title,
+      subtitle: subtitle,
+      description: mediaplayer_item.description,
+      body: mediaplayer_item.body,
+    };
+
+
+    return popup_info;    
+  }
+
+  handleSelection(selected_item_uuid) {
+
+    if (this.selected_item_uuid) {
+      // Close menu to save content 
+      this.close();
+    }
+
+    // Update selected item id
+    this.selected_item_uuid = selected_item_uuid
+
+    // Get Mediaplayer info relevant to the popup
+    const popup_info = this.getPopupInfo();
+
+    // Update Popup with Mediaplayer info
+    this.updateDefaultValues(popup_info.title, popup_info.subtitle, popup_info.description, popup_info.body);
+    
+    // Show Popup
+    this.show();  
+  }
+
+
+  updateObject() {
+    const JSON_updates = [
+      {property: "title", value: this.title},
+      {property: "description", value: this.description},
+      {property: "body", value: this.body_content},
+    ];
+
+    this.object_state.updateProperties(JSON_updates, "MediaPlayers", this.selected_item_uuid);
+  }
+
+  onClose() {
+    // Reset  values
+    this.selected_item_uuid = null;
+  }
+
+
+}

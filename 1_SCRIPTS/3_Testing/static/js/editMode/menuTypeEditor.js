@@ -153,6 +153,8 @@ class TypeMenu extends Menu {
           }
           
           // Update project state
+          console.trace("TEST");
+
           this.updateProjectStateProperty(option.value, "name", option.name); 
 
           // Update color field names

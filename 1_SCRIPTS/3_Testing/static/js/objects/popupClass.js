@@ -1,7 +1,7 @@
 // A general purpose class for creating menus
 import { Editor } from 'https://esm.sh/@tiptap/core';
-import Underline from 'https://esm.sh/@tiptap/extension-underline';
-import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
+import { Underline } from 'https://esm.sh/@tiptap/extension-underline';
+import { StarterKit } from 'https://esm.sh/@tiptap/starter-kit';
 
 class Popup {
   constructor(menu_id) {
@@ -12,6 +12,8 @@ class Popup {
     this.exit_btn = this.menu.querySelector('.exitBtn');
     this.editor;
     this.buttons = {};
+    this.updateCallback = null;
+    this.closeCallback = null;
 
     // Setting up the header elements
     this.title = "Your Title Here";
@@ -30,20 +32,37 @@ class Popup {
     this.exit_btn.addEventListener('mousedown', () => {
       this.exit_btn.classList.add('exitBtnPressed');
     });
-    this.exit_btn.addEventListener('click', this.hide.bind(this));
+    this.exit_btn.addEventListener('click', () => {
+      this.close();
+    });
 
     // Disabling zoom when zooming on menu
     if (this.menu) {
       this.menu.addEventListener('mouseenter', window.disableZoom);
       this.menu.addEventListener('mouseleave', window.enableZoom);
     }
-
-    this.createPopup();
-    
+    this.createPopup();    
   } 
+
+
+  setCallbacks(updateCallback, closeCallback) {
+    this.updateCallback = updateCallback;
+    this.closeCallback = closeCallback
+  }
+
+  updateDefaultValues(title, subtitle, description, content) {
+    this.title = title;
+    this.subtitle = subtitle;
+    this.description = description;
+    this.body_content = content;
+
+    console.log('update default values', title, this.title, this.menu);
+
+    
+  }
   
   show() {
-    // Populate menu
+    // Update menu with content
     this.populateMenu();
 
     // Show menu
@@ -51,18 +70,27 @@ class Popup {
     this.menu.classList.remove('hidden');
   }
 
+
   hide() {   
     this.exit_btn.classList.remove('exitBtnPressed');
     this.visible = false;
     this.menu.classList.add('hidden');       
   }
 
+
   close() {
+    // Save
+    this.saveContent();
+
     // Clear menu content 
     this.reset();
 
     // Hide menu
     this.hide();
+
+    // Run callback
+    this.closeCallback();
+
   }
 
 
@@ -71,7 +99,6 @@ class Popup {
     this.title = "Your Title Here";
     this.subtitle = "Your SubTitle Here";
     this.description = "Your Description Here";
-    this.buttons = {};
 
     // Resetting the body
     this.body_content = {
@@ -81,8 +108,9 @@ class Popup {
       ]
     };  
     
-    this.handleButtons(false);
+    // this.handleButtons(false);
   }
+
 
 
   toggle() {
@@ -94,13 +122,37 @@ class Popup {
   }
 
 
+
   populateMenu() {
-    // this.populateHeader();
-    // this.populateBody();
+    this.populateHeader();
+    this.populateBody();
   }
 
-  addMenuItem(label_text, input_type, default_value, options, addNewOption, callback, secondary_callback) {    
-    
+
+  saveContent() {
+    // Save the body
+    this.body_content = this.editor.getJSON();
+
+    // Update state using function child class
+    this.updateCallback();
+  }
+
+
+  populateHeader() {
+    // Get elements
+    const title_element = this.menu.querySelector('.popup-title');
+    const subtitle_element = this.menu.querySelector('.popup-subtitle');
+    const description_element = this.menu.querySelector('.popup-description');
+
+    // Set text of each element
+    title_element.textContent = this.title;
+    subtitle_element.textContent = this.subtitle;
+    description_element.textContent = this.description;    
+  }
+
+
+  populateBody() {
+    this.updateTiptapEditor();
   }
 
 
@@ -166,15 +218,21 @@ class Popup {
     const editorBar = this.createEditorBar();
     body.appendChild(editorBar);
   
-    const editor = document.createElement('div');
-    editor.id = 'popup_body_editor';
-    editor.className = 'popup-body-editor';
-    body.appendChild(editor);
+    const editor_container = document.createElement('div');
+    editor_container.id = 'popup_body_editor';
+    editor_container.className = 'popup-body-editor';
+    body.appendChild(editor_container);
 
-    this.setupTiptapEditor(editor, this.body_content, this.buttons);
+    this.setupTiptapEditor(editor_container, this.body_content, this.buttons);
   
     return body;
   }
+
+
+  updateTiptapEditor() {
+    this.editor.commands.setContent(this.body_content);
+  }
+  
 
   setupTiptapEditor(element, content, buttons) {        
     // Setup tiptap editor (the body editor)
@@ -204,6 +262,13 @@ class Popup {
 
     // Add event listeners to buttons in custom editor bar
     this.handleButtons(true);
+
+  }
+
+
+  // Set content into the body of the tiptap editor
+  setContent(content) {
+    this.editor.commands.setContent(content);
   }
 
 
@@ -320,8 +385,6 @@ class Popup {
   
     return button;
   }
-
-
 
 
 
