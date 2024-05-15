@@ -41,7 +41,10 @@ async function buildTable(data, html_element) {
                 localStorage.setItem('clickedProject', clicked_project);
 
                 try {
-                    let result = await fetchAllProjectData(clicked_project);
+                    let result = await fetchAllProjectData(clicked_project)
+                    localStorage.setItem('projectData', result);
+                    console.log(result)
+                    ;
                     return result
                 } catch (error) {
                     console.error(`Error in fetching data for table ${table}: ${error}`);

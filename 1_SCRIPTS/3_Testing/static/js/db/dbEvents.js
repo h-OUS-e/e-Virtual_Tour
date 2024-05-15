@@ -1,4 +1,4 @@
-import { supabase } from "./dbClient";
+import { supabase } from "./dbClient.js";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // get session https://supabase.com/docs/reference/javascript/auth-getsession
@@ -238,7 +238,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
     // return: data; a json object containing the project information that joins select scenes.*, tran.*, media.*, icons.*,shades.*, colors.* (JSON object)
     try {
         let { data, error } = await supabase
-        .from('view_project_data')
+        .from('view_project_json_data')
         .select('*')
         .eq('project_uid', project_uid);
 
