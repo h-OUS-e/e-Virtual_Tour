@@ -1,12 +1,12 @@
-import { supabase } from "./dbClient.js";
-import { fetchAllProjectData, fetchIcons, fetchProjects, fetchStoragePublicUrl } from './dbEvents.js';
+import { fetchAllProjectData, fetchIcons, fetchProjects, fetchStoragePublicUrl } from './db/dbEvents.js';
 
 
 
 
 const upload_button = document.getElementById('uploadButton');
 const index_button = document.getElementById('indexButton');
-
+console.log('building projects')
+console.log
 
 let selected_project_data;
 const profile_stored = JSON.parse(localStorage.getItem('userProfile'));

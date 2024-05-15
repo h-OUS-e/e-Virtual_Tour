@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type = 'module' src="../static/js/db/dbClient.js"> </script>
     <title>Document</title>
-</head>
+</head> 
 <body>
     <button id="indexButton" >Go to Index</button>
     <script>
@@ -41,10 +43,12 @@
         });
     </script>
     
+
+    <script type="module" src="../static/js/db/dbEvents.js"></script>
+    <script type="module" src="../static/js/projectsScript.js"></script>
     
   
 
 </body>
-<script type="module" src="../static/js/db/dbEvents.js"></script>
-<script type="module" src="../static/js/db/projects.js"></script>
+
 </html>

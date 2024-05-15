@@ -1,4 +1,4 @@
-import { supabase } from "./dbClient.js";
+import { supabase } from "./dbClient";
 //ktayfour97@gmail.com psw: 123456789
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // get session https://supabase.com/docs/reference/javascript/auth-getsession

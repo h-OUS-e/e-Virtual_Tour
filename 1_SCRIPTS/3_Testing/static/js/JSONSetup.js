@@ -1,4 +1,6 @@
 import { JSONState } from "./JSONState.js";
+import {fetchAllProjectData} from  "./db/dbEvents.js"
+
 // Function to read the JSON file and extract id and path
 async function loadJSON(filename) {
     try {
@@ -15,7 +17,12 @@ async function loadJSON(filename) {
 }
 
 
+//get json from local storage
+
+
+
 // Get current colors and update css variables with curent colors
+
 
 
 export const JSON_statePromise = (async () => {
