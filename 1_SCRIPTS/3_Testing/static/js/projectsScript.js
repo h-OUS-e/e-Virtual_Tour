@@ -28,31 +28,29 @@ try {
 
 
 async function buildTable(data, html_element) {
-    var table = document.getElementById(html_element); // Changed from 'myTable' to 'html_element'
+    var table = document.getElementById(html_element); 
     for (var i = 0; i < data.length; i++) {
         var row = table.insertRow(-1);
         var cell = row.insertCell(0);
         cell.innerHTML = data[i].project_name;
         cell.style.cursor = "pointer";
         row.onclick = (function(index) {
-            
             return async function() {
-                let clicked_project = onRowClick(data[index].project_name);
-                localStorage.setItem('clickedProject', clicked_project);
-
+                let clicked_project = data[index];
+                localStorage.setItem('clickedProject', JSON.stringify(clicked_project));
+            
                 try {
-                    let result = await fetchAllProjectData(clicked_project)
-                    localStorage.setItem('projectData', result);
-                    console.log(result)
-                    ;
-                    return result
+                    let fetched_data = await fetchAllProjectData(clicked_project.project_uid);
+                    let string_data = JSON.stringify(fetched_data).slice(9, -2); 
+                    let parsed_data = JSON.parse(string_data);
+                    console.log(parsed_data);
+                    localStorage.setItem('projectData', JSON.stringify(parsed_data));
+                    return parsed_data; 
                 } catch (error) {
                     console.error(`Error in fetching data for table ${table}: ${error}`);
                 }
-                
-                console.log(selected_project_data);
-                localStorage.setItem('projectData', JSON.stringify(selected_project_data));
             };
+            
 
         })(i);
     }
