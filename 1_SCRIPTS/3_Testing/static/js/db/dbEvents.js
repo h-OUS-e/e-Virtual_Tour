@@ -19,7 +19,7 @@ export async function supabaseGetSession() {
   
   
 
-class Supabase_Table_Events { //WIP
+class Supabase_Table_Events { //WIP DO NOT USE
     constructor(table_name) {
         this.table_name = table_name;
     }
@@ -240,7 +240,7 @@ export async function fetchAllProjectData(project_uid) { //async api function.
         let { data, error } = await supabase
         .from('view_project_json_data')
         .select('*')
-        .eq('scene_project_uid', project_uid);
+        .eq('project_uid', project_uid);
 
         if (error) {
         console.error('Error fetching project data:', error);
