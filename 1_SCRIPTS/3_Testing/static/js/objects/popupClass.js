@@ -1,7 +1,12 @@
 // A general purpose class for creating menus
 import { Editor } from 'https://esm.sh/@tiptap/core';
+import { Image } from 'https://esm.sh/@tiptap/extension-image';
 import { Underline } from 'https://esm.sh/@tiptap/extension-underline';
 import { StarterKit } from 'https://esm.sh/@tiptap/starter-kit';
+
+Image.configure({
+  inline: true,
+})
 
 class Popup {
   constructor(menu_id) {
@@ -24,7 +29,12 @@ class Popup {
     this.body_content = {
       "type": "doc",
       "content": [
-        // …
+        {"type":"paragraph","content":[
+          {"type":"text","text":"Hello, world!"},
+          {"type":"image","attrs":{"src":"https://source.unsplash.com/8xznAGy4HcY/800x400","alt":"Image placeholedr","title":null}},
+          {"type":"text","text":"Hello, world!"},
+        ]
+        }
       ]
     };
 
@@ -90,7 +100,15 @@ class Popup {
 
     // Run callback
     this.closeCallback();
+  }
 
+
+  toggle() {
+    if (this.visible) {
+      this.hide();
+    } else {
+      this.close();
+    }
   }
 
 
@@ -104,21 +122,61 @@ class Popup {
     this.body_content = {
       "type": "doc",
       "content": [
-        // …
+        {"type":"paragraph","content":[{"type":"text","text":"Hello, world!"}]}
       ]
-    };  
-    
+    };      
     // this.handleButtons(false);
   }
 
+  
+  saveContent() {
+    // Save the body
+    this.body_content = this.editor.getJSON();
+    console.log("TEST", JSON.stringify(this.body_content));
+
+    // Update state using function child class
+    this.updateCallback();
+  }
 
 
-  toggle() {
-    if (this.visible) {
-      this.hide();
-    } else {
-      this.close();
-    }
+  setupTiptapEditor(element, content, buttons) {        
+    // Setup tiptap editor (the body editor)
+    this.editor = new Editor({
+        element: element,
+        extensions: [
+          StarterKit, 
+          Underline, 
+          Image.configure({ inline: true })
+        ],
+        content: content,
+
+        // Update content and activate buttons on update
+        onUpdate({ editor }) {
+          content.innerHTML = JSON.stringify(editor.getJSON());                
+          buttons.bold.classList.toggle("active", editor.isActive("bold"));
+          buttons.italic.classList.toggle("active", editor.isActive("italic"));
+          buttons.underline.classList.toggle("active", editor.isActive("underline"));
+        },
+
+        onSelectionUpdate({ editor }) {
+          buttons.bold.classList.toggle("active", editor.isActive("bold"));
+          buttons.italic.classList.toggle("active", editor.isActive("italic"));
+          buttons.underline.classList.toggle("active", editor.isActive("underline"));
+        },
+
+        onCreate({ editor }) {
+          content.innerHTML = JSON.stringify(editor.getJSON());
+        }
+      }); 
+
+      
+
+    // Add event listeners to buttons in custom editor bar
+    this.handleButtons(true);
+  }
+
+  updateTiptapEditor() {
+    this.editor.commands.setContent(this.body_content);
   }
 
 
@@ -126,15 +184,6 @@ class Popup {
   populateMenu() {
     this.populateHeader();
     this.populateBody();
-  }
-
-
-  saveContent() {
-    // Save the body
-    this.body_content = this.editor.getJSON();
-
-    // Update state using function child class
-    this.updateCallback();
   }
 
 
@@ -229,41 +278,7 @@ class Popup {
   }
 
 
-  updateTiptapEditor() {
-    this.editor.commands.setContent(this.body_content);
-  }
   
-
-  setupTiptapEditor(element, content, buttons) {        
-    // Setup tiptap editor (the body editor)
-    this.editor = new Editor({
-        element: element,
-        extensions: [StarterKit, Underline],
-        content: content,
-
-        // Update content and activate buttons on update
-        onUpdate({ editor }) {
-          content.innerHTML = JSON.stringify(editor.getJSON());                
-          buttons.bold.classList.toggle("active", editor.isActive("bold"));
-          buttons.italic.classList.toggle("active", editor.isActive("italic"));
-          buttons.underline.classList.toggle("active", editor.isActive("underline"));
-        },
-
-        onSelectionUpdate({ editor }) {
-          buttons.bold.classList.toggle("active", editor.isActive("bold"));
-          buttons.italic.classList.toggle("active", editor.isActive("italic"));
-          buttons.underline.classList.toggle("active", editor.isActive("underline"));
-        },
-
-        onCreate({ editor }) {
-          content.innerHTML = JSON.stringify(editor.getJSON());
-        }
-      }); 
-
-    // Add event listeners to buttons in custom editor bar
-    this.handleButtons(true);
-
-  }
 
 
   // Set content into the body of the tiptap editor

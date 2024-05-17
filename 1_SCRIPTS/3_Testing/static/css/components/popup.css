@@ -150,7 +150,13 @@
 
 }
 
+/* The body where text and imagse go, basically the tiptap editor */
 .popup-body-editor p {
-  max-width: 38ch;
+  max-width: 58ch;
   min-width: 10ch;  
+}
+
+/* The elements inside the tiptap editor paragraph shall take up the entire width */
+.popup-body-editor p > *  {
+  width: 100%;
 }
