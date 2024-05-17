@@ -1,0 +1,192 @@
+
+ -- main select
+SELECT
+    projects.project_uid,
+    jsonb_build_object(
+        'ProjectSettings', jsonb_build_object(
+            'project_colors', projects.project_color_pallet,
+            'start_scene', projects.project_start_scene_uid --what happens if it is null
+        ),
+        'icons', icon_data,
+        'Types', class_types.class_data
+    ) as ProjectJSON,
+
+
+    jsonb_build_object(
+        'TransitionNodes', node_data.nodes,
+        'MediaPlayer', media_data.media,
+        'scenes', jsonb_object_agg(
+            scene_data.scene_uid,
+            jsonb_build_object(
+                'name', scene_data.scene_name,
+                'img_uid', scene_data.scene_img_uid
+
+            )
+        )
+    ) as ObjectJSON
+FROM
+    projects
+
+
+
+--scenes
+LEFT JOIN (
+    SELECT
+        scenes.scene_project_uid,
+        scenes.scene_uid,
+        scenes.scene_name,
+        scenes.scene_img_uid
+    FROM
+        scenes
+    WHERE
+        scenes.scenes_date_deleted IS NULL
+        AND scenes.scene_uid is not null
+    GROUP BY
+        scenes.scene_uid, scenes.scene_name, scenes.scene_img_uid
+) AS scene_data ON scene_data.scene_project_uid = projects.project_uid
+
+
+
+
+--nodes
+LEFT join (
+    select
+        scenes.scene_project_uid,
+        jsonb_object_agg(
+            transition_nodes.node_uid,
+            jsonb_build_object( 
+                'x', transition_nodes.transition_nodes_x,
+                'y', transition_nodes.transition_nodes_y,
+                'z', transition_nodes.transition_nodes_z,
+                'rotation', transition_nodes.transition_nodes_rotation,
+                'new_scene_uid', transition_nodes.transition_nodes_to_scene_uid,
+                'on_scene_uid', transition_nodes.transition_nodes_on_scene_uid,
+                'isDeleted', false,
+                'isEdited', false,
+                'isNew', false
+            )
+        )AS nodes
+    from
+      scenes
+      left join transition_nodes on transition_nodes.transition_nodes_on_scene_uid = scenes.scene_uid
+    where
+        transition_nodes.transition_nodes_date_deleted is null 
+        and transition_nodes.node_uid is not null
+    group by
+        scenes.scene_project_uid
+
+) as node_data on node_data.scene_project_uid = scene_data.scene_project_uid
+
+
+
+
+--media
+LEFT join (
+    select
+        scenes.scene_project_uid,
+        jsonb_object_agg(
+            media.media_uid,
+            json_build_object(
+                'scene_uid',media.media_on_scene_uid,
+                'pos_x', media.media_x,
+                'pos_y', media.media_y,
+                'pos_z', media.media_z,
+                'rot_x', media.rot_x,
+                'rot_z', media.rot_z,
+                'rot_y', media.rot_y,
+                'title', media.media_title,
+                'description', media.media_description,
+                'body', media.media_body,
+                'icon_index', type_icon_joiner.ti_index,
+                'icon_type', type_icon_joiner.ti_type_uid,
+                'isDeleted', false,
+                'isEdited', false,
+                'isNew', false
+            ) 
+        )as media
+
+
+    from
+        scenes
+        left join media on media.media_on_scene_uid = scenes.scene_uid and media.media_on_scene_uid is not null
+        left join type_icon_joiner on type_icon_joiner.ti_joiner_id = media.media_ti_joiner_id and media.media_ti_joiner_id is not null
+    where
+        media.media_date_deleted is null 
+        and scenes.scene_project_uid is not null
+        and media.media_uid is not null
+    group by
+        scenes.scene_project_uid
+
+) as media_data on media_data.scene_project_uid = scene_data.scene_project_uid
+
+--types
+Left join (
+    select
+        projects.project_uid,
+        jsonb_object_agg(
+            types.type_uid,
+            jsonb_build_object(
+                'type_name', types.type_name,
+                'class', types.class,
+                'icons', COALESCE(icon_data.icons, '[]'), -- Ensuring an empty array if no icons
+                'dark', types.dark,
+                'light', types.light,
+                'editable', types.editable,
+                'isDeleted', types.isdeleted,
+                'isDeleted', false,
+                'isEdited', false,
+                'isNew', false
+            )
+        )as class_data
+    from
+        projects
+        LEFT JOIN scenes ON scenes.scene_project_uid = projects.project_uid
+        LEFT JOIN media ON media.media_on_scene_uid = scenes.scene_uid
+        LEFT JOIN type_icon_joiner ON type_icon_joiner.ti_joiner_id = media.media_ti_joiner_id
+        LEFT JOIN types ON types.type_uid = type_icon_joiner.ti_type_uid
+        left JOIN (
+            SELECT 
+                ti_type_uid, 
+                jsonb_agg(icon_id) AS icons 
+            FROM 
+                type_icon_joiner
+                JOIN icons ON icons.icon_id = type_icon_joiner.ti_icon_id
+            GROUP BY 
+                ti_type_uid
+        ) AS icon_data ON icon_data.ti_type_uid = types.type_uid
+
+    WHERE 
+    media.media_ti_joiner_id IS NOT NULL
+    and types.type_uid is not null
+    GROUP BY
+        projects.project_uid
+    )as class_types on class_types.project_uid = projects.project_uid 
+
+
+-- icons
+    left join (
+        select
+            projects.project_uid,
+            icons.icon_id,
+            icons.icon_img_uid,
+            icons.icon_name
+        from
+        projects
+        left join scenes on scenes.scene_project_uid = projects.project_uid
+        left join media on media.media_on_scene_uid = scenes.scene_uid
+        left join type_icon_joiner on type_icon_joiner.ti_joiner_id = media.media_ti_joiner_id
+        left join icons on icons.icon_id = type_icon_joiner.ti_icon_id
+
+        where
+
+        icons.icon_id is not null
+        and  type_icon_joiner.ti_icon_id is not null
+        and media.media_uid is not null
+        and scenes.scene_uid is not null
+
+
+    ) as icon_data on icon_data.project_uid = projects.profile_uid
+
+GROUP BY
+    projects.project_uid, node_data.nodes, media_data.media, class_types.class_data, icon_data.;
+    

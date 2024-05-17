@@ -2,7 +2,7 @@
 A script to control what shows on the scroll bar based on popup contents.
 */
 // LOADING JSON STATE
-import { JSON_statePromise } from '../JSONSetup.js';
+import { JSON_statePromise, getProjectDataPromiseFromLs } from '../JSONSetup.js';
 import { MediaPlayer } from '../objects/mediaPlayer.js';
 import { TransitionNode, emitTransitioning } from '../objects/transitionNodes.js';
 
@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
      * 1. LOAD JSON ITEMS 
     *********************************************************************/
     // Load JSON state 
-    let {project_state, object_state} = await JSON_statePromise;
-
+    // let {project_state, object_state} = await JSON_statePromise;
+    let {project_state, object_state} = await getProjectDataPromiseFromLs();
+    
     const editable_object_classes =  project_state.getUniquePropertiesByCondition("Types", "class", "editable", true);
 
     // HTML REFERENCES
