@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
  /////////////////////// GLOBAL VARIABLES //////////////////////
 
 // make sure to set this variable before uplaoding!!!!
-const chosen_project = localStorage.getItem('clickedProject');
+const chosen_project = JSON.parse(localStorage.getItem('projectData'));
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
 
@@ -50,7 +50,8 @@ function ReinitializeUppySession(bucket, target_div, event) {
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div);
+      console.log(chosen_project)
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project["project_uid"], target_div);
       console.log(bucket);
 
     } else { console.log('no session found')}
@@ -66,7 +67,7 @@ function ReinitializeUppySession(bucket, target_div, event) {
 // One big function that defines how to setup uppy dashboard, image editor and what to do when images are added
 function setUpUppy (token, storage_bucket, project_uid, target_div) {
   // Get supabase constants
-  const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; // SHOULD THIS BE CONSTANT?
+  const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; 
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
 
   // Define some constants based on storage bucket
@@ -203,6 +204,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     // Edit filename in metadata in case new image name is input
     const file_name = `${image_name}.${image_extension}`;
     uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
+    console.log(`uppy ${uppy_file.meta.objectName}`);
     uppy_file.meta.metadata.file_name = file_name;
     uppy_file.name = file_name;
     uppy_file.meta.name = file_name;

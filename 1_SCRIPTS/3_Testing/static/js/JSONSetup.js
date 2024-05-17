@@ -53,7 +53,8 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
 
         const project_JSON = (key = 'projectjson') => {
             if (db_json_ls.hasOwnProperty(key)) {
-                return db_json_ls[key];
+                const project_state = new JSONState(db_json_ls[key]);
+                return project_state;
             } else {
                 throw new Error(`Key "${key}" not found`);
             }
@@ -61,7 +62,8 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
 
         const object_JSON = (key = "objectjson") => {
             if (db_json_ls.hasOwnProperty(key)) {
-                return db_json_ls[key];
+                const object_JSON = new JSONState(db_json_ls[key]);
+                return object_JSON;
             } else {
                 throw new Error(`Key "${key}" not found`);
             }
