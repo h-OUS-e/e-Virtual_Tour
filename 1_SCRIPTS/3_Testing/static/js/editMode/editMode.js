@@ -23,9 +23,10 @@ document.addEventListener('DOMContentLoaded', async () => {
      * 1. LOAD JSON ITEMS 
     *********************************************************************/
     // Load JSON state 
+    // let {project_state, object_state} = await JSON_statePromise;
     let {project_state, object_state} = await JSON_statePromise;
 
-    const editable_object_classes =  project_state.getUniquePropertiesByCondition("Types", "class", "editable", true);
+    // const editable_object_classes =  project_state.getUniquePropertiesByCondition("Types", "class", "editable", true);
 
     // HTML REFERENCES
     const scene = document.querySelector('a-scene');
