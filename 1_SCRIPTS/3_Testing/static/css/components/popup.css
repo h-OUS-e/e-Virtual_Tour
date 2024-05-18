@@ -156,7 +156,16 @@
   min-width: 10ch;  
 }
 
-/* The elements inside the tiptap editor paragraph shall take up the entire width */
-.popup-body-editor p > *  {
-  width: 100%;
+.tiptap img {
+  max-width: 100%;
+  height: auto;
 }
+
+/* The elements inside the tiptap editor paragraph shall take up the entire width */
+/* .popup-body-editor p > *  {
+  max-width: 100%;
+} */
+
+/* .prosemirror-dropcursor-inline > *{
+  width: 50px !important;
+} */

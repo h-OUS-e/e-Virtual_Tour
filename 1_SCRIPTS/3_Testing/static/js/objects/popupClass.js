@@ -4,9 +4,7 @@ import { Image } from 'https://esm.sh/@tiptap/extension-image';
 import { Underline } from 'https://esm.sh/@tiptap/extension-underline';
 import { StarterKit } from 'https://esm.sh/@tiptap/starter-kit';
 
-Image.configure({
-  inline: true,
-})
+
 
 class Popup {
   constructor(menu_id) {
@@ -146,8 +144,16 @@ class Popup {
         extensions: [
           StarterKit, 
           Underline, 
-          Image.configure({ inline: true })
+          Image.configure({ inline: true }), // Keeps image inside paragraph block
         ],
+        // Accessing prosemirror functionality to handle image on drop
+        editorProps: {
+          handleDrop: function(view, event, slice, moved) {
+            // we will do something here!
+            return false; // not handled use default behaviour
+          }
+        },
+
         content: content,
 
         // Update content and activate buttons on update
