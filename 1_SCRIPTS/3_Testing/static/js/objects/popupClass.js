@@ -5,7 +5,6 @@ import { Underline } from 'https://esm.sh/@tiptap/extension-underline';
 import { StarterKit } from 'https://esm.sh/@tiptap/starter-kit';
 
 
-
 class Popup {
   constructor(menu_id) {
     this.menu_id = menu_id;
@@ -17,6 +16,9 @@ class Popup {
     this.buttons = {};
     this.updateCallback = null;
     this.closeCallback = null;
+
+    // Setting some constants
+    this.max_file_size = 10; // In MB
 
     // Setting up the header elements
     this.title = "Your Title Here";
@@ -137,7 +139,7 @@ class Popup {
   }
 
 
-  setupTiptapEditor(element, content, buttons) {        
+  setupTiptapEditor(element, content, buttons, handleImageDrop=this.handleImageDrop) {        
     // Setup tiptap editor (the body editor)
     this.editor = new Editor({
         element: element,
@@ -149,7 +151,11 @@ class Popup {
         // Accessing prosemirror functionality to handle image on drop
         editorProps: {
           handleDrop: function(view, event, slice, moved) {
-            // we will do something here!
+            // if dropping external files
+            if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { 
+              handleImageDrop(event, view);
+              return true; // handled
+            }
             return false; // not handled use default behaviour
           }
         },
@@ -448,6 +454,52 @@ class Popup {
   }
 
 
+
+  // Handles image dragging into the tiptap editor and uploading the image to server
+  handleImageDrop(event, view) {
+    let file = event.dataTransfer.files[0]; // the dropped file
+    let file_size = ((file.size/1024)/1024).toFixed(4); // get the filesize in MB
+    // check valid image type under 10MB
+    if ((file.type === "image/jpeg" || file.type === "image/png") && file_size < 10) { 
+      // check the dimensions
+      let _URL = window.URL || window.webkitURL;
+      let img = new window.Image(); /* global Image */
+      img.src = _URL.createObjectURL(file);
+      console.log("TEST2", view);
+
+
+      // check if image height or width are less than 5000 pixels
+      img.onload = function () {
+        if (this.width > 5000 || this.height > 5000) {
+          this.fadingWarning(null, "Your images need to be less than 5000 pixels in height and width.");   
+        } else {
+      console.log("TEST3", view);
+
+          // valid image so put a placeholder image while you upload to server
+          const { schema } = view.state;
+          const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+          const node = schema.nodes.image.create({ src: img.src }); // creates the image element
+          const transaction = view.state.tr.insert(coordinates.pos, node); // places it in the correct position
+          return view.dispatch(transaction);
+
+        //   // uploadImage will be your function to upload the image to the server or s3 bucket somewhere
+        //   uploadImage(file).then(function(response) { // response is the image url for where it has been saved
+        //     // do something with the response
+        //   }).catch(function(error) {
+        //     if (error) {
+        //       window.alert("There was a problem uploading your image, please try again.");
+        //     }
+        //   });
+        }
+      }
+
+    } else {
+      this.fadingWarning(null, `The image size cannot exceed ${this.max_file_size} MB.`);    
+    }
+
+  }
+
+
   disableDefaults(event) {
     if ((event.ctrlKey && /^[zZyY]$/.test(event.key)) || (event.ctrlKey && event.shiftKey && /^[zZyY]$/.test(event.key)) ) {
       event.preventDefault();
@@ -492,7 +544,20 @@ class Popup {
       fading_alert.classList.remove("fade");
             }, 1200);
   }
+
+
+  // A soft warning with the option to continue or cancel operation
+  fadingWarning(title, warning_message, timeout=1000) {
+
+    return Swal.fire({
+      icon: 'warning',
+      title: title,
+      text: warning_message,
+      showConfirmButton: false,
+      timer: timeout,
+    });
+  }
 }
 
-export { Popup };
+  export { Popup };
 

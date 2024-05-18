@@ -12,9 +12,7 @@
 
 .popup {
   position: absolute;
-  max-width: 800px ;
-  max-height: 90%;
-  
+  max-width: 800px ; 
   width: 90%;   
   /* height:100%; */
 
@@ -45,8 +43,6 @@
   padding-left: 30px;
   padding-right: 30px;
   box-sizing: border-box;
-  max-height: 100%;
-  height:100%;
 }
 
 .popup-contianer-header {
@@ -57,9 +53,6 @@
   border: none;    
 }
 
-.popup-contianer-header-wrapper {
-  /* max-height: 120px; */
-}
 
 .popup-contianer-header-wrapperInner {  
   align-items: stretch;
@@ -89,7 +82,6 @@
   /* min-height: 200px; */
   max-width: 32ch;
   min-width: 70%;
-  height:100%;  
 
   align-self: center ; 
   align-items: center;
@@ -144,16 +136,28 @@
   /* min-width: 10ch; */
   width:100%;
   min-height: 90px;
-  max-height:100%;
   overflow: auto;
-  /* border-bottom: 1px solid #bebebe; */
-
+  padding-bottom:10px;
+  border-bottom: 2px solid #bebebe;
+  height: calc(80vh - 200px);
 }
+
+.tiptap {
+  
+}
+
 
 /* The body where text and imagse go, basically the tiptap editor */
 .popup-body-editor p {
+  position: relative;
+  /* Centering body in width */
+  left: calc(50%);
+  transform: translateX(-50%);
+
+  /* Setting max width for readability */
   max-width: 58ch;
   min-width: 10ch;  
+
 }
 
 .tiptap img {
