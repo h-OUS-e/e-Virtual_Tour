@@ -122,7 +122,12 @@ class Popup {
     this.body_content = {
       "type": "doc",
       "content": [
-        {"type":"paragraph","content":[{"type":"text","text":"Hello, world!"}]}
+        {"type":"paragraph","content":[
+          {"type":"text","text":"Hello, world!"},
+          {"type":"hardBreak"},
+          {"type":"hardBreak"},
+          {"type":"hardBreak"},
+        ]}
       ]
     };      
     // this.handleButtons(false);
@@ -139,7 +144,7 @@ class Popup {
   }
 
 
-  setupTiptapEditor(element, content, buttons, handleImageDrop=this.handleImageDrop) {        
+  setupTiptapEditor(element, content, buttons, handleImageDrop=this.handleImageDrop, fadingWarning=this.fadingWarning) {        
     // Setup tiptap editor (the body editor)
     this.editor = new Editor({
         element: element,
@@ -153,7 +158,7 @@ class Popup {
           handleDrop: function(view, event, slice, moved) {
             // if dropping external files
             if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { 
-              handleImageDrop(event, view);
+              handleImageDrop(event, view, fadingWarning);
               return true; // handled
             }
             return false; // not handled use default behaviour
@@ -178,6 +183,11 @@ class Popup {
 
         onCreate({ editor }) {
           content.innerHTML = JSON.stringify(editor.getJSON());
+
+          // Adding hard breaks to increase editable area
+          editor.chain().focus().setHardBreak().run();
+          editor.chain().focus().setHardBreak().run();
+          editor.chain().focus().setHardBreak().run();
         }
       }); 
 
@@ -456,7 +466,7 @@ class Popup {
 
 
   // Handles image dragging into the tiptap editor and uploading the image to server
-  handleImageDrop(event, view) {
+  handleImageDrop(event, view, fadingWarning) {
     let file = event.dataTransfer.files[0]; // the dropped file
     let file_size = ((file.size/1024)/1024).toFixed(4); // get the filesize in MB
     // check valid image type under 10MB
@@ -465,13 +475,13 @@ class Popup {
       let _URL = window.URL || window.webkitURL;
       let img = new window.Image(); /* global Image */
       img.src = _URL.createObjectURL(file);
-      console.log("TEST2", view);
+      console.log("TEST2", fadingWarning);
 
 
       // check if image height or width are less than 5000 pixels
       img.onload = function () {
         if (this.width > 5000 || this.height > 5000) {
-          this.fadingWarning(null, "Your images need to be less than 5000 pixels in height and width.");   
+          fadingWarning(null, "Your images need to be less than 5000 pixels in height and width.");   
         } else {
       console.log("TEST3", view);
 
@@ -547,7 +557,7 @@ class Popup {
 
 
   // A soft warning with the option to continue or cancel operation
-  fadingWarning(title, warning_message, timeout=1000) {
+  fadingWarning(title, warning_message, timeout=1500) {
 
     return Swal.fire({
       icon: 'warning',
