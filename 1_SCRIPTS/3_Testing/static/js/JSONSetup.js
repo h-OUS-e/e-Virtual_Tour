@@ -17,6 +17,7 @@ async function loadJSON(filename) {
 }
 
 
+
 //get json from local storage
 
 export const JSON_statePromise_ls = (async () => {
@@ -77,3 +78,12 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
 }
 
 
+function addUrlsToIcons (bucket, json_data, list_of_urls){
+// take an array of urls, 
+// 1) match bucket to the path 
+// scenes: objectjson,scenes, scene_uuid , src, ""
+// icons: projectjson, icons, icon_uuid, src, ""
+// 2) match the ids of icons/scenes to the urls using strings
+
+
+};

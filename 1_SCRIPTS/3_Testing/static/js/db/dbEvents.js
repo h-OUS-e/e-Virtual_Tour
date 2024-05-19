@@ -445,7 +445,10 @@ export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_
 
 
     try {
-        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath);
+        const { data: fileList, error: listError } = await supabase
+        .storage
+        .from(bucket)
+        .list(directoryPath);
         if (listError) {
             throw new Error(listError.message);
         }
@@ -478,6 +481,21 @@ export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_
 }
 
 
-  
+export async function getAllStorageItems(bucketName, project_id) { 
+//takes a bucket name and project id, returns a list of icon_uids and their img names.
+    try {
+        const {data, err} = await supabase
+        .storage
+        .from(bucket)
+        .list('folder',{
+            search: project_id
+        }
+        );
+
+
+    }catch(err) {throw err}
+
+}
+
 
 
