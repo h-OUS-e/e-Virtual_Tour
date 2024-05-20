@@ -1,5 +1,5 @@
 import { JSONState } from "./JSONState.js";
-import {fetchAllProjectData} from  "./db/dbEvents.js"
+import {fetchAllProjectData, getAllStorageItems} from  "./db/dbEvents.js"
 
 // Function to read the JSON file and extract id and path
 async function loadJSON(filename) {
@@ -72,18 +72,64 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
 
         console.log('Project JSON:', project_JSON());
         console.log('Object JSON:', object_JSON());
+        addUrlsToIcons('icons_img',db_json_ls )
 
         resolve({ project_state: project_JSON(), object_state: object_JSON() });
     });
 }
 
 
-function addUrlsToIcons (bucket, json_data, list_of_urls){
+async function addUrlsToIcons (bucket, json_data){
 // take an array of urls, 
 // 1) match bucket to the path 
 // scenes: objectjson,scenes, scene_uuid , src, ""
 // icons: projectjson, icons, icon_uuid, src, ""
 // 2) match the ids of icons/scenes to the urls using strings
 
+    // get data from api
+    console.log(bucket);
+    let data;
+    try {
+        console.log(json_data['project_uid']);
+        data = await getAllStorageItems(bucket, json_data['project_uid']);
+        console.log(data)
+    } catch (error) {
+        console.error('Error fetching storage items:', error);
+        return ;
+    }
 
+
+    // pick pack to src
+    let targetPath;
+    if (bucket === 'scenes_img') {
+        targetPath = json_data.objectjson.scenes;
+    } else if (bucket === 'icons_img') {
+        targetPath = json_data.projectjson.icons;
+    } else {
+        console.error('Invalid bucket type');
+        return;
+    }
+
+
+
+    list_of_urls.forEach((url, index) => {
+        let id = extractIdFromUrl(url); 
+        let item = targetPath.find(item => item.scene_uuid === id || item.icon_uuid === id);
+        
+        if (item) {
+            item.src = url;
+        } else {
+            console.warn(`No matching item found for ID: ${id}`);
+        }
+    });
+    console.log('Updated JSON:', json_data);
+
+
+
+};
+
+function extractIdFromUrl(url) {
+    const parts = url.split('/'); 
+    const id = parts[parts.length - 2]; 
+    return id;
 };
