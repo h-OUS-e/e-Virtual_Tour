@@ -112,17 +112,17 @@ async function addUrlsToIcons (bucket, json_data){
 
 
 
-    list_of_urls.forEach((url, index) => {
-        let id = extractIdFromUrl(url); 
-        let item = targetPath.find(item => item.scene_uuid === id || item.icon_uuid === id);
+    // list_of_urls.forEach((url, index) => {
+    //     let id = extractIdFromUrl(url); 
+    //     let item = targetPath.find(item => item.scene_uuid === id || item.icon_uuid === id);
         
-        if (item) {
-            item.src = url;
-        } else {
-            console.warn(`No matching item found for ID: ${id}`);
-        }
-    });
-    console.log('Updated JSON:', json_data);
+    //     if (item) {
+    //         item.src = url;
+    //     } else {
+    //         console.warn(`No matching item found for ID: ${id}`);
+    //     }
+    // });
+    // console.log('Updated JSON:', json_data);
 
 
 
