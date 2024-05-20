@@ -91,7 +91,11 @@ async function addUrlsToIcons (bucket, json_data){
 // project_uid/img_id/img_name
 // https://ngmncuarggoqjwjinfwg.supabase.co/storage/v1/object/public/
 // icons_img/f09b3f7b-edc9-4964-83a2-a13835f0fdb9/52be174e-3b40-49b4-94f7-90339d94449f/upload3.jpg
+// bucket/projectid/iconid/imgname
 
+// solution right now, itterate over all paths to get the icon and img ids
+// using the icon and img ids itterate over each one to find the img id and create the url using the combination of all three.
+// add the url to the src JSON
 
     // get icon_ids from api
     console.log(bucket);
