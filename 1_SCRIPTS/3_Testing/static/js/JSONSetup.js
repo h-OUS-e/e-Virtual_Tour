@@ -85,8 +85,15 @@ async function addUrlsToIcons (bucket, json_data){
 // scenes: objectjson,scenes, scene_uuid , src, ""
 // icons: projectjson, icons, icon_uuid, src, ""
 // 2) match the ids of icons/scenes to the urls using strings
+//urls https://[project_id].supabase.co/storage/v1/object/public/[bucket]/[asset-name]
+// supabase project id : ngmncuarggoqjwjinfwg
+// bucket given
+// project_uid/img_id/img_name
+// https://ngmncuarggoqjwjinfwg.supabase.co/storage/v1/object/public/
+// icons_img/f09b3f7b-edc9-4964-83a2-a13835f0fdb9/52be174e-3b40-49b4-94f7-90339d94449f/upload3.jpg
 
-    // get data from api
+
+    // get icon_ids from api
     console.log(bucket);
     let data;
     try {
