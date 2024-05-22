@@ -124,7 +124,10 @@ async function addUrlsToIcons (bucket, json_data){
     }
 
      // get icon_URLS from api 
-
+    for (const [icon_uuid, path_to_img] of Object.entries(list_of_paths)) {
+        console.log(icon_uuid)
+        console.log(path_to_img)
+    }
     // get icon_ids from api
     // console.log(bucket);
     // let data;
