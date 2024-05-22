@@ -1,5 +1,6 @@
 import { JSONState } from "./JSONState.js";
 import {fetchAllProjectData, getAllStorageItems} from  "./db/dbEvents.js"
+let project_uid 
 
 // Function to read the JSON file and extract id and path
 async function loadJSON(filename) {
@@ -52,6 +53,7 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
             return reject(`No data found in localStorage for key ${storage_key}`);
         }
 
+        
         const project_JSON = (key = 'projectjson') => {
             if (db_json_ls.hasOwnProperty(key)) {
                 const project_state = new JSONState(db_json_ls[key]);
@@ -69,7 +71,7 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
                 throw new Error(`Key "${key}" not found`);
             }
         };
-
+        project_uid = db_json_ls['project_uid']
         console.log('Project JSON:', project_JSON());
         console.log('Object JSON:', object_JSON());
         addUrlsToIcons('icons_img',db_json_ls )
@@ -97,29 +99,43 @@ async function addUrlsToIcons (bucket, json_data){
 // using the icon and img ids itterate over each one to find the img id and create the url using the combination of all three.
 // add the url to the src JSON
 
-    // get icon_ids from api
-    console.log(bucket);
-    let data;
-    try {
-        console.log(json_data['project_uid']);
-        data = await getAllStorageItems(bucket, json_data['project_uid']);
-        console.log(data)
-    } catch (error) {
-        console.error('Error fetching storage items:', error);
-        return ;
-    }
 
 
     // pick pack to src
-    let targetPath;
+    let target_path;
     if (bucket === 'scenes_img') {
-        targetPath = json_data.objectjson.scenes;
+        target_path = json_data.objectjson.scenes;
     } else if (bucket === 'icons_img') {
-        targetPath = json_data.projectjson.icons;
+        target_path = json_data.projectjson.icons;
     } else {
         console.error('Invalid bucket type');
         return;
     }
+
+
+    //collect icon_ids and paths to imgs
+    let list_of_paths = {} //icon_uuid : path_to_img_dir
+    for (const [icon_uuid] of Object.entries(target_path)) {
+        let img_uid = target_path[icon_uuid]['img_uid'];
+        let path_to_img_dir = `${project_uid}/${img_uid}`
+        list_of_paths[icon_uuid] = path_to_img_dir
+        console.log(list_of_paths);
+
+    }
+
+     // get icon_URLS from api 
+
+    // get icon_ids from api
+    // console.log(bucket);
+    // let data;
+    // try {
+    //     console.log(json_data['project_uid']);
+    //     data = await getAllStorageItems(bucket, json_data['project_uid']);
+    //     console.log(data)
+    // } catch (error) {
+    //     console.error('Error fetching storage items:', error);
+    //     return ;
+    // }
 
 
 
