@@ -143,7 +143,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const mp_description = event.detail.mediaplayer_description;
     const mp_body = event.detail.mediaplayer_body;
     const mp_icon_index = event.detail.mediaplayer_icon_index;
-    console.log("TEST", mp_description);
     const header_content = {
       title: mp_title,
       subtitle: mp_type,

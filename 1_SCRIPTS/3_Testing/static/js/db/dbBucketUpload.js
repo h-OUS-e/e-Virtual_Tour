@@ -35,6 +35,8 @@ let uppy;
 
 const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
+const storage_bucket_popup = 'popup_img';
+
 
 let callback_on_upload = null;
 
@@ -43,15 +45,15 @@ let callback_on_upload = null;
  /////////////////////// FUNCTIONS //////////////////////
 
 
-function ReinitializeUppySession(bucket, target_div, event, instant_upload=false) {
+function ReinitializeUppySession(target_div, event, instant_upload=false) {
   let session_data_promise = supabaseGetSession();
   callback_on_upload = event.detail.callback_on_upload;
+  let bucket = event.detail.storage_bucket;
 
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
       setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, instant_upload);
-      console.log(bucket);
       if (instant_upload) {
         addCustomImage(event);
       }
@@ -76,12 +78,12 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
   let cropper_aspect_ratio = NaN;
   let squate_ratio = false;
   let auto_open_cropper = null;
-  let max_number_of_files = 10;
+  let max_number_of_files = 1;
 
   // Setting dashboard variables if bucket is icons_img
   if (storage_bucket == storage_bucket_icon) { 
     cropper_aspect_ratio = 1;
-    max_number_of_files = 1
+    // max_number_of_files = 1
     squate_ratio = true;
     auto_open_cropper = "imageEditor";
   }
@@ -194,7 +196,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     
     // Define the file as uppy file to user later when uploading
     uppy_file = file;
-    console.log("T1", uppy_file);
 
     if (instant_upload) {
       // Upload image instantly without clicking an upload btn 
@@ -209,7 +210,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
-    console.log("T2", uppy_file);
 
     // Get image name from menu input
     image_name = event.detail.image_name;
@@ -253,6 +253,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
       // Get src from server and callback with imagename and src
       callback_on_upload(image_name, thumbnail_URL);
+
+      // Emit image uploaded to handle
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
 
       
@@ -316,8 +318,6 @@ async function addCustomImage(event) {
   const image_type = event.detail.image_type;
   const image_extension = event.detail.image_extension;
   const file_name = `${image_name}.${image_extension}`;
-  console.log("TEST", image_name, image_type, image_extension)
-
 
   let image_URL = event.detail.image_URL;
   const thumbnail_URL = image_URL;
@@ -401,10 +401,10 @@ function emitFinishedEditingImage() {
 document.addEventListener('addCustomImageToUppy', addCustomImage);
 
 // Listen to different upload buttons to figure out the bucket for supabase
-document.addEventListener('uploadImage', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event, false));
+document.addEventListener('uploadImage', (event) => ReinitializeUppySession('#uppy_placeholder', event, false));
 
 // Listen to different upload buttons to figure out the bucket for supabase
-document.addEventListener('uploadImageInstantly', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event, true));
+document.addEventListener('uploadImageInstantly', (event) => ReinitializeUppySession('#uppy_placeholder', event, true));
 
 });
 // how to use

@@ -137,7 +137,7 @@ class Popup {
   saveContent() {
     // Save the body
     this.body_content = this.editor.getJSON();
-    console.log("TEST", JSON.stringify(this.body_content));
+    // console.log("TEST", JSON.stringify(this.body_content));
 
     // Update state using function child class
     this.updateCallback();
@@ -511,7 +511,7 @@ class Popup {
             const event = new CustomEvent('uploadImageInstantly', 
             {
                 detail: {
-                  storage_bucket: "icons_img",
+                  storage_bucket: "popup_img",
                   image_name: file_name,
                   image_type: file_type,
                   image_extension: file_extension,
@@ -523,7 +523,6 @@ class Popup {
             });
             document.dispatchEvent(event);
           }
-          console.log("TEST", transaction, view)
 
           function callback_on_upload(image_name, img_URL) { 
             transaction.src = img_URL;
