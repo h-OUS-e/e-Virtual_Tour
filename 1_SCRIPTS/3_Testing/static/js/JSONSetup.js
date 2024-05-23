@@ -1,5 +1,5 @@
 import { JSONState } from "./JSONState.js";
-import {fetchAllProjectData, getAllStorageItems} from  "./db/dbEvents.js"
+import {fetchStoragePublicUrl} from  "./db/dbEvents.js"
 let project_uid 
 
 // Function to read the JSON file and extract id and path
@@ -91,71 +91,33 @@ async function addUrlsToIcons (bucket, json_data){
 // supabase project id : ngmncuarggoqjwjinfwg
 // bucket given
 // project_uid/img_id/img_name
-// https://ngmncuarggoqjwjinfwg.supabase.co/storage/v1/object/public/
-// icons_img/f09b3f7b-edc9-4964-83a2-a13835f0fdb9/52be174e-3b40-49b4-94f7-90339d94449f/upload3.jpg
+// https://ngmncuarggoqjwjinfwg.supabase.co/storage/v1/object/public/icons_img/f09b3f7b-edc9-4964-83a2-a13835f0fdb9/52be174e-3b40-49b4-94f7-90339d94449f/upload3.jpg
 // bucket/projectid/iconid/imgname
 
 // solution right now, itterate over all paths to get the icon and img ids
 // using the icon and img ids itterate over each one to find the img id and create the url using the combination of all three.
 // add the url to the src JSON
-
-
-
-    // pick pack to src
-    let target_path;
-    if (bucket === 'scenes_img') {
-        target_path = json_data.objectjson.scenes;
-    } else if (bucket === 'icons_img') {
-        target_path = json_data.projectjson.icons;
-    } else {
-        console.error('Invalid bucket type');
-        return;
-    }
-
+    let target_path = getTargetPath(bucket, json_data)
 
     //collect icon_ids and paths to imgs
     let list_of_paths = {} //icon_uuid : path_to_img_dir
     for (const [icon_uuid] of Object.entries(target_path)) {
+
         let img_uid = target_path[icon_uuid]['img_uid'];
         let path_to_img_dir = `${project_uid}/${img_uid}`
         list_of_paths[icon_uuid] = path_to_img_dir
-        console.log(list_of_paths);
+        try {
+            let public_url = await fetchStoragePublicUrl(path_to_img_dir,null, null, bucket,null);
+            if(public_url) {
+                console.log('Retrieved public URL for', icon_uuid, ':', public_url);
+            }
+            else {
+                console.log('No URL returned or accessible for', icon_uuid);
+            }
+        } catch (error) {console.error('Error fetching public URL for', icon_uuid, ':', error);}
 
     }
-
-     // get icon_URLS from api 
-    for (const [icon_uuid, path_to_img] of Object.entries(list_of_paths)) {
-        console.log(icon_uuid)
-        console.log(path_to_img)
-    }
-    // get icon_ids from api
-    // console.log(bucket);
-    // let data;
-    // try {
-    //     console.log(json_data['project_uid']);
-    //     data = await getAllStorageItems(bucket, json_data['project_uid']);
-    //     console.log(data)
-    // } catch (error) {
-    //     console.error('Error fetching storage items:', error);
-    //     return ;
-    // }
-
-
-
-    // list_of_urls.forEach((url, index) => {
-    //     let id = extractIdFromUrl(url); 
-    //     let item = targetPath.find(item => item.scene_uuid === id || item.icon_uuid === id);
-        
-    //     if (item) {
-    //         item.src = url;
-    //     } else {
-    //         console.warn(`No matching item found for ID: ${id}`);
-    //     }
-    // });
-    // console.log('Updated JSON:', json_data);
-
-
-
+    console.log(list_of_paths[1])
 };
 
 function extractIdFromUrl(url) {
@@ -163,3 +125,17 @@ function extractIdFromUrl(url) {
     const id = parts[parts.length - 2]; 
     return id;
 };
+
+
+function getTargetPath(bucket, json_data) {
+    let target_path;
+    if (bucket === 'scenes_img') {
+        target_path = json_data.objectjson.scenes;
+    } else if (bucket === 'icons_img') {
+        target_path = json_data.projectjson.icons;
+    } else {
+        console.error('Invalid bucket type');
+        return null; 
+    }
+    return target_path;
+}

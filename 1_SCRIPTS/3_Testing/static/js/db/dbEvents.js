@@ -427,57 +427,54 @@ export async function fetchIcons() {
 
 //storage functions
 
-export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_img_div_id = null ) {
-    // input:
+export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_uid, bucket, target_img_div_id = null) {
+        // input:
         // bucket: supabase storage container name icons_img, scenes_img
         // project_uid, img_uid: the targeted storage item's path (project_id/img_id/img_name)
         // target_img_div_id: the ID of where the img div should show in the HTML
-        function setImageUrl(target_img_div_id, url) {
-            const imageElement = document.getElementById(target_img_div_id);
-            if (imageElement) {
-                imageElement.src = url;
-            } else {
-                console.error('Image element not found');
-            }
+    function setImageUrl(target_img_div_id, url) {
+        const imageElement = document.getElementById(target_img_div_id);
+        if (imageElement) {
+            imageElement.src = url;
+        } else {
+            console.error('Image element not found');
         }
-        
-    const directoryPath= `${project_uid}/${img_uid}`;
+    }
 
+    let directoryPath = dir_path === null ? `${project_uid}/${img_uid}` : dir_path;
 
     try {
-        const { data: fileList, error: listError } = await supabase
-        .storage
-        .from(bucket)
-        .list(directoryPath);
+        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath);
         if (listError) {
             throw new Error(listError.message);
         }
 
         if (!fileList || fileList.length === 0) {
-            console.log(fileList)
-            throw new Error('No files found in the specified directory.');
+            console.error('No files found in the specified directory:', fileList);
+            return null;  
         }
 
         const firstFile = fileList[0];
         const firstFilePath = `${directoryPath}/${firstFile.name}`;
-
         const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath);
+
         if (error) {
             throw new Error(error.message);
         }
 
         if (data && data.publicUrl) {
             console.log('Public URL of the first file:', data.publicUrl);
-            if (!target_img_div_id == null) { setImageUrl(target_img_div_id, data.publicUrl)};
+            if (target_img_div_id) {
+                setImageUrl(target_img_div_id, data.publicUrl);
+            }
+            return data.publicUrl;  
         } else {
             throw new Error('Public URL is not available for the first file.');
-        }        
-
+        }
     } catch (error) {
         console.error('Failed to fetch public URL:', error.message);
+        return null;  
     }
-
-    
 }
 
 
