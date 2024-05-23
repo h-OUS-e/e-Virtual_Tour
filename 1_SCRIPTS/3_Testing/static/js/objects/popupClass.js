@@ -468,38 +468,80 @@ class Popup {
   // Handles image dragging into the tiptap editor and uploading the image to server
   handleImageDrop(event, view, fadingWarning) {
     let file = event.dataTransfer.files[0]; // the dropped file
+
+    // A function to extract basename and extension
+    function getExtensionFromImage(filename) {
+      const dot_idx = filename.lastIndexOf(".");
+  
+      if (dot_idx !== -1) {
+        const name = filename.substring(0, dot_idx);
+        const extension = filename.substring(dot_idx + 1);
+  
+        return {name, extension};
+      } else {
+        console.log("No extension found.");
+      }     
+    }
+
+    // Get file information
+    let filename = getExtensionFromImage(file.name);
     let file_size = ((file.size/1024)/1024).toFixed(4); // get the filesize in MB
+
     // check valid image type under 10MB
     if ((file.type === "image/jpeg" || file.type === "image/png") && file_size < 10) { 
       // check the dimensions
       let _URL = window.URL || window.webkitURL;
       let img = new window.Image(); /* global Image */
       img.src = _URL.createObjectURL(file);
-      console.log("TEST2", fadingWarning);
-
 
       // check if image height or width are less than 5000 pixels
       img.onload = function () {
         if (this.width > 5000 || this.height > 5000) {
           fadingWarning(null, "Your images need to be less than 5000 pixels in height and width.");   
         } else {
-      console.log("TEST3", view);
 
           // valid image so put a placeholder image while you upload to server
           const { schema } = view.state;
           const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
           const node = schema.nodes.image.create({ src: img.src }); // creates the image element
           const transaction = view.state.tr.insert(coordinates.pos, node); // places it in the correct position
-          return view.dispatch(transaction);
 
-        //   // uploadImage will be your function to upload the image to the server or s3 bucket somewhere
-        //   uploadImage(file).then(function(response) { // response is the image url for where it has been saved
-        //     // do something with the response
-        //   }).catch(function(error) {
-        //     if (error) {
-        //       window.alert("There was a problem uploading your image, please try again.");
-        //     }
-        //   });
+
+          function emitUploadImage(file_name, file_type, file_extension, callback_on_upload) {
+            const event = new CustomEvent('uploadImageInstantly', 
+            {
+                detail: {
+                  storage_bucket: "icons_img",
+                  image_name: file_name,
+                  image_type: file_type,
+                  image_extension: file_extension,
+                  image_URL: img.src,
+                  // header: "Add a new icon",
+                  // existing_image_names: this.existing_icon_names,
+                  callback_on_upload: (image_name, thumbnail_URL) => callback_on_upload(image_name, thumbnail_URL),
+                },
+            });
+            document.dispatchEvent(event);
+          }
+          console.log("TEST", transaction, view)
+
+          function callback_on_upload(image_name, img_URL) { 
+            transaction.src = img_URL;
+            view.dispatch(transaction);
+          };
+          emitUploadImage(filename.name, file.type, filename.extension, callback_on_upload);
+
+
+          // // uploadImage will be your function to upload the image to the server or s3 bucket somewhere
+          // uploadImage(file).then(function(response) { // response is the image url for where it has been saved
+          //   // do something with the response
+            // return view.dispatch(transaction);
+
+          // }).catch(function(error) {
+          //   if (error) {
+          //     window.alert("There was a problem uploading your image, please try again.");
+          //   }
+          // });
         }
       }
 
@@ -567,6 +609,24 @@ class Popup {
       timer: timeout,
     });
   }
+
+
+  // A method to toggle upload image menu
+  emitUploadImage(callback) {
+    const event = new CustomEvent('uploadImageInstantly', 
+    {
+        detail: {
+          storage_bucket: "icons_img",
+          image_name: "test",
+          // header: "Add a new icon",
+          // existing_image_names: this.existing_icon_names,
+          callback_on_upload: () => callback,
+        },
+    });
+    document.dispatchEvent(event);
+  }
+
+  
 }
 
   export { Popup };

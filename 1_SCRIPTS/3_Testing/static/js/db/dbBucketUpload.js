@@ -43,15 +43,18 @@ let callback_on_upload = null;
  /////////////////////// FUNCTIONS //////////////////////
 
 
-function ReinitializeUppySession(bucket, target_div, event) {
+function ReinitializeUppySession(bucket, target_div, event, instant_upload=false) {
   let session_data_promise = supabaseGetSession();
   callback_on_upload = event.detail.callback_on_upload;
 
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div);
+      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, instant_upload);
       console.log(bucket);
+      if (instant_upload) {
+        addCustomImage(event);
+      }
 
     } else { console.log('no session found')}
 
@@ -64,7 +67,7 @@ function ReinitializeUppySession(bucket, target_div, event) {
 
 
 // One big function that defines how to setup uppy dashboard, image editor and what to do when images are added
-function setUpUppy (token, storage_bucket, project_uid, target_div) {
+function setUpUppy (token, storage_bucket, project_uid, target_div, instant_upload=false) {
   // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; // SHOULD THIS BE CONSTANT?
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
@@ -94,6 +97,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   if (uppy) {
     uppy.close();  // Close the previous instance if it exists
   }
+
+
 
 
   // Define uppy
@@ -169,6 +174,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     const file_name = `${image_name}.${image_extension}`;
     fileUUID = uuidv4();
 
+
     // Create supabase meta data and insert into uppy meta data
     const supabaseMetadata = {
       bucketName: storage_bucket,
@@ -188,14 +194,22 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     
     // Define the file as uppy file to user later when uploading
     uppy_file = file;
+    console.log("T1", uppy_file);
 
+    if (instant_upload) {
+      // Upload image instantly without clicking an upload btn 
+      uppyUploadFunction(uppy, uppy_file);
+
+    } else {
     // Emit that image was added to check image in image menu
     emitImageAdded(image_name);    
+    }
   });
 
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
+    console.log("T2", uppy_file);
 
     // Get image name from menu input
     image_name = event.detail.image_name;
@@ -209,7 +223,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     // uppy_file.data.name = file_name;
     
     // Upload image
-    uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
+    uppyUploadFunction(uppy, uppy_file);
 
     // Remove the event listener after the upload is completed to prevent duplicate listeners
     document.removeEventListener('imageUploadChecked', handler);
@@ -225,11 +239,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
   uppy.on('file-removed', (file) => {
     // Reset inputs
     emitImageRemoved();
-    image_name = "";
-    image_type = "";
-    image_extension = "";
-    thumbnail_URL = "";
-    fileUUID = "";
+    // image_name = "";
+    // image_type = "";
+    // image_extension = "";
+    // thumbnail_URL = "";
+    // fileUUID = "";
   });
 
 
@@ -237,10 +251,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
+      // Get src from server and callback with imagename and src
+      callback_on_upload(image_name, thumbnail_URL);
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
 
-      // Get src from server and callback with imagename and src
-    callback_on_upload(image_name, thumbnail_URL);
+      
 
     }
   });
@@ -265,11 +280,19 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   uppy.on("file-editor:cancel", () => {
     emitFinishedEditingImage();
+    // Reset inputs
+    image_name = "";
+    image_type = "";
+    image_extension = "";
+    thumbnail_URL = "";
+    fileUUID = "";
   });
+
+  
 }
 
 
-function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_name) {
+function uppyUploadFunction(uppy, file) {
   uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   
@@ -282,6 +305,8 @@ function uppyUploadFunction(uppy, file, storage_bucket, thumbnail_URL, image_nam
   });
 }
 
+
+
 async function addCustomImage(event) {
   // Emoties the dashboard and removes all images
   uppy.cancelAll();
@@ -291,6 +316,7 @@ async function addCustomImage(event) {
   const image_type = event.detail.image_type;
   const image_extension = event.detail.image_extension;
   const file_name = `${image_name}.${image_extension}`;
+  console.log("TEST", image_name, image_type, image_extension)
 
 
   let image_URL = event.detail.image_URL;
@@ -326,7 +352,7 @@ function emitImageUploaded(storage_bucket, img_URL, image_name) {
         img_URL: img_URL,
         image_name: image_name,
     },
-});
+  });
   document.dispatchEvent(event);
 
   // Emit general event of image uploaded
@@ -375,7 +401,10 @@ function emitFinishedEditingImage() {
 document.addEventListener('addCustomImageToUppy', addCustomImage);
 
 // Listen to different upload buttons to figure out the bucket for supabase
-document.addEventListener('uploadImage', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event));
+document.addEventListener('uploadImage', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event, false));
+
+// Listen to different upload buttons to figure out the bucket for supabase
+document.addEventListener('uploadImageInstantly', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event, true));
 
 });
 // how to use

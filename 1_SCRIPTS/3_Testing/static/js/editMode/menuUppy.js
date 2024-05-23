@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     upload_btn.classList.remove('hidden');
 
     // Handle upload button clicked
-    uploadButtonListener = () => handleUpload(existing_image_names);
+    uploadButtonListener = () => handleUploadCheck(existing_image_names);
     upload_btn.addEventListener('click', uploadButtonListener);
   });
 
@@ -108,15 +108,21 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   // Close menu when image is uploaded
-  document.addEventListener("imageUploaded",  function(event) {
-    // Close upload menu
-    closeMenu();
-    // Show upload success message, maybe no important
-    swal({
-      text: "Image uploaded successfully!",
-      icon: "success",
-      timer: 1000,
-    });
+  document.addEventListener("imageUploaded",  function() {
+    try {
+      // Close upload menu
+      closeMenu();
+
+      // Show upload success message, maybe no important
+      Swal.fire({
+        text: "Image uploaded successfully!",
+        icon: "success",
+        timer: 1000,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
   });
 
 
@@ -154,6 +160,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   function closeMenu() {
+    // Hide only if upload_menu is on, to avoid errors
+    if (upload_menu.classList.contains('hidden')) {
+      return;
+    }
     // Hide menu and upload button
     upload_menu.classList.add('hidden');
     upload_btn.classList.add('hidden');
@@ -165,20 +175,20 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   }
 
 
-  function handleUpload(existing_image_names) {
+  function handleUploadCheck(existing_image_names) {
     // get image_name
     const image_name = name_input.value.trim().replace(/\s+/g, '_');
 
     // If image is empty, add warning. Else shutdown menu
     if (image_name === "") {
-      swal({
+      Swal.fire({
         text: "You need to add a name to the new image",
         icon: "warning",
         dangerMode: true,
       });
 
     } else if (image_name in existing_image_names) {
-      swal({
+      Swal.fire({
         text: "Name is taken. Try another one.",
         icon: "warning",
         dangerMode: true,

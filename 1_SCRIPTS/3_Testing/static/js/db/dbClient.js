@@ -1,5 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.43.1';
 
 console.log('client initialization');
 const supabaseUrl = 'https://ngmncuarggoqjwjinfwg.supabase.co';
