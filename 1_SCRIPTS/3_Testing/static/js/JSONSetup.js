@@ -102,7 +102,7 @@ async function addUrlsToIcons (bucket, json_data){
     //collect icon_ids and paths to imgs
     let list_of_paths = {} //icon_uuid : path_to_img_dir
     for (const [icon_uuid] of Object.entries(target_path)) {
-        if (!icon_uuid == null) {
+        if (icon_uuid !== null) {
             let img_uid = target_path[icon_uuid]['img_uid'];
             let path_to_img_dir = `${project_uid}/${img_uid}`
             list_of_paths[icon_uuid] = path_to_img_dir
@@ -112,7 +112,7 @@ async function addUrlsToIcons (bucket, json_data){
                 if(public_url) {
                     console.log('Retrieved public URL for', icon_uuid, ':', public_url);
                     target_path['src'] = public_url
-                    console.log(target_path['src'])
+                    console.log(`value at target path: ${target_path['src']}`)
                 }
                 else {
                     console.log('No URL returned or accessible for', icon_uuid);
