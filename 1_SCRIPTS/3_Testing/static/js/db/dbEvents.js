@@ -481,24 +481,23 @@ export async function fetchStoragePublicUrl(project_uid, img_uid, bucket,target_
 }
 
 
-export async function getAllStorageItems(bucketName, project_id) { 
-//takes a bucket name and project id, returns a list of icon_uids and their img names.
+export async function getPublicImageUrl(bucket, img_path) {
     try {
-        const {data, error} = await supabase
+        const { publicURL, error } = supabase
             .storage
-            .from(bucketName)
-            .list(project_id);
+            .from(bucket)
+            .getPublicUrl(img_path);
+
         if (error) {
-            console.error('API error: ', error);
-            return { success: false, err };
+            console.error('Error fetching public URL: ', error);
+            return { success: false, error };
         }
 
-        console.log('API success data: ', data);
-        return { success: true, data };
-    } catch(err) {
+        console.log('Public URL: ', publicURL);
+        return { success: true, publicURL };
+    } catch (err) {
         console.error('Unexpected error: ', err);
         return { success: false, error: err };
     }
-
 }
 
