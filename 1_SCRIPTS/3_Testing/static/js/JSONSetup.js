@@ -74,14 +74,14 @@ export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
         project_uid = db_json_ls['project_uid']
         console.log('Project JSON:', project_JSON());
         console.log('Object JSON:', object_JSON());
-        addUrlsToIcons('scenes_img',db_json_ls )
+        addUrlsToObjects('scenes_img',db_json_ls )
 
         resolve({ project_state: project_JSON(), object_state: object_JSON() });
     });
 }
 
 
-export async function addUrlsToIcons (bucket, json_data){
+export async function addUrlsToObjects(bucket, json_data){
 // take an array of urls, 
 // 1) match bucket to the path 
 // scenes: objectjson,scenes, scene_uuid , src, ""

@@ -454,13 +454,25 @@ class JSONState {
 
 
     getUniquePropertiesByCondition(category, property_to_get, property_to_check, property_value) {
+    
       const filteredObjects = Object.values(this.getCategory(category))
         .filter(obj => obj[property_to_check] === property_value)
         .map(obj => obj[property_to_get]);
     
-      const uniqueProperties = [...new Set(filteredObjects)];
+      
+      if (filteredObjects) { 
+        console.log(`there are filtered objects ${filteredObjects}`);
+        const uniqueProperties = [...new Set(filteredObjects)];
+        return uniqueProperties;
+      }
+      else { 
+        console.log("no filteredObjects");
+        return null;
+      }
+      
     
-      return uniqueProperties;
+      
+      
     }
   
     undo(event_name=null) {
