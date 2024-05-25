@@ -6,8 +6,10 @@ class Menu {
     this.menu = document.getElementById(menu_id);
     this.menu_list = this.menu.querySelector('ul');
     this.exit_btn = this.menu.querySelector('.exitBtn');
-    this.exit_btn.addEventListener('mousedown', () => {
-      this.exit_btn.classList.add('exitBtnPressed');
+    this.exit_btn.addEventListener('mousedown', (event) => {
+      if (event.button === 0) {
+        this.exit_btn.classList.add('exitBtnPressed');
+      }
     });
     this.exit_btn.addEventListener('click', this.hide.bind(this));
 

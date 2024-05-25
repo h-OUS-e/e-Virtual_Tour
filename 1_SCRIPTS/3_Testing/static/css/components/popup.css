@@ -138,12 +138,12 @@
   min-height: 150px;
   overflow: auto;
   padding-bottom:10px;
-  border-bottom: 2px solid #bebebe;
   max-height: calc(80vh - 200px);
 }
 
 .tiptap {
-  
+  border-bottom: 1px solid #bebebe;
+  min-height: 150px;  
 }
 
 
@@ -157,6 +157,7 @@
   /* Setting max width for readability */
   max-width: 58ch;
   min-width: 10ch;  
+
 
 }
 

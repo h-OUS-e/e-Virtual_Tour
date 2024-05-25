@@ -39,8 +39,10 @@ class Popup {
     };
 
     // Set interactivity for exit button on long press and on click
-    this.exit_btn.addEventListener('mousedown', () => {
-      this.exit_btn.classList.add('exitBtnPressed');
+    this.exit_btn.addEventListener('mousedown', (event) => {
+      if (event.button === 0) {
+        this.exit_btn.classList.add('exitBtnPressed');
+      }
     });
     this.exit_btn.addEventListener('click', () => {
       this.close();
@@ -213,12 +215,12 @@ class Popup {
     // Get elements
     const title_element = this.menu.querySelector('.popup-title');
     const subtitle_element = this.menu.querySelector('.popup-subtitle');
-    const description_element = this.menu.querySelector('.popup-description');
+    // const description_element = this.menu.querySelector('.popup-description');
 
     // Set text of each element
     title_element.textContent = this.title;
     subtitle_element.textContent = this.subtitle;
-    description_element.textContent = this.description;    
+    // description_element.textContent = this.description;    
   }
 
 
@@ -267,15 +269,15 @@ class Popup {
     titlWrapper.appendChild(subtitle);
     header.appendChild(titlWrapper);
   
-    const descriptionWrapper = document.createElement('div');
-    descriptionWrapper.className = 'popup-container-header-wrapper';
+    // const descriptionWrapper = document.createElement('div');
+    // descriptionWrapper.className = 'popup-container-header-wrapper';
 
-    const description = document.createElement('p');
-    description.className = 'popup-description';
-    description.textContent = this.description;
+    // const description = document.createElement('p');
+    // description.className = 'popup-description';
+    // description.textContent = this.description;
   
-    descriptionWrapper.appendChild(description);
-    header.appendChild(descriptionWrapper);
+    // descriptionWrapper.appendChild(description);
+    // header.appendChild(descriptionWrapper);
   
     return header;
   }
