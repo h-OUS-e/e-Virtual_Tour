@@ -47,7 +47,7 @@ function ReinitializeUppySession(target_div, event, instant_upload=false) {
   let bucket = event.detail.storage_bucket;
 
   session_data_promise.then(data => {
-  console.log("session_data_promise", session_data_promise, data)
+  console.log("session_data_promise", session_data_promise)
 
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
