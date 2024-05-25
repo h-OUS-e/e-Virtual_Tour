@@ -36,21 +36,19 @@ let uppy;
 const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
 const storage_bucket_popup = 'popup_img';
-
-
 let callback_on_upload = null;
 
 
 
- /////////////////////// FUNCTIONS //////////////////////
-
-
+/////////////////////// FUNCTIONS //////////////////////
 function ReinitializeUppySession(target_div, event, instant_upload=false) {
   let session_data_promise = supabaseGetSession();
   callback_on_upload = event.detail.callback_on_upload;
   let bucket = event.detail.storage_bucket;
 
   session_data_promise.then(data => {
+  console.log("session_data_promise", session_data_promise, data)
+
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
       setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, instant_upload);
@@ -101,8 +99,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
   }
 
 
-
-
   // Define uppy
   uppy = new Uppy({
       target: target_div,
@@ -130,7 +126,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     hideUploadButton:true, // Using custom upload button instead
     theme: "dark",  
     autoOpen: auto_open_cropper, // auto open cropper
-
   });
 
   // A function to send the data to Supabase
@@ -166,7 +161,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     }
   });
 
-
   // Updating file metadata when image is added to dashboard, and showing upload button  
   uppy.on('file-added', (file) => {    
     // Get the image details from file
@@ -200,17 +194,15 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     if (instant_upload) {
       // Upload image instantly without clicking an upload btn 
       uppyUploadFunction(uppy, uppy_file);
-
     } else {
-    // Emit that image was added to check image in image menu
-    emitImageAdded(image_name);    
-    }
+      // Emit that image was added to check image in image menu
+      emitImageAdded(image_name);    
+    }    
   });
 
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
-
     // Get image name from menu input
     image_name = event.detail.image_name;
 
