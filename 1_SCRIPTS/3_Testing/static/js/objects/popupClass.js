@@ -32,12 +32,15 @@ class Popup {
       "content": [
         {"type":"paragraph","content":[
           {"type":"text","text":"Hello, world!"},
-          {"type":"image","attrs":{"src":"https://source.unsplash.com/8xznAGy4HcY/800x400","alt":"Image placeholedr","title":null}},
+          {"type":"image","attrs":{"src":"https://images.unsplash.com/photo-1576502200272-341a4b8d5ebb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D","alt":"Image placeholedr","title":null}},
           {"type":"text","text":"Hello, world!"},
         ]
         }
       ]
     };
+
+    // Create the popup window
+    this.createPopup(); 
 
     // Set interactivity for exit button on long press and on click
     this.exit_btn.addEventListener('mousedown', (event) => {
@@ -45,12 +48,16 @@ class Popup {
         this.exit_btn.classList.add('exitBtnPressed');
       }
     });
+
     this.exit_btn.addEventListener('click', () => {
       this.close();
     });
 
-    // Create the popup window
-    this.createPopup();       
+    this.popup_overlay.addEventListener('click', () => {
+      this.close();
+    });
+
+          
 
   } 
 
