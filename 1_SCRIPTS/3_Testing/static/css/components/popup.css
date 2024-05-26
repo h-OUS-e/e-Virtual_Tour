@@ -8,6 +8,7 @@
   -webkit-backdrop-filter: blur(5px); /* This creates the blur effect for other browsers */
   backdrop-filter: blur(5px); /* This creates the blur effect for firefox */
   z-index: 5; /* Ensure it's below the popup but above other content */
+  cursor: pointer;
 }
 
 .popup {

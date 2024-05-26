@@ -1,7 +1,7 @@
 
 
 document.addEventListener('DOMContentLoaded', async (event) => {
-  const moveable_classes = '.menu, .color-picker-panel, .popup'
+  const moveable_classes = '.menu, .color-picker-panel'
   const menus = document.querySelectorAll(moveable_classes);
 
   let isDragging = false;
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const menuHandle = menu.querySelector('.menuTopBar');
     if (menuHandle) {
       menuHandle.addEventListener('mousedown', startDragging);
+      menu.style.cursor = 'move';
     }
   });
   

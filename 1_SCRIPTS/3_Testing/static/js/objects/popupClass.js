@@ -113,7 +113,7 @@ class Popup {
     // Show menu
     this.visible = true;
     this.menu.classList.remove('hidden');
-    // this.popup_overlay.classList.remove('hidden');
+    this.popup_overlay.classList.remove('hidden');
 
     // Disabling zoom when menu is shown
      window.disableZoom();
