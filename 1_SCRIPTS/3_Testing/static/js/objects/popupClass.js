@@ -18,6 +18,8 @@ class Popup {
     this.closeCallback = null;
     this.popup_overlay;
 
+    this.counter = 0;
+
     // Setting some constants
     this.max_file_size = 10; // In MB
 
@@ -55,9 +57,7 @@ class Popup {
 
     this.popup_overlay.addEventListener('click', () => {
       this.close();
-    });
-
-          
+    });           
 
   } 
 
@@ -89,7 +89,6 @@ class Popup {
 
     // Disabling zoom when menu is shown
      window.disableZoom();
-
   }
 
 
@@ -147,6 +146,7 @@ class Popup {
       ]
     };      
     // this.handleButtons(false); // no need to reset, cuz editor is created once on initiliazation
+    // Reset active buttons
   }
 
   
@@ -220,6 +220,7 @@ class Popup {
 
   updateTiptapEditor() {
     this.editor.commands.setContent(this.body_content);
+    this.updateButtonStates();
   }
 
 
@@ -326,12 +327,6 @@ class Popup {
 
 
 
-  // Set content into the body of the tiptap editor
-  setContent(content) {
-    this.editor.commands.setContent(content);
-  }
-
-
   // Creates the editor bar for editing the popup content to add text, images, etc...
   createEditorBar() {
     const editorBar = document.createElement('div');
@@ -435,6 +430,8 @@ class Popup {
     button.setAttribute('function_command', editor_function.command);
     button.setAttribute('function_input', JSON.stringify(editor_function.input));
     button.setAttribute('function_name', editor_function.command_name);
+    button.setAttribute('isGrouped', editor_function.isGrouped);
+
 
     // Add button to list of buttons
     this.buttons[editor_function.name] = button;
@@ -445,27 +442,46 @@ class Popup {
   // editor_functions holds a list information for nodes and marks to be populated and used in the text editor
   editor_functions = [
     {'marks': [
-      { name: 'bold', command_name:'bold', command: 'toggleBold', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_bold.svg', alt_text:'B'},
-      { name: 'italic', command_name:'italic', command: 'toggleItalic', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_italic.svg', alt_text:'I'},
-      { name: 'underline', command_name:'underline', command: 'toggleUnderline', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_underline.svg', alt_text:'U'},
+      { name: 'bold', command_name:'bold', command: 'toggleBold', input:null, isGrouped:false, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_bold.svg', alt_text:'B'},
+      { name: 'italic', command_name:'italic', command: 'toggleItalic', input:null, isGrouped:false, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_italic.svg', alt_text:'I'},
+      { name: 'underline', command_name:'underline', command: 'toggleUnderline', input:null, isGrouped  :false, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_underline.svg', alt_text:'U'},
     ]},
     {'styles': [
-      { name: 'h1', command_name:'heading', command: 'toggleHeading', input:{level:1}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H1.svg', alt_text:'H1'},
-      { name: 'h2', command_name:'heading', command: 'toggleHeading', input:{level:2}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H2.svg', alt_text:'H2'},
-      { name: 'h3', command_name:'heading', command: 'toggleHeading', input:{level:3}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H3.svg', alt_text:'H3'},
+      { name: 'h1', command_name:'heading', command: 'toggleHeading', input:{level:1}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H1.svg', alt_text:'H1'},
+      { name: 'h2', command_name:'heading', command: 'toggleHeading', input:{level:2}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H2.svg', alt_text:'H2'},
+      { name: 'h3', command_name:'heading', command: 'toggleHeading', input:{level:3}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H3.svg', alt_text:'H3'},
 
     ]},
   ]
 
   // const paragraphOrientationButton = this.createTiptapButton('paragraph_orientation', '../static/0_resources/icons/image_URL.svg', 'Orientation');
-  toggleFunction(btn, function_name, function_command, function_input=null) {
+
+  // Toggle the button and handle dependent button behavior within the same section
+  toggleFunction(btn, function_name, function_command, function_input=null, isGrouped=false) {
+
+    // Apply tiptap function and activate linked button
     if (function_input) {
-      console.log(function_input);
-      this.editor.chain().focus()[function_command](JSON.parse(function_input)).run();
-      btn.classList.toggle("active", this.editor.isActive(function_name, JSON.parse(function_input)));
+      this.editor.chain().focus()[function_command](function_input).run();
+      btn.classList.toggle("active", this.editor.isActive(function_name, function_input));
     } else {
       this.editor.chain().focus()[function_command]().run();
       btn.classList.toggle("active", this.editor.isActive(function_name));
+    }
+
+    if (isGrouped) {
+      
+      // Find the parent section of the clicked button
+      let section = btn.closest('[id^="popup_body_editor_bar_"]');
+      
+      // Get all the buttons within the same section
+      let section_buttons = section.querySelectorAll('.btn.tiptapBtn');
+      
+      // Deactivate all buttons in the section except the clicked button
+      section_buttons.forEach((button) => {
+        if (button !== btn) {
+          button.classList.toggle("active", false);
+        }
+      });
     }
 
   }
@@ -478,10 +494,12 @@ class Popup {
         // Get inputs to toggle function
         let function_name = btn[1].getAttribute('function_name');
         let function_command = btn[1].getAttribute('function_command');
-        let function_input = btn[1].getAttribute('function_input');     
+        let function_input = JSON.parse(btn[1].getAttribute('function_input')); 
+        let isGrouped = btn[1].getAttribute('isGrouped');     
+
 
         // Add event listener to toggle button and function when button is clicked
-        btn[1].addEventListener("click", () => this.toggleFunction(btn[1], function_name, function_command, function_input));
+        btn[1].addEventListener("click", () => this.toggleFunction(btn[1], function_name, function_command, function_input, isGrouped));
       });
 
     } else {
@@ -500,6 +518,19 @@ class Popup {
     }
   }
 
+  updateButtonStates() {
+    Object.entries(this.buttons).forEach((btn) => {
+      let function_name = btn[1].getAttribute('function_name');
+      let function_input =  JSON.parse(btn[1].getAttribute('function_input'));
+
+  
+      if (function_input) {
+        btn[1].classList.toggle("active", this.editor.isActive(function_name, function_input));
+      } else {
+        btn[1].classList.toggle("active", this.editor.isActive(function_name));
+      }
+    });
+  }
 
 
   // Handles image dragging into the tiptap editor and uploading the image to server
