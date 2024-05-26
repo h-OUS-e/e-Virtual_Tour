@@ -16,6 +16,7 @@ class Popup {
     this.buttons = {};
     this.updateCallback = null;
     this.closeCallback = null;
+    this.popup_overlay;
 
     // Setting some constants
     this.max_file_size = 10; // In MB
@@ -48,12 +49,9 @@ class Popup {
       this.close();
     });
 
-    // Disabling zoom when zooming on menu
-    if (this.menu) {
-      this.menu.addEventListener('mouseenter', window.disableZoom);
-      this.menu.addEventListener('mouseleave', window.enableZoom);
-    }
-    this.createPopup();    
+    // Create the popup window
+    this.createPopup();       
+
   } 
 
 
@@ -80,13 +78,22 @@ class Popup {
     // Show menu
     this.visible = true;
     this.menu.classList.remove('hidden');
+    this.popup_overlay.classList.remove('hidden');
+
+    // Disabling zoom when menu is shown
+     window.disableZoom();
+
   }
 
 
   hide() {   
     this.exit_btn.classList.remove('exitBtnPressed');
     this.visible = false;
-    this.menu.classList.add('hidden');       
+    this.menu.classList.add('hidden'); 
+    this.popup_overlay.classList.add('hidden');     
+    
+    // Renabling zoom when menu is hidden
+    window.enableZoom();
   }
 
 
@@ -132,7 +139,7 @@ class Popup {
         ]}
       ]
     };      
-    // this.handleButtons(false);
+    // this.handleButtons(false); // no need to reset, cuz editor is created once on initiliazation
   }
 
   
@@ -143,6 +150,11 @@ class Popup {
 
     // Update state using function child class
     this.updateCallback();
+  }
+
+
+  logContent() {
+    console.log("This body content", JSON.stringify(this.body_content));
   }
 
 
@@ -230,38 +242,42 @@ class Popup {
 
 
   createPopup() {   
-    // Check if current popup-container element exists and delete
+    // Add an overlay that blur the background
+    this.popup_overlay = document.createElement('div');
+    this.popup_overlay.id = "popup-overlay";
+    this.popup_overlay.className = 'popup-overlay hidden';
+    document.body.appendChild(this.popup_overlay);
 
     // Create the popup container
-    const popupContainer = document.createElement('div');
-    popupContainer.className = 'popup-container';
+    let popup_container = document.createElement('div');
+    popup_container.className = 'popup-container';
 
     // Create the header
-    const header = this.createHeader();
-    popupContainer.appendChild(header);
+    let header = this.createHeader();
+    popup_container.appendChild(header);
 
     // Create the body
-    const body = this.createBody();
-    popupContainer.appendChild(body);
+    let body = this.createBody();
+    popup_container.appendChild(body);
 
     // Append the popup container to the menu
-    this.menu.appendChild(popupContainer);
+    this.menu.appendChild(popup_container);
   }
 
 
   // A function that adds a header, a subtitle and a description
   createHeader() {
-    const header = document.createElement('div');
+    let header = document.createElement('div');
     header.className = 'popup-container-header grid2Column col21';  
   
-    const titlWrapper = document.createElement('div');
+    let titlWrapper = document.createElement('div');
     titlWrapper.className = 'popup-container-header-wrapper';
   
-    const title = document.createElement('h2');
+    let title = document.createElement('h2');
     title.className = 'popup-title';
     title.textContent = this.title;
   
-    const subtitle = document.createElement('p');
+    let subtitle = document.createElement('p');
     subtitle.className = 'popup-subtitle';
     subtitle.textContent = this.subtitle;
   
@@ -302,8 +318,6 @@ class Popup {
   }
 
 
-  
-
 
   // Set content into the body of the tiptap editor
   setContent(content) {
@@ -316,24 +330,20 @@ class Popup {
     const editorBar = document.createElement('div');
     editorBar.id = 'popup_body_editor_bar';
     editorBar.className = 'flexRowLeft popup-body-editor-bar';
-  
-    // Create styles bar
-    const stylesBar = this.createStylesBar();
-    editorBar.appendChild(stylesBar);
-  
-    // Create marks bar
-    const marksBar = this.createMarksBar();
-    editorBar.appendChild(marksBar);
-  
-    // Create paragraphs bar
-    const paragraphsBar = this.createParagraphsBar();
-    editorBar.appendChild(paragraphsBar);
-  
-    // Create URL bar
-    const urlBar = this.createUrlBar();
-    editorBar.appendChild(urlBar);
+
+    // populate the editor bar with functions
+    this.populateEditorBar(editorBar);
   
     return editorBar;
+  }
+
+  populateEditorBar(editorBar) {
+
+    this.editor_functions.forEach((editor_function_section) => {
+      let editor_section = this.createEditorSection(editor_function_section);
+
+      editorBar.append(editor_section);
+    });
   }
 
 
@@ -358,25 +368,21 @@ class Popup {
     return stylesBar;
   }
   
-  createMarksBar() {
-    const marksBar = document.createElement('div');
-    marksBar.id = 'popup_body_editor_bar_marks';
-    marksBar.className = 'flexRowLeft popup-body-editor-bar-marks';
+  createEditorSection(editor_function_section) {
+    let section_name = Object.keys(editor_function_section)[0];
+
+    let section = document.createElement('div');
+    section.id = `popup_body_editor_bar_${section_name}`;
+    section.className = 'flexRowLeft';
+
+    editor_function_section[section_name].forEach((editor_function) => {
+      let btn = this.createTiptapButton(editor_function);
+      section.appendChild(btn);      
+    });  
   
-    const boldButton = this.createTiptapButton('bold', '../static/0_resources/icons/tiptap_icons/i_bold.svg', 'B');
-    marksBar.appendChild(boldButton);
-  
-    const italicButton = this.createTiptapButton('italic', '../static/0_resources/icons/tiptap_icons/i_italic.svg', 'I');
-    marksBar.appendChild(italicButton);
-  
-    const underlineButton = this.createTiptapButton('underline', '../static/0_resources/icons/tiptap_icons/i_underline.svg', 'U');
-    marksBar.appendChild(underlineButton);
-  
-    const linkTextButton = this.createTiptapButton('link', '../static/0_resources/icons/tiptap_icons/i_link.svg', 'link');
-    marksBar.appendChild(linkTextButton);
-  
-    return marksBar;
+    return section;
   }
+
   
   createParagraphsBar() {
     const paragraphsBar = document.createElement('div');
@@ -407,61 +413,83 @@ class Popup {
     return urlBar;
   }
   
-  createTiptapButton(button_name, imageSrc, altText) {
+  createTiptapButton(editor_function) {
     const button = document.createElement('div');
     // button.id = buttonId;
     button.className = 'btn tiptapBtn';
   
     const image = document.createElement('img');
     image.className = 'tiptapBtnImg';
-    image.src = imageSrc;
-    image.alt = altText;
+    image.src = editor_function.src;
+    image.alt = editor_function.alt_text;
   
     button.appendChild(image);
+    button.setAttribute('name',editor_function.name);
+    button.setAttribute('function_command', editor_function.command);
+    button.setAttribute('function_input', JSON.stringify(editor_function.input));
+    button.setAttribute('function_name', editor_function.command_name);
 
     // Add button to list of buttons
-    this.buttons[button_name] = button;
+    this.buttons[editor_function.name] = button;
   
     return button;
   }
 
+  // editor_functions holds a list information for nodes and marks to be populated and used in the text editor
+  editor_functions = [
+    {'marks': [
+      { name: 'bold', command_name:'bold', command: 'toggleBold', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_bold.svg', alt_text:'B'},
+      { name: 'italic', command_name:'italic', command: 'toggleItalic', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_italic.svg', alt_text:'I'},
+      { name: 'underline', command_name:'underline', command: 'toggleUnderline', input:null, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_underline.svg', alt_text:'U'},
+    ]},
+    {'styles': [
+      { name: 'h1', command_name:'heading', command: 'toggleHeading', input:{level:1}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H1.svg', alt_text:'H1'},
+      { name: 'h2', command_name:'heading', command: 'toggleHeading', input:{level:2}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H2.svg', alt_text:'H2'},
+      { name: 'h3', command_name:'heading', command: 'toggleHeading', input:{level:3}, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H3.svg', alt_text:'H3'},
 
+    ]},
+  ]
 
+  // const paragraphOrientationButton = this.createTiptapButton('paragraph_orientation', '../static/0_resources/icons/image_URL.svg', 'Orientation');
+  toggleFunction(btn, function_name, function_command, function_input=null) {
+    if (function_input) {
+      console.log(function_input);
+      this.editor.chain().focus()[function_command](JSON.parse(function_input)).run();
+      btn.classList.toggle("active", this.editor.isActive(function_name, JSON.parse(function_input)));
+    } else {
+      this.editor.chain().focus()[function_command]().run();
+      btn.classList.toggle("active", this.editor.isActive(function_name));
+    }
 
-  toggleBold() {
-    this.editor.chain().focus().toggleBold().run();
-    this.buttons.bold.classList.toggle("active", this.editor.isActive("bold"));
-  }
-
-  toggleItalic() {
-    this.editor.chain().focus().toggleItalic().run();
-    this.buttons.italic.classList.toggle("active", this.editor.isActive("italic"));
-  }
-
-  toggleUnderline() {
-    this.editor.chain().focus().toggleUnderline().run();
-    this.buttons.underline.classList.toggle("active", this.editor.isActive("underline"));
   }
 
 
   handleButtons(addEvents) {
     if (addEvents) {
       // Add event listeners to buttons in custom editor bar
-      this.buttons.bold.addEventListener("click", this.toggleBold.bind(this));
-      this.buttons.italic.addEventListener("click", this.toggleItalic.bind(this));
-      this.buttons.underline.addEventListener("click", this.toggleUnderline.bind(this));
-    }
-    else {
-      // Remove event listeners
-      this.buttons.bold.removeEventListener("click", this.toggleBold.bind(this));
-      this.buttons.italic.removeEventListener("click", this.toggleItalic.bind(this));
-      this.buttons.underline.removeEventListener("click", this.toggleUnderline.bind(this));
+      Object.entries(this.buttons).forEach((btn) => {
+        // Get inputs to toggle function
+        let function_name = btn[1].getAttribute('function_name');
+        let function_command = btn[1].getAttribute('function_command');
+        let function_input = btn[1].getAttribute('function_input');     
 
-      // untoggle buttons
-      this.buttons.bold.classList.toggle("active", false);
-      this.buttons.italic.classList.toggle("active", false);
-      this.buttons.underline.classList.toggle("active", false);
+        // Add event listener to toggle button and function when button is clicked
+        btn[1].addEventListener("click", () => this.toggleFunction(btn[1], function_name, function_command, function_input));
+      });
 
+    } else {
+      Object.entries(this.buttons).forEach((btn) => {
+        // Get inputs to toggle function
+        let function_name = btn[1].getAttribute('name');
+        let function_command = btn[1].getAttribute('function_command');
+        let function_input = btn[1].getAttribute('function_input');     
+
+        // Remove event listeners
+        btn[1].removeEventListener("click", () => this.toggleFunction(function_name, function_command, function_input));
+
+        // untoggle buttons
+        btn[1].classList.toggle("active", false);
+      });
     }
   }
 

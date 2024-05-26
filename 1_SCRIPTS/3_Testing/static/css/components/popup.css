@@ -148,7 +148,7 @@
 
 
 /* The body where text and imagse go, basically the tiptap editor */
-.popup-body-editor p {
+.popup-body-editor p {  
   position: relative;
   /* Centering body in width */
   left: calc(50%);
@@ -157,8 +157,6 @@
   /* Setting max width for readability */
   max-width: 58ch;
   min-width: 10ch;  
-
-
 }
 
 .tiptap img {
@@ -174,3 +172,13 @@
 /* .prosemirror-dropcursor-inline > *{
   width: 50px !important;
 } */
+
+.popup-body-editor strong {
+  font-weight: 900 !important;
+}
+
+.tiptap > * {
+  color: rgb(53, 53, 53);
+  font-weight: 100;
+
+}
