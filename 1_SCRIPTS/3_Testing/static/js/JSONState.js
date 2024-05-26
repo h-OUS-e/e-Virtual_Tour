@@ -453,27 +453,30 @@ class JSONState {
     }
 
 
-    getUniquePropertiesByCondition(category, property_to_get, property_to_check, property_value) {
-    
-      const filteredObjects = Object.values(this.getCategory(category))
-        .filter(obj => obj[property_to_check] === property_value)
-        .map(obj => obj[property_to_get]);
-    
-      
-      if (filteredObjects) { 
-        console.log(`there are filtered objects ${filteredObjects}`);
-        const uniqueProperties = [...new Set(filteredObjects)];
-        return uniqueProperties;
-      }
-      else { 
-        console.log("no filteredObjects");
+    getUniquePropertiesByCondition(category, propertyToGet, propertyToCheck, propertyValue) {
+      // Ensure the category exists and is valid
+      const categoryData = this.getCategory ? this.getCategory(category) : null;
+      if (!categoryData) {
+        console.log("Invalid or non-existent category.");
         return null;
       }
-      
-    
-      
-      
+  
+      // Filter objects where the property to check matches the desired value (including handling of null values)
+      const filteredObjects = Object.values(categoryData)
+        .filter(obj => obj[propertyToCheck] === propertyValue || (propertyValue === null && obj[propertyToCheck] == null))
+        .map(obj => obj[propertyToGet]);
+  
+      // Log and return unique properties, handling cases where propertyToGet might not exist on all objects
+      if (filteredObjects.length > 0) {
+        console.log(`There are filtered objects: ${filteredObjects}`);
+        const uniqueProperties = [...new Set(filteredObjects.filter(prop => prop != null))];
+        return uniqueProperties;
+      } else {
+        console.log("No filteredObjects or no valid properties found.");
+        return null;
+      }
     }
+      
   
     undo(event_name=null) {
 
