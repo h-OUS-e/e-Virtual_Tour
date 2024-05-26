@@ -1,8 +1,36 @@
 // A general purpose class for creating menus
-import { Editor } from 'https://esm.sh/@tiptap/core';
-import { Image } from 'https://esm.sh/@tiptap/extension-image';
-import { Underline } from 'https://esm.sh/@tiptap/extension-underline';
-import { StarterKit } from 'https://esm.sh/@tiptap/starter-kit';
+import { Editor } from 'https://esm.sh/@tiptap/core@2.2.2';
+import { Bold } from 'https://esm.sh/@tiptap/extension-bold@2.2.2';
+import { BulletList } from 'https://esm.sh/@tiptap/extension-bullet-list@2.2.2';
+import { Document } from 'https://esm.sh/@tiptap/extension-document@2.2.2';
+import { Dropcursor } from 'https://esm.sh/@tiptap/extension-dropcursor@2.2.2';
+import { Gapcursor } from 'https://esm.sh/@tiptap/extension-gapcursor@2.2.2';
+import { HardBreak } from 'https://esm.sh/@tiptap/extension-hard-break@2.2.2';
+import { Heading } from 'https://esm.sh/@tiptap/extension-heading@2.2.2';
+import { History } from 'https://esm.sh/@tiptap/extension-history@2.2.2';
+import { HorizontalRule } from 'https://esm.sh/@tiptap/extension-horizontal-rule@2.2.2';
+import { Image } from 'https://esm.sh/@tiptap/extension-image@2.2.2';
+import { Italic } from 'https://esm.sh/@tiptap/extension-italic@2.2.2';
+import { ListItem } from 'https://esm.sh/@tiptap/extension-list-item@2.2.2';
+import { OrderedList } from 'https://esm.sh/@tiptap/extension-ordered-list@2.2.2';
+import { Paragraph } from 'https://esm.sh/@tiptap/extension-paragraph@2.2.2';
+import { Strike } from 'https://esm.sh/@tiptap/extension-strike@2.2.2';
+import { Text } from 'https://esm.sh/@tiptap/extension-text@2.2.2';
+import { Underline } from 'https://esm.sh/@tiptap/extension-underline@2.2.2';
+
+let extensions = [
+  Image.configure({ inline: true }), // Keeps image inside paragraph block
+  Bold, Italic, Underline, Strike,
+  Paragraph, Document, Text, 
+  Heading,
+  OrderedList, 
+  ListItem, BulletList,  
+  Dropcursor, Gapcursor,  
+  HardBreak, 
+  HorizontalRule, History, 
+];
+
+
 
 
 class Popup {
@@ -85,7 +113,7 @@ class Popup {
     // Show menu
     this.visible = true;
     this.menu.classList.remove('hidden');
-    this.popup_overlay.classList.remove('hidden');
+    // this.popup_overlay.classList.remove('hidden');
 
     // Disabling zoom when menu is shown
      window.disableZoom();
@@ -169,11 +197,7 @@ class Popup {
     // Setup tiptap editor (the body editor)
     this.editor = new Editor({
         element: element,
-        extensions: [
-          StarterKit, 
-          Underline, 
-          Image.configure({ inline: true }), // Keeps image inside paragraph block
-        ],
+        extensions: extensions,
         // Accessing prosemirror functionality to handle image on drop
         editorProps: {
           handleDrop: function(view, event, slice, moved) {
@@ -450,8 +474,10 @@ class Popup {
       { name: 'h1', command_name:'heading', command: 'toggleHeading', input:{level:1}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H1.svg', alt_text:'H1'},
       { name: 'h2', command_name:'heading', command: 'toggleHeading', input:{level:2}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H2.svg', alt_text:'H2'},
       { name: 'h3', command_name:'heading', command: 'toggleHeading', input:{level:3}, isGrouped:true, disable: true, src:'../static/0_resources/icons/tiptap_icons/i_H3.svg', alt_text:'H3'},
-
     ]},
+    {'paragraph_styles': [
+      { name: 'bullet_list', command_name:'bullet_list', command: 'toggleBulletList', input:{level:1}, isGrouped:true, disable: true, src:'../static/0_resources/icons/bullet_list.svg', alt_text:':'},
+    ]}
   ]
 
   // const paragraphOrientationButton = this.createTiptapButton('paragraph_orientation', '../static/0_resources/icons/image_URL.svg', 'Orientation');
@@ -677,21 +703,6 @@ class Popup {
     });
   }
 
-
-  // A method to toggle upload image menu
-  emitUploadImage(callback) {
-    const event = new CustomEvent('uploadImageInstantly', 
-    {
-        detail: {
-          storage_bucket: "icons_img",
-          image_name: "test",
-          // header: "Add a new icon",
-          // existing_image_names: this.existing_icon_names,
-          callback_on_upload: () => callback,
-        },
-    });
-    document.dispatchEvent(event);
-  }
 
   
 }

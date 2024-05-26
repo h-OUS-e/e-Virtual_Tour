@@ -194,6 +194,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     if (instant_upload) {
       // Upload image instantly without clicking an upload btn 
       uppyUploadFunction(uppy, uppy_file);
+
     } else {
       // Emit that image was added to check image in image menu
       emitImageAdded(image_name);    
@@ -248,9 +249,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
       // Emit image uploaded to handle
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
+    }
 
-      
-
+    // Closing the little upload animations
+    if (instant_upload) {
+      uppy.close();
     }
   });
 
@@ -312,7 +315,6 @@ async function addCustomImage(event) {
   const file_name = `${image_name}.${image_extension}`;
 
   let image_URL = event.detail.image_URL;
-  const thumbnail_URL = image_URL;
 
   // Fetch the image file from the URL
   const response = await fetch(image_URL);
