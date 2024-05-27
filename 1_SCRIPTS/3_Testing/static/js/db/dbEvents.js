@@ -151,7 +151,7 @@ export async function fetchProjects(profile_uid) { //async api function.
 
 
 export async function insertProjects(dataArray) {
-    //input: dataArray = [ {project_name: 'new project name', is_published: bool} ]                 
+    //input: dataArray = [ {profile_uid : profile_uid, project_name: 'new project name', is_published: bool} ]                 
     //output: 
     try {
         const { data, error } = await supabase
