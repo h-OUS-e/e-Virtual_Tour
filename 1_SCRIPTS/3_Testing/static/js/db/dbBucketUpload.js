@@ -25,10 +25,8 @@ import { supabaseGetSession } from "./dbEvents.js";
 const chosen_project = JSON.parse(localStorage.getItem('projectData'));
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
-
 const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
-
 let callback_on_upload = null;
 
 
@@ -49,8 +47,6 @@ export function ReinitializeUppySession(project, bucket, target_div, event_to_ca
     console.warn('setting callback for uppy function')
     callback_on_upload = event_to_callback_on_upload.detail.callback_on_upload;
   }
-  
-
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
@@ -59,7 +55,6 @@ export function ReinitializeUppySession(project, bucket, target_div, event_to_ca
         console.warn(`could not find a project_uid in projectData local storage: ${project}`);
       }
       else{
-        
         setUpUppy(BEARER_TOKEN, bucket, project["project_uid"], target_div, uppy_options );
         console.log(`now uploading to ${project["project_uid"]}, storage bucket: ${bucket}`);
       }
@@ -76,19 +71,26 @@ export function ReinitializeUppySession(project, bucket, target_div, event_to_ca
 
 // One big function that defines how to setup uppy dashboard, image editor and what to do when images are added
 function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}) {
+  if (uppy) {
+    uppy.close();  
+  }
+
     const {
       hide_upload_button = true, // Default value if not provided
       use_default_name_editor = false // Default value if not provided
   } = options;
-  // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; 
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
-
-  // Define some constants based on storage bucket
   let cropper_aspect_ratio = NaN;
   let squate_ratio = false;
   let auto_open_cropper = null;
   let max_number_of_files = 10;
+  let thumbnail_URL = "";
+  let image_name = "";
+  let image_type = "";
+  let image_extension = ""
+  let uppy_file;
+  let fileUUID;
 
   // Setting dashboard variables if bucket is icons_img
   if (storage_bucket == storage_bucket_icon) { 
@@ -98,18 +100,12 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
     auto_open_cropper = "imageEditor";
   }
 
-  let thumbnail_URL = "";
-  let image_name = "";
-  let image_type = "";
-  let image_extension = ""
-  let uppy_file;
-  let fileUUID;
-
-  // Close uppy if it was open
-  if (uppy) {
-    uppy.close();  
+  if (storage_bucket == storage_bucket_scene){
+    cropper_aspect_ratio = 1;
+    max_number_of_files = 1
+    squate_ratio = true;
+    auto_open_cropper = null ;
   }
-
 
   // Define uppy
   uppy = new Uppy({
@@ -173,6 +169,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
       cropWidescreenVertical: !squate_ratio,
     }
   });
+  // Function to handle renaming and upload
+
 
 
   // Updating file metadata when image is added to dashboard, and showing upload button  
@@ -253,6 +251,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
 
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
+      console.log('resulsts ', result)
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
 
       // Get src from server and callback with imagename and src
@@ -401,4 +400,19 @@ document.addEventListener('uploadImage', (event) => ReinitializeUppySession(chos
 
 
 
+export function renameAndUpload() {
+  const prefix = document.getElementById('filenamePrefix').value.trim();
+  uppy.getFiles().forEach(file => {
+    const extension = file.name.split('.').pop();
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+    const newFileName = prefix ? `${prefix}.${extension}` : `${baseName}.${extension}`;
 
+    // Update the file name in Uppy's internal state
+    uppy.setFileMeta(file.id, { name: newFileName });
+    uppy.log(`Renamed to: ${newFileName}`);
+  });
+
+  // Start uploading after renaming
+  uppy.upload();
+
+}

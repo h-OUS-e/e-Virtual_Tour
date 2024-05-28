@@ -449,7 +449,7 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
     let directoryPath = dir_path === null ? `${project_uid}/${img_uid}` : dir_path;
 
     try {
-        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath);
+        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath); //first try to get all urls of a storage directories in a project
         if (listError) {
             throw new Error(listError.message);
         }
@@ -461,7 +461,7 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
 
         const firstFile = fileList[0];
         const firstFilePath = `${directoryPath}/${firstFile.name}`;
-        const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath);
+        const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath); //then get the publicurl of each directory, if it exists. else error
 
         if (error) {
             throw new Error(error.message);
@@ -470,7 +470,7 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
         if (data && data.publicUrl) {
             console.log('Public URL of the first file:', data.publicUrl);
             if (target_img_div_id) {
-                setImageUrl(target_img_div_id, data.publicUrl);
+                setImageUrl(target_img_div_id, data.publicUrl); //set the img div to the url if it is there, not a required part of the function dunno if I will keep this
             }
             return data.publicUrl;  
         } else {

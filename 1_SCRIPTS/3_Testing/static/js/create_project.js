@@ -1,9 +1,9 @@
 import { insertProjects } from '../js/db/dbEvents.js';
-import { ReinitializeUppySession } from './db/dbBucketUpload.js';
+import { ReinitializeUppySession, renameAndUpload} from './db/dbBucketUpload.js';
 
 
 const uppy_options =  {
-    "hide_upload_button" : false, 
+    "hide_upload_button" : true, 
     'use_default_name_editor' : true
 }
 const bucket = 'scenes_img'
@@ -18,7 +18,7 @@ console.log(user_data)
 document.getElementById("crtProjectBtn").addEventListener('click', async function () {
     let project_name = document.getElementById('projectNameInput').value;
     console.log(`Creating a new project: ${project_name} for user of profile id: ${user_data.profile_uid}`);
-    var elements = document.querySelectorAll('.hide-uppy-related');
+    let elements = document.querySelectorAll('.hide-uppy-related');
     elements.forEach(function(element) {
         element.style.display = 'block'; 
     });
@@ -35,3 +35,4 @@ document.getElementById("crtProjectBtn").addEventListener('click', async functio
     }
     
 });
+document.getElementById('uploadbtn').addEventListener('click', renameAndUpload)
