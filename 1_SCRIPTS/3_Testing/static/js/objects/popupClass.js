@@ -177,6 +177,22 @@ class Popup {
     // Reset active buttons
   }
 
+
+  // A function that disables the editing of the tiptap editor and hides the editor bar
+  toggleEditMode(edit_mode) {
+    // Disable the editor
+    this.editor.setEditable(edit_mode);
+
+    // Hide the editor bar
+    const editor_bar = document.getElementById('popup_body_editor_bar');
+    if (edit_mode) {
+      editor_bar.classList.remove('hidden');
+    } else {
+      editor_bar.classList.add('hidden');
+    }
+
+  }
+
   
   saveContent() {
     // Save the body
