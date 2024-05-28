@@ -76,7 +76,7 @@
     <script type="module" src="../static/js/objects/mediaPlayer.js"></script>
     <script type="module" src="../static/js/objects/mediaBar.js"></script>
     <script type="module" src="../static/js/objects/hollowCylinder.js" ></script>
-    <script type="module" src="../static/js/objects/mediaPopupTest.js" ></script>
+    <script type="module" src="../static/js/objects/mediaPopup.js" ></script>
     <script type="module" src="../static/js/objects/popupClass.js"></script>
 
 
@@ -307,7 +307,7 @@
         </div>
 
 
-        <div id="popup3" class="popup hidden">
+        <div id="popup" class="popup hidden">
             <!-- Header -->
             <div class="menuTopBar flexRow">
                 <h3 class="header"></h3>   
@@ -315,118 +315,6 @@
             </div>
         </div> 
         
-        <div id="popup2" class="popup hidden">
-            <div class="menuTopBar flexRow">
-                <h3 class="header"></h3>   
-                <button class="btn exitBtn popup-exit-btn">X</button> 
-            </div>
-            <div class="popup-contianer">
-                <div class="popup-contianer-header grid2Column col21">                        
-                    <div class="popup-contianer-header-wrapper ">  
-                        <div class="popup-contianer-header-wrapperInner ">
-                            <h2 class="popup-title">Your Title Here</h2>
-                            <p class="popup-subtitle">Subtitle</p>
-                        </div>
-                    </div>
-                    <div class="popup-contianer-header-wrapper">  
-                        <div class="popup-contianer-header-wrapperInner">                        
-                            <p class="popup-description">
-                                A small description of the title.
-                            </p>
-                        </div>  
-                    </div>
-                </div>
-                <div class="popup-contianer-body">
-                    <div id="popup_body_editor_bar" class="flexRowLeft popup-body-editor-bar ">
-                        <div id="popup_body_editor_bar_styles" class="flexRowLeft popup-body-editor-bar-styles">
-                            <div id="popup_body_editor_h1_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H1.svg" alt="H1"> 
-                            </div>
-                            <div id="popup_body_editor_h2_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H2.svg" alt="H2"> 
-                            </div>
-                            <div id="popup_body_editor_h3_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_H3.svg" alt="H3"> 
-                            </div>
-                            <div id="popup_body_editor_paragraphOrientation_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="Orientation"> 
-                            </div>
-                        </div>
-
-                        <div id="popup_body_editor_bar_marks" class="flexRowLeft popup-body-editor-bar-marks">
-                            <div id="popup_body_editor_bold_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_bold.svg" alt="B"> 
-                            </div>
-                            <div id="popup_body_editor_italic_btn" class="btn tiptapBtn">
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_italic.svg" alt="I"> 
-                            </div>
-                            <div id="popup_body_editor_underline_btn" class="btn tiptapBtn">
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_underline.svg" alt="U">                             
-                            </div>
-                            <div id="popup_body_editor_linkText_btn" class="btn tiptapBtn">
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/tiptap_icons/i_link.svg" alt="link">                             
-                            </div>
-                        </div>
-
-                        
-
-                        <div id="popup_body_editor_bar_paragraphs" class="flexRowLeft popup-body-editor-bar-paragraphs">
-                            <div id="popup_body_editor_bulletList_btn" class="btn tiptapBtn">
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/bullet_list.svg" alt="bullet"> 
-                            </div>
-                            <div id="popup_body_editor_numberedList_btn" class="btn tiptapBtn">
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/numbered_list.svg" alt="list"> 
-                            </div>
-                        </div>
-
-                        <div id="popup_body_editor_bar_url" class="flexRowLeft popup-body-editor-bar-url">
-                            <div id="popup_body_editor_imgURL_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/image_URL.svg" alt="IMG"> 
-                            </div>
-                            <div id="popup_body_editor_videoURL_btn" class="btn tiptapBtn" >
-                                <img class="tiptapBtnImg" src="../static/0_resources/icons/video_URL.svg" alt="VID"> 
-                            </div>
-                        </div>                        
-                    </div>
-                    <div id="popup_body_editor" class="popup-body-editor"></div>
-                    
-                    <!-- <button class="add-block-btn">ADD</button> -->
-                </div>
-            </div>
-        </div>
-
-
-        <!-- A template of the popup window that pops up when a mediaPlayer is clicked -->
-        <div id="popup" class="popup" style="display:none;">
-            <!-- The header of the popup with a subtitle, title and a paragraph-->            
-            <div class="popup-header">
-                <div class="title-container">
-                    <h1 class="popup-subtitle">Subtitle</h1>
-                    <h2 class="popup-title">Your Title Here</h2>
-                    <p class="title-description">
-                        A small description of the title.
-                    </p>
-                </div>            
-                <button class="popup-close-button">&times;</button>
-            </div>
-            <!-- The general body of the popup, which can optionally contain an image, a video and some paragraphs-->
-            <div class="popup-body">
-                <!-- Add text -->
-                <div class="popup-media-text">
-                <p>Your content goes here. Sage dental combines 
-                    leading-edge clinical innovations and a proprietary 
-                    software platform to deliver the best patient care
-                    and experience in the dental industry....</p>
-                </div>
-                <!-- Add images -->
-                <img id="popup_image" class="popup-media" src="" alt="">
-                <!-- Add videos if available -->
-                <video id="popup_video" class="popup-media" src=""  controls ></video>            
-                <!-- Add embdedded video if available -->            
-                <iframe id="popup_video_embedded" class="popup-media" src="" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                
-            </div>
-        </div>
 
 
         <!-- A code for a color picker -->

@@ -52,6 +52,88 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
+  // Show upload image menu when button is clicked
+  document.addEventListener('uploadImage', async function(event) {
+    const header = event.detail.header;
+    console.log("T1");
+    existing_image_names = event.detail.existing_image_names;
+    toggleUploadMenu(header);
+  });
+
+
+  // Handle upload if image is added to uppy dashboard
+  document.addEventListener('imageAddedToUppy', function(event) {
+    console.log("T2");
+
+    // Get variables
+    let image_name = event.detail.image_name;
+    // Add image name to text input
+    name_input.value = image_name;
+
+    // Show upload button
+    upload_btn.classList.remove('hidden');
+
+    // Handle upload button clicked
+    uploadButtonListener = () => handleUploadCheck(existing_image_names);
+    upload_btn.addEventListener('click', uploadButtonListener);
+  });
+
+
+  // Handle emoji select change event
+  emoji_select.addEventListener('change', function handler(event) {
+    console.log("T3");
+
+    const selectedEmoji = event.target.value;
+    if (selectedEmoji) {
+      const emojiCode = selectedEmoji.codePointAt(0).toString(16);
+      const img_URL = `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${emojiCode}.png`;
+      // updateImageUploadContainer(img_URL);
+      console.log("selected: ", `${emojiMap[selectedEmoji]}`);
+
+      // Emit emoji image and name
+      emitAddCustomImageToUppy(img_URL, `${emojiMap[selectedEmoji]}`);
+    }
+  });
+
+
+  // Handle exit button clicked
+  exit_btn.addEventListener('click', closeMenu);
+
+
+  // Hide upload and emoji selector when editing the image
+  document.addEventListener('editingUppyImage', function(event) {
+    upload_btn.classList.add('hidden');
+    emoji_select.classList.add('hidden');
+    console.log("T4");
+
+  });
+
+  document.addEventListener('finishedEditingUppyImage', function(event) {
+    upload_btn.classList.remove('hidden');
+    emoji_select.classList.remove('hidden');
+    console.log("T5");
+
+  });
+
+
+  // Close menu when image is uploaded
+  document.addEventListener("imageUploaded",  function() {
+
+    try {
+      // Close upload menu
+      closeMenu();
+
+      // Show upload success message, maybe no important
+      Swal.fire({
+        text: "Image uploaded successfully!",
+        icon: "success",
+        timer: 1000,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+  });
 
 
   /*******************************************************************************
