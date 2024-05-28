@@ -1,10 +1,11 @@
 import { insertProjects } from '../js/db/dbEvents.js';
 import { ReinitializeUppySession, renameAndUpload} from './db/dbBucketUpload.js';
 
-
+let project_uid
 const uppy_options =  {
     "hide_upload_button" : true, 
-    'use_default_name_editor' : true
+    'use_default_name_editor' : true,
+    'auto_open_cropper ' : null
 }
 const bucket = 'scenes_img'
 const uppy_div = "#drag-drop-area"
@@ -16,17 +17,20 @@ console.log(user_data)
 
 
 document.getElementById("crtProjectBtn").addEventListener('click', async function () {
+
     let project_name = document.getElementById('projectNameInput').value;
     console.log(`Creating a new project: ${project_name} for user of profile id: ${user_data.profile_uid}`);
     let elements = document.querySelectorAll('.hide-uppy-related');
     elements.forEach(function(element) {
         element.style.display = 'block'; 
     });
+
     try {
         let response = await insertProjects([{ 'profile_uid': user_data.profile_uid , 'project_name': project_name }]);
         console.log(response);
         if (response.success ) {
-            console.log(response.data[0].project_uid)
+            console.log(response.data[0].project_uid);
+            project_uid = response.data[0].project_uid;
 
             ReinitializeUppySession(response.data[0], bucket, uppy_div, null, uppy_options);
         }
@@ -35,4 +39,8 @@ document.getElementById("crtProjectBtn").addEventListener('click', async functio
     }
     
 });
-document.getElementById('uploadbtn').addEventListener('click', renameAndUpload)
+
+
+document.getElementById('uploadbtn').addEventListener('click', () => {
+    renameAndUpload(project_uid)
+});
