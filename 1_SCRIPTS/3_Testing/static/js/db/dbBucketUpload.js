@@ -43,24 +43,7 @@ let callback_on_upload = null;
  /////////////////////// FUNCTIONS //////////////////////
 
 
-function ReinitializeUppySession(bucket, target_div, event) {
-  let session_data_promise = supabaseGetSession();
-  callback_on_upload = event.detail.callback_on_upload;
 
-  session_data_promise.then(data => {
-    if (data && data.session.access_token) {
-      let BEARER_TOKEN = data.session.access_token;
-      console.log(chosen_project)
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project["project_uid"], target_div);
-      console.log(bucket);
-
-    } else { console.log('no session found')}
-
-  })
-  .catch(error => {
-    console.error("Error in getSession: ", error);
-  });
-};
 
 
 
@@ -377,7 +360,43 @@ function emitFinishedEditingImage() {
 document.addEventListener('addCustomImageToUppy', addCustomImage);
 
 // Listen to different upload buttons to figure out the bucket for supabase
-document.addEventListener('uploadImage', (event) => ReinitializeUppySession(storage_bucket_icon, '#uppy_placeholder', event));
+document.addEventListener('uploadImage', (event) => ReinitializeUppySession(chosen_project,storage_bucket_icon, '#uppy_placeholder', event));
 
 });
-// how to use
+
+
+
+
+export function ReinitializeUppySession(project, bucket, target_div, event) {
+  // input: 
+  //project,
+  //bucket, 
+  //target_div, 
+  //event,
+
+
+  // output:
+  let session_data_promise = supabaseGetSession();
+  callback_on_upload = event.detail.callback_on_upload;
+
+  session_data_promise.then(data => {
+    if (data && data.session.access_token) {
+      let BEARER_TOKEN = data.session.access_token;
+      console.log(project)
+      if(!project["project_uid"]){
+        console.warn(`could not find a project_uid in projectData local storage: ${project}`);
+      }
+      else{
+        
+        setUpUppy(BEARER_TOKEN, bucket, project["project_uid"], target_div);
+        console.log(`now uploading to ${project["project_uid"]}, storage bucket: ${bucket}`);
+      }
+
+
+    } else { console.log('no session found')}
+
+  })
+  .catch(error => {
+    console.error("Error in getSession: ", error);
+  });
+};
