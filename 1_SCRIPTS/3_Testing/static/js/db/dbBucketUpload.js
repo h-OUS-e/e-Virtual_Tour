@@ -21,14 +21,7 @@ import { supabaseGetSession } from "./dbEvents.js";
 //https://www.restack.io/docs/supabase-knowledge-supabase-postgres-meta-guide#clpzdl7tp0lkdvh0v9gz12dc0
 
 
-/*********************************************************************
- * On DOM load
-*********************************************************************/
-document.addEventListener('DOMContentLoaded', async (event) => {
 
- /////////////////////// GLOBAL VARIABLES //////////////////////
-
-// make sure to set this variable before uplaoding!!!!
 const chosen_project = JSON.parse(localStorage.getItem('projectData'));
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
@@ -40,15 +33,53 @@ let callback_on_upload = null;
 
 
 
- /////////////////////// FUNCTIONS //////////////////////
+export function ReinitializeUppySession(project, bucket, target_div, event_to_callback_on_upload = null, uppy_options = {}) {
+  // input: 
+  //project,
+  //bucket, 
+  //target_div, 
+  //event_to_callback_on_upload ,
+  // uppy_option,
 
 
+  // output:
+  
+  let session_data_promise = supabaseGetSession();
+  if(event_to_callback_on_upload) {
+    console.warn('setting callback for uppy function')
+    callback_on_upload = event_to_callback_on_upload.detail.callback_on_upload;
+  }
+  
+
+  session_data_promise.then(data => {
+    if (data && data.session.access_token) {
+      let BEARER_TOKEN = data.session.access_token;
+      console.log(project)
+      if(!project["project_uid"]){
+        console.warn(`could not find a project_uid in projectData local storage: ${project}`);
+      }
+      else{
+        
+        setUpUppy(BEARER_TOKEN, bucket, project["project_uid"], target_div, uppy_options );
+        console.log(`now uploading to ${project["project_uid"]}, storage bucket: ${bucket}`);
+      }
 
 
+    } else { console.log('no session found')}
+
+  })
+  .catch(error => {
+    console.error("Error in getSession: ", error);
+  });
+};
 
 
 // One big function that defines how to setup uppy dashboard, image editor and what to do when images are added
-function setUpUppy (token, storage_bucket, project_uid, target_div) {
+function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}) {
+    const {
+      hide_upload_button = true, // Default value if not provided
+      use_default_name_editor = false // Default value if not provided
+  } = options;
   // Get supabase constants
   const SUPABASE_PROJECT_ID = 'ngmncuarggoqjwjinfwg'; 
   const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
@@ -76,7 +107,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
 
   // Close uppy if it was open
   if (uppy) {
-    uppy.close();  // Close the previous instance if it exists
+    uppy.close();  
   }
 
 
@@ -104,7 +135,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
     height: '300px',
     width: '300px',
     proudlyDisplayPoweredByUppy: false,
-    hideUploadButton:true, // Using custom upload button instead
+    hideUploadButton:hide_upload_button , // Using custom upload button instead, KT: I Changed this to optional because I wanted to use the normal upload emthod.
     theme: "dark",  
     autoOpen: auto_open_cropper, // auto open cropper
 
@@ -225,7 +256,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div) {
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
 
       // Get src from server and callback with imagename and src
-    callback_on_upload(image_name, thumbnail_URL);
+      if(callback_on_upload) {
+        console.warn('using callback in uppy')
+        callback_on_upload(image_name, thumbnail_URL);
+      }
+  
 
     }
   });
@@ -362,41 +397,8 @@ document.addEventListener('addCustomImageToUppy', addCustomImage);
 // Listen to different upload buttons to figure out the bucket for supabase
 document.addEventListener('uploadImage', (event) => ReinitializeUppySession(chosen_project,storage_bucket_icon, '#uppy_placeholder', event));
 
-});
 
 
 
 
-export function ReinitializeUppySession(project, bucket, target_div, event) {
-  // input: 
-  //project,
-  //bucket, 
-  //target_div, 
-  //event,
 
-
-  // output:
-  let session_data_promise = supabaseGetSession();
-  callback_on_upload = event.detail.callback_on_upload;
-
-  session_data_promise.then(data => {
-    if (data && data.session.access_token) {
-      let BEARER_TOKEN = data.session.access_token;
-      console.log(project)
-      if(!project["project_uid"]){
-        console.warn(`could not find a project_uid in projectData local storage: ${project}`);
-      }
-      else{
-        
-        setUpUppy(BEARER_TOKEN, bucket, project["project_uid"], target_div);
-        console.log(`now uploading to ${project["project_uid"]}, storage bucket: ${bucket}`);
-      }
-
-
-    } else { console.log('no session found')}
-
-  })
-  .catch(error => {
-    console.error("Error in getSession: ", error);
-  });
-};

@@ -3,6 +3,11 @@ import { supabase } from "./dbClient.js";
 // API request functions https://supabase.com/dashboard/project/ngmncuarggoqjwjinfwg/api?page=tables-intro
 // get session https://supabase.com/docs/reference/javascript/auth-getsession
 
+export const defaults = {
+    'icon' : {'icon_uid': "1fab3da4-7cf8-490a-a717-b004d3fcc41f"},
+    'transition_nodes' : {}
+ };
+
 export async function supabaseGetSession() {
     try {
       const { data, error } = await supabase.auth.getSession();
