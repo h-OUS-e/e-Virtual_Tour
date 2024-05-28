@@ -47,6 +47,7 @@ export const JSON_statePromise = (async () => {
 export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
     // input: The key for the localStorage item (default is 'projectData')
     // output: A promise that resolves to an object containing project_JSON and object_JSON
+    
     return new Promise((resolve, reject) => {
         const db_json_ls = JSON.parse(localStorage.getItem(storage_key));
         if (!db_json_ls) {
@@ -97,28 +98,31 @@ export async function addUrlsToObjects(bucket, json_data){
 // solution right now, itterate over all paths to get the icon and img ids
 // using the icon and img ids itterate over each one to find the img id and create the url using the combination of all three.
 // add the url to the src JSON
+    const _no_URL_message = 'no public path found in specified riectory'
     let target_path = getTargetPath(bucket, json_data)
 
-    //collect icon_ids and paths to imgs
-    let list_of_paths = {} //icon_uuid : path_to_img_dir
-    for (const [icon_uuid] of Object.entries(target_path)) {
-        if (icon_uuid !== null) {
-            let img_uid = target_path[icon_uuid]['img_uid'];
+    //collect bucket_item_uuid and paths to imgs
+    let list_of_paths = {} //bucket_item_uuid : path_to_img_dir
+    for (const [bucket_item_uuid] of Object.entries(target_path)) {
+        if (bucket_item_uuid!== null) {
+            let img_uid = target_path[bucket_item_uuid]['img_uid'];
             let path_to_img_dir = `${project_uid}/${img_uid}`
-            list_of_paths[icon_uuid] = path_to_img_dir
+            list_of_paths[bucket_item_uuid] = path_to_img_dir
             console.log(list_of_paths)
             try {
                 let public_url = await fetchStoragePublicUrl(path_to_img_dir,null, null, bucket,null);
                 if(public_url) {
-                    console.log('Retrieved public URL for', icon_uuid, ':', public_url);
-                    target_path['src'] = public_url
+                    console.log('Retrieved public URL for', bucket_item_uuid, ':', public_url);
+                    target_path[bucket_item_uuid]['src'] = public_url
                     console.log(`value at target path: ${target_path['src']}`)
+
                 }
                 else {
-                    console.log('No URL returned or accessible for', icon_uuid);
+                    console.log('No URL returned or accessible for', bucket_item_uuid);
+                    target_path[bucket_item_uuid['src']] = _no_path_message                    
                 }
-
-            } catch (error) {console.error('Error fetching public URL for', icon_uuid, ':', error);}
+                console.log(`src is ${target_path[bucket_item_uuid]['src']}`);
+            } catch (error) {console.error('Error fetching public URL for', bucket_item_uuid, ':', error);}
 
         }
     }

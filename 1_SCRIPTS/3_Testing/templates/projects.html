@@ -44,6 +44,17 @@
             redirectToProjectsDirectory('upload.html');
         });
     </script>
+    <button id="newProjectButton">Create a New Project</button>
+    <script>
+        function redirectToProjectsDirectory(path) {
+            window.location.href = path;
+        };
+    
+        document.getElementById('newProjectButton').addEventListener('click', function() {
+            redirectToProjectsDirectory('createproject.html');
+        });
+    </script>
+    
     
 
   
