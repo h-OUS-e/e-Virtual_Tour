@@ -53,6 +53,8 @@ class Popup {
     this.updateCallback = null;
     this.closeCallback = null;
     this.popup_overlay;
+    this.dark_color = 'black';
+    this.light_color = 'white';
 
     this.counter = 0;
 
@@ -708,9 +710,19 @@ class Popup {
 
     // Set the exit button color
     let exit_btn = this.menu.querySelector('.exitBtn');
-    exit_btn.style.cololr = contrast_color;
+    exit_btn.style.color = dark_color;
     exit_btn.style.backgroundColor = light_color;
 
+    exit_btn.onmouseover = () => {
+      exit_btn.style.color = light_color;
+      exit_btn.style.backgroundColor = dark_color;
+    };
+
+    exit_btn.onmouseout = () => {
+      exit_btn.style.color = dark_color;
+      exit_btn.style.backgroundColor = light_color;
+    };
+  
 
     // Set the shadow color of the popup
     this.menu.style.boxShadow = `0 0 10px ${dark_color}`;
@@ -723,20 +735,15 @@ class Popup {
     let title_element = this.menu.querySelector('.popup-title');
     title_element.style.color = light_color;
 
-    // Select all the content in the editor to apply the changes 
+    // Select all the content in the editor to apply the changes to
     this.editor.commands.selectAll();
 
     // Set the color and font family and size of the text in the editor
     this.editor.chain().focus().setMark('textStyle', { color: contrast_color }).run();
     this.editor.chain().focus().setMark('textStyle', { fontFamily: 'cursive' }).run();
-
     
     // deselects the text
-    this.editor.commands.setTextSelection(0)
-
-
-
-
+    this.editor.commands.setTextSelection(0);
   }
 
 
