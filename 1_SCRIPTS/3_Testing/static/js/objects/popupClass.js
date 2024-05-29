@@ -34,7 +34,8 @@ let extensions = [
   ListItem, BulletList,  
   Dropcursor, Gapcursor,  
   HardBreak, 
-  HorizontalRule, History, 
+  HorizontalRule, 
+  // History, 
   Color, TextStyle, FontFamily
 ];
 
@@ -243,6 +244,7 @@ class Popup {
         },
 
         content: content,
+        autofocus: 'end',
 
         // Update content and activate buttons on update
         onUpdate({ editor }) {
@@ -256,6 +258,9 @@ class Popup {
           buttons.bold.classList.toggle("active", editor.isActive("bold"));
           buttons.italic.classList.toggle("active", editor.isActive("italic"));
           buttons.underline.classList.toggle("active", editor.isActive("underline"));
+          buttons.h1.classList.toggle("active", editor.isActive("heading", {level:1}));
+          buttons.h2.classList.toggle("active", editor.isActive("heading", {level:2}));
+          buttons.h3.classList.toggle("active", editor.isActive("heading", {level:3}));         
         },
 
         onCreate({ editor }) {
@@ -265,7 +270,15 @@ class Popup {
           editor.chain().focus().setHardBreak().run();
           editor.chain().focus().setHardBreak().run();
           editor.chain().focus().setHardBreak().run();
-        }
+        },
+
+        onFocus({ editor, event }) {
+          // The editor is focused.
+         
+
+        },
+
+
       }); 
 
       
@@ -739,11 +752,20 @@ class Popup {
     this.editor.commands.selectAll();
 
     // Set the color and font family and size of the text in the editor
-    this.editor.chain().focus().setMark('textStyle', { color: contrast_color }).run();
-    this.editor.chain().focus().setMark('textStyle', { fontFamily: 'cursive' }).run();
-    
+    this.editor.commands.setColor(this.light_color);
+    this.editor.commands.setFontFamily('Cursive');
+
     // deselects the text
-    this.editor.commands.setTextSelection(0);
+    this.editor.commands.setTextSelection(-1);
+
+    // Ensures new text is also the same color and font
+    this.editor.on('selectionUpdate', ({ editor }) => {
+      editor.commands.setColor(this.light_color);
+      this.editor.commands.setFontFamily('Cursive');
+    });
+          
+    
+    
   }
 
 
