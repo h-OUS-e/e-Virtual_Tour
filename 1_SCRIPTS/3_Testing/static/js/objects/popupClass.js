@@ -2,8 +2,10 @@
 import { Editor } from 'https://esm.sh/@tiptap/core@2.2.2';
 import { Bold } from 'https://esm.sh/@tiptap/extension-bold@2.2.2';
 import { BulletList } from 'https://esm.sh/@tiptap/extension-bullet-list@2.2.2';
+import { Color } from 'https://esm.sh/@tiptap/extension-color@2.2.2';
 import { Document } from 'https://esm.sh/@tiptap/extension-document@2.2.2';
 import { Dropcursor } from 'https://esm.sh/@tiptap/extension-dropcursor@2.2.2';
+import { FontFamily } from 'https://esm.sh/@tiptap/extension-font-family@2.2.2';
 import { Gapcursor } from 'https://esm.sh/@tiptap/extension-gapcursor@2.2.2';
 import { HardBreak } from 'https://esm.sh/@tiptap/extension-hard-break@2.2.2';
 import { Heading } from 'https://esm.sh/@tiptap/extension-heading@2.2.2';
@@ -15,8 +17,13 @@ import { ListItem } from 'https://esm.sh/@tiptap/extension-list-item@2.2.2';
 import { OrderedList } from 'https://esm.sh/@tiptap/extension-ordered-list@2.2.2';
 import { Paragraph } from 'https://esm.sh/@tiptap/extension-paragraph@2.2.2';
 import { Strike } from 'https://esm.sh/@tiptap/extension-strike@2.2.2';
+import { TextStyle } from 'https://esm.sh/@tiptap/extension-text-style@2.2.2';
 import { Text } from 'https://esm.sh/@tiptap/extension-text@2.2.2';
 import { Underline } from 'https://esm.sh/@tiptap/extension-underline@2.2.2';
+
+
+
+
 
 let extensions = [
   Image.configure({ inline: true }), // Keeps image inside paragraph block
@@ -28,6 +35,7 @@ let extensions = [
   Dropcursor, Gapcursor,  
   HardBreak, 
   HorizontalRule, History, 
+  Color, TextStyle, FontFamily
 ];
 
 
@@ -69,6 +77,8 @@ class Popup {
       ]
     };
 
+    // "marks":[{"type":"textStyle","attrs":{"color":"rgb(149, 141, 241)"}}],
+
     // Create the popup window
     this.createPopup(); 
 
@@ -95,20 +105,22 @@ class Popup {
     this.closeCallback = closeCallback
   }
 
-  updateDefaultValues(title, subtitle, description, content) {
-    this.title = title;
-    this.subtitle = subtitle;
-    this.description = description;
-    this.body_content = content;
+  updateDefaultValues(popup_info) {
+    this.title = popup_info.title;
+    this.subtitle = popup_info.subtitle;
+    this.description = popup_info.description;
+    this.body_content = popup_info.body;
+    this.dark_color = popup_info.dark_color;
+    this.light_color = popup_info.light_color;
 
-    console.log('update default values', title, this.title, this.menu);
-
+    // Set popup color to match the mediaplayer object selected
     
   }
   
   show() {
     // Update menu with content
     this.populateMenu();
+    this.setPopupColor(this.light_color, this.dark_color);
 
     // Show menu
     this.visible = true;
@@ -201,6 +213,8 @@ class Popup {
 
     // Update state using function child class
     this.updateCallback();
+
+    this.logContent();
   }
 
 
@@ -665,6 +679,64 @@ class Popup {
     if ((event.ctrlKey && /^[zZyY]$/.test(event.key)) || (event.ctrlKey && event.shiftKey && /^[zZyY]$/.test(event.key)) ) {
       event.preventDefault();
     }
+  }
+
+
+  // A function that gives a color that would contrast visibly
+  getContrastColor(hex_code) {
+    // Remove the '#' character if present
+    hex_code = hex_code.replace('#', '');
+  
+    // Convert the hex color to RGB values
+    const r = parseInt(hex_code.substring(0, 2), 16);
+    const g = parseInt(hex_code.substring(2, 4), 16);
+    const b = parseInt(hex_code.substring(4, 6), 16);
+  
+    // Calculate the brightness of the color
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  
+    // Return black or white based on the brightness
+    return brightness > 128 ? 'black' : 'white';
+  }
+
+
+  setPopupColor(light_color, dark_color) {
+    let contrast_color = this.getContrastColor(dark_color);
+
+    // Set the background color of the popup body
+    this.menu.style.backgroundColor = dark_color;
+
+    // Set the exit button color
+    let exit_btn = this.menu.querySelector('.exitBtn');
+    exit_btn.style.cololr = contrast_color;
+    exit_btn.style.backgroundColor = light_color;
+
+
+    // Set the shadow color of the popup
+    this.menu.style.boxShadow = `0 0 10px ${dark_color}`;
+
+    // Set the color of the subtitle
+    let subtitle_element = this.menu.querySelector('.popup-subtitle');
+    subtitle_element.style.color = light_color;
+
+    // Set the color of the title using getContrastColor
+    let title_element = this.menu.querySelector('.popup-title');
+    title_element.style.color = light_color;
+
+    // Select all the content in the editor to apply the changes 
+    this.editor.commands.selectAll();
+
+    // Set the color and font family and size of the text in the editor
+    this.editor.chain().focus().setMark('textStyle', { color: contrast_color }).run();
+    this.editor.chain().focus().setMark('textStyle', { fontFamily: 'cursive' }).run();
+
+    
+    // deselects the text
+    this.editor.commands.setTextSelection(0)
+
+
+
+
   }
 
 

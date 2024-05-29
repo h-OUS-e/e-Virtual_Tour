@@ -63,13 +63,18 @@ class MediaPopup extends Popup {
 
   getPopupInfo() {
     const mediaplayer_item = this.object_state.getItem("MediaPlayers",this.selected_item_uuid);
-    const subtitle = this.project_state.getItem("Types", mediaplayer_item.type_uuid).name;
+    const mediaplayer_type = this.project_state.getItem("Types", mediaplayer_item.type_uuid);
+    const subtitle = mediaplayer_type.name;
+    const dark_color = mediaplayer_type.colors.dark;
+    const light_color = mediaplayer_type.colors.light;
 
     let popup_info = {
       title: mediaplayer_item.title,
       subtitle: subtitle,
       description: mediaplayer_item.description,
       body: mediaplayer_item.body,
+      dark_color: dark_color,
+      light_color: light_color,
     };
 
 
@@ -87,11 +92,13 @@ class MediaPopup extends Popup {
     this.selected_item_uuid = selected_item_uuid
 
     // Get Mediaplayer info relevant to the popup
-    const popup_info = this.getPopupInfo();
-
-    // Update Popup with Mediaplayer info
-    this.updateDefaultValues(popup_info.title, popup_info.subtitle, popup_info.description, popup_info.body);
+    const popup_info = this.getPopupInfo();    
     
+    // Update Popup with Mediaplayer info
+    this.updateDefaultValues(popup_info);   
+    
+    this.editor.commands.selectAll();
+
     // Show Popup
     this.show();  
   }
@@ -105,6 +112,7 @@ class MediaPopup extends Popup {
     ];
 
     this.object_state.updateProperties(JSON_updates, "MediaPlayers", this.selected_item_uuid);
+    
   }
 
   onClose() {
