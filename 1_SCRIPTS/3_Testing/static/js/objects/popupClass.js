@@ -641,9 +641,29 @@ class Popup {
 
           // valid image so put a placeholder image while you upload to server
           const { schema } = view.state;
-          const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
-          const node = schema.nodes.image.create({ src: img.src }); // creates the image element
-          const transaction = view.state.tr.insert(coordinates.pos, node); // places it in the correct position
+      const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+      
+        // Create a node for the blurred image
+        const blurredImageNode = schema.nodes.image.create({ 
+          src: img.src, 
+          class: 'blurred-image' 
+        });
+
+        // Create a node for the loading icon
+        const loadingIconNode = schema.nodes.image.create({
+          src: 'path/to/loading-icon.gif',
+          class: 'loading-icon'
+        });
+
+        // Create a parent node to hold the blurred image and loading icon
+        const containerNode = schema.nodes.paragraph.create({}, [
+          blurredImageNode,
+          loadingIconNode
+        ]);
+
+        // Insert the container node at the drop position
+        const transaction = view.state.tr.insert(coordinates.pos, containerNode);
+        view.dispatch(transaction);
 
 
           function emitUploadImage(file_name, file_type, file_extension, callback_on_upload) {
@@ -655,8 +675,6 @@ class Popup {
                   image_type: file_type,
                   image_extension: file_extension,
                   image_URL: img.src,
-                  // header: "Add a new icon",
-                  // existing_image_names: this.existing_icon_names,
                   callback_on_upload: (image_name, thumbnail_URL) => callback_on_upload(image_name, thumbnail_URL),
                 },
             });
@@ -664,22 +682,12 @@ class Popup {
           }
 
           function callback_on_upload(image_name, img_URL) { 
-            transaction.src = img_URL;
-            view.dispatch(transaction);
+            const newNode = schema.nodes.image.create({ src: img_URL });
+            const newTransaction = view.state.tr.replaceWith(transaction.from, transaction.to, newNode);
+            view.dispatch(newTransaction);
           };
           emitUploadImage(filename.name, file.type, filename.extension, callback_on_upload);
 
-
-          // // uploadImage will be your function to upload the image to the server or s3 bucket somewhere
-          // uploadImage(file).then(function(response) { // response is the image url for where it has been saved
-          //   // do something with the response
-            // return view.dispatch(transaction);
-
-          // }).catch(function(error) {
-          //   if (error) {
-          //     window.alert("There was a problem uploading your image, please try again.");
-          //   }
-          // });
         }
       }
 
@@ -716,53 +724,6 @@ class Popup {
 
 
   setPopupColor(light_color, dark_color) {
-    let contrast_color = this.getContrastColor(dark_color);
-
-    // Set the background color of the popup body
-    this.menu.style.backgroundColor = dark_color;
-
-    // Set the exit button color
-    let exit_btn = this.menu.querySelector('.exitBtn');
-    exit_btn.style.color = dark_color;
-    exit_btn.style.backgroundColor = light_color;
-
-    exit_btn.onmouseover = () => {
-      exit_btn.style.color = light_color;
-      exit_btn.style.backgroundColor = dark_color;
-    };
-
-    exit_btn.onmouseout = () => {
-      exit_btn.style.color = dark_color;
-      exit_btn.style.backgroundColor = light_color;
-    };
-  
-
-    // Set the shadow color of the popup
-    this.menu.style.boxShadow = `0 0 10px ${dark_color}`;
-
-    // Set the color of the subtitle
-    let subtitle_element = this.menu.querySelector('.popup-subtitle');
-    subtitle_element.style.color = light_color;
-
-    // Set the color of the title using getContrastColor
-    let title_element = this.menu.querySelector('.popup-title');
-    title_element.style.color = light_color;
-
-    // Select all the content in the editor to apply the changes to
-    this.editor.commands.selectAll();
-
-    // Set the color and font family and size of the text in the editor
-    this.editor.commands.setColor(this.light_color);
-    this.editor.commands.setFontFamily('Cursive');
-
-    // deselects the text
-    this.editor.commands.setTextSelection(-1);
-
-    // Ensures new text is also the same color and font
-    this.editor.on('selectionUpdate', ({ editor }) => {
-      editor.commands.setColor(this.light_color);
-      this.editor.commands.setFontFamily('Cursive');
-    });
           
     
     
