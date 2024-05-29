@@ -1,12 +1,15 @@
 import { insertProjects } from '../js/db/dbEvents.js';
 import { ReinitializeUppySession, renameAndUpload} from './db/dbBucketUpload.js';
 
+let uploadButtonListener = null;
+let existing_image_names = "";
+const name_input = document.getElementById('name_input'); 
 const upload_btn = document.getElementById('uppy_upload_btn')
 let project;
 let project_uid;
 const uppy_options =  {
-    "hide_upload_button" : false, 
-    'use_default_name_editor' : true,
+    "hide_upload_button" : true, 
+    'use_default_name_editor' : false,
     'auto_open_cropper ' : null
 };
 const bucket = 'scenes_img';
@@ -18,6 +21,8 @@ const user_data = JSON.parse(modifiedString);
 
 
 document.getElementById("crtProjectBtn").addEventListener('click', async function () {
+    let project_name = document.getElementById('projectNameInput').value;
+    var elements = document.querySelectorAll('.hide-uppy-related');
     elements.forEach(function(element) {
         element.style.display = 'block'; 
     });
@@ -59,18 +64,15 @@ document.addEventListener(`imageUploaded_${bucket}`, () => {
 
     let image_name = event.detail.image_name;
     name_input.value = image_name;
-
-    upload_btn.classList.remove('hidden');
-
-
-    uploadButtonListener = () => handleUpload(existing_image_names);
+    uploadButtonListener = () => handleUpload();
     upload_btn.addEventListener('click', uploadButtonListener);
   });
 
 
-  function handleUpload(existing_image_names) {
+  function handleUpload() {
     // get image_name
     const image_name = name_input.value.trim().replace(/\s+/g, '_');
+    console.log(image_name);
 
     // If image is empty, add warning. Else shutdown menu
     if (image_name === "") {
@@ -80,12 +82,6 @@ document.addEventListener(`imageUploaded_${bucket}`, () => {
         dangerMode: true,
       });
 
-    } else if (image_name in existing_image_names) {
-      swal({
-        text: "Name is taken. Try another one.",
-        icon: "warning",
-        dangerMode: true,
-      });
 
     } else {
       // closeMenu() ;   

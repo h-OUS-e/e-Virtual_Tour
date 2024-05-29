@@ -209,7 +209,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
 
   // Once image is checked against local storage, adjust supabase meta data & upload uppy image
   document.addEventListener('imageUploadChecked', async function handler(event) {
-
+    
     // Get image name from menu input
     image_name = event.detail.image_name;
 
@@ -221,7 +221,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
     uppy_file.name = file_name;
     uppy_file.meta.name = file_name;
     // uppy_file.data.name = file_name;
-    
+    console.log("this is uppfile: ", uppy_file)
     // Upload image
     uppyUploadFunction(uppy, uppy_file, storage_bucket, thumbnail_URL, image_name);
 
