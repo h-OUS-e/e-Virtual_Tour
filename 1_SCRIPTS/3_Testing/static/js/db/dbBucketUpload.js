@@ -50,7 +50,6 @@ export function ReinitializeUppySession(project, bucket, target_div, event_to_ca
   session_data_promise.then(data => {
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
-      console.log(project)
       if(!project["project_uid"]){
         console.warn(`could not find a project_uid in projectData local storage: ${project}`);
       }
@@ -180,7 +179,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
     image_name = file.name.slice(0, file.name.lastIndexOf('.'));
     image_type = file.type;
     image_extension = file.extension;
-    const file_name = `${image_name}.${image_extension}`;
+    const file_name = `${image_name}.${image_extension}`
     fileUUID = uuidv4();
 
     // Create supabase meta data and insert into uppy meta data
@@ -199,7 +198,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
       ...file.meta,
       ...supabaseMetadata,
     }
-    console.log(file.meta)
     
     // Define the file as uppy file to user later when uploading
     uppy_file = file;
@@ -253,8 +251,18 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, options = {}
 
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
-      console.log('resulsts ', result.successful)
-      emitImageUploaded(storage_bucket, thumbnail_URL, image_name[0]);
+      console.log(
+        `name : ${result.successful[0]},
+        meta name: ${result.successful[0].meta.name},
+        bucket name: ${result.successful[0].meta.bucketName},
+        path to image: ${result.successful[0].meta.objectName} `)
+
+
+      emitImageUploaded(
+        result.successful[0].meta.bucketName, 
+        thumbnail_URL, 
+        image_name[0],
+        result.successful[0].meta.objectName);
 
       // Get src from server and callback with imagename and src
       if(callback_on_upload) {
@@ -336,7 +344,7 @@ async function addCustomImage(event) {
 
 
  /////////////////////// EMIT FUNCTIONS //////////////////////
-function emitImageUploaded(storage_bucket, img_URL, image_name) {
+function emitImageUploaded(storage_bucket, img_URL, image_name,path_to_image) {
 
   // Emit specefic event of image uploaded and bucket type
   const event_name = `imageUploaded_${storage_bucket}`;
@@ -346,6 +354,7 @@ function emitImageUploaded(storage_bucket, img_URL, image_name) {
         storage_bucket: storage_bucket,
         img_URL: img_URL,
         image_name: image_name,
+        path_to_image: path_to_image
     },
 });
   document.dispatchEvent(event);
@@ -405,26 +414,14 @@ document.addEventListener('uploadImage', (event) => ReinitializeUppySession(chos
 export function renameAndUpload(project_uid) {
   const image_name = document.getElementById('filenamePrefix').value.trim();
   let uppy_file
-  let fileUUID = uuidv4();
   uppy.getFiles().forEach(file => {
     uppy_file = file
-    console.log(`before edits: ${uppy_file.meta}`)
-    let image_extension = uppy_file.name.split('.').pop();
-    let file_name = `${image_name}.${image_extension}`;
-
-    uppy_file.meta.objectName = `${project_uid}/${fileUUID}/${file_name}`;
-    console.log(`uppy ${uppy_file.meta.objectName}`);
-    uppy_file.meta.metadata.file_name = file_name;
-    uppy_file.name = file_name;
-    uppy_file.meta.name = file_name;
-
-
     // Update the file name in Uppy's internal state
 
 
     uppy.upload();
     
-    console.log(`afte edits: ${uppy_file.meta}`)
+    console.log(`afte edits: ${uppy_file}`)
   });
 
   // Start uploading after renaming
