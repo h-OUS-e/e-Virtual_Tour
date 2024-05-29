@@ -1,5 +1,5 @@
 import { insertProjects } from '../js/db/dbEvents.js';
-import { ReinitializeUppySession, renameAndUpload} from './db/dbBucketUpload.js';
+import { ReinitializeUppySession} from './db/dbBucketUpload.js';
 
 let uploadButtonListener = null;
 let existing_image_names = "";
