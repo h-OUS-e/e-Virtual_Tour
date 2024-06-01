@@ -249,6 +249,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
       // Emit image uploaded to handle
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
+    } else {
+      callback_on_error("image upload failed");
     }
 
     // Closing the little upload animations

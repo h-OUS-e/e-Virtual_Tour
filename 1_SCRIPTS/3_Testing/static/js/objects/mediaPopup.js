@@ -97,8 +97,7 @@ class MediaPopup extends Popup {
     // Update Popup with Mediaplayer info
     this.updateDefaultValues(popup_info);   
     
-    this.editor.commands.selectAll();
-
+    
     // Show Popup
     this.show();  
   }

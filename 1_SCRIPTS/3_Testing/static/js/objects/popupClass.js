@@ -628,6 +628,7 @@ class Popup {
 
     // check valid image type under 10MB
     if ((file.type === "image/jpeg" || file.type === "image/png") && file_size < 10) { 
+
       // check the dimensions
       let _URL = window.URL || window.webkitURL;
       let img = new window.Image(); /* global Image */
@@ -640,31 +641,27 @@ class Popup {
         } else {
 
           // valid image so put a placeholder image while you upload to server
-          const { schema } = view.state;
-      const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
-      
-        // Create a node for the blurred image
-        const blurredImageNode = schema.nodes.image.create({ 
-          src: img.src, 
-          class: 'blurred-image' 
-        });
+          let { schema } = view.state;
+          let coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
 
-        // Create a node for the loading icon
-        const loadingIconNode = schema.nodes.image.create({
-          src: 'path/to/loading-icon.gif',
-          class: 'loading-icon'
-        });
+          // Create ghosted blurred image node as a placeholder
+          let node = schema.nodes.image.create({ src: img.src, class: 'ghosted-image', 'data-laoding': 'true'});
+          let node2 = schema.nodes.image.create({ src: '', class: 'ghosted-image', 'data-laoding': 'true'});
 
-        // Create a parent node to hold the blurred image and loading icon
-        const containerNode = schema.nodes.paragraph.create({}, [
-          blurredImageNode,
-          loadingIconNode
-        ]);
+          let transaction = view.state.tr.insert(coordinates.pos, node);
+          view.dispatch(transaction);
 
-        // Insert the container node at the drop position
-        const transaction = view.state.tr.insert(coordinates.pos, containerNode);
-        view.dispatch(transaction);
+          // Get the DOM element of the inserted image, and make it ghosted
+          const imgDOM = document.querySelector(`img[src="${img.src}"]`);
+          imgDOM.classList.add('ghosted-image');
+          
+          // Create and show loader
+          const loader = document.createElement('div');
+          loader.id='test1';
+          loader.classList.add('loader');
+          // imgDOM.parentElement.appendChild(loader);
 
+          
 
           function emitUploadImage(file_name, file_type, file_extension, callback_on_upload) {
             const event = new CustomEvent('uploadImageInstantly', 
@@ -676,16 +673,36 @@ class Popup {
                   image_extension: file_extension,
                   image_URL: img.src,
                   callback_on_upload: (image_name, thumbnail_URL) => callback_on_upload(image_name, thumbnail_URL),
+                  callback_on_error: (error_message) => callback_on_error(error_message)
                 },
             });
             document.dispatchEvent(event);
           }
 
           function callback_on_upload(image_name, img_URL) { 
-            const newNode = schema.nodes.image.create({ src: img_URL });
-            const newTransaction = view.state.tr.replaceWith(transaction.from, transaction.to, newNode);
-            view.dispatch(newTransaction);
+            // Update the src attribute of the clear image node
+            node2.attrs.src = img_URL;
+            imgDOM.classList.toggle('ghosted-image', false);
+
           };
+
+          function callback_on_error(error_message) {
+            // Remove the image from the editor
+            let tr = view.state.tr.delete(coordinates.pos, coordinates.pos + 1);
+            view.dispatch(tr);
+
+            // Show error message
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('error-message');
+            errorMessage.innerText = error_message;
+            imgDOM.parentElement.appendChild(errorMessage);
+
+            // Remove the loader
+            loader.remove();
+
+            // Remove the error message after a few seconds
+            setTimeout(() => errorMessage.remove(), 3000);
+        }
           emitUploadImage(filename.name, file.type, filename.extension, callback_on_upload);
 
         }
@@ -724,6 +741,53 @@ class Popup {
 
 
   setPopupColor(light_color, dark_color) {
+    let contrast_color = this.getContrastColor(dark_color);
+
+    // Set the background color of the popup body
+    this.menu.style.backgroundColor = dark_color;
+
+    // Set the exit button color
+    let exit_btn = this.menu.querySelector('.exitBtn');
+    exit_btn.style.color = dark_color;
+    exit_btn.style.backgroundColor = light_color;
+
+    exit_btn.onmouseover = () => {
+      exit_btn.style.color = light_color;
+      exit_btn.style.backgroundColor = dark_color;
+    };
+
+    exit_btn.onmouseout = () => {
+      exit_btn.style.color = dark_color;
+      exit_btn.style.backgroundColor = light_color;
+    };
+  
+
+    // Set the shadow color of the popup
+    this.menu.style.boxShadow = `0 0 10px ${dark_color}`;
+
+    // Set the color of the subtitle
+    let subtitle_element = this.menu.querySelector('.popup-subtitle');
+    subtitle_element.style.color = light_color;
+
+    // Set the color of the title using getContrastColor
+    let title_element = this.menu.querySelector('.popup-title');
+    title_element.style.color = light_color;
+
+    // Select all the content in the editor to apply the changes to
+    this.editor.commands.selectAll();
+
+    // Set the color and font family and size of the text in the editor
+    this.editor.commands.setColor(this.light_color);
+    this.editor.commands.setFontFamily('Cursive');
+
+    // deselects the text
+    this.editor.commands.setTextSelection(-1);
+
+    // Ensures new text is also the same color and font
+    this.editor.on('selectionUpdate', ({ editor }) => {
+      editor.commands.setColor(this.light_color);
+      this.editor.commands.setFontFamily('Cursive');
+    });
           
     
     

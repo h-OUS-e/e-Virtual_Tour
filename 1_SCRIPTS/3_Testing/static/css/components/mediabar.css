@@ -13,7 +13,6 @@
 }
 
 
-
 #mediabar {
   height: 100%;
   width: 100%;
@@ -32,6 +31,7 @@
   padding-bottom: 35px;
 }
 
+
 #mediabar-item-grid {
   background-color: var(--background);
   flex: 'flex-shrink';
@@ -42,8 +42,7 @@
   scrollbar-gutter: 4px;
   overflow-y: auto;
   grid-auto-rows: 1;
-  margin-bottom: auto;
-  
+  margin-bottom: auto; 
 
 }
 
@@ -93,11 +92,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: wrap;
-  width:auto;
 }
 
 .mediabar-item-body p{
-  width:auto;
 
 
 }
@@ -105,7 +102,6 @@
 .mediabar-item-body{
   max-height: 0;
   overflow: hidden;
-  width:auto;
 
   /* transition: max-height 0.9s ease; */
 }
