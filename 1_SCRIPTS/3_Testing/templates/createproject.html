@@ -10,6 +10,7 @@
     <link href="https://releases.transloadit.com/uppy/v3.6.1/uppy.min.css" rel="stylesheet">
     <script type="module" src="/1_SCRIPTS/3_Testing/static/js/db/dbEvents.js"></script>
     <script type="module" src="/1_SCRIPTS/3_Testing/static/js/create_project.js"></script>
+    <script type="module" src="/1_SCRIPTS/3_Testing/static/js/db/dbBucketUpload.js"></script>
     <link rel="stylesheet" type="text/css" href="../static/css/components/uppy.css">
 
 </head>
@@ -18,9 +19,21 @@
     then upload your desired scenes to enter the scene editor. you must upload at least one scene <br>
     <input id='projectNameInput' type="text" placeholder="project name"> </input>
     <button id="crtProjectBtn"> create project </button>
-    <div id="drag-drop-area" class="uppy-container"></div>
+    <div id="uppy_placeholder" class="uppy_placeholder"></div>
     <input id="name_input" class="textInput" type="text" placeholder="Enter name">  
     <button id="uppy_upload_btn" class="btn hidden">Upload</button>       
+
+    <h1>Image Gallery</h1>
+    <table id="imageTable">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
 
 

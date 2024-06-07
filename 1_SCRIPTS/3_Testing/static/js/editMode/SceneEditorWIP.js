@@ -4,7 +4,7 @@ import { Menu } from './menuClass.js';
 
 
 // GLOBAL CONSTANTS
-const CATEGORY = "Icons";
+const CATEGORY = "scenes";
 
 
 /*********************************************************************
@@ -183,7 +183,7 @@ class IconMenu extends Menu {
     
     // // Update project state with new icon field
     
-    const new_icon_uuid = uuidv4(); //this is setting the icon id on the front end when we should be grabbing it from the DB kt
+    const new_icon_uuid = uuidv4();
     const icon_content = {
       name: icon_name,
       src: src,

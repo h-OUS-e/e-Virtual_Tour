@@ -448,8 +448,8 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
 
     let directoryPath = dir_path === null ? `${project_uid}/${img_uid}` : dir_path;
 
-    try {
-        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath); //first try to get all urls of a storage directories in a project
+    try { //first try to get all urls of a storage directories in a project
+        const { data: fileList, error: listError } = await supabase.storage.from(bucket).list(directoryPath); 
         if (listError) {
             throw new Error(listError.message);
         }
@@ -459,9 +459,10 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
             return null;  
         }
 
+        //then get the publicurl of each directory, if it exists. else error
         const firstFile = fileList[0];
         const firstFilePath = `${directoryPath}/${firstFile.name}`;
-        const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath); //then get the publicurl of each directory, if it exists. else error
+        const { data, error } = await supabase.storage.from(bucket).getPublicUrl(firstFilePath); 
 
         if (error) {
             throw new Error(error.message);
@@ -469,8 +470,8 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
 
         if (data && data.publicUrl) {
             console.log('Public URL of the first file:', data.publicUrl);
-            if (target_img_div_id) {
-                setImageUrl(target_img_div_id, data.publicUrl); //set the img div to the url if it is there, not a required part of the function dunno if I will keep this
+            if (target_img_div_id) {//set the img div to the url if it is there, not a required part of the function dunno if I will keep this
+                setImageUrl(target_img_div_id, data.publicUrl); 
             }
             return data.publicUrl;  
         } else {
@@ -484,6 +485,7 @@ export async function fetchStoragePublicUrl(dir_path = null, project_uid, img_ui
 
 
 export async function getPublicImageUrl(bucket, img_path) {
+    //image path = project_uid/img_uid/img_name
     try {
         const { publicURL, error } = supabase
             .storage
@@ -503,3 +505,10 @@ export async function getPublicImageUrl(bucket, img_path) {
     }
 }
 
+export async function noAPIgetPublicImageUrl(bucket, img_path) {
+    //image path = project_uid/img_uid/img_name
+   
+    let projectURL = `https://ngmncuarggoqjwjinfwg.supabase.co/storage/v1/object/public/${bucket}/${img_path}`
+    console.log(projectURL);
+    return projectURL
+}

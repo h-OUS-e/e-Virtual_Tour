@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
  /////////////////////// GLOBAL VARIABLES //////////////////////
 
 // make sure to set this variable before uplaoding!!!!
-const chosen_project = localStorage.getItem('clickedProject');
+// all this needs to come from state instead of from random variables kt
+const chosen_project = localStorage.getItem('clickedProject'); 
 const upload_btn = document.getElementById("uppy_upload_btn");
 let uppy;
 
@@ -37,13 +38,21 @@ const storage_bucket_icon = 'icons_img';
 const storage_bucket_scene = 'scenes_img';
 const storage_bucket_popup = 'popup_img';
 let callback_on_upload = null;
+let temp_callback_on_upload
 
 
 
 /////////////////////// FUNCTIONS //////////////////////
-function ReinitializeUppySession(target_div, event, instant_upload=false) {
+function ReinitializeUppySession(target_div, event, instant_upload=false,) {
+  console.log('initializing uppy')
   let session_data_promise = supabaseGetSession();
-  callback_on_upload = event.detail.callback_on_upload;
+  if(event.detail.callback_on_upload) {
+    callback_on_upload = event.detail.callback_on_upload;
+  } 
+  if(event.detail.temp_callback_on_upload) {
+    temp_callback_on_upload = event.detail.temp_callback_on_upload;
+  } 
+  console.log(event.detail.temp_callback_on_upload)
   let bucket = event.detail.storage_bucket;
 
   session_data_promise.then(data => {
@@ -51,7 +60,7 @@ function ReinitializeUppySession(target_div, event, instant_upload=false) {
 
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
-      setUpUppy(BEARER_TOKEN, bucket, chosen_project, target_div, instant_upload);
+      setUpUppy(BEARER_TOKEN, bucket, event.detail.project_uid, target_div, instant_upload);
       if (instant_upload) {
         addCustomImage(event);
       }
@@ -214,9 +223,35 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     uppy_file.name = file_name;
     uppy_file.meta.name = file_name;
     // uppy_file.data.name = file_name;
-    
-    // Upload image
-    uppyUploadFunction(uppy, uppy_file);
+
+    const originalFile = uppy.getFile(uppy_file.id);
+    const newFileBlob = originalFile.data.slice(0, originalFile.data.size, originalFile.type);
+    const newFileName = `${image_name}.${image_extension}`;
+    const newFile = new File([newFileBlob], newFileName, {
+        type: originalFile.type
+    });
+    uppy.removeFile(uppy_file.id);
+    uppy.addFile({
+      name: newFileName,
+      type: newFile.type,
+      data: newFile,
+      meta: {
+          ...originalFile.meta,
+          name: newFileName,
+          objectName: `${project_uid}/${fileUUID}/${file_name}`
+      }
+  });
+
+  // Remove the old file
+  
+  console.log('File prepared for upload with new name:', newFileName);
+  console.log('uppy state after adding new file:', uppy.getState());
+  uppy.upload()
+
+    // console.log('before upload ', uppy_file);
+    // // Upload image
+    // console.log('uppy state : ', uppy.getState());
+    // uppyUploadFunction(uppy, uppy_file);
 
     // Remove the event listener after the upload is completed to prevent duplicate listeners
     document.removeEventListener('imageUploadChecked', handler);
@@ -245,8 +280,21 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
       // Get src from server and callback with imagename and src
-      callback_on_upload(image_name, thumbnail_URL);
+      if(callback_on_upload) {
+        callback_on_upload(image_name, thumbnail_URL);
+      }
+      if (temp_callback_on_upload) {
+        console.log('temp function', uppy_file.meta.objectName);
+        try {
+          temp_callback_on_upload(storage_bucket, uppy_file.meta.objectName, image_name);
 
+        } catch(error){
+          console.log('Error executing callback: ', error)
+        }
+        
+
+      }
+      
       // Emit image uploaded to handle
       emitImageUploaded(storage_bucket, thumbnail_URL, image_name);
     }
@@ -290,6 +338,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
 
 function uppyUploadFunction(uppy, file) {
+  console.log('during ', file);
   uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   
