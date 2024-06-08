@@ -5,11 +5,8 @@
     --background: #363434;
     --text: #ebe7e7;
     --mediaPlayer:rgb(159, 115, 39); 
-    --popupDarkColor: #2dc84d;
     --popupLightColor: #ffffff;
-    --default_color: #ffffff;
     --popup_color: #8dc981;  
-
 
     /* CONSTANTS */
     --mediabar_width: 2vw;
