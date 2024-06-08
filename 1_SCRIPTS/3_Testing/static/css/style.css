@@ -35,12 +35,11 @@ html {
 #dashboard-container {
     height: 100%;
     width: var(--mediabar_width);
-    background-color: var(--default_color);
+    background-color: var(--background);
     z-index: 3;
     position: relative 
 }
 #dashboard {
-    /* background-color: var(--default_color);  */
     /* PROPERTIES and INDEX*/
     z-index: 3; /* High enough to be on top of other elements */
     position: relative;
