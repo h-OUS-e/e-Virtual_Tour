@@ -1,5 +1,6 @@
 import { insertProjects , noAPIgetPublicImageUrl } from '../js/db/dbEvents.js';
-
+const index_projects_directory_path = '../templates/index.html';
+const index_page_btn = document.getElementById('index')
 let uploadButtonListener = null;
 let existing_image_names = "";
 const name_input = document.getElementById('name_input'); 
@@ -28,6 +29,8 @@ document.getElementById("crtProjectBtn").addEventListener('click', async functio
     try {
         let response = await insertProjects([{ 'profile_uid': user_data.profile_uid , 'project_name': project_name }]);
         if (response.success ) {
+            document.getElementById('projectNameInput').value = ""
+            
             project = response.data[0]
             project_uid = response.data[0].project_uid;
             console.log('about to emmit')
@@ -57,7 +60,10 @@ document.addEventListener('scene_uploaded', (e) => {
   console.log('Scene added with public URL:', e.detail.public_url)
   emitUploadImage(bucket, project_uid)
   addImageToTable(e.detail.public_url, e.detail.image_name);
+  document.getElementById('name_input').value = ""
 });
+
+index_page_btn.addEventListener("click", goToIndex);
 
 
 
@@ -141,4 +147,16 @@ function addImageToTable(public_url, image_name) {
   
   const urlCell = newRow.insertCell(1);
   urlCell.textContent = image_name;
+}
+
+function redirectToProjectsDirectory(projects_directory_path ) {
+  window.location.href = projects_directory_path ;
+}
+getElementById()
+
+function goToIndex () {
+  setTimeout(() => {
+    localStorage.removeItem('projectData')
+    redirectToProjectsDirectory(index_projects_directory_path)
+  }, 1000)
 }

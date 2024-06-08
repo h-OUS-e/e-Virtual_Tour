@@ -14,6 +14,7 @@ const projects_directory_path = '../templates/projects.html' //maybe we should s
 // Handle the login form submission
 document.getElementById('login-form').addEventListener('submit', async function(event) {
     event.preventDefault();
+    localStorage.clear();
     
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;

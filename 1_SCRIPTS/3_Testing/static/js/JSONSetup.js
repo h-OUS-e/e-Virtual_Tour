@@ -1,5 +1,5 @@
 import { JSONState } from "./JSONState.js";
-import {fetchStoragePublicUrl} from  "./db/dbEvents.js"
+import {fetchStoragePublicUrl, fetchAllProjectData} from  "./db/dbEvents.js"
 let project_uid 
 
 // Function to read the JSON file and extract id and path
@@ -44,14 +44,27 @@ export const JSON_statePromise = (async () => {
 
 
 //use local storage asyncronously, just to avoid errors for now maybe we can maek this syncronouse later to make shit less complicate?
-export function getProjectDataPromiseFromLs(storage_key = 'projectData') {
+export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
     // input: The key for the localStorage item (default is 'projectData')
     // output: A promise that resolves to an object containing project_JSON and object_JSON
     
-    return new Promise((resolve, reject) => {
+    return new Promise( async (resolve, reject) => {
         const db_json_ls = JSON.parse(localStorage.getItem(storage_key));
         if (!db_json_ls) {
-            return reject(`No data found in localStorage for key ${storage_key}`);
+            console.log(`No data found in localStorage for key ${storage_key}`);
+            
+            try { // if I find no key I fetch the data instead
+                let fetched_data = await fetchAllProjectData(clicked_project.project_uid);
+                let string_data = JSON.stringify(fetched_data).slice(9, -2); 
+                let parsed_data = JSON.parse(string_data);
+                console.log(parsed_data);
+                localStorage.setItem('projectData', JSON.stringify(parsed_data));
+                return parsed_data; 
+
+            } catch (error) {
+                console.error(`Error in fetching data for table ${table}: ${error}`);
+            }
+
         }
 
         

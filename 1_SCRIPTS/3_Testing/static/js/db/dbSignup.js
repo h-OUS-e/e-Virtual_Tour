@@ -2,6 +2,7 @@ import { supabase } from "./dbClient.js";
 
 document.getElementById('signup-form').addEventListener('submit', async function(event) {
     event.preventDefault();
+   
 
     const firstName = document.getElementById('signup-first-name').value;
     const lastName = document.getElementById('signup-last-name').value;
