@@ -56,8 +56,6 @@ function ReinitializeUppySession(target_div, event, instant_upload=false,) {
   let bucket = event.detail.storage_bucket;
 
   session_data_promise.then(data => {
-  console.log("session_data_promise", session_data_promise)
-
     if (data && data.session.access_token) {
       let BEARER_TOKEN = data.session.access_token;
       setUpUppy(BEARER_TOKEN, bucket, event.detail.project_uid, target_div, instant_upload);
@@ -224,6 +222,8 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     uppy_file.meta.name = file_name;
     // uppy_file.data.name = file_name;
 
+    // Code to remove uploaded image and creates new file with correct metadata
+    // to allow uploading of new image of the same file 
     const originalFile = uppy.getFile(uppy_file.id);
     const newFileBlob = originalFile.data.slice(0, originalFile.data.size, originalFile.type);
     const newFileName = `${image_name}.${image_extension}`;
@@ -240,17 +240,15 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
           name: newFileName,
           objectName: `${project_uid}/${fileUUID}/${file_name}`
       }
-  });
+    });
 
-  // Remove the old file
-  
-  console.log('File prepared for upload with new name:', newFileName);
-  console.log('uppy state after adding new file:', uppy.getState());
-  uppy.upload()
+    // Remove the old file
+    
+    console.log('File prepared for upload with new name:', newFileName);
+    console.log('uppy state after adding new file:', uppy.getState());
+    uppy.upload()
 
-    // console.log('before upload ', uppy_file);
-    // // Upload image
-    // console.log('uppy state : ', uppy.getState());
+    // Custom uppy uploader (not in use for now)
     // uppyUploadFunction(uppy, uppy_file);
 
     // Remove the event listener after the upload is completed to prevent duplicate listeners
@@ -267,11 +265,11 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
   uppy.on('file-removed', (file) => {
     // Reset inputs
     emitImageRemoved();
-    // image_name = "";
-    // image_type = "";
-    // image_extension = "";
-    // thumbnail_URL = "";
-    // fileUUID = "";
+    image_name = "";
+    image_type = "";
+    image_extension = "";
+    thumbnail_URL = "";
+    fileUUID = "";
   });
 
 
@@ -279,6 +277,9 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
     if ((result.successful).length >= 1) {
       console.log('Upload complete! We’ve uploaded these files:', result.successful, result.name,(result.successful).length );
+
+
+      // WARNING: Generalize callback_on_upload 
       // Get src from server and callback with imagename and src
       if(callback_on_upload) {
         callback_on_upload(image_name, thumbnail_URL);
@@ -290,9 +291,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
         } catch(error){
           console.log('Error executing callback: ', error)
-        }
-        
-
+        }       
       }
       
       // Emit image uploaded to handle
@@ -338,7 +337,6 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
 
 
 function uppyUploadFunction(uppy, file) {
-  console.log('during ', file);
   uppy.upload(file).then((result) => {
     console.info('Successful uploads:', result.successful);
   

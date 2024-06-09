@@ -376,6 +376,7 @@ function emitEditMode(edit_mode) {
             edit_mode: edit_mode,
         }
     });
+
     scene.dispatchEvent(new_event);
 }
 

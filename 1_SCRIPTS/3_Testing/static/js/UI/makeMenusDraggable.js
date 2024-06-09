@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     const menuHandle = menu.querySelector('.menuTopBar');
     if (menuHandle) {
       menuHandle.addEventListener('mousedown', startDragging);
+      menu.style.cursor = 'move';
     }
   });
   

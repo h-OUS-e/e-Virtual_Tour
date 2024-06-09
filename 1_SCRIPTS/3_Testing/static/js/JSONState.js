@@ -183,6 +183,7 @@ class JSONState {
     getDataWithNewProperty(new_data, category, uuid, property, value) {
       // Check if the category, uuid, and property exist in the current state
       // and makes isEdited set to true, since it is called for the updateProperties function
+      console.log(new_data, category, uuid, property);
       if (
         new_data[category] &&
         new_data[category][uuid] &&

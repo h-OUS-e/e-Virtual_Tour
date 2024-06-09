@@ -180,7 +180,7 @@ async function changeScene(sky, new_scene_id, scenes, preserve_camera_rotation=f
         sky.setAttribute('rotation', existing_asset.getAttribute('rotation')); 
 
         if (!preserve_camera_rotation){
-            console.log("preserve_camera_rotation", preserve_camera_rotation);
+            // console.log("preserve_camera_rotation", preserve_camera_rotation);
             camera_rig.setAttribute('rotation', existing_asset.getAttribute('initial_camera_rotation'));        // console.log('Moved to new scene!', sky.getAttribute('src'));
         }
 

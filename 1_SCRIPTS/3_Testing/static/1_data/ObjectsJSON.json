@@ -13,13 +13,7 @@
             "rot_z": "0",
             "icon_uuid": "1b5d45c4-478f-40b4-8b6f-164923de712a",
             "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
-            "body": {
-                "text": {
-                    "string": "Sage Dental has turned the entire patient experience into a digital discovery session. We believe patients and providers should no longer have a disjointed, paper-filled registration and treatment planning process.  Patients live with their smart phones, so we meet them where they live.  <br> Sage utilizes the very best technology, such as iOS scanners to avoid uncomfortable impressions and intelligent X-rays to clearly illustrate care opportunities.    Sage patients have the easiest, most comfortable dental visit. The Sage Digital Cycle creates trust and clarity for patients, and efficiency and buy-in for providers, resulting in the easiest and most comfortable patient and provider experience..",
-                    "style": "h2",
-                    "size": "14px"
-                }
-            },
+            "body": {"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"tes t estes"}]}]},
             "isDeleted": false,
             "isEdited": false,
             "isNew": false
@@ -36,7 +30,8 @@
             "rot_y":"175",
             "rot_z": "0",
             "icon_uuid": "71976965-adfa-41b1-bb6b-65f3cec288e0",
-            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab"  ,
+            "scene_id" : "4f8aa8ae-2fe2-4d78-b0b9-290fab7363ab",
+            "body": {"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"test 2"}]}]},
             "isDeleted": false,
             "isEdited": false,
             "isNew": false   

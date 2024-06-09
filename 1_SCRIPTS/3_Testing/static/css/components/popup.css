@@ -8,13 +8,12 @@
   -webkit-backdrop-filter: blur(5px); /* This creates the blur effect for other browsers */
   backdrop-filter: blur(5px); /* This creates the blur effect for firefox */
   z-index: 5; /* Ensure it's below the popup but above other content */
+  cursor: pointer;
 }
 
 .popup {
   position: absolute;
-  max-width: 800px ;
-  max-height: 90%;
-  
+  max-width: 800px ; 
   width: 90%;   
   /* height:100%; */
 
@@ -45,27 +44,19 @@
   padding-left: 30px;
   padding-right: 30px;
   box-sizing: border-box;
-  max-height: 100%;
-  height:100%;
-
-  
 }
 
 .popup-contianer-header {
   position: sticky;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   border-radius: 10px;
   padding: 0px;
   border: none;    
 }
 
-.popup-contianer-header-wrapper {
-  /* max-height: 120px; */
-}
 
-.popup-contianer-header-wrapperInner {  
-  align-items: stretch;
-  justify-content: flex-end;  
+.popup-contianer-header-wrapper {  
+
 }
 
 .popup-title {
@@ -73,6 +64,7 @@
 }
 
 .popup-subtitle {
+  margin-bottom: 30px;
 }
 
 .popup-description {
@@ -80,6 +72,7 @@
   padding-right: 10px;
   font-size: 14px;
   text-align: end;
+  
 }
 
 
@@ -90,17 +83,16 @@
   /* min-height: 200px; */
   max-width: 32ch;
   min-width: 70%;
-  height:100%;  
 
   align-self: center ; 
   align-items: center;
-
 
   border: 1px solid #ccc;
   padding: 0px;
   padding-left: 30px;
   padding-right: 30px;
   margin-bottom: 10px;
+
 }
 
 
@@ -119,43 +111,129 @@
 
 .popup-body-editor-bar {
   position: sticky;
-  padding: 4px;
-  border-bottom: 1px solid #bebebe;
+  padding: px;
   border-radius: 0px;
-  align-self: flex-start;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 13px;  
+  gap: 20px;  
   max-width: 100%;
-  width: 100%;
   top: 0;
   left: 0;
   right: 0;
-  
   /* background-color: #ccc; */
   
 }
 
 .popup-body-editor-bar > * {
   justify-content: flex-start;
-  gap: 5px;   
-  flex-wrap: nowrap;  
+  gap: 5px;  
+  width: auto;
 }
 
-.popup-body-editor {
-  margin-top: 10px;
-
+.popup-body-editor {  
   max-width: 100%;
   /* min-width: 10ch; */
   width:100%;
-  min-height: 90px;
-  max-height:100%;
+  min-height: 150px;
   overflow: auto;
-  /* border-bottom: 1px solid #bebebe; */
+  padding-bottom:10px;
+  max-height: calc(80vh - 200px);
+  margin-top: 10px;
 
 }
 
-.popup-body-editor p {
-  max-width: 38ch;
+.tiptap {
+  border-top: 1px solid #bebebe;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #bebebe;
+  min-height: 150px;  
+}
+
+
+/* The body where text and imagse go, basically the tiptap editor */
+.popup-body-editor p {  
+  position: relative;
+  /* Centering body in width */
+  left: calc(50%);
+  transform: translateX(-50%);
+
+  /* Setting max width for readability */
+  max-width: 58ch;
   min-width: 10ch;  
+  
 }
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The elements inside the tiptap editor paragraph shall take up the entire width */
+/* .popup-body-editor p > *  {
+  max-width: 100%;
+} */
+
+/* .prosemirror-dropcursor-inline > *{
+  width: 50px !important;
+} */
+
+.popup-body-editor strong {
+  font-weight: 900 !important;
+}
+
+.tiptap > * {
+  color: rgb(53, 53, 53);
+  font-weight: 100;
+
+}
+
+
+
+/* Classes for loading image until it uploads */
+.ghosted-image {
+  opacity: 0.2;
+  filter: blur(5dpx);
+  position: relative;
+  
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 24px;
+  height: 24px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2221;
+  
+}
+
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loading-icon {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background-image: url('../0_resources/gifs/loading_icon1.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+

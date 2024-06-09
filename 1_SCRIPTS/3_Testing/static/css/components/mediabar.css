@@ -1,7 +1,7 @@
 /* sidebar styles */
 #mediabar-container {
   height: 100%;
-  width: 30%; /* 30 when open, 3 when closd */
+  width: 0%; /* 30 when open, 3 when closd */
   background-color: var(--background);
   z-index: 3;
   transition: width 0.3s ease;
@@ -13,7 +13,6 @@
 }
 
 
-
 #mediabar {
   height: 100%;
   width: 100%;
@@ -21,17 +20,21 @@
   /* flexbox styles */
   display: flex;
   flex-direction: column;
+  
 }
 #mediabar-header {
   background-color: var(--background); 
-  flex: 1;  
+  flex: 0;  
   padding-left: 2%; 
   margin-top: 5%;
   border-bottom: var(--bottom-border-styles) ;
+  padding-bottom: 35px;
 }
+
+
 #mediabar-item-grid {
   background-color: var(--background);
-  flex: 5;
+  flex: 'flex-shrink';
   /* grid styles https://www.youtube.com/watch?v=EiNiSFIPIQE */
   display: grid;
   grid-template-columns: 1fr;
@@ -39,31 +42,24 @@
   scrollbar-gutter: 4px;
   overflow-y: auto;
   grid-auto-rows: 1;
+  margin-bottom: auto; 
 
 }
 
 .mediabar-item {
   position: relative;
   justify-content: flex-start;
+  align-content: flex-start;
   align-items: center;
   z-index: 3;
   background-color: var(--background); 
   border-bottom: var(--bottom-border-styles);
   padding-left: 5%;
   padding-top: 2%;
- 
+  min-height: 64px;
 
 }
 
-.mediabar-item-title {
-  white-space: normal;
-  word-wrap: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .mediabar-item:hover {
   background-color: var(--highlight_color); 
@@ -76,21 +72,43 @@
 
 .mediabar-item-content {
   margin-left: 20px;
+  margin-top: 10px;
   /* transition: transform 0.9s ease; */
+  max-width:80%;
+
 }
 
 .mediabar-item:hover .mediabar-item-content {
   transform: translateY(10px);
 }
 
-.mediabar-item-body {
+
+.mediabar-item-title {
+  white-space: normal;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: wrap;
+}
+
+.mediabar-item-body p{
+
+
+}
+
+.mediabar-item-body{
   max-height: 0;
   overflow: hidden;
+
   /* transition: max-height 0.9s ease; */
 }
 
 .mediabar-item:hover .mediabar-item-body {
-  max-height: 100px;
+  /* max-height: 150px; */
+  min-height: 120px;
 }
 
 

@@ -93,7 +93,7 @@ p {
     margin: 0;
     overflow: hidden;
     font-family: 'CircularStd', Helvetica;
-    font-weight: 300;
+    font-weight: 100;
     font-size: clamp(0.8rem, 2.5vw, 1rem); /* Adjust as needed */
     color: rgb(187, 184, 184);
     margin-left: 0.2rem;
@@ -103,7 +103,7 @@ span {
     margin: 0;
     font-family: 'CircularStd', Helvetica;
     font-weight: 100;
-    font-size: clamp(.6rem, 1.2vw, .8rem); /* Adjust as needed */
+    /* font-size: clamp(.6rem, 1.2vw, .8rem);  */
     color: rgb(187, 184, 184);
 }
 

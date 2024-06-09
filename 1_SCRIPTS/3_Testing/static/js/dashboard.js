@@ -1,4 +1,4 @@
-
+    // WARNING!!!! DASHBOARD.JS MIGHT INTERFERE WITH UPPY DASHBOARD.JS. CHANGE NAME
 document.addEventListener('DOMContentLoaded', () => {
 
     // Define html blocks to show or hide related to dashboard

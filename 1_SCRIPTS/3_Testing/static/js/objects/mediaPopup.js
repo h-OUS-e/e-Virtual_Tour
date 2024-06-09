@@ -1,111 +1,123 @@
 /*
 A script to control popup windows
 */
-const colors = getComputedStyle(document.documentElement);  
+import { JSON_statePromise } from '../JSONSetup.js';
+import { Popup } from './popupClass.js';
 
 
-document.addEventListener('jsonLoaded', async (event) => {
-    // Getting media player types from the JSON file
-    // Getting media player types from the JSON filea
-    const mediaplayer_types = event.detail.mediaplayer_types;
-    //definitions
-    var main_class = "#popup";    
+/*********************************************************************
+ * On DOM load
+*********************************************************************/
+document.addEventListener('DOMContentLoaded', async (event) => {
+  /*********************************************************************
+    * 1. LOAD JSON STATE
+  *********************************************************************/
+  let {project_state, object_state} = await JSON_statePromise;
+  /*********************************************************************
+    * 2. SETUP
+  *********************************************************************/
+  const popup_menu = new MediaPopup('popup', object_state, project_state);
 
-
-    const popup = document.querySelector(main_class);
-    const closeButton = document.querySelector('.popup-close-button');
-    const overlay = document.getElementById('overlay');
-
-    // A function to update popup window content
-    function updatePopupContent(content, mediaplayer_type) {
-        // update popup window content
-        document.querySelector('.popup-title').textContent = content.title;
-        document.querySelector('.popup-subtitle').textContent = content.subtitle;
-        document.querySelector('.title-description').textContent = content.description;
-        document.querySelector('.popup-media-text p').innerHTML  = content.bodyText;
-        document.querySelector('#popup_image').src = content.imageUrl;
-        document.querySelector('#popup_video').src = content.videoUrl;
-        document.querySelector('#popup_video_embedded').src = content.videoUrlEmbedded;
-        const light_color = mediaplayer_types[mediaplayer_type]['light']
-        const dark_color = mediaplayer_types[mediaplayer_type]['dark']
-        
-
-        // update popup window colors
-        document.documentElement.style.setProperty('--popupLightColor', colors.getPropertyValue(light_color).trim());
-        document.documentElement.style.setProperty('--popupDarkColor', colors.getPropertyValue(dark_color).trim());
-
-
-        // Hiding media element if source is empty
-        var videoElements = document.getElementsByClassName("popup-media");
-        for (var i = 0; i < videoElements.length; i++) {
-            var videoSrc = videoElements[i].getAttribute("src");
-            if (!videoSrc) {
-                // Hide the video element if the source is empty
-                videoElements[i].style.display = 'none';
-            }
-            else {
-                videoElements[i].style.display = 'block';
-            }
-        }
-    }
-
-
-    // A function to show the popup window and overlay
-    function showPopup() {
-        popup.style.display = 'block';
-        overlay.style.display = 'block'; // Show the overlay        
-    }
-
-    // A function to hide the popup window and the overlay
-    function hidePopup() {
-        popup.style.display = 'none';
-        overlay.style.display = 'none'; // Hide the overlay
-    }
+  let body_content;
+  body_content = {
+    "type": "doc",
+    "content": [
+      // …
+    ]
+  };
+  
+  let edit_mode = false;
 
 
 
 
 
-    // Disabling zoom when popup is on screen
-    if (popup) {
-        popup.addEventListener('mouseenter', function (event) 
-        {   
-            console.log('Entering popup window');
-            window.disableZoom();
-        });
+  // /////////////////////// EVENT LISTNERS //////////////////////
 
-        popup.addEventListener('mouseleave', function (event) 
-        {   
-            console.log('Leaving popup window');
-            window.enableZoom();
-        });
-    }
+  // Listen to MP being clicked from sidebar or object itself to show popup
+  scene.addEventListener('mediaPlayerClicked', (event) => {
+    popup_menu.handleSelection(event.detail.id);
+  });
 
+  // Toggle edit mode for the popup (only make it editable if edit mode is activated)
+  scene.addEventListener('editMode', (event) => popup_menu.toggleEditMode(event.detail.edit_mode));
 
-    // Changing colors of popup window based on mediaPlayer class
-    function handleMediaClick(event) {
-        // Extract the id of the clicked media
-        const mediaId = event.detail.id;
-        const mediaplayer_type = event.detail.mediaplayer_type;
-        console.log(mediaId, mediaplayer_type);
-        // Find the media in the database with the same matching id
-        const content = popupContent.find(item => item.media_id === mediaId);
-        // Update popup content
-        if (content) {
-            updatePopupContent(content, mediaplayer_type);
-        }
-        // Show popup window
-        showPopup();
-    }
+  /////////////////////// FUNCTIONS //////////////////////
 
-    // showing popup when mediaPlayer is clicked or when mediabarItem is clicked
-    // scene.addEventListener('mediaPlayerClicked', handleMediaClick);
-    scene.addEventListener('mediabarItemDoubleClicked', handleMediaClick);
-
-    // Close popup when closebutton is clicked
-    closeButton.addEventListener('click', hidePopup);
-
-    // Close popup when clicking on the overlay
-    overlay.addEventListener('click', hidePopup);
-
+  /////////////////////// EMITTING FUNCTIONS //////////////////////  
+  
+  
 });
+
+
+
+
+class MediaPopup extends Popup {
+  constructor(menu_id, object_state, project_state) {
+    super(menu_id);    
+    this.object_state = object_state;
+    this.project_state = project_state;
+    this.selected_item_uuid = null;
+    this.setCallbacks(this.updateObject, this.onClose);
+  }
+
+  getPopupInfo() {
+    const mediaplayer_item = this.object_state.getItem("MediaPlayers",this.selected_item_uuid);
+    const mediaplayer_type = this.project_state.getItem("Types", mediaplayer_item.type_uuid);
+    const subtitle = mediaplayer_type.name;
+    const dark_color = mediaplayer_type.colors.dark;
+    const light_color = mediaplayer_type.colors.light;
+
+    let popup_info = {
+      title: mediaplayer_item.title,
+      subtitle: subtitle,
+      description: mediaplayer_item.description,
+      body: mediaplayer_item.body,
+      dark_color: dark_color,
+      light_color: light_color,
+    };
+
+
+    return popup_info;    
+  }
+
+  handleSelection(selected_item_uuid) {
+
+    if (this.selected_item_uuid) {
+      // Close menu to save content 
+      this.close();
+    }
+
+    // Update selected item id
+    this.selected_item_uuid = selected_item_uuid
+
+    // Get Mediaplayer info relevant to the popup
+    const popup_info = this.getPopupInfo();    
+    
+    // Update Popup with Mediaplayer info
+    this.updateDefaultValues(popup_info);   
+    
+    
+    // Show Popup
+    this.show();  
+  }
+
+
+  updateObject() {
+    const JSON_updates = [
+      {property: "title", value: this.title},
+      {property: "description", value: this.description},
+      {property: "body", value: this.body_content},
+    ];
+
+    this.object_state.updateProperties(JSON_updates, "MediaPlayers", this.selected_item_uuid);
+    
+  }
+
+  onClose() {
+    // Reset  values
+    this.selected_item_uuid = null;
+  }
+
+
+}
