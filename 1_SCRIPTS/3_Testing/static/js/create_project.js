@@ -49,17 +49,17 @@ document.getElementById("crtProjectBtn").addEventListener('click', async functio
 
 
 
-document.addEventListener('imageAddedToUppy', function(event) {
+document.addEventListener('imageAddedToUppy', function(event) { //get pinged that an image is in the uppy state
   let image_name = event.detail.image_name;
   name_input.value = image_name;
   uploadButtonListener = () => handleUpload();
-  upload_btn.addEventListener('click', uploadButtonListener);
+  upload_btn.addEventListener('click', uploadButtonListener); // send back the new details of the image to create a new uppy state on the other side
 });
 
-document.addEventListener('scene_uploaded', (e) => {
+document.addEventListener('scene_uploaded', (e) => { // on upload, the callback function calls this event.
   console.log('Scene added with public URL:', e.detail.public_url)
   emitUploadImage(bucket, project_uid)
-  addImageToTable(e.detail.public_url, e.detail.image_name);
+  addImageToTable(e.detail.public_url, e.detail.image_name); // reinitialize the uppy instance
   document.getElementById('name_input').value = ""
 });
 
