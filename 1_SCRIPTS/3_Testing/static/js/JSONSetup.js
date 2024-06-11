@@ -54,7 +54,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
             console.log(`No data found in localStorage for key ${storage_key}`);
             
             try { // if I find no key I fetch the data instead
-                let fetched_data = await fetchAllProjectData(clicked_project.project_uid);
+                let fetched_data = await fetchAllProjectData(koject.project_uid);
                 let string_data = JSON.stringify(fetched_data).slice(9, -2); 
                 let parsed_data = JSON.parse(string_data);
                 console.log(parsed_data);
@@ -62,7 +62,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
                 return parsed_data; 
 
             } catch (error) {
-                console.error(`Error in fetching data for table ${table}: ${error}`);
+                console.error(`Error in fetching from key ${storage_key}: ${error}`);
             }
 
         }
