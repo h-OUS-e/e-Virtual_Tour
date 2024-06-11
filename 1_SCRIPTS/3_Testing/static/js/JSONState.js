@@ -110,7 +110,6 @@ class JSONState {
     deleteItem(category, item_uuid) {
       // Get the current state data
       const data = this.history[this.idx];
-
     
       // Create a new data object to store the updated state
       let new_data = { ...data };
@@ -121,12 +120,13 @@ class JSONState {
         if (new_data[category][item_uuid]) {
           // Create a new item object with isDeleted set to true and all other properties set to null
           const deleted_item = Object.keys(new_data[category][item_uuid]).reduce((obj, key) => {
-            obj[key] = key === 'isDeleted' ? true : null;
+            obj[key] = key === 'isDeleted' ? true : new_data[category][item_uuid][key];
             return obj;
           }, {});
+
               
           // Update the item in the new_data object
-          new_data[category] = { ...new_data[category], ...{deleted_item} };
+          new_data[category] = { ...new_data[category], ...{[item_uuid]: deleted_item} };
 
     
           // Update the state and data
@@ -280,11 +280,20 @@ class JSONState {
     getCategory(category, array=false) {
       const data = this.history[this.idx];
       if (data.hasOwnProperty(category)) {
+
+        // Filter out entries with isDeleted = true
+        let filteredData = {};
+        Object.entries(data[category]).forEach(([key, value]) => {
+            if (!value.isDeleted) {
+                filteredData[key] = value;
+            }
+        });
+
         if (array) {
           // Return the object after converting it to an array of key-value pairs
-          return Object.entries(data[category]);
+          return Object.entries(filteredData);
         } else {
-          return data[category];
+          return filteredData;
         }
         
       } else {
@@ -449,7 +458,7 @@ class JSONState {
         return selected_icon;
       });
 
-      console.log("TEST", selected_icons);
+      console.log("TEST2", type_item.icons);
       return selected_icons;
     }
 

@@ -4,7 +4,7 @@ import { Menu } from './menuClass.js';
 
 
 // GLOBAL CONSTANTS
-const CATEGORY = "Icons";
+const CATEGORY = "Scenes";
 
 
 /*********************************************************************
@@ -21,15 +21,14 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   /*********************************************************************
     * 2. SETUP
   *********************************************************************/
-  const icon_menu = new IconMenu('menu_icon_editor', project_state);
+  const scene_menu = new SceneMenu('menu_scene_editor', object_state);
   
 
   /*********************************************************************
    * 3. UPDATE ITEMS ON CHANGES
   *********************************************************************/
-  document.addEventListener("updateIcons", function(event) 
+  document.addEventListener("updateScenes", function(event) 
   {
-    // icon_menu.updateIconGallery();
   });
 
 
@@ -49,10 +48,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   *******************************************************************************/ 
 
 
-class IconMenu extends Menu {
-  constructor(menu_id, project_state) {
+class SceneMenu extends Menu {
+  constructor(menu_id, object_state) {
     super(menu_id);
-    this.project_state = project_state; 
+    this.object_state = object_state; 
     this.input_elements = {}; // Store input element references 
 
     // Set defaut values
@@ -64,7 +63,6 @@ class IconMenu extends Menu {
 
     // Populate menu list it interactive options
     this.createMenuItems();
-
   }
 
   resetMenu() {
@@ -73,7 +71,7 @@ class IconMenu extends Menu {
   }
 
   updateIconInfo() {
-    let icons = this.project_state.getCategory(CATEGORY); 
+    let icons = this.object_state.getCategory(CATEGORY); 
     this.existing_icon_names = [];
 
     // Remapping icons from {{},...,{}} to [{},...,{}]
@@ -99,20 +97,23 @@ class IconMenu extends Menu {
     this.menu_list.innerHTML = '';
 
     const buttons_JSON = [
-      { name: 'Add Icon', label: '+', callback: () => this.emitUploadImage() },
+      { name: 'Add Scene', label: '+', callback: () => this.emitUploadImage() },
       // Add more button objects as needed
     ];
 
     // Creating interactive menu items from a dict
+    // Options go into addMenuItem() from Menu class in menuClass.js
     const options = [
       {
         element_name: 'iconGallery',
         input_type: 'iconGallery',
         default_value: this.selected_icons,
-        secondary_callback: (new_icon_uuid) => {
+        // Callback on clicking icon to edit it
+        edit_icon_callback: (new_icon_uuid) => {
           this.addNewIcon(new_icon_uuid); // Invoke addNewIcon directly
         },
-        callback: (icon_uuid) => {   
+        // Callback on remove
+        delete_callback: (icon_uuid) => {   
           this.deleteIcon(icon_uuid);
         }        
       },
@@ -131,8 +132,8 @@ class IconMenu extends Menu {
         option.default_value, 
         option.options, 
         option.addNewOption, 
-        option.callback,
-        option.secondary_callback
+        option.delete_callback,
+        option.edit_icon_callback
       );
       if (option.element_name) {
         this.input_elements[option.element_name] = input_element; // Store input element reference
@@ -143,7 +144,7 @@ class IconMenu extends Menu {
 
   updateProjectStateProperty(category, item_uuid, property, new_value, event_name) {
     const JSON_updates = [{property: property, value: new_value}];
-    this.project_state.updateProperties(JSON_updates, category, item_uuid, event_name);
+    this.object_state.updateProperties(JSON_updates, category, item_uuid, event_name);
   }
 
   updateEditFields(option) {
@@ -168,7 +169,7 @@ class IconMenu extends Menu {
   addNewIcon(icon_name, src) {
     // console.log("Image uploaded, adding new icon", icon_name);
     // // Push new icon uuid to the list of icons
-    // const type_item = this.project_state.getItem("Types", this.selected_item_uuid);
+    // const type_item = this.object_state.getItem("Types", this.selected_item_uuid);
     // const icon_list = type_item.icons;
     // icon_list.push(new_icon_uuid.value);
     
@@ -183,7 +184,7 @@ class IconMenu extends Menu {
       isEdited: false,
       isNew: true,
     }
-    this.project_state.addNewItem(icon_content, "Icons", new_icon_uuid, "updateIcons");
+    this.object_state.addNewItem(icon_content, "Icons", new_icon_uuid, "updateIcons");
 
     // Update icon gallery to add new icon
     this.updateIconGallery();
@@ -194,12 +195,10 @@ class IconMenu extends Menu {
 
   deleteIcon(icon_uuid) {
     // Delete icon from icons category
-    this.project_state.deleteItem("Icons", icon_uuid);
-    console.log("TEST4", this.project_state.getCategory("Icons"));
-
+    this.object_state.deleteItem("Icons", icon_uuid);
 
     // Remove icon from any types that had that icon id
-    const types = this.project_state.getCategory("Types");
+    const types = this.object_state.getCategory("Types");
     for (const [type_uuid, type_info] of Object.entries(types)) {
       let icon_list = type_info.icons;
 
@@ -243,10 +242,10 @@ class IconMenu extends Menu {
     const event = new CustomEvent('uploadImage', 
     {
         detail: {
-          storage_bucket: "icons_img",
-          header: "Add a new icon",
+          storage_bucket: "scenes_img",
+          header: "Add a new scene",
           existing_image_names: this.existing_icon_names,
-          callback_on_upload: (icon_name, src) => this.addNewIcon(icon_name, src),
+          callback_on_upload: (scene_name, src) => this.addNewIcon(scene_name, src),
         },
     });
     document.dispatchEvent(event);

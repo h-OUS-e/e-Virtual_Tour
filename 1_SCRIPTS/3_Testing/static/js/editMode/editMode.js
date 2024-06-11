@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     *********************************************************************/
     // Load JSON state 
     // let {project_state, object_state} = await JSON_statePromise;
-    let {project_state, object_state} = await getProjectDataPromiseFromLs();
+    let {project_state, object_state} = await JSON_statePromise;
     
     const editable_object_classes =  project_state.getUniquePropertiesByCondition("Types", "class", "editable", true);
 

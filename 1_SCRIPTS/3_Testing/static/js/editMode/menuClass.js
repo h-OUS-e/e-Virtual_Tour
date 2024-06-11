@@ -147,7 +147,7 @@ class Menu {
     return { menu_item, input_element };
   }
 
-  createIconGallery(label_text, icon_options, selcted_icons, callback, dropdown_callback, addNewOption=false) {
+  createIconGallery(label_text, icon_options, selected_icons, callback, dropdown_callback, addNewOption=false) {
     const menu_item = document.createElement('li');
 
 
@@ -176,7 +176,7 @@ class Menu {
     
     // Create add icon btn
     if (icon_options) {
-      // Dividide icon field into a gallery with 3 columns and 1 with button
+      // Divide icon field into a gallery with 3 columns and 1 with button
       icon_field.classList.add('grid2Column');
       icon_field.classList.add('col41');
       icon_gallery.classList.add('grid3Column');
@@ -203,6 +203,7 @@ class Menu {
 
       // Populate the dropdown menu with icon options
       this.populateCustomDropdown(dropdown_menu, null, icon_options, dropdown_callback, addNewOption);
+    
     } else {
       // Make gallery 5 coloumns
       icon_gallery.classList.add('grid5Column');
@@ -210,19 +211,19 @@ class Menu {
     
 
     // Create a container for the icon and the "X" button
-    this.populateIconGallery(icon_gallery, selcted_icons, callback);
+    this.populateIconGallery(icon_gallery, selected_icons, callback);
     const input_element = icon_gallery;
     
     return { menu_item, input_element };    
   }
 
-  populateIconGallery(icon_gallery, selcted_icons, callback_on_remove) {
+  populateIconGallery(icon_gallery, selected_icons, callback_on_remove) {
     // Clear the icon gallery
     icon_gallery.innerHTML = "";
 
     // Populate it the the given icon options
-    selcted_icons.forEach(selcted_icon => {          
-      const icon = this.addIcon(selcted_icon.name, selcted_icon.src, selcted_icon.uuid, callback_on_remove);
+    selected_icons.forEach(selected_icon => {          
+      const icon = this.addIcon(selected_icon.name, selected_icon.src, selected_icon.uuid, callback_on_remove);
       icon_gallery.appendChild(icon);
     });  
   }

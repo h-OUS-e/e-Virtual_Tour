@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   document.addEventListener("updateIcons", function(event) 
   {
+    console.log("TEST");
     type_menu.updateIconFields();
   });
 
@@ -256,6 +257,7 @@ class TypeMenu extends Menu {
   updateIconFields() {   
     // Update selected icons based on selected_item_uuid
     this.updateIconInfo();
+    console.log("TEST3", this.project_state.getCategory("Icons"));
 
     // Repopulate icon gallery with updated icon options
     const icon_gallery = this.input_elements["iconGallery"];
@@ -263,7 +265,8 @@ class TypeMenu extends Menu {
 
     // Repopulate the dropdown menu for the add icon button
     const dropdown_menu = icon_gallery.parentNode.querySelector('.dropdown-menu');
-    this.populateCustomDropdown(dropdown_menu, null, this.getOptionsList(this.project_state.getCategory("Icons")), this.updateIconFields, false);
+
+    this.populateCustomDropdown(dropdown_menu, null, this.getOptionsList(this.project_state.getCategory("Icons")), this.addNewIcon, false);
   }
 
   addNewIcon(new_icon_uuid) {
