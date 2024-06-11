@@ -478,7 +478,7 @@ class JSONState {
   
       // Log and return unique properties, handling cases where propertyToGet might not exist on all objects
       if (filteredObjects.length > 0) {
-        console.log(`There are filtered objects: ${filteredObjects}`);
+        // console.log(`There are filtered objects: ${filteredObjects}`);
         const uniqueProperties = [...new Set(filteredObjects.filter(prop => prop != null))];
         return uniqueProperties;
       } else {

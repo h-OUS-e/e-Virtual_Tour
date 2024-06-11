@@ -114,7 +114,7 @@ function loadImageAsset(asset_object) {
             const img_element = document.createElement('img');
             img_element.classList.add('img-loading'); // Start with image fully transparent
             img_element.setAttribute('id', "scene_img_"+asset_object.id);
-            img_element.setAttribute('src', asset_object.path);
+            img_element.setAttribute('src', asset_object.src);
             img_element.setAttribute('alt', 'image of the scene');
             img_element.setAttribute('scene_id', asset_object.id);
             img_element.setAttribute('rotation', `${asset_object.rot_x} ${asset_object.rot_x} ${asset_object.rot_z}`);

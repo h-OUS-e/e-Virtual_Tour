@@ -195,7 +195,6 @@ class IconMenu extends Menu {
   deleteIcon(icon_uuid) {
     // Delete icon from icons category
     this.project_state.deleteItem("Icons", icon_uuid);
-    console.log("TEST4", this.project_state.getCategory("Icons"));
 
 
     // Remove icon from any types that had that icon id

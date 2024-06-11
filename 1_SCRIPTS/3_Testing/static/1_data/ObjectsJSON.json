@@ -168,7 +168,7 @@
             "cam_rot_x": "0",
             "cam_rot_y":"45",
             "cam_rot_z": "0",
-            "path": "../static/0_resources/img1.1_lobby.jpeg",
+            "src": "../../static/0_resources/img1.1_lobby.jpeg",
             "isDeleted": false,
             "isEdited": false,
             "isNew": false
@@ -181,7 +181,7 @@
             "cam_rot_x": "0",
             "cam_rot_y":"0",
             "cam_rot_z": "0",
-            "path": "../static/0_resources/img1.2_lobby.jpeg",
+            "src": "../../static/0_resources/img1.2_lobby.jpeg",
             "isDeleted": false,
             "isEdited": false,
             "isNew": false
@@ -194,7 +194,7 @@
             "cam_rot_x": "0",
             "cam_rot_y":"0",
             "cam_rot_z": "0",
-            "path": "../static/0_resources/img2_dentalRoom1.jpeg",
+            "src": "../../static/0_resources/img2_dentalRoom1.jpeg",
             "isDeleted": false,
             "isEdited": false,
             "isNew": false
@@ -207,7 +207,7 @@
             "cam_rot_x": "0",
             "cam_rot_y":"0",
             "cam_rot_z": "0",
-            "path": "../static/0_resources/img3_dentalRoom2.jpeg",
+            "src": "../../static/0_resources/img3_dentalRoom2.jpeg",
             "isDeleted": false,
             "isEdited": false,
             "isNew": false

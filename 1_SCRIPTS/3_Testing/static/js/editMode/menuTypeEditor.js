@@ -257,7 +257,6 @@ class TypeMenu extends Menu {
   updateIconFields() {   
     // Update selected icons based on selected_item_uuid
     this.updateIconInfo();
-    console.log("TEST3", this.project_state.getCategory("Icons"));
 
     // Repopulate icon gallery with updated icon options
     const icon_gallery = this.input_elements["iconGallery"];
