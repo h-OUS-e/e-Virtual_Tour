@@ -127,7 +127,7 @@ export async function addUrlsToObjects(bucket, json_data){
                 if(public_url) {
                     console.log('Retrieved public URL for', bucket_item_uuid, ':', public_url);
                     target_path[bucket_item_uuid]['src'] = public_url
-                    console.log(`value at target path: ${target_path['src']}`)
+                    console.log(`value at target path(${target_path} : ${bucket_item_uuid} : src ): ${target_path[bucket_item_uuid]['src']}`)
 
                 }
                 else {
@@ -143,6 +143,8 @@ export async function addUrlsToObjects(bucket, json_data){
 
 
 function getTargetPath(bucket, json_data) {
+    // gets the path to where there should be an image link within the state
+    //input: state, bucked
     let target_path;
     if (bucket === 'scenes_img') {
         target_path = json_data.objectjson.scenes;

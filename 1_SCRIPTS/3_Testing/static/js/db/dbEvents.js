@@ -545,3 +545,18 @@ export async function update_project_start_image(project_uid, scene_uid) {
         return data ;
     }
 }
+
+export async function select_icon_uid_from_img_uid(img_uid) {
+    let { data: scenes, error } = await supabase
+        .from('icons')
+        .select('icon_uid')
+        .eq('icon_img_uid', img_uid);
+
+    if (error) {
+        console.error(error);
+        return null;
+    } else {
+        console.log(`Fetched icon_uid: ${JSON.stringify(scenes)}`);
+        return scenes;
+    }
+}

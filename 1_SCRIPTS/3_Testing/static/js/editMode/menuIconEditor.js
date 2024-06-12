@@ -1,6 +1,7 @@
 // LOADING JSON STATE
-import { JSON_statePromise } from '../JSONSetup.js';
+import { JSON_statePromise, getProjectDataPromiseFromLs } from '../JSONSetup.js';
 import { Menu } from './menuClass.js';
+import {select_icon_uid_from_img_uid} from '../db/dbEvents.js'
 
 
 // GLOBAL CONSTANTS
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     * 1. LOAD JSON STATE
   *********************************************************************/
   let {project_state, object_state} = await JSON_statePromise;
-
+  // let {project_state, object_state} = await getProjectDataPromiseFromLs();
 
   /*********************************************************************
     * 2. SETUP
@@ -192,6 +193,41 @@ class IconMenu extends Menu {
     
   }
 
+  addNewIcon_db(icon_name, src, img_uid ) {
+    //input:
+      // icon_name, set on front end comes from uppy eventually
+      // src, comes from uppy "file name" projectid/imgid/imgname
+      // img_uid, the id given to the image in uppy (also, src.split('/')[1])
+    
+    //process:
+      //get icon_id, set in db, comes from API by matching img_uid to icons table icon_img_uid
+      // create icon_content json to fill out icon details 
+      // add to state using project_state.addNewItem()
+      // update galary using updateIconGallary()
+    
+    const new_icon_uuid = select_icon_uid_from_img_uid(img_uid); //this is setting the icon id on the front end when we should be grabbing it from the DB kt
+    const icon_content = {
+      name: icon_name,
+      src: src,
+      alt: icon_name,
+      isDelete: false,
+      isEdited: false,
+      isNew: true,
+    }
+    this.project_state.addNewItem(icon_content, "Icons", new_icon_uuid, "updateIcons");
+
+    // Update icon gallery to add new icon
+    this.updateIconGallery();
+
+    // emit to update icons to add new icon name type dropdown
+    
+
+  }
+
+
+
+  
+
   deleteIcon(icon_uuid) {
     // Delete icon from icons category
     this.project_state.deleteItem("Icons", icon_uuid);
@@ -238,15 +274,21 @@ class IconMenu extends Menu {
  
   // A method to toggle upload image menu
   emitUploadImage() {
+    let project_uid = JSON.parse(localStorage.getItem('projectData'))['project_uid'];
+    console.log(project_uid)
     const event = new CustomEvent('uploadImage', 
+   
     {
         detail: {
           storage_bucket: "icons_img",
           header: "Add a new icon",
           existing_image_names: this.existing_icon_names,
+          project_uid: project_uid, //needs to be changed
           callback_on_upload: (icon_name, src) => this.addNewIcon(icon_name, src),
+          
         },
     });
     document.dispatchEvent(event);
   }
 }
+

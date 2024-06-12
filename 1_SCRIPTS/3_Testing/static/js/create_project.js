@@ -184,7 +184,16 @@ function redirectToIndexDirectory(projects_directory_path ) {
   window.location.href = projects_directory_path ;
 }
 
-async function set_Project_data_in_ls (project_uid) {
+
+
+
+function goToIndexAndSetProjectData(project_uid, index_projects_directory_path) {
+  setProjectdatainls(project_uid)
+  console.log('redirecting to index')
+  // setTimeout(redirectToProjectsDirectory(index_projects_directory_path), 1000);  
+}
+
+async function setProjectdatainls (project_uid) {
   try {
     const projectData = await fetchAllProjectData(project_uid);
     localStorage.removeItem('projectData');
@@ -196,13 +205,6 @@ async function set_Project_data_in_ls (project_uid) {
   } catch (error) {console.error(`error fetching data and setting to ls, ${error}`)}
 }
 
-
-
-function goToIndexAndSetProjectData(project_uid, index_projects_directory_path) {
-  set_Project_data_in_ls(project_uid)
-  console.log('redirecting to index')
-  // setTimeout(redirectToProjectsDirectory(index_projects_directory_path), 1000);  
-}
   
 async function handleStartImageConfirmation( image_uid, project_uid) {
     // takes image_uid, project_id
