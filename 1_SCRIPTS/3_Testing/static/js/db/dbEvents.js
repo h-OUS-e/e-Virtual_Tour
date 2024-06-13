@@ -549,7 +549,7 @@ export async function update_project_start_image(project_uid, scene_uid) {
 export async function select_icon_uid_from_img_uid(img_uid) {
     let { data: scenes, error } = await supabase
         .from('icons')
-        .select('icon_uid')
+        .select('icon_uuid')
         .eq('icon_img_uid', img_uid);
 
     if (error) {

@@ -246,6 +246,7 @@ function setUpUppy (token, storage_bucket, project_uid, target_div, instant_uplo
     
     console.log('File prepared for upload with new name:', newFileName);
     console.log('uppy state after adding new file:', uppy.getState());
+    
     uppy.upload()
 
     // Custom uppy uploader (not in use for now)

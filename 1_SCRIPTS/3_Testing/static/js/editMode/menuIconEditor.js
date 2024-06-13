@@ -1,7 +1,7 @@
 // LOADING JSON STATE
-import { JSON_statePromise, getProjectDataPromiseFromLs } from '../JSONSetup.js';
+import { JSON_statePromise, getProjectDataPromiseFromLs,  } from '../JSONSetup.js';
 import { Menu } from './menuClass.js';
-import {select_icon_uid_from_img_uid} from '../db/dbEvents.js'
+import {select_icon_uid_from_img_uid, noAPIgetPublicImageUrl} from '../db/dbEvents.js'
 
 
 // GLOBAL CONSTANTS
@@ -193,27 +193,33 @@ class IconMenu extends Menu {
     
   }
 
-  addNewIcon_db(icon_name, src, img_uid ) {
+  async addNewIcon_db( bucket, img_path, image_name) {
     //input:
-      // icon_name, set on front end comes from uppy eventually
-      // src, comes from uppy "file name" projectid/imgid/imgname
-      // img_uid, the id given to the image in uppy (also, src.split('/')[1])
+      // image_name, set on front end comes from uppy eventually
+      // img_path, comes from uppy "file name" projectid/imgid/imgname
+      // img_uid, the id given to the image in uppy (also, img_path.split('/')[1])
     
     //process:
       //get icon_id, set in db, comes from API by matching img_uid to icons table icon_img_uid
       // create icon_content json to fill out icon details 
       // add to state using project_state.addNewItem()
       // update galary using updateIconGallary()
-    
-    const new_icon_uuid = select_icon_uid_from_img_uid(img_uid); //this is setting the icon id on the front end when we should be grabbing it from the DB kt
+    const url = noAPIgetPublicImageUrl(bucket, img_path);
+    const img_uid = img_path.split("/")[1];
+    console.log(img_uid)
+    const new_icon_uuid_array = await select_icon_uid_from_img_uid(img_uid); 
+    console.log(new_icon_uuid_array)
+    const new_icon_uuid = new_icon_uuid_array[0].icon_uuid
+    console.log(new_icon_uuid)
     const icon_content = {
-      name: icon_name,
-      src: src,
-      alt: icon_name,
+      name: image_name,
+      img_path: url,
+      alt: image_name,
       isDelete: false,
       isEdited: false,
       isNew: true,
     }
+    console.warn('here is the new icon content: ', icon_content)
     this.project_state.addNewItem(icon_content, "Icons", new_icon_uuid, "updateIcons");
 
     // Update icon gallery to add new icon
@@ -284,7 +290,7 @@ class IconMenu extends Menu {
           header: "Add a new icon",
           existing_image_names: this.existing_icon_names,
           project_uid: project_uid, //needs to be changed
-          callback_on_upload: (icon_name, src) => this.addNewIcon(icon_name, src),
+          temp_callback_on_upload: (bucket, img_path, image_name ) => this.addNewIcon_db( bucket, img_path, image_name),
           
         },
     });
