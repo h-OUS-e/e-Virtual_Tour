@@ -512,3 +512,51 @@ export async function noAPIgetPublicImageUrl(bucket, img_path) {
     console.log(projectURL);
     return projectURL
 }
+
+export async function select_scene_uid_from_img_uid(img_uid) {
+    let { data: scenes, error } = await supabase
+        .from('scenes')
+        .select('scene_uid')
+        .eq('scene_img_uid', img_uid);
+
+    if (error) {
+        console.error(error);
+        return null;
+    } else {
+        console.log(`Fetched scene_id: ${JSON.stringify(scenes)}`);
+        return scenes;
+    }
+}
+
+
+export async function update_project_start_image(project_uid, scene_uid) {
+    let {data, error} = await supabase
+    .from('projects')
+    .update({'project_start_scene_uid': scene_uid})
+    .select('*')
+    .eq('project_uid', project_uid);
+    
+
+    if (error) {
+        console.error(error);
+        return null;
+    } else {
+        console.log(`updated start image in project: ${JSON.stringify(data)}`);
+        return data ;
+    }
+}
+
+export async function select_icon_uid_from_img_uid(img_uid) {
+    let { data: scenes, error } = await supabase
+        .from('icons')
+        .select('icon_uuid')
+        .eq('icon_img_uid', img_uid);
+
+    if (error) {
+        console.error(error);
+        return null;
+    } else {
+        console.log(`Fetched icon_uid: ${JSON.stringify(scenes)}`);
+        return scenes;
+    }
+}

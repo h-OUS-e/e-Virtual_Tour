@@ -54,7 +54,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
             console.log(`No data found in localStorage for key ${storage_key}`);
             
             try { // if I find no key I fetch the data instead
-                let fetched_data = await fetchAllProjectData(clicked_project.project_uid);
+                let fetched_data = await fetchAllProjectData(koject.project_uid);
                 let string_data = JSON.stringify(fetched_data).slice(9, -2); 
                 let parsed_data = JSON.parse(string_data);
                 console.log(parsed_data);
@@ -62,7 +62,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
                 return parsed_data; 
 
             } catch (error) {
-                console.error(`Error in fetching data for table ${table}: ${error}`);
+                console.error(`Error in fetching from key ${storage_key}: ${error}`);
             }
 
         }
@@ -127,7 +127,7 @@ export async function addUrlsToObjects(bucket, json_data){
                 if(public_url) {
                     console.log('Retrieved public URL for', bucket_item_uuid, ':', public_url);
                     target_path[bucket_item_uuid]['src'] = public_url
-                    console.log(`value at target path: ${target_path['src']}`)
+                    console.log(`value at target path(${target_path} : ${bucket_item_uuid} : src ): ${target_path[bucket_item_uuid]['src']}`)
 
                 }
                 else {
@@ -143,6 +143,8 @@ export async function addUrlsToObjects(bucket, json_data){
 
 
 function getTargetPath(bucket, json_data) {
+    // gets the path to where there should be an image link within the state
+    //input: state, bucked
     let target_path;
     if (bucket === 'scenes_img') {
         target_path = json_data.objectjson.scenes;
