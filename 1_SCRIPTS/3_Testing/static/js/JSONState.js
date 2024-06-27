@@ -516,6 +516,10 @@ class JSONState {
         // console.log("TEST", this.idx, this.edit_history)
         // Decrement the current index
         this.idx--;
+
+        // Save the current state to local storage after undoing
+        this.saveToLocalStorage();
+        
         this.buildIndexes();
         this.emitStateUpdated(event_name);
         const state = this.edit_history[this.idx];
@@ -533,6 +537,8 @@ class JSONState {
       if (this.idx < this.history.length - 1) {
         const state = this.edit_history[this.idx];
         this.idx++;
+        // Save the current state to local storage after undoing
+        this.saveToLocalStorage();
         this.buildIndexes();
         this.emitStateUpdated(event_name);
         return state;
@@ -551,7 +557,7 @@ class JSONState {
     }
 
     // Method to load data from local storage if available, otherwise it returns null
-    loadFromLocalStorage(JSON_state_data_name) {
+    loadFromLocalStorage() {
       const savedData = localStorage.getItem(this.JSON_state_data_name);
       return savedData ? JSON.parse(savedData) : null;
     }
