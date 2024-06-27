@@ -106,13 +106,14 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
   function handleOkButton() {
+    const JSON_updates = [{inner_property: current_color_info.inner_property_name, value: `#${currentColor.toHex()}`}];
+
     // Update color where used
     project_state.updateInnerProperty(
+      JSON_updates,
       current_color_info['category'], 
       current_color_info.reference_uuid, 
       current_color_info.property_name, 
-      current_color_info.inner_property_name, 
-      `#${currentColor.toHex()}`, // new color value
       "updateColor"); // event name
 
     // Hide the color picker

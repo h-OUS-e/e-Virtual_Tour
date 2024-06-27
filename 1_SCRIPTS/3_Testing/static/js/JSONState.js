@@ -180,7 +180,7 @@ class JSONState {
 
     
 
-    getDataWithNewProperty(new_data, category, uuid, property, value) {
+    getDataWithNewProperty(new_data, category, uuid, property, value, inner_property=null) {
       // Check if the category, uuid, and property exist in the current state
       // and makes isEdited set to true, since it is called for the updateProperties function
       console.log(new_data, category, uuid, property);
@@ -190,68 +190,78 @@ class JSONState {
         new_data[category][uuid].hasOwnProperty(property)
       ) {
         // Update the property value in the new_data object
-        new_data[category] = {
-          ...new_data[category],
-          [uuid]: {
-            ...new_data[category][uuid],
-            [property]: value,
-            isEdited: true, // Mark the property as edited
-          },
-        };        
+        if (inner_property) {
+          new_data[category] = 
+          {
+            ...new_data[category],
+            [uuid]: 
+            {
+              ...new_data[category][uuid],
+              [property]: 
+              {
+                ...new_data[category][uuid][property],
+              [inner_property]: value,
+              },
+              isEdited: true, // Mark the property as edited
+            }              
+          };
+        
 
+        } else {
+          new_data[category] = {
+            ...new_data[category],
+            [uuid]: {
+              ...new_data[category][uuid],
+              [property]: value,
+              isEdited: true, // Mark the property as edited
+            },
+          };    
+        }    
         return new_data ;
+
       } else {
         console.log("Property or Category or uuid does not exist");
         return new_data ;
-      }
+      }        
     }
 
-    updateInnerProperty(category, uuid, property, innerProperty, value, event_name=null, action="edit") {
+    updateInnerProperty(updates, category, uuid, property, event_name=null, action="edit", update_state=true) {
       // Updates the property of the item with the given value
       // and emits that the state has been updated. If an event_name is provided
       // it emits the event name. If the event_name provided is "useCategory",
       // it emits {category}Updated event. Else, it emits "stateUpdated"
-      const start_time = performance.now();
       const data = this.history[this.idx];
-      const new_data = {
-        ...data,
-        [category]: {
-          ...data[category],
-          [uuid]: {
-            ...data[category][uuid],
-            [property]: {
-              ...data[category][uuid][property],
-              [innerProperty]: value,
-            }
-          },
-        },
-      };
+      // Create a deep copy of the new data object to store the updated state
+      let new_data = { ...data };
 
-      const updated_data = { ...data, ...new_data };
-      this.history.splice(this.idx + 1);
-      this.history.push(updated_data);
-
-      // // Update edit history
-      // this.edit_history.splice(this.idx);
-      // this.edit_history.push({
-      //   category: category,
-      //   item_uuid: uuid,
-      //   action: action,
-      //   previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item with the item uuid
-      // });
-
-      this.idx++;
-  
-      if (this.history.length > this.max_history_length) {
-        this.history.shift();
-        this.idx--;
-      }  
-      this.buildIndexes();
-      if (event_name === "useCategory") {
-        event_name = `${category}Updated`;
+      // Iterate over the updates array
+      for (const update of updates) {
+        const { inner_property, value } = update;
+        new_data = this.getDataWithNewProperty(new_data, category, uuid, property, value, inner_property);  
       }
-      this.emitStateUpdated(event_name, {"start_time": start_time});
 
+      // Merge the current state with the new data object
+      const updated_data = { ...data, ...new_data };
+
+      // Define updated state
+      const state = {
+        category: category,
+        item_uuid: uuid,
+        action: action,
+        previous_state: { id: uuid, ...data[category][uuid] }, // Store the previous state of the item, with the item uuid
+        final_state: { id: uuid, ...updated_data[category][uuid] }, // Store the final state of the item, with the item uuid
+      }
+
+      // Update state for undo/redo mangagement
+      if (update_state) {
+        this.updateStateAndData(updated_data, state);
+      }
+
+      // Rebuild the indexes
+      this.buildIndexes();
+
+      // Emit the state updated event
+      this.emitStateUpdated(event_name);      
     }
 
   
