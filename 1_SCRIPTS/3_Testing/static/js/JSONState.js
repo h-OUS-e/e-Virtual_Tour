@@ -1,7 +1,16 @@
 
 
 class JSONState {
-    constructor(data) {
+    constructor(data, JSON_state_data_name) {
+
+      // FUTURE TASK:  data is read from local storage base on "JSON_state_data_name" such that:
+      // const data = this.loadFromLocalStorage(JSON_state_data_name);
+      // if (data) {
+      //     this.history = [data];
+      //     this.idx = 0;
+      //     this.buildIndexes();
+      // }
+      this.JSON_state_data_name = JSON_state_data_name;
       this.history = [data];
       this.edit_history = [];
       this.idx = 0;
@@ -175,6 +184,9 @@ class JSONState {
       }  
       // console.log(this.edit_history[-1], this.edit_history);
       // console.log("DATA", this.history[this.idx]);
+
+      // Save to local storage after updating state
+      this.saveToLocalStorage();
 
     }
 
@@ -528,6 +540,27 @@ class JSONState {
         console.log("Nothing to redo");
       }
     }
+
+
+    /*================== LOCAL STORAGE FUNCTIONS =================*/  
+
+    // Method to save data to local storage
+    saveToLocalStorage() {
+      const currentState = this.getCurrentState();
+      localStorage.setItem(this.JSON_state_data_name, JSON.stringify(currentState));
+    }
+
+    // Method to load data from local storage if available, otherwise it returns null
+    loadFromLocalStorage(JSON_state_data_name) {
+      const savedData = localStorage.getItem(this.JSON_state_data_name);
+      return savedData ? JSON.parse(savedData) : null;
+    }
+
+    // Method to clear local storage
+    clearLocalStorage() {
+      localStorage.removeItem(this.JSON_state_data_name);
+    }
+
   };
 
 

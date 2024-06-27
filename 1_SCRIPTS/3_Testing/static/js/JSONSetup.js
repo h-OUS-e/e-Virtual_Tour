@@ -1,5 +1,5 @@
 import { JSONState } from "./JSONState.js";
-import {fetchStoragePublicUrl, fetchAllProjectData} from  "./db/dbEvents.js"
+import { fetchAllProjectData, fetchStoragePublicUrl } from "./db/dbEvents.js";
 let project_uid 
 
 // Function to read the JSON file and extract id and path
@@ -23,9 +23,9 @@ async function loadJSON(filename) {
 
 export const JSON_statePromise_ls = (async () => {
     const project_JSON_ls = await loadJSON("ProjectJSON");
-    const project_state_ls = new JSONState(project_JSON_ls);
+    const project_state_ls = new JSONState(project_JSON_ls, "ProjectJSON");
     const object_JSON_ls = await loadJSON("ObjectsJSON");
-    const object_state_ls = new JSONState(object_JSON_ls);
+    const object_state_ls = new JSONState(object_JSON_ls, "ObjectsJSON");
     return {project_state_ls, object_state_ls};
 })();
 
@@ -36,9 +36,9 @@ export const JSON_statePromise_ls = (async () => {
 
 export const JSON_statePromise = (async () => {
     const project_JSON = await loadJSON("ProjectJSON");
-    const project_state = new JSONState(project_JSON);
+    const project_state = new JSONState(project_JSON, "ProjectJSON");
     const object_JSON = await loadJSON("ObjectsJSON");
-    const object_state = new JSONState(object_JSON);
+    const object_state = new JSONState(object_JSON, "ObjectsJSON");
     return {project_state, object_state};
 })();
 
@@ -70,7 +70,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
         
         const project_JSON = (key = 'projectjson') => {
             if (db_json_ls.hasOwnProperty(key)) {
-                const project_state = new JSONState(db_json_ls[key]);
+                const project_state = new JSONState(db_json_ls[key], key);
                 return project_state;
             } else {
                 throw new Error(`Key "${key}" not found`);
@@ -79,7 +79,7 @@ export  function getProjectDataPromiseFromLs(storage_key = 'projectData') {
 
         const object_JSON = (key = "objectjson") => {
             if (db_json_ls.hasOwnProperty(key)) {
-                const object_JSON = new JSONState(db_json_ls[key]);
+                const object_JSON = new JSONState(db_json_ls[key], key);
                 return object_JSON;
             } else {
                 throw new Error(`Key "${key}" not found`);
